@@ -54,10 +54,10 @@ export default function BluorngHeader({
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       onMouseLeave={() => setIsCollectionsHovered(false)}
-      className={`sticky top-0 z-40 w-full select-none transition-all duration-300 relative ${
+      className={`sticky top-0 z-50 w-full select-none transition-all duration-300 relative ${
         isTransparent
           ? 'bg-transparent text-white'
-          : 'bg-[#FFFFFF]/95 backdrop-blur-md text-[#111111] shadow-xs border-b border-black/5'
+          : 'bg-white text-[#111111] shadow-xs border-b border-black/5'
       }`}
     >
       <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 h-[60px] sm:h-[68px] relative flex items-stretch justify-between">
@@ -318,15 +318,27 @@ export default function BluorngHeader({
       {/* ================= MEGA MENU WITH LUXURY FADE & SLIDE ================= */}
       <AnimatePresence>
         {isCollectionsHovered && (
-          <motion.div
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            onMouseEnter={() => setIsCollectionsHovered(true)}
-            onMouseLeave={() => setIsCollectionsHovered(false)}
-            className="absolute left-0 right-0 top-full -mt-[1px] w-full bg-[#FFFFFF]/98 backdrop-blur-xl border-b border-[#E5E5E5] text-[#111111] shadow-2xl pt-5 pb-7 px-4 sm:px-6 md:px-8 lg:px-10 z-50"
-          >
+          <>
+            {/* Dark Dim Backdrop Over the Rest of the Page to Eliminate Clashing */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsCollectionsHovered(false)}
+              className="fixed inset-0 top-[60px] sm:top-[68px] bg-black/45 backdrop-blur-xs z-40 pointer-events-auto"
+            />
+
+            {/* Solid Pure White Mega Menu Panel */}
+            <motion.div
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              onMouseEnter={() => setIsCollectionsHovered(true)}
+              onMouseLeave={() => setIsCollectionsHovered(false)}
+              className="absolute left-0 right-0 top-full -mt-[1px] w-full bg-white border-b border-[#E5E5E5] text-[#111111] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] pt-5 pb-7 px-4 sm:px-6 md:px-8 lg:px-10 z-50 pointer-events-auto"
+            >
             <div className="w-full">
               <div className="flex items-center justify-between mb-4 pb-2 border-b border-black/5 text-[11px] tracking-widest text-[#777777]">
                 <span>EXPLORE CURATED COLLECTIONS</span>
@@ -369,7 +381,8 @@ export default function BluorngHeader({
                 ))}
               </div>
             </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.header>

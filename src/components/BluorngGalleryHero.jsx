@@ -57,7 +57,7 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
 
                   {/* Overlay CTA Button with Smooth Hover */}
                   <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-center">
-                    <button className="w-full sm:w-auto px-6 py-2.5 bg-[#FFFFFF]/90 hover:bg-[#FFFFFF] text-[#111111] text-[11px] font-bold uppercase tracking-[0.18em] backdrop-blur-sm shadow-lg transition-all duration-300 group-hover:bg-[#C4823F] group-hover:text-white">
+                    <button className="w-full sm:w-auto px-6 py-2.5 bg-white/90 hover:bg-white text-[#111111] text-[11px] font-bold uppercase tracking-[0.18em] backdrop-blur-sm shadow-lg transition-all duration-300 group-hover:bg-[#C4823F] group-hover:text-white">
                       {tile.buttonLabel}
                     </button>
                   </div>
