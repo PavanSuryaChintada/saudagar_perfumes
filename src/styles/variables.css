@@ -1,0 +1,64 @@
+:root {
+  /* ==========================================================================
+     SAUDAGAR PERFUMES - PRODUCT PAGE EDITORIAL PALETTE (IVORY, BLACK & AMBER GOLD)
+     ========================================================================== */
+  
+  /* Primary Page & Paper Surface */
+  --theme-brand-bg: #ECEBE6;             /* Warm Editorial Ivory Paper */
+  --theme-brand-surface: #ECEBE6;        /* Subtle Luxury Stone Surface */
+  --theme-brand-surface-card: #FFFFFF;   /* Clean White Card Surface */
+  --theme-brand-alabaster: #F4F3EE;      /* Alabaster Warm Cream */
+  
+  /* Typography Colors */
+  --theme-brand-text: #111111;           /* Deep Obsidian Charcoal */
+  --theme-brand-text-dark: #000000;      /* Pure Black */
+  --theme-brand-text-muted: #555555;     /* Medium Charcoal Grey */
+  --theme-brand-text-light: #777777;     /* Soft Studio Grey */
+  
+  /* Brand Amber Gold & Accents (Matching Product Page Tabs & Buttons) */
+  --theme-brand-amber: #C4823F;          /* Warm Amber Caramel (Card Footer & Buttons) */
+  --theme-brand-amber-dark: #B57432;     /* Deepened Amber Tone */
+  --theme-brand-gold: #D4AF37;           /* Pure 24K Royal Gold */
+  --theme-brand-gold-light: #ECC86A;     /* Bright Champagne Gold */
+  --theme-brand-gold-dark: #9E7D23;      /* Bronzed Antique Gold */
+  
+  /* Architectural Hairline Borders */
+  --theme-brand-border: #111111;                      /* Crisp 1px Black Border */
+  --theme-brand-border-fine: rgba(17, 17, 17, 0.20);  /* Soft Grid Divider Line */
+  --theme-brand-border-muted: #888888;                /* Inactive Pill/Stepper Border */
+  
+  /* Action Button Palette */
+  --theme-btn-black-bg: #111111;         /* Solid Black Button (BUY IT NOW) */
+  --theme-btn-black-text: #FFFFFF;       /* White Label */
+  --theme-btn-light-bg: #EFECE6;         /* Cream Linen Button (ADD TO CART) */
+  --theme-btn-light-border: #111111;     /* Black Border */
+  --theme-btn-light-text: #111111;       /* Black Label */
+  --theme-btn-amber-bg: #C4823F;         /* Amber Button (OUR STORY / EXPLORE) */
+  --theme-btn-amber-text: #FFFFFF;
+
+  /* Secondary Section Theme */
+  --theme-sand-bg: #FAF9F5;              /* Clean Stone Ivory */
+  --theme-sand-text: #111111;
+  --theme-sand-border: #111111;
+
+  /* Dark Theme Elements (Top Bar & Footers) */
+  --theme-dark-bg: #111111;
+  --theme-dark-surface: #1A1A1E;
+  --theme-dark-text: #FFFFFF;
+  --theme-dark-border: rgba(255, 255, 255, 0.15);
+
+  /* Typography */
+  --font-heading: 'Poppins', sans-serif;
+  --font-serif: 'IM Fell French Canon', 'Zen Antique Soft', serif;
+  --font-body: 'Poppins', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Poppins', 'Outfit', sans-serif;
+  --font-script: 'Lavishly Yours', cursive;
+  --font-lavish: 'Lavishly Yours', cursive;
+  --heading-letter-spacing: 0.16em;
+  --button-letter-spacing: 0.18em;
+
+  /* Dimensions */
+  --header-height: 84px;
+  --announcement-bar-height: 38px;
+  --container-max-width: 1440px;
+}
