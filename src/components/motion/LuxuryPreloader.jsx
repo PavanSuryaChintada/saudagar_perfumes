@@ -29,7 +29,7 @@ export default function LuxuryPreloader({ onComplete }) {
   const smoothEase = [0.76, 0, 0.24, 1];
 
   return (
-    <div className="fixed inset-0 z-[100] pointer-events-none select-none overflow-hidden bg-black will-change-transform">
+    <div className="fixed inset-0 z-[100] pointer-events-none select-none overflow-hidden will-change-transform">
       
       {/* ================= LEFT MAROON VELVET CURTAIN ================= */}
       <motion.div
