@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
 import BluorngHero from './BluorngHero.jsx';
+import BluorngCategories from './BluorngCategories.jsx';
 import BluorngFeaturedCollection from './BluorngFeaturedCollection.jsx';
 import BluorngCustomExclusive from './BluorngCustomExclusive.jsx';
 import BluorngGalleryHero from './BluorngGalleryHero.jsx';
@@ -34,7 +35,12 @@ export default function BluorngHome({
         onShopDropClick={scrollToLatestDrop}
       />
 
-      {/* 2. FEATURED COLLECTION 1 ("Latest drop") */}
+      {/* 2. CATEGORIES SECTION ("Shop by Category") */}
+      <BluorngCategories
+        onSelectCategory={onNavigateCollection}
+      />
+
+      {/* 3. FEATURED COLLECTION 1 ("Latest drop") */}
       <div id="featured-drop-section">
         <BluorngFeaturedCollection
           activeCurrency={activeCurrency}
