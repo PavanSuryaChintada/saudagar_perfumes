@@ -54,9 +54,12 @@ export default function BluorngHeader({
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       onMouseLeave={() => setIsCollectionsHovered(false)}
-      className={`sticky top-0 z-50 w-full select-none transition-all duration-300 relative ${
+      style={{
+        backgroundColor: isTransparent ? 'transparent' : '#ffffff',
+      }}
+      className={`sticky top-0 z-50 w-full select-none transition-colors duration-300 relative ${
         isTransparent
-          ? 'bg-transparent text-white'
+          ? 'text-white'
           : 'bg-white text-[#111111] shadow-xs border-b border-black/5'
       }`}
     >
@@ -337,6 +340,7 @@ export default function BluorngHeader({
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               onMouseEnter={() => setIsCollectionsHovered(true)}
               onMouseLeave={() => setIsCollectionsHovered(false)}
+              style={{ backgroundColor: '#ffffff' }}
               className="absolute left-0 right-0 top-full -mt-[1px] w-full bg-white border-b border-[#E5E5E5] text-[#111111] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] pt-5 pb-7 px-4 sm:px-6 md:px-8 lg:px-10 z-50 pointer-events-auto"
             >
             <div className="w-full">
