@@ -1,98 +1,127 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { BOUTIQUE_STORES } from '../data/bluorngSaudagarData.js';
+import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 
 export default function BluorngStores() {
-  const [activeStoreIdx, setActiveStoreIdx] = useState(0);
-
   return (
-    <section id="stores-section" className="w-full bg-[#FAF9F6] py-12 sm:py-16 border-b border-[#EEEEEE]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="stores-section" className="relative w-full bg-gradient-to-b from-[#FAF8F5] via-[#F4EFE7] to-[#F8F6F2] dark:from-[#0B0A0D] dark:via-[#111015] dark:to-[#0B0A0D] py-14 sm:py-20 border-b border-[#ECE5D8] dark:border-white/5 overflow-hidden transition-colors duration-300">
+      {/* Background Layer 1: Ambient Radial Glow */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          background: 'radial-gradient(circle 900px at 70% 30%, rgba(196, 130, 63, 0.06) 0%, transparent 75%)'
+        }}
+      />
+
+      {/* Background Layer 3: Tactile Film Grain */}
+      <div className="absolute inset-0 luxury-noise pointer-events-none z-0 opacity-70" />
+
+      {/* Background Layer 4: Architectural Watermark */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none select-none z-0 overflow-hidden">
+        <span className="font-serif text-[11vw] tracking-[0.2em] uppercase text-[#111111]/[0.016] dark:text-white/[0.016] whitespace-nowrap leading-none block">
+          LES BOUTIQUES & ATELIERS
+        </span>
+      </div>
+
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Top Header / Globe Indicator (as in Bluorng store-earth) */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-3 border-b border-[#111111]/10">
+        {/* ================= SECTION HEADER ================= */}
+        <ScrollReveal variant="fade-up" className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-12 pb-4 border-b border-[#111111]/12 dark:border-white/10">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10.5px] font-bold tracking-[0.24em] uppercase text-[#C4823F]">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+              <span className="px-2 py-0.5 text-[9.5px] font-bold tracking-[0.12em] uppercase bg-[#C4823F]/10 text-[#C4823F] rounded-xs border border-[#C4823F]/20">
                 Walk-in Ateliers
               </span>
+              <span className="font-script text-[#C4823F] text-[18px] sm:text-[22px] normal-case tracking-normal">
+                private tasting salons
+              </span>
             </div>
-            <h2 className="text-[22px] sm:text-[28px] font-black uppercase tracking-[0.14em] text-[#111111]">
+            <h2 className="text-[22px] sm:text-[30px] font-black uppercase tracking-[0.02em] text-[#111111] dark:text-white leading-tight">
               Boutiques across India & Middle East
             </h2>
+            <p className="text-[12px] text-[#666666] dark:text-[#A09D96] tracking-wide mt-1 max-w-xl font-normal">
+              Experience our private olfactory tasting salons. Master perfumers on site for bespoke consultations and personalized crystal flacon engraving.
+            </p>
           </div>
 
-          <p className="text-[12px] text-[#666666] tracking-wide max-w-md">
-            Experience our private olfactory tasting salons. Master perfumers on site for bespoke consultations and personalized crystal flacon engraving.
-          </p>
-        </div>
+          <div className="text-[11px] font-semibold text-[#888888] dark:text-[#A09D96] tracking-widest uppercase hidden md:flex items-center gap-2">
+            <span>VIP Concierge Available</span>
+            <span className="text-[#C4823F]">✦</span>
+          </div>
+        </ScrollReveal>
 
-        {/* Store Navigation Cards Grid (Matching Bluorng store-cards structure) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {BOUTIQUE_STORES.map((store, idx) => (
-            <div
-              key={store.id}
-              className="bg-[#FFFFFF] border border-[#E5E5E5] hover:border-[#111111] transition-all duration-300 overflow-hidden flex flex-col justify-between group shadow-xs hover:shadow-md"
-            >
-              {/* Boutique Image with "Open now" Tag */}
-              <div className="relative w-full aspect-[16/10] overflow-hidden bg-[#ECEBE6]">
-                <img
-                  src={store.image}
-                  alt={store.city}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  loading="lazy"
-                />
-                
-                {/* Status Badge */}
-                <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-sm text-[10px] font-bold tracking-wider text-emerald-700 shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  <span>{store.status}</span>
+        {/* Store Navigation Cards Grid */}
+        <StaggerContainer staggerDelay={0.08} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          {BOUTIQUE_STORES.map((store) => (
+            <StaggerItem key={store.id}>
+              <motion.div
+                whileHover={{ y: -6 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="bg-[#FFFFFF] dark:bg-[#141318] border border-[#E3DDD1] dark:border-white/10 hover:border-[#111111] dark:hover:border-[#C4823F] rounded-xs transition-all duration-400 overflow-hidden flex flex-col justify-between group shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.12)] will-change-transform h-full"
+              >
+                {/* Boutique Image with "Open now" Tag */}
+                <div className="relative w-full aspect-[16/10] overflow-hidden bg-[#ECEBE6] dark:bg-[#1C1A22]">
+                  <img
+                    src={store.image}
+                    alt={store.city}
+                    className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-800 ease-out filter brightness-[0.94] group-hover:brightness-100"
+                    loading="lazy"
+                  />
+
+                  {/* Gradient Scrim */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  
+                  {/* Status Badge */}
+                  <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 dark:bg-[#0B0A0D]/90 backdrop-blur-md text-[9.5px] font-bold tracking-wider text-emerald-800 dark:text-emerald-400 shadow-md">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>{store.status}</span>
+                  </div>
+
+                  {/* Mall / Location Overlay Bar */}
+                  <div className="absolute bottom-3 left-3 right-3 z-10 text-white pointer-events-none">
+                    <span className="text-[10px] font-bold tracking-widest uppercase bg-black/60 backdrop-blur-xs px-2 py-0.5 rounded-xs">
+                      {store.mall}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Store Details Box (as in Bluorng card-details) */}
-              <div className="p-4 sm:p-5 flex flex-col justify-between flex-1">
-                <div>
-                  <h3 className="text-[15px] sm:text-[16px] font-bold uppercase tracking-wider text-[#111111] group-hover:text-[#C4823F] transition-colors">
-                    {store.city}
-                  </h3>
-                  <p className="text-[11.5px] text-[#666666] leading-relaxed mt-2 min-h-[36px]">
-                    {store.address}
-                  </p>
-                </div>
+                {/* Store Details Box */}
+                <div className="p-4 sm:p-5 flex flex-col justify-between flex-1 bg-white dark:bg-[#141318] transition-colors duration-300">
+                  <div>
+                    <h3 className="text-[15px] sm:text-[16px] font-bold uppercase tracking-wider text-[#111111] dark:text-white group-hover:text-[#C4823F] dark:group-hover:text-[#ECC86A] transition-colors">
+                      {store.city}
+                    </h3>
+                    <p className="text-[11.5px] text-[#666666] dark:text-[#A09D96] leading-relaxed mt-2 min-h-[36px]">
+                      {store.address}
+                    </p>
+                  </div>
 
-                {/* Bottom Row: Directions & Phone */}
-                <div className="mt-4 pt-3 border-t border-[#F0F0F0] flex items-center justify-between text-[11px]">
-                  <a
-                    href={store.mapUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-bold tracking-wider uppercase text-[#111111] hover:text-[#C4823F] flex items-center gap-1.5 transition-colors"
-                  >
-                    <span>Get Direction</span>
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
+                  {/* Bottom Row: Directions & Phone */}
+                  <div className="mt-5 pt-3.5 border-t border-[#F0ECE1] dark:border-white/10 flex items-center justify-between text-[11px]">
+                    <a
+                      href={store.mapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold tracking-wider uppercase text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] flex items-center gap-1.5 transition-colors group/btn"
                     >
-                      <path d="M3 13L13 3M13 3H5M13 3V11" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </a>
+                      <span>Get Directions</span>
+                      <span className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200">↗</span>
+                    </a>
 
-                  <a
-                    href={`tel:${store.phone}`}
-                    className="text-[#666666] hover:text-[#111111] tracking-wider transition-colors"
-                  >
-                    {store.phone}
-                  </a>
+                    <a
+                      href={`tel:${store.phone}`}
+                      className="text-[#666666] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-white tracking-wider transition-colors font-medium"
+                    >
+                      {store.phone}
+                    </a>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );

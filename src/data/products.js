@@ -1,5 +1,5 @@
 export const CURRENCIES = {
-  AED: { code: 'AED', symbol: 'AED ', rate: 1, label: 'AED (د.إ)' },
+  AED: { code: 'AED', symbol: 'AED ', rate: 1, label: 'AED (UAE Dirham)' },
   USD: { code: 'USD', symbol: '$', rate: 0.27, label: 'USD ($)' },
   EUR: { code: 'EUR', symbol: '€', rate: 0.25, label: 'EUR (€)' },
   GBP: { code: 'GBP', symbol: '£', rate: 0.22, label: 'GBP (£)' },

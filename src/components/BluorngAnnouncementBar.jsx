@@ -14,7 +14,7 @@ export default function BluorngAnnouncementBar() {
 
   return (
     <div className="relative z-50 bg-[#000000] text-[#FFFFFF] text-[11px] font-sans border-b border-white/10 select-none">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between relative min-h-[38px]">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-2.5 flex items-center justify-between relative min-h-[38px]">
         
         {/* Left: Interactive Notification Box Pill (as in Bluorng) */}
         <div className="relative z-20 flex-shrink-0">
@@ -53,7 +53,7 @@ export default function BluorngAnnouncementBar() {
 
         {/* Center: Mathematically Centered Announcement Ticker */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-auto max-w-[65%] sm:max-w-none overflow-hidden pointer-events-none">
-          <div className="inline-flex items-center gap-2 tracking-[0.14em] uppercase font-semibold text-[10.5px] sm:text-[11px] text-white/95 truncate">
+          <div className="inline-flex items-center gap-2 tracking-[0.04em] uppercase font-semibold text-[10.5px] sm:text-[11px] text-white/95 truncate">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#C4823F] animate-pulse shrink-0"></span>
             <span className="transition-all duration-500 ease-in-out truncate">
               {NOTIFICATIONS[currentIdx]}
@@ -62,7 +62,7 @@ export default function BluorngAnnouncementBar() {
         </div>
 
         {/* Right: Quick Delivery & Currency Tag */}
-        <div className="hidden md:flex items-center gap-4 text-[10px] tracking-[0.12em] uppercase text-white/70 z-20 flex-shrink-0">
+        <div className="hidden md:flex items-center gap-4 text-[10px] tracking-[0.04em] uppercase text-white/70 z-20 flex-shrink-0">
           <span>Worldwide Express</span>
           <span className="text-white/30">•</span>
           <span className="text-[#C4823F] font-semibold">100% Artisanal</span>

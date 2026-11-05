@@ -40,13 +40,13 @@ export default function BluorngQuickBuyModal({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94, y: 12 }}
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.35 }}
-        className="relative w-full max-w-lg bg-[#FFFFFF] rounded-xs shadow-2xl border border-[#E5E5E5] overflow-hidden"
+        className="relative w-full max-w-lg bg-[#FFFFFF] dark:bg-[#0E0C10] rounded-xs shadow-2xl overflow-hidden transition-colors duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 z-20 w-8 h-8 rounded-xs bg-white/80 hover:bg-black hover:text-white text-[#111111] flex items-center justify-center transition-colors shadow-sm cursor-pointer"
+          className="absolute top-3 right-3 z-20 w-8 h-8 rounded-xs bg-white/80 dark:bg-white/10 hover:bg-black dark:hover:bg-white/20 hover:text-white text-[#111111] dark:text-white flex items-center justify-center transition-colors shadow-sm cursor-pointer"
           aria-label="Close"
         >
           ✕
@@ -54,7 +54,7 @@ export default function BluorngQuickBuyModal({
 
         <div className="flex flex-col sm:flex-row">
           {/* Product Image */}
-          <div className="w-full sm:w-1/2 aspect-[4/5] bg-[#F7F7F6] flex items-center justify-center p-4">
+          <div className="w-full sm:w-1/2 aspect-[4/5] bg-[#F7F7F6] dark:bg-[#18171E] flex items-center justify-center p-4 transition-colors duration-300">
             <img
               src={product.images?.[0] || product.image}
               alt={product.name}
@@ -63,25 +63,25 @@ export default function BluorngQuickBuyModal({
           </div>
 
           {/* Product Details & Size Options */}
-          <div className="w-full sm:w-1/2 p-5 flex flex-col justify-between text-[#111111]">
+          <div className="w-full sm:w-1/2 p-5 flex flex-col justify-between text-[#111111] dark:text-white">
             <div>
-              <span className="text-[9.5px] font-bold tracking-[0.2em] uppercase text-[#C4823F]">
+              <span className="text-[9.5px] font-bold tracking-[0.06em] uppercase text-[#C4823F]">
                 Quick Select
               </span>
-              <h3 className="text-[15px] font-bold uppercase tracking-wider text-[#111111] mt-0.5 leading-snug">
+              <h3 className="text-[15px] font-bold uppercase tracking-[0.02em] text-[#111111] dark:text-white mt-0.5 leading-snug">
                 {product.name}
               </h3>
-              <p className="text-[11px] text-[#777777] uppercase mt-0.5">
+              <p className="text-[11px] text-[#777777] dark:text-[#A09D96] uppercase mt-0.5">
                 {product.concentration || product.category}
               </p>
 
               {/* Price */}
               <div className="mt-3 flex items-baseline gap-2">
-                <span className="text-[17px] font-bold text-[#111111]">
+                <span className="text-[17px] font-bold text-[#111111] dark:text-white">
                   {formatPrice(currentPrice, activeCurrency)}
                 </span>
                 {product.compareAtPrice && product.compareAtPrice > currentPrice && (
-                  <span className="text-[12px] text-[#999999] line-through">
+                  <span className="text-[12px] text-[#999999] dark:text-white/40 line-through">
                     {formatPrice(product.compareAtPrice, activeCurrency)}
                   </span>
                 )}
@@ -89,7 +89,7 @@ export default function BluorngQuickBuyModal({
 
               {/* Size Selector Pills */}
               <div className="mt-4">
-                <label className="text-[10.5px] font-bold tracking-wider uppercase text-[#555555] block mb-1.5">
+                <label className="text-[10.5px] font-bold tracking-wider uppercase text-[#555555] dark:text-[#A09D96] block mb-1.5">
                   Select Volume Size:
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -97,10 +97,10 @@ export default function BluorngQuickBuyModal({
                     <button
                       key={sz.label}
                       onClick={() => setSelectedSize(sz)}
-                      className={`px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-wider rounded-xs transition-all border ${
+                      className={`px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-wider rounded-xs transition-all border cursor-pointer ${
                         selectedSize.label === sz.label
-                          ? 'border-[#111111] bg-[#111111] text-white'
-                          : 'border-[#CCCCCC] bg-[#FFFFFF] text-[#333333] hover:border-[#111111]'
+                          ? 'border-[#111111] bg-[#111111] text-white dark:border-[#C4823F] dark:bg-[#C4823F] dark:text-white'
+                          : 'border-[#CCCCCC] dark:border-white/15 bg-[#FFFFFF] dark:bg-[#18171E] text-[#333333] dark:text-white hover:border-[#111111] dark:hover:border-white/40'
                       }`}
                     >
                       {sz.label}
@@ -111,22 +111,22 @@ export default function BluorngQuickBuyModal({
 
               {/* Quantity Stepper */}
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-[10.5px] font-bold tracking-wider uppercase text-[#555555]">
+                <span className="text-[10.5px] font-bold tracking-wider uppercase text-[#555555] dark:text-[#A09D96]">
                   Quantity:
                 </span>
-                <div className="flex items-center border border-[#CCCCCC] rounded-xs">
+                <div className="flex items-center border border-[#CCCCCC] dark:border-white/20 rounded-xs">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="w-7 h-7 flex items-center justify-center text-xs hover:bg-[#F2F2F2]"
+                    className="w-7 h-7 flex items-center justify-center text-xs hover:bg-[#F2F2F2] dark:hover:bg-white/10 text-[#111111] dark:text-white cursor-pointer"
                   >
                     −
                   </button>
-                  <span className="w-8 text-center text-xs font-bold">
+                  <span className="w-8 text-center text-xs font-bold text-[#111111] dark:text-white">
                     {quantity}
                   </span>
                   <button
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="w-7 h-7 flex items-center justify-center text-xs hover:bg-[#F2F2F2]"
+                    className="w-7 h-7 flex items-center justify-center text-xs hover:bg-[#F2F2F2] dark:hover:bg-white/10 text-[#111111] dark:text-white cursor-pointer"
                   >
                     +
                   </button>
@@ -135,10 +135,10 @@ export default function BluorngQuickBuyModal({
             </div>
 
             {/* Add to Bag Action */}
-            <div className="mt-6 pt-3 border-t border-[#F0F0F0]">
+            <div className="mt-6 pt-3 border-t border-[#F0F0F0] dark:border-white/10">
               <button
                 onClick={handleAdd}
-                className="w-full py-3 bg-[#111111] hover:bg-[#C4823F] text-white text-[11.5px] font-bold uppercase tracking-[0.2em] rounded-xs transition-all shadow-md"
+                className="w-full py-3 bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[11.5px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all shadow-md cursor-pointer"
               >
                 Add To Bag • {formatPrice(currentPrice * quantity, activeCurrency)}
               </button>

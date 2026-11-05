@@ -111,46 +111,26 @@ export default function LuxuryPreloader({ onComplete }) {
         }}
         className="absolute inset-0 z-50 flex flex-col items-center justify-center pointer-events-none px-4"
       >
-        {/* Shimmering Gold Flacon Crest */}
+        {/* Official Brand Identity in Warm Imperial Gold */}
         <motion.div
-          initial={{ opacity: 0, y: 12, scale: 0.88 }}
+          initial={{ opacity: 0, y: 16, scale: 0.94 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: smoothEase }}
-          className="w-16 sm:w-20 md:w-24 aspect-square mb-4 flex items-center justify-center"
+          transition={{ duration: 0.85, ease: smoothEase }}
+          className="w-72 sm:w-96 md:w-[460px] max-w-[85vw] flex items-center justify-center filter drop-shadow-[0_10px_35px_rgba(212,175,55,0.7)]"
         >
           <img
-            src="/images/perfume_logo_crest_transparent.png"
-            alt="Saudagar Royal Crest"
-            className="w-full h-full object-contain filter drop-shadow-[0_10px_35px_rgba(212,175,55,0.85)]"
+            src="/images/saudagar_logo_gold.png"
+            alt="Saudagar Perfumers - Premium Fragrances"
+            className="w-full h-auto object-contain"
           />
         </motion.div>
-
-        {/* Brand Wordmark in Regal Pure Gold */}
-        <motion.h1
-          initial={{ opacity: 0, letterSpacing: '0.18em' }}
-          animate={{ opacity: 1, letterSpacing: '0.30em' }}
-          transition={{ duration: 0.9, ease: smoothEase }}
-          className="font-sans font-black text-[28px] sm:text-[38px] md:text-[48px] text-[#FFFFFF] uppercase text-center leading-none tracking-[0.30em] filter drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]"
-        >
-          SAUDAGAR
-        </motion.h1>
-
-        {/* Lavishly Yours Script Flourish in Warm Champagne */}
-        <motion.span
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25 }}
-          className="font-script text-[#ECC86A] text-[24px] sm:text-[32px] lowercase tracking-normal mt-2 filter drop-shadow-[0_2px_15px_rgba(212,175,55,0.7)]"
-        >
-          haute parfumerie
-        </motion.span>
 
         {/* Golden Symmetrical Tassel Line Accent */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: isOpening ? 0 : 1 }}
           transition={{ duration: 0.75, delay: 0.2, ease: 'easeOut' }}
-          className="w-32 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mt-4 shadow-[0_0_12px_rgba(212,175,55,0.9)]"
+          className="w-32 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent mt-6 shadow-[0_0_12px_rgba(212,175,55,0.9)]"
         />
       </motion.div>
     </div>

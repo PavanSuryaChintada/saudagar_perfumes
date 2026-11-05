@@ -49,16 +49,23 @@ export default function BluorngCheckoutModal({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 select-none animate-fadeIn">
-      <div className="relative w-full max-w-2xl bg-[#FFFFFF] text-[#111111] rounded-xs shadow-2xl border border-[#E5E5E5] overflow-hidden my-8">
+      <div className="relative w-full max-w-2xl bg-[#FFFFFF] dark:bg-[#0E0C10] text-[#111111] dark:text-white rounded-xs shadow-2xl overflow-hidden my-8 transition-colors duration-300">
         
         {/* Header Bar */}
-        <div className="p-4 sm:p-5 border-b border-[#E5E5E5] flex items-center justify-between bg-[#FAF9F6]">
-          <div className="flex items-center gap-2">
-            <span className="font-sans font-black tracking-[0.2em] text-[16px] uppercase">
-              SAUDAGAR
-            </span>
-            <span className="text-[#888888]">•</span>
-            <span className="text-[11px] font-bold tracking-widest uppercase text-[#C4823F]">
+        <div className="p-4 sm:p-5 flex items-center justify-between bg-[#FAF9F6] dark:bg-[#141318]">
+          <div className="flex items-center gap-3">
+            <img
+              src="/images/saudagar_logo_black.png"
+              alt="Saudagar Perfumers"
+              className="h-6 sm:h-7 w-auto object-contain dark:hidden"
+            />
+            <img
+              src="/images/saudagar_logo_gold.png"
+              alt="Saudagar Perfumers"
+              className="h-6 sm:h-7 w-auto object-contain hidden dark:block"
+            />
+            <span className="text-[#888888] dark:text-white/30">•</span>
+            <span className="text-[11px] font-bold tracking-wide uppercase text-[#C4823F]">
               Secure Checkout
             </span>
           </div>
@@ -66,7 +73,7 @@ export default function BluorngCheckoutModal({
           {step !== 'confirmation' && (
             <button
               onClick={onClose}
-              className="p-1 text-[#777777] hover:text-[#111111] transition-colors"
+              className="p-1 text-[#777777] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
               aria-label="Close"
             >
               ✕
@@ -86,17 +93,17 @@ export default function BluorngCheckoutModal({
               }}
               className="space-y-5"
             >
-              <div className="flex items-center justify-between border-b pb-2">
-                <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#111111]">
+              <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-white/10 pb-2">
+                <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#111111] dark:text-white">
                   1. Contact & Delivery Address
                 </h3>
-                <span className="text-[11px] text-[#777777] font-semibold">Step 1 of 2</span>
+                <span className="text-[11px] text-[#777777] dark:text-[#A09D96] font-semibold">Step 1 of 2</span>
               </div>
 
               {/* Contact info */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11.5px]">
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555]">
+                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555] dark:text-[#A09D96]">
                     Email Address:
                   </label>
                   <input
@@ -104,11 +111,11 @@ export default function BluorngCheckoutModal({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] rounded-xs outline-none focus:border-[#111111]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555]">
+                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555] dark:text-[#A09D96]">
                     Mobile (for courier tracking):
                   </label>
                   <input
@@ -116,7 +123,7 @@ export default function BluorngCheckoutModal({
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] rounded-xs outline-none focus:border-[#111111]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
                   />
                 </div>
               </div>
@@ -124,7 +131,7 @@ export default function BluorngCheckoutModal({
               {/* Name */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11.5px]">
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555]">
+                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555] dark:text-[#A09D96]">
                     First Name:
                   </label>
                   <input
@@ -132,11 +139,11 @@ export default function BluorngCheckoutModal({
                     required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] rounded-xs outline-none focus:border-[#111111]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555]">
+                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555] dark:text-[#A09D96]">
                     Last Name:
                   </label>
                   <input
@@ -144,14 +151,14 @@ export default function BluorngCheckoutModal({
                     required
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] rounded-xs outline-none focus:border-[#111111]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
                   />
                 </div>
               </div>
 
               {/* Address */}
               <div className="text-[11.5px]">
-                <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555]">
+                <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555] dark:text-[#A09D96]">
                   Street Address & Apartment:
                 </label>
                 <input
@@ -159,14 +166,14 @@ export default function BluorngCheckoutModal({
                   required
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#CCCCCC] rounded-xs outline-none focus:border-[#111111]"
+                  className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
                 />
               </div>
 
               {/* City, State, PIN */}
               <div className="grid grid-cols-3 gap-3 text-[11.5px]">
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555]">
+                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555] dark:text-[#A09D96]">
                     City:
                   </label>
                   <input
@@ -174,11 +181,11 @@ export default function BluorngCheckoutModal({
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] rounded-xs outline-none focus:border-[#111111]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555]">
+                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555] dark:text-[#A09D96]">
                     State:
                   </label>
                   <input
@@ -186,11 +193,11 @@ export default function BluorngCheckoutModal({
                     required
                     value={state}
                     onChange={(e) => setState(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] rounded-xs outline-none focus:border-[#111111]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555]">
+                  <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-1 text-[#555555] dark:text-[#A09D96]">
                     PIN / Postal Code:
                   </label>
                   <input
@@ -198,14 +205,14 @@ export default function BluorngCheckoutModal({
                     required
                     value={pinCode}
                     onChange={(e) => setPinCode(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] rounded-xs outline-none focus:border-[#111111]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
                   />
                 </div>
               </div>
 
               {/* Shipping Method Options */}
               <div>
-                <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-2 text-[#555555]">
+                <label className="block text-[10.5px] font-bold uppercase tracking-wider mb-2 text-[#555555] dark:text-[#A09D96]">
                   Select Delivery Courier:
                 </label>
                 <div className="space-y-2 text-[11.5px]">
@@ -213,8 +220,8 @@ export default function BluorngCheckoutModal({
                     onClick={() => setShippingMethod('express')}
                     className={`flex items-center justify-between p-3 border rounded-xs cursor-pointer transition-all ${
                       shippingMethod === 'express'
-                        ? 'border-[#111111] bg-[#FAF9F6]'
-                        : 'border-[#E5E5E5]'
+                        ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                        : 'border-[#E5E5E5] dark:border-white/10'
                     }`}
                   >
                     <div className="flex items-center gap-2">
@@ -223,17 +230,17 @@ export default function BluorngCheckoutModal({
                         checked={shippingMethod === 'express'}
                         onChange={() => setShippingMethod('express')}
                       />
-                      <span className="font-bold">Standard Insured Air Courier (2-3 Days)</span>
+                      <span className="font-bold text-[#111111] dark:text-white">Standard Insured Air Courier (2-3 Days)</span>
                     </div>
-                    <span className="font-semibold text-emerald-700">FREE</span>
+                    <span className="font-semibold text-emerald-700 dark:text-emerald-400">FREE</span>
                   </label>
 
                   <label
                     onClick={() => setShippingMethod('priority')}
                     className={`flex items-center justify-between p-3 border rounded-xs cursor-pointer transition-all ${
                       shippingMethod === 'priority'
-                        ? 'border-[#111111] bg-[#FAF9F6]'
-                        : 'border-[#E5E5E5]'
+                        ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                        : 'border-[#E5E5E5] dark:border-white/10'
                     }`}
                   >
                     <div className="flex items-center gap-2">
@@ -242,18 +249,18 @@ export default function BluorngCheckoutModal({
                         checked={shippingMethod === 'priority'}
                         onChange={() => setShippingMethod('priority')}
                       />
-                      <span className="font-bold">Priority White-Glove Concierge (Next Day AM)</span>
+                      <span className="font-bold text-[#111111] dark:text-white">Priority White-Glove Concierge (Next Day AM)</span>
                     </div>
-                    <span className="font-semibold text-[#111111]">+ {formatPrice(500, activeCurrency)}</span>
+                    <span className="font-semibold text-[#111111] dark:text-white">+ {formatPrice(500, activeCurrency)}</span>
                   </label>
                 </div>
               </div>
 
               {/* Continue to Payment button */}
-              <div className="pt-3 border-t flex justify-end">
+              <div className="pt-3 border-t border-[#E5E5E5] dark:border-white/10 flex justify-end">
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-8 py-3.5 bg-[#111111] hover:bg-[#C4823F] text-white text-[11.5px] font-bold uppercase tracking-[0.2em] rounded-xs transition-colors"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[11.5px] font-bold uppercase tracking-[0.04em] rounded-xs transition-colors cursor-pointer shadow-md"
                 >
                   Continue to Payment →
                 </button>
@@ -264,36 +271,36 @@ export default function BluorngCheckoutModal({
           {/* ================= STEP 2: PAYMENT METHOD ================= */}
           {step === 'payment' && (
             <form onSubmit={handlePlaceOrder} className="space-y-5">
-              <div className="flex items-center justify-between border-b pb-2">
-                <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#111111]">
+              <div className="flex items-center justify-between border-b border-[#E5E5E5] dark:border-white/10 pb-2">
+                <h3 className="text-[13px] font-bold uppercase tracking-wider text-[#111111] dark:text-white">
                   2. Select Payment Method
                 </h3>
                 <button
                   type="button"
                   onClick={() => setStep('shipping')}
-                  className="text-[11px] text-[#C4823F] font-bold uppercase tracking-wider"
+                  className="text-[11px] text-[#C4823F] font-bold uppercase tracking-wider cursor-pointer"
                 >
                   ← Edit Address
                 </button>
               </div>
 
               {/* Order Summary Snapshot */}
-              <div className="bg-[#FAF9F6] p-3.5 border border-[#EEEEEE] text-[11px] space-y-1">
-                <div className="flex justify-between font-bold">
+              <div className="bg-[#FAF9F6] dark:bg-[#18171E] p-3.5 border border-[#EEEEEE] dark:border-transparent text-[11px] space-y-1 transition-colors duration-300">
+                <div className="flex justify-between font-bold text-[#111111] dark:text-white">
                   <span>Shipping to:</span>
                   <span>{firstName} {lastName}, {city} ({pinCode})</span>
                 </div>
-                <div className="flex justify-between text-[#666666]">
+                <div className="flex justify-between text-[#666666] dark:text-[#A09D96]">
                   <span>Items Total ({items.length}):</span>
                   <span>{formatPrice(total, activeCurrency)}</span>
                 </div>
                 {shippingCost > 0 && (
-                  <div className="flex justify-between text-[#666666]">
+                  <div className="flex justify-between text-[#666666] dark:text-[#A09D96]">
                     <span>Priority Shipping:</span>
                     <span>+{formatPrice(shippingCost, activeCurrency)}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-[13px] text-[#111111] pt-1 border-t">
+                <div className="flex justify-between font-bold text-[13px] text-[#111111] dark:text-white pt-1 border-t border-[#E5E5E5] dark:border-white/10">
                   <span>Payable Amount:</span>
                   <span>{formatPrice(grandTotal, activeCurrency)}</span>
                 </div>
@@ -306,11 +313,11 @@ export default function BluorngCheckoutModal({
                   onClick={() => setPaymentMethod('upi')}
                   className={`flex flex-col p-3.5 border rounded-xs cursor-pointer transition-all ${
                     paymentMethod === 'upi'
-                      ? 'border-[#111111] bg-[#FAF9F6]'
-                      : 'border-[#E5E5E5]'
+                      ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                      : 'border-[#E5E5E5] dark:border-white/10'
                   }`}
                 >
-                  <div className="flex items-center justify-between font-bold">
+                  <div className="flex items-center justify-between font-bold text-[#111111] dark:text-white">
                     <div className="flex items-center gap-2">
                       <input
                         type="radio"
@@ -319,12 +326,12 @@ export default function BluorngCheckoutModal({
                       />
                       <span>UPI Instant (GPay / PhonePe / Paytm / QR)</span>
                     </div>
-                    <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold">
+                    <span className="text-[10px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded font-bold">
                       FASTEST
                     </span>
                   </div>
                   {paymentMethod === 'upi' && (
-                    <p className="mt-2 text-[10.5px] text-[#666666] pl-5">
+                    <p className="mt-2 text-[10.5px] text-[#666666] dark:text-[#A09D96] pl-5">
                       A secure UPI payment prompt or QR code will appear after placing your order.
                     </p>
                   )}
@@ -335,11 +342,11 @@ export default function BluorngCheckoutModal({
                   onClick={() => setPaymentMethod('card')}
                   className={`flex flex-col p-3.5 border rounded-xs cursor-pointer transition-all ${
                     paymentMethod === 'card'
-                      ? 'border-[#111111] bg-[#FAF9F6]'
-                      : 'border-[#E5E5E5]'
+                      ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                      : 'border-[#E5E5E5] dark:border-white/10'
                   }`}
                 >
-                  <div className="flex items-center justify-between font-bold">
+                  <div className="flex items-center justify-between font-bold text-[#111111] dark:text-white">
                     <div className="flex items-center gap-2">
                       <input
                         type="radio"
@@ -348,7 +355,7 @@ export default function BluorngCheckoutModal({
                       />
                       <span>Credit / Debit Card (Visa, Mastercard, Amex)</span>
                     </div>
-                    <span className="text-[10.5px] text-[#777777]">256-Bit SSL</span>
+                    <span className="text-[10.5px] text-[#777777] dark:text-[#A09D96]">256-Bit SSL</span>
                   </div>
                 </label>
 
@@ -357,11 +364,11 @@ export default function BluorngCheckoutModal({
                   onClick={() => setPaymentMethod('cod')}
                   className={`flex flex-col p-3.5 border rounded-xs cursor-pointer transition-all ${
                     paymentMethod === 'cod'
-                      ? 'border-[#111111] bg-[#FAF9F6]'
-                      : 'border-[#E5E5E5]'
+                      ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                      : 'border-[#E5E5E5] dark:border-white/10'
                   }`}
                 >
-                  <div className="flex items-center justify-between font-bold">
+                  <div className="flex items-center justify-between font-bold text-[#111111] dark:text-white">
                     <div className="flex items-center gap-2">
                       <input
                         type="radio"
@@ -370,24 +377,24 @@ export default function BluorngCheckoutModal({
                       />
                       <span>Cash on Delivery (Verified Pin Codes)</span>
                     </div>
-                    <span className="text-[10px] text-[#777777]">India Only</span>
+                    <span className="text-[10px] text-[#777777] dark:text-[#A09D96]">India Only</span>
                   </div>
                 </label>
               </div>
 
               {/* Submit / Authorize Order Button */}
-              <div className="pt-3 border-t flex items-center justify-between">
+              <div className="pt-3 border-t border-[#E5E5E5] dark:border-white/10 flex items-center justify-between">
                 <button
                   type="button"
                   onClick={() => setStep('shipping')}
-                  className="text-[11px] font-bold tracking-wider uppercase text-[#777777] hover:text-[#111111]"
+                  className="text-[11px] font-bold tracking-wider uppercase text-[#777777] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-white cursor-pointer"
                 >
                   ← Back
                 </button>
 
                 <button
                   type="submit"
-                  className="px-8 py-4 bg-[#111111] hover:bg-[#C4823F] text-white text-[12px] font-bold uppercase tracking-[0.2em] rounded-xs transition-colors shadow-xl"
+                  className="px-8 py-4 bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-colors shadow-xl cursor-pointer"
                 >
                   Authorize Order • {formatPrice(grandTotal, activeCurrency)}
                 </button>
@@ -398,40 +405,40 @@ export default function BluorngCheckoutModal({
           {/* ================= STEP 3: ORDER CONFIRMATION ================= */}
           {step === 'confirmation' && (
             <div className="text-center py-6 space-y-4 animate-fadeIn">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-2xl font-bold">
+              <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mx-auto text-2xl font-bold">
                 ✓
               </div>
 
               <div>
-                <span className="text-[10.5px] font-bold tracking-[0.24em] uppercase text-[#C4823F]">
+                <span className="text-[10.5px] font-bold tracking-[0.06em] uppercase text-[#C4823F]">
                   Order Placed Successfully
                 </span>
-                <h2 className="text-[22px] font-black uppercase tracking-wider text-[#111111] mt-1">
+                <h2 className="text-[22px] font-black uppercase tracking-[0.02em] text-[#111111] dark:text-white mt-1">
                   Thank you, {firstName}!
                 </h2>
-                <p className="text-[12px] text-[#666666] tracking-wide mt-1">
-                  Your reference number is <strong className="text-[#111111]">{orderId}</strong>
+                <p className="text-[12px] text-[#666666] dark:text-[#A09D96] tracking-wide mt-1">
+                  Your reference number is <strong className="text-[#111111] dark:text-white">{orderId}</strong>
                 </p>
               </div>
 
-              <div className="bg-[#FAF9F6] p-4 border border-[#EEEEEE] rounded-xs text-left text-[11.5px] space-y-2 max-w-md mx-auto">
-                <div className="flex justify-between border-b pb-1 font-bold">
+              <div className="bg-[#FAF9F6] dark:bg-[#18171E] p-4 border border-[#EEEEEE] dark:border-transparent rounded-xs text-left text-[11.5px] space-y-2 max-w-md mx-auto transition-colors duration-300">
+                <div className="flex justify-between border-b border-[#E5E5E5] dark:border-white/10 pb-1 font-bold text-[#111111] dark:text-white">
                   <span>Shipping Details:</span>
                   <span>{firstName} {lastName}</span>
                 </div>
-                <p className="text-[#666666]">{address}, {city}, {state} - {pinCode}</p>
-                <div className="flex justify-between border-t pt-1 font-bold text-[#111111]">
+                <p className="text-[#666666] dark:text-[#A09D96]">{address}, {city}, {state} - {pinCode}</p>
+                <div className="flex justify-between border-t border-[#E5E5E5] dark:border-white/10 pt-1 font-bold text-[#111111] dark:text-white">
                   <span>Total Amount Paid:</span>
                   <span>{formatPrice(grandTotal, activeCurrency)}</span>
                 </div>
-                <p className="text-[10px] text-emerald-700 font-semibold">
+                <p className="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold">
                   ✓ Order confirmation and tracking dispatched to {email}.
                 </p>
               </div>
 
               <button
                 onClick={onClose}
-                className="mt-4 px-8 py-3.5 bg-[#111111] hover:bg-[#C4823F] text-white text-[11.5px] font-bold uppercase tracking-widest transition-colors rounded-xs"
+                className="mt-4 px-8 py-3.5 bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[11.5px] font-bold uppercase tracking-wide transition-colors rounded-xs cursor-pointer shadow-md"
               >
                 Return to Saudagar Home
               </button>

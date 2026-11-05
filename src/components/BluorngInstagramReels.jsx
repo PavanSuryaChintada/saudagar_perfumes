@@ -1,5 +1,4 @@
-import React, { useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef } from 'react';
 import { formatPrice } from '../data/bluorngSaudagarData.js';
 import ScrollReveal from './motion/ScrollReveal.jsx';
 
@@ -10,7 +9,7 @@ export const INSTAGRAM_REELS = [
     title: 'The Unboxing Ritual: Thunderstruck Oud Extrait',
     views: '148K',
     likes: '14.2K',
-    audio: 'Original Audio · Saudagar Soundscape',
+    audio: 'Original Sound · Saudagar Private Salon',
     image: '/images/saudagar_amber_gold.png',
     productId: 'saudagar-thunderstruck-oud',
     productName: 'Thunderstruck Pure Oud',
@@ -36,7 +35,7 @@ export const INSTAGRAM_REELS = [
     title: '18-Year Aged Cambodi Oud Oil Distillation in Assam',
     views: '215K',
     likes: '22.4K',
-    audio: 'Atelier Artisan Notes',
+    audio: 'Atelier Artisan Notes · Sacred Copper',
     image: '/images/saudagar_noir_matte.png',
     productId: 'saudagar-deep-canopy',
     productName: '001 Deep Canopy Extrait',
@@ -59,24 +58,24 @@ export const INSTAGRAM_REELS = [
   {
     id: 'reel-5',
     storyIdx: 4,
-    title: 'How to Layer Pure Royal Attars for 24-Hour Projection',
-    views: '176K',
-    likes: '18.5K',
-    audio: 'Pure Sandalwood Alchemy',
+    title: 'Sapphire Sol Marine: Coastal Salt & Radiant Citrus',
+    views: '180K',
+    likes: '18.9K',
+    audio: 'Riviera Morning Sea Breeze',
     image: '/images/saudagar_royal_sapphire.png',
     productId: 'saudagar-pacific-chill',
-    productName: 'Pacific Coast Aquatic',
-    price: 4999,
-    tag: '#ArtisanalAttar'
+    productName: 'Sapphire Sol Marine',
+    price: 6200,
+    tag: '#AquaticExtrait'
   },
   {
     id: 'reel-6',
     storyIdx: 0,
-    title: 'Heavy Crystal Flacons Hand-Cut in Val-de-Sambre',
-    views: '124K',
-    likes: '11.7K',
-    audio: 'Couture Crystal Craftsmanship',
-    image: '/images/saudagar_noir_matte.png',
+    title: 'Obsidian Root: Smoked Birch & Dark Frankincense',
+    views: '240K',
+    likes: '26.3K',
+    audio: 'Smoked Wood Alchemy',
+    image: '/images/crystal_square_flacon.png',
     productId: 'saudagar-obsidian-root',
     productName: 'Obsidian Root Agarwood',
     price: 6600,
@@ -84,227 +83,221 @@ export const INSTAGRAM_REELS = [
   }
 ];
 
+// Duplicated sequence ensures 100% mathematically seamless infinite continuous loop at -50%
+const REELS_SET_A = INSTAGRAM_REELS.map((r, i) => ({ ...r, uniqueKey: `setA-${r.id}-${i}` }));
+const REELS_SET_B = INSTAGRAM_REELS.map((r, i) => ({ ...r, uniqueKey: `setB-${r.id}-${i}` }));
+
 export default function BluorngInstagramReels({
   activeCurrency = 'INR',
   onSelectProduct,
   onQuickBuy,
   onOpenStory
 }) {
-  const scrollContainerRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [scrollSpeed, setScrollSpeed] = useState(42); // Seconds per full cycle
 
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -360, behavior: 'smooth' });
-    }
-  };
+  const renderReelCard = (reel) => (
+    <div
+      key={reel.uniqueKey}
+      className="shrink-0 pr-4 sm:pr-6"
+    >
+      <div
+        onClick={() => {
+          if (onOpenStory) onOpenStory();
+        }}
+        className="relative w-[240px] sm:w-[270px] md:w-[295px] aspect-[9/16] rounded-2xl overflow-hidden bg-[#18171C] group cursor-pointer shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_45px_rgba(0,0,0,0.8)]"
+      >
+        {/* Flacon Visual Background */}
+        <img
+          src={reel.image}
+          alt={reel.title}
+          className="w-full h-full object-cover object-center group-hover:scale-106 transition-transform duration-700 ease-out filter brightness-[0.88] group-hover:brightness-100"
+          loading="lazy"
+        />
 
-  const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 360, behavior: 'smooth' });
-    }
-  };
+        {/* Scrim Lighting */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-black/40 pointer-events-none" />
+
+        {/* Top Reel Header inside Card */}
+        <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between text-white z-10 pointer-events-none">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-[9px] uppercase tracking-wider font-medium text-white/90">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C4823F] animate-pulse" />
+            <span>Reel</span>
+          </div>
+
+          <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-[10px] font-mono text-white/80">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            </svg>
+            <span>{reel.views}</span>
+          </div>
+        </div>
+
+        {/* Center Play Button on Hover */}
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md text-white flex items-center justify-center transform scale-90 opacity-70 group-hover:scale-100 group-hover:opacity-100 group-hover:bg-[#C4823F] transition-all duration-300 shadow-xl">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="ml-1">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Bottom Editorial Content Area */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-20 flex flex-col gap-2">
+          {/* Audio track line */}
+          <div className="flex items-center gap-1.5 text-[9.5px] text-white/60 truncate font-light">
+            <span className="text-[#C4823F]">♫</span>
+            <span className="truncate">{reel.audio}</span>
+          </div>
+
+          {/* Reel Title */}
+          <p className="text-[12px] sm:text-[12.5px] font-normal text-white line-clamp-2 leading-snug group-hover:text-[#ECC86A] transition-colors">
+            {reel.title}
+          </p>
+
+          {/* Tagged Flacon with Direct Navigation */}
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onSelectProduct) onSelectProduct(reel.productId);
+            }}
+            className="mt-1 flex items-center justify-between gap-2 bg-white/12 hover:bg-white/22 backdrop-blur-md rounded-lg px-3 py-2 text-white transition-all cursor-pointer shadow-sm group/btn"
+            title="View Fragrance"
+          >
+            <span className="text-[9.5px] sm:text-[10px] font-medium tracking-wider uppercase truncate group-hover/btn:text-[#ECC86A] transition-colors">
+              {reel.productName}
+            </span>
+            <span className="text-[10.5px] sm:text-[11px] font-semibold text-[#ECC86A] whitespace-nowrap">
+              {formatPrice(reel.price, activeCurrency)}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <section id="instagram-reels-section" className="w-full bg-[#FFFFFF] py-14 sm:py-20 border-b border-[#EEEEEE] select-none">
-      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10">
-        
-        {/* ================= HEADER ZONE ================= */}
-        {/* ================= SECTION HEADER ================= */}
-        <ScrollReveal variant="fade-up" className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10">
+    <section 
+      id="instagram-reels-section" 
+      className="relative w-full bg-[#FAF9F6] dark:bg-[#0E0C10] py-16 sm:py-24 text-[#111111] dark:text-white select-none overflow-hidden transition-colors duration-300"
+    >
+      {/* Ambient Radial Illumination */}
+      <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[800px] h-[500px] bg-[#C4823F]/5 dark:bg-[#C4823F]/8 blur-3xl pointer-events-none" />
+
+      {/* ================= 1. SECTION HEADER (Contained for Editorial Balance) ================= */}
+      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto mb-8 sm:mb-12">
+        <ScrollReveal variant="fade-up" className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            {/* Instagram Eyebrow Pill */}
             <div className="flex items-center gap-2 mb-2">
-              <span className="w-5 h-5 rounded-md bg-gradient-to-tr from-[#FD1D1D] via-[#F56040] to-[#833AB4] flex items-center justify-center text-white shadow-xs">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <span className="w-5 h-5 rounded-full bg-gradient-to-tr from-[#FD1D1D] via-[#F56040] to-[#833AB4] flex items-center justify-center text-white shadow-sm">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
               </span>
-              <span className="text-[11px] font-bold tracking-[0.24em] uppercase text-[#111111]">
+              <span className="text-[11px] font-normal tracking-[0.14em] uppercase text-[#C4823F] dark:text-[#ECC86A]">
                 @SAUDAGARPERFUMES
               </span>
-              <span className="text-[10px] text-[#888888] font-medium tracking-wider uppercase hidden sm:inline">
-                · 142K COMMUNITY
+              <span className="text-[10px] text-[#888888] dark:text-white/40 font-normal tracking-wider uppercase hidden sm:inline">
+                · Continuous Atelier Chronicles
               </span>
             </div>
 
-            <h2 className="text-[22px] sm:text-[30px] font-black uppercase tracking-[0.12em] text-[#111111] leading-tight">
-              COMMUNITY & ATELIER REELS
+            <h2 className="text-[24px] sm:text-[36px] font-normal uppercase tracking-[0.03em] text-[#111111] dark:text-white leading-tight font-serif">
+              Community & Atelier Reels
             </h2>
-            <p className="text-[12px] text-[#666666] tracking-wide mt-1 max-w-xl font-normal">
-              Go behind the velvet curtain. Rare harvest distillations, crystal flacon unboxings, and bespoke layering rituals.
+            <p className="text-[12.5px] sm:text-[13.5px] text-[#666666] dark:text-white/60 tracking-wide mt-1.5 max-w-xl font-light">
+              Rare harvest distillations, crystal flacon unboxings, and bespoke layering rituals.
             </p>
           </div>
 
-          {/* Right Action & Controls */}
+          {/* Right Action & Pause/Play Indicator */}
           <div className="flex items-center gap-4">
+            
+            {/* Auto-scroll Status Pill */}
+            <button
+              onClick={() => setIsPaused((prev) => !prev)}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/[0.1] dark:hover:bg-white/[0.14] text-[#111111] dark:text-white/80 text-[10.5px] uppercase tracking-wider transition-colors cursor-pointer"
+              title={isPaused ? "Resume Auto-scroll" : "Pause Auto-scroll"}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${isPaused ? 'bg-[#ECC86A]' : 'bg-[#C4823F] animate-pulse'}`} />
+              <span>{isPaused ? 'Paused ⏸' : 'Auto-scrolling'}</span>
+            </button>
+
+            {/* Direct Instagram Link */}
             <a
               href="https://www.instagram.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#111111] hover:bg-[#C4823F] text-white text-[11px] font-bold uppercase tracking-wider rounded-xs transition-colors shadow-xs hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] text-white hover:bg-[#C4823F] dark:bg-white dark:text-[#111111] dark:hover:bg-[#C4823F] dark:hover:text-white text-[11px] font-semibold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer shadow-md"
             >
-              <span>Follow on Instagram</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <span>Follow</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M7 17l9.2-9.2M17 17V8H8" />
               </svg>
             </a>
-
-            {/* Slider Navigation Buttons */}
-            <div className="hidden sm:flex items-center gap-1.5">
-              <button
-                onClick={scrollLeft}
-                className="w-9 h-9 rounded-xs border border-black/15 hover:border-black flex items-center justify-center text-[#111111] hover:bg-black/5 transition-all cursor-pointer active:scale-95"
-                aria-label="Scroll reels left"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M15 18l-6-6 6-6" />
-                </svg>
-              </button>
-              <button
-                onClick={scrollRight}
-                className="w-9 h-9 rounded-xs border border-black/15 hover:border-black flex items-center justify-center text-[#111111] hover:bg-black/5 transition-all cursor-pointer active:scale-95"
-                aria-label="Scroll reels right"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
-              </button>
-            </div>
           </div>
         </ScrollReveal>
+      </div>
 
-        {/* ================= REELS CAROUSEL ================= */}
-        <div
-          ref={scrollContainerRef}
-          className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 scrollbar-none snap-x snap-mandatory"
+      {/* ================= 2. 100% FULL-WIDTH CONTINUOUS AUTO-SCROLL CAROUSEL ================= */}
+      <div 
+        className="relative w-full overflow-hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {/* Left & Right Soft Ambient Vignette Masks for Cinema Fade-out */}
+        <div className="absolute top-0 bottom-0 left-0 w-12 sm:w-28 bg-gradient-to-r from-[#FAF9F6] via-[#FAF9F6]/80 to-transparent dark:from-[#0E0C10] dark:via-[#0E0C10]/80 dark:to-transparent z-20 pointer-events-none transition-colors duration-300" />
+        <div className="absolute top-0 bottom-0 right-0 w-12 sm:w-28 bg-gradient-to-l from-[#FAF9F6] via-[#FAF9F6]/80 to-transparent dark:from-[#0E0C10] dark:via-[#0E0C10]/80 dark:to-transparent z-20 pointer-events-none transition-colors duration-300" />
+
+        {/* Continuous Linear Infinite Auto-Scroll Track */}
+        <div 
+          data-marquee="true"
+          className="reels-track flex items-center whitespace-nowrap will-change-transform py-3"
+          style={{
+            width: 'max-content',
+            animationName: 'reelsInfiniteScroll',
+            animationDuration: `${scrollSpeed}s`,
+            animationTimingFunction: 'linear',
+            animationIterationCount: 'infinite',
+            animationPlayState: isPaused ? 'paused' : 'running'
+          }}
         >
-          {INSTAGRAM_REELS.map((reel) => (
-            <motion.div
-              key={reel.id}
-              whileHover={{ y: -6 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="relative flex-none w-[260px] sm:w-[290px] aspect-[9/16] rounded-sm overflow-hidden bg-[#0F0F12] group snap-start cursor-pointer border border-black/5 shadow-md hover:shadow-2xl transition-shadow duration-300 will-change-transform"
-              onClick={() => {
-                if (onOpenStory) onOpenStory();
-              }}
-            >
-              {/* Reel Image Background */}
-              <img
-                src={reel.image}
-                alt={reel.title}
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 filter brightness-[0.92]"
-                loading="lazy"
-              />
-
-              {/* Gradient Scrim Overlays */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/40 pointer-events-none" />
-
-              {/* Top Bar inside Reel */}
-              <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between text-white z-10 pointer-events-none">
-                {/* Reels Icon & Tag */}
-                <div className="flex items-center gap-1.5 text-white/95 text-[10px] font-bold tracking-wider uppercase drop-shadow">
-                  {/* Instagram Reels Slate Icon */}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                    <rect x="2" y="2" width="20" height="20" rx="2"></rect>
-                    <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
-                  </svg>
-                  <span>Reel</span>
-                </div>
-
-                {/* View Count */}
-                <div className="flex items-center gap-1 text-[10.5px] font-medium text-white/90 drop-shadow">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                  <span>{reel.views}</span>
-                </div>
-              </div>
-
-              {/* Center Play Button on Hover */}
-              <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                <div className="w-12 h-12 rounded-xs bg-black/60 backdrop-blur-md border border-white/30 text-white flex items-center justify-center shadow-2xl transform scale-90 opacity-80 group-hover:scale-105 group-hover:opacity-100 group-hover:bg-[#C4823F] group-hover:border-[#C4823F] transition-all duration-300">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="8 5 19 12 8 19 8 5" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Bottom Content Area */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 z-20 flex flex-col gap-2">
-                
-                {/* Audio snippet */}
-                <div className="flex items-center gap-1.5 text-[9.5px] text-white/75 truncate font-light">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 18V5l12-2v13" />
-                    <circle cx="6" cy="18" r="3" />
-                    <circle cx="18" cy="16" r="3" />
-                  </svg>
-                  <span className="truncate">{reel.audio}</span>
-                </div>
-
-                {/* Caption / Title */}
-                <p className="text-[12px] font-medium text-white line-clamp-2 leading-snug drop-shadow-sm group-hover:text-white/95">
-                  {reel.title}
-                </p>
-
-                {/* Tagged Product (Direct e-commerce integration) */}
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (onSelectProduct) onSelectProduct(reel.productId);
-                  }}
-                  className="mt-1 flex items-center justify-between gap-2 bg-black/60 hover:bg-black/80 backdrop-blur-md border-l-2 border-[#C4823F] px-2.5 py-1.5 text-white transition-all cursor-pointer"
-                  title="View Fragrance"
-                >
-                  <div className="flex items-center gap-1.5 truncate">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                      <line x1="3" y1="6" x2="21" y2="6" />
-                    </svg>
-                    <span className="text-[10px] font-bold tracking-wider uppercase truncate">
-                      {reel.productName}
-                    </span>
-                  </div>
-
-                  <span className="text-[10px] font-black text-[#FFD188] whitespace-nowrap">
-                    {formatPrice(reel.price, activeCurrency)}
-                  </span>
-                </div>
-
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Bottom Social Banner Strip */}
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-black/5 text-[11px] text-[#777777]">
-          <div className="flex items-center gap-3">
-            <span className="font-semibold text-[#111111] uppercase tracking-wider">
-              Trending Fragrance Tags:
-            </span>
-            <span className="text-[#C4823F] font-medium">#SaudagarOud</span>
-            <span>·</span>
-            <span className="text-[#C4823F] font-medium">#HauteParfumerie</span>
-            <span>·</span>
-            <span className="text-[#C4823F] font-medium">#ExtraitDeParfum</span>
-            <span>·</span>
-            <span className="text-[#C4823F] font-medium">#CambodiOud</span>
+          {/* Set A (First 50%) */}
+          <div className="flex items-center shrink-0">
+            {REELS_SET_A.map(renderReelCard)}
           </div>
 
-          <button
-            onClick={() => {
-              if (onOpenStory) onOpenStory();
-            }}
-            className="text-[#111111] hover:text-[#C4823F] font-bold uppercase tracking-widest flex items-center gap-1 transition-colors cursor-pointer"
-          >
-            <span>Watch All Stories</span>
-            <span>→</span>
-          </button>
+          {/* Set B (Identical Second 50% for 100% Seamless Wrap) */}
+          <div className="flex items-center shrink-0" aria-hidden="true">
+            {REELS_SET_B.map(renderReelCard)}
+          </div>
+        </div>
+      </div>
+
+      {/* ================= 3. BOTTOM ATELIER SOCIAL & EPISODES STRIP ================= */}
+      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto mt-8 sm:mt-10 flex flex-wrap items-center justify-between gap-4 text-[11px] text-[#777777] dark:text-white/50">
+        <div className="flex items-center gap-3">
+          <span className="text-[#111111]/80 dark:text-white/80 uppercase tracking-wider text-[10px]">
+            Trending Tags:
+          </span>
+          <span className="text-[#C4823F] dark:text-[#ECC86A]">#SaudagarOud</span>
+          <span>✦</span>
+          <span className="text-[#C4823F] dark:text-[#ECC86A]">#HauteParfumerie</span>
+          <span>✦</span>
+          <span className="text-[#C4823F] dark:text-[#ECC86A]">#ExtraitDeParfum</span>
         </div>
 
+        <button
+          onClick={() => {
+            if (onOpenStory) onOpenStory();
+          }}
+          className="text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] font-medium uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer"
+        >
+          <span>Watch All Story Episodes</span>
+          <span>→</span>
+        </button>
       </div>
     </section>
   );

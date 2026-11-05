@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import BluorngFullscreenMegaNav from './BluorngFullscreenMegaNav.jsx';
+import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
 import { MEGA_MENU_COLLECTIONS } from '../data/bluorngSaudagarData.js';
 
 export default function BluorngHeader({
   cartCount = 0,
   wishlistCount = 0,
+  theme = 'dark',
+  onToggleTheme,
   onOpenCart,
   onOpenSearch,
   onOpenStory,
@@ -15,68 +19,65 @@ export default function BluorngHeader({
   onOpenAccount,
   isHomePage = true
 }) {
-  const [isPastHero, setIsPastHero] = useState(false);
-  const [isCollectionsHovered, setIsCollectionsHovered] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMegaNavOpen, setIsMegaNavOpen] = useState(false);
+  const { lenis } = useSmoothScroll();
 
-  // Monitor scroll position relative to the hero section on the homepage
+  // Monitor scroll: transparent initially, changes color after movement (scrollY > 35)
   useEffect(() => {
     if (!isHomePage) {
-      setIsPastHero(true);
+      setIsScrolled(true);
       return;
     }
 
-    const checkScroll = () => {
-      const heroEl = document.getElementById('hero-section');
-      if (!heroEl) {
-        setIsPastHero(window.scrollY > 200);
-        return;
-      }
-      const rect = heroEl.getBoundingClientRect();
-      // When hero bottom reaches or scrolls above the header height (68px)
-      setIsPastHero(rect.bottom <= 70);
+    const handleScroll = () => {
+      const y = window.scrollY || (lenis ? lenis.scroll : 0) || document.documentElement.scrollTop || 0;
+      setIsScrolled(y > 35);
     };
 
-    checkScroll();
-    window.addEventListener('scroll', checkScroll, { passive: true });
-    window.addEventListener('resize', checkScroll, { passive: true });
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    if (lenis) {
+      lenis.on('scroll', handleScroll);
+    }
+
     return () => {
-      window.removeEventListener('scroll', checkScroll);
-      window.removeEventListener('resize', checkScroll);
+      window.removeEventListener('scroll', handleScroll);
+      if (lenis) {
+        lenis.off('scroll', handleScroll);
+      }
     };
-  }, [isHomePage]);
+  }, [isHomePage, lenis]);
 
-  // When inside hero and not hovering the mega menu, keep navbar transparent with white text
-  const isTransparent = isHomePage && !isPastHero && !isCollectionsHovered;
+  // Transparent initially on homepage only when in dark theme; switches to crisp ivory canvas in light theme
+  const isTransparent = isHomePage && !isScrolled && !isMegaNavOpen && theme === 'dark';
 
   return (
     <motion.header
       initial={{ y: -16, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      onMouseLeave={() => setIsCollectionsHovered(false)}
-      style={{
-        backgroundColor: isTransparent ? 'transparent' : '#ffffff',
-      }}
-      className={`sticky top-0 z-50 w-full select-none transition-colors duration-300 relative ${
+      className={`sticky top-0 z-50 w-full select-none transition-all duration-300 relative ${
         isTransparent
-          ? 'text-white'
-          : 'bg-white text-[#111111] shadow-xs border-b border-black/5'
+          ? 'bg-transparent text-white'
+          : theme === 'dark'
+            ? 'bg-[#0B0A0D]/95 backdrop-blur-md shadow-xs text-white'
+            : 'bg-white/95 backdrop-blur-md shadow-xs text-[#111111]'
       }`}
     >
-      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 h-[60px] sm:h-[68px] relative flex items-stretch justify-between">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 h-[60px] sm:h-[68px] relative flex items-stretch justify-between">
         
         {/* ================= LEFT ZONE (Mobile Hamburger / Desktop Nav Links) ================= */}
         <div className="flex items-stretch z-10 h-full self-stretch">
           {/* Mobile Hamburger Button */}
           <div className="lg:hidden flex items-center">
             <button
-              onClick={onOpenNavDrawer}
-              className={`p-2 -ml-2 transition-colors ${
-                isTransparent ? 'text-white hover:text-[#C4823F]' : 'text-[#111111] hover:text-[#C4823F]'
-              }`}
+              onClick={() => setIsMegaNavOpen(true)}
+              className="p-2 -ml-2 transition-colors cursor-pointer hover:opacity-75"
               aria-label="Open Navigation Menu"
             >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <line x1="3" y1="6" x2="21" y2="6" strokeLinecap="round" />
                 <line x1="3" y1="12" x2="21" y2="12" strokeLinecap="round" />
                 <line x1="3" y1="18" x2="21" y2="18" strokeLinecap="round" />
@@ -84,100 +85,89 @@ export default function BluorngHeader({
             </button>
           </div>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden lg:flex items-stretch gap-7 text-[12px] font-semibold tracking-[0.14em] uppercase h-full self-stretch">
-            {/* New In */}
+          {/* Desktop Nav Links - Clean & Minimal */}
+          <nav className="hidden lg:flex items-stretch gap-8 text-[12px] font-normal tracking-[0.06em] uppercase h-full self-stretch">
+            {/* Collections Trigger -> Opens Fullscreen Mega Nav */}
             <button
-              onClick={() => onNavigateCollection('new-in')}
-              className={`transition-colors h-full flex items-center px-1 relative group ${
-                isTransparent ? 'text-white hover:text-[#C4823F]' : 'text-[#111111] hover:text-[#C4823F]'
+              onClick={() => setIsMegaNavOpen(true)}
+              className={`transition-colors h-full flex items-center gap-1.5 cursor-pointer ${
+                isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
               }`}
             >
-              <span>New in</span>
-              <span
-                className={`absolute bottom-0 left-0 w-0 h-[2.5px] transition-all duration-300 group-hover:w-full ${
-                  isTransparent ? 'bg-white' : 'bg-[#111111]'
-                }`}
-              ></span>
+              <span>Collections</span>
+              <svg
+                width="9"
+                height="5"
+                viewBox="0 0 10 6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                className={`transition-transform duration-200 ${isMegaNavOpen ? 'rotate-180' : ''}`}
+              >
+                <path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
 
-            {/* Collections Trigger */}
-            <div
-              className="h-full flex items-stretch relative"
-              onMouseEnter={() => setIsCollectionsHovered(true)}
+            {/* Signature */}
+            <button
+              onClick={() => onNavigateCollection('signature')}
+              className={`transition-colors h-full flex items-center cursor-pointer ${
+                isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
+              }`}
             >
-              <button
-                onClick={() => onNavigateCollection('all')}
-                className={`transition-colors h-full flex items-center gap-1.5 px-1 relative group ${
-                  isCollectionsHovered
-                    ? 'text-[#C4823F]'
-                    : isTransparent
-                    ? 'text-white hover:text-[#C4823F]'
-                    : 'text-[#111111] hover:text-[#C4823F]'
-                }`}
-              >
-                <span>Collections</span>
-                <svg
-                  width="10"
-                  height="6"
-                  viewBox="0 0 10 6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  className={`transition-transform duration-200 ${isCollectionsHovered ? 'rotate-180' : ''}`}
-                >
-                  <path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+              <span>Signature</span>
+            </button>
 
-                {/* Active Underline sitting flush at the bottom edge of the header */}
-                <span
-                  className={`absolute bottom-0 left-0 right-0 h-[2.5px] z-20 transition-all duration-200 ${
-                    isTransparent ? 'bg-white' : 'bg-[#111111]'
-                  } ${
-                    isCollectionsHovered ? 'w-full opacity-100' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-100'
-                  }`}
-                ></span>
+            {/* Royal */}
+            <button
+              onClick={() => onNavigateCollection('royal')}
+              className={`transition-colors h-full flex items-center cursor-pointer ${
+                isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
+              }`}
+            >
+              <span>Royal</span>
+            </button>
 
-                {/* Downward connecting caret pointing into mega menu */}
-                {isCollectionsHovered && (
-                  <div className="absolute -bottom-[4px] left-1/2 -translate-x-1/2 w-2 h-2 bg-[#111111] rotate-45 z-30 pointer-events-none"></div>
-                )}
-              </button>
-            </div>
+            {/* Exotic */}
+            <button
+              onClick={() => onNavigateCollection('exotic')}
+              className={`transition-colors h-full flex items-center cursor-pointer ${
+                isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
+              }`}
+            >
+              <span>Exotic</span>
+            </button>
           </nav>
         </div>
 
         {/* ================= CENTER ZONE: MATHEMATICALLY PERFECTLY CENTERED ================= */}
         <div
           onClick={onNavigateHome}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-center cursor-pointer select-none"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-center cursor-pointer select-none py-1 flex items-center justify-center"
         >
-          <span
-            className={`font-sans font-black tracking-[0.24em] text-[20px] sm:text-[24px] uppercase transition-colors duration-300 block leading-none ${
-              isTransparent ? 'text-white hover:text-white/85' : 'text-[#111111] hover:opacity-85'
-            }`}
-          >
-            SAUDAGAR
-          </span>
-          <span
-            className={`hidden sm:block font-script text-[14px] sm:text-[16px] lowercase tracking-normal -mt-0.5 transition-colors duration-300 ${
-              isTransparent ? 'text-[#ECC86A]' : 'text-[#C4823F]'
-            }`}
-          >
-            haute parfumerie
-          </span>
+          <img
+            src={
+              isTransparent
+                ? '/images/saudagar_logo_white.png'
+                : theme === 'dark'
+                  ? '/images/saudagar_logo_gold.png'
+                  : '/images/saudagar_logo_black.png'
+            }
+            alt="Saudagar Perfumers - Premium Fragrances"
+            className="h-8 sm:h-9 md:h-10 w-auto object-contain transition-all duration-300 hover:opacity-85"
+          />
         </div>
 
         {/* ================= RIGHT ZONE: ACTION ICONS ================= */}
-        <div className="flex items-center gap-3 sm:gap-5 z-10">
+        <div className={`flex items-center gap-2.5 sm:gap-4 z-10 transition-colors duration-300 ${
+          isTransparent || theme === 'dark' ? 'text-white' : 'text-[#111111]'
+        }`}>
           
           {/* Stories Reel Icon Button */}
           <button
             onClick={onOpenStory}
-            className={`hidden sm:flex items-center justify-center p-2 rounded-xs transition-all relative group ${
-              isTransparent
-                ? 'text-white hover:text-[#C4823F] hover:bg-white/10'
-                : 'text-[#111111] hover:text-[#C4823F] hover:bg-black/5'
+            className={`hidden sm:flex items-center justify-center p-2 rounded-xs transition-all relative group cursor-pointer ${
+              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
             }`}
             title="Watch Fragrance Stories"
             aria-label="Watch Fragrance Stories"
@@ -192,10 +182,8 @@ export default function BluorngHeader({
           {/* Stores Pin Icon Button */}
           <button
             onClick={onScrollToStores}
-            className={`hidden sm:flex items-center justify-center p-2 rounded-xs transition-all ${
-              isTransparent
-                ? 'text-white hover:text-[#C4823F] hover:bg-white/10'
-                : 'text-[#111111] hover:text-[#C4823F] hover:bg-black/5'
+            className={`hidden sm:flex items-center justify-center p-2 rounded-xs transition-all cursor-pointer ${
+              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
             }`}
             title="Walk-in Boutiques"
             aria-label="Walk-in Boutiques"
@@ -209,10 +197,8 @@ export default function BluorngHeader({
           {/* Search Icon Button */}
           <button
             onClick={onOpenSearch}
-            className={`p-2 rounded-xs transition-all ${
-              isTransparent
-                ? 'text-white hover:text-[#C4823F] hover:bg-white/10'
-                : 'text-[#111111] hover:text-[#C4823F] hover:bg-black/5'
+            className={`p-2 rounded-xs transition-all cursor-pointer ${
+              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
             }`}
             title="Search Fragrances"
             aria-label="Search Fragrances"
@@ -223,13 +209,84 @@ export default function BluorngHeader({
             </svg>
           </button>
 
+          {/* Luxury Dual-Segmented Capsule Theme Toggle (Light / Dark) */}
+          {onToggleTheme && (
+            <div
+              onClick={onToggleTheme}
+              className={`inline-flex items-center p-0.5 rounded-full transition-all duration-300 select-none cursor-pointer ${
+                isTransparent
+                  ? 'bg-white/20 backdrop-blur-md'
+                  : theme === 'dark'
+                    ? 'bg-white/10 backdrop-blur-md'
+                    : 'bg-black/[0.06] backdrop-blur-md'
+              }`}
+              role="button"
+              aria-label="Toggle Light and Dark Theme"
+              title={`Switch to ${theme === 'dark' ? 'Light' : 'Noir Dark'} Theme`}
+            >
+              {/* Light Option (Sun) */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (theme !== 'light') onToggleTheme();
+                }}
+                className={`flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200 cursor-pointer ${
+                  theme === 'light'
+                    ? 'bg-[#C4823F] text-white shadow-xs'
+                    : isTransparent || theme === 'dark'
+                      ? 'text-white/60 hover:text-white'
+                      : 'text-[#111111]/60 hover:text-[#111111]'
+                }`}
+                title="Light Theme"
+                aria-label="Light Theme"
+                aria-checked={theme === 'light'}
+                role="radio"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+              </button>
+
+              {/* Dark Option (Moon) */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (theme !== 'dark') onToggleTheme();
+                }}
+                className={`flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200 cursor-pointer ${
+                  theme === 'dark'
+                    ? 'bg-[#C4823F] text-white shadow-xs'
+                    : isTransparent || theme === 'dark'
+                      ? 'text-white/60 hover:text-white'
+                      : 'text-[#111111]/60 hover:text-[#111111]'
+                }`}
+                title="Noir Dark Theme"
+                aria-label="Noir Dark Theme"
+                aria-checked={theme === 'dark'}
+                role="radio"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+              </button>
+            </div>
+          )}
+
           {/* Account Profile Button */}
           <button
             onClick={onOpenAccount}
-            className={`hidden sm:flex p-2 rounded-xs transition-all ${
-              isTransparent
-                ? 'text-white hover:text-[#C4823F] hover:bg-white/10'
-                : 'text-[#111111] hover:text-[#C4823F] hover:bg-black/5'
+            className={`hidden sm:flex p-2 rounded-xs transition-all cursor-pointer ${
+              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
             }`}
             title="Customer Account"
             aria-label="Customer Account"
@@ -243,10 +300,8 @@ export default function BluorngHeader({
           {/* Wishlist Bookmark Button with Badge */}
           <button
             onClick={() => onNavigateCollection('wishlist')}
-            className={`relative p-2 rounded-xs transition-all ${
-              isTransparent
-                ? 'text-white hover:text-[#C4823F] hover:bg-white/10'
-                : 'text-[#111111] hover:text-[#C4823F] hover:bg-black/5'
+            className={`relative p-2 rounded-xs transition-all cursor-pointer ${
+              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
             }`}
             title="Wishlist"
             aria-label="Wishlist"
@@ -264,10 +319,8 @@ export default function BluorngHeader({
           {/* Cart Icon / Cart (N) link */}
           <button
             onClick={onOpenCart}
-            className={`flex items-center gap-1.5 p-2 rounded-xs transition-all ${
-              isTransparent
-                ? 'text-white hover:text-[#C4823F] hover:bg-white/10'
-                : 'text-[#111111] hover:text-[#C4823F] hover:bg-black/5'
+            className={`flex items-center gap-1.5 p-2 rounded-xs transition-all cursor-pointer ${
+              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
             }`}
             aria-label={`Shopping Cart (${cartCount})`}
           >
@@ -294,101 +347,39 @@ export default function BluorngHeader({
             </div>
           </button>
 
-          {/* 2-Bar Side Navigation Drawer Toggle */}
+          {/* 2-Bar Fullscreen Navigation Drawer Toggle */}
           <button
-            onClick={onOpenNavDrawer}
-            className={`hidden lg:flex flex-col justify-center items-center gap-1.5 w-8 h-8 rounded transition-colors p-1 ${
-              isTransparent ? 'hover:bg-white/10' : 'hover:bg-black/5'
+            onClick={() => setIsMegaNavOpen(true)}
+            className={`hidden lg:flex flex-col justify-center items-center gap-1.5 w-8 h-8 rounded transition-colors p-1 cursor-pointer ${
+              isTransparent || theme === 'dark' ? 'hover:bg-white/10' : 'hover:bg-black/5'
             }`}
-            title="Menu Drawer"
-            aria-label="Menu Drawer"
+            title="Explore Saudagar Directory"
+            aria-label="Explore Saudagar Directory"
           >
-            <span
-              className={`w-5 h-[1.8px] rounded-full transition-colors ${
-                isTransparent ? 'bg-white' : 'bg-[#111111]'
-              }`}
-            ></span>
-            <span
-              className={`w-5 h-[1.8px] rounded-full transition-colors ${
-                isTransparent ? 'bg-white' : 'bg-[#111111]'
-              }`}
-            ></span>
+            <span className={`w-5 h-[1.8px] rounded-full transition-colors ${
+              isTransparent || theme === 'dark' ? 'bg-white' : 'bg-[#111111]'
+            }`} />
+            <span className={`w-5 h-[1.8px] rounded-full transition-colors ${
+              isTransparent || theme === 'dark' ? 'bg-white' : 'bg-[#111111]'
+            }`} />
           </button>
         </div>
 
       </div>
 
-      {/* ================= MEGA MENU WITH LUXURY FADE & SLIDE ================= */}
-      <AnimatePresence>
-        {isCollectionsHovered && (
-          <>
-            {/* Dark Dim Backdrop Over the Rest of the Page to Eliminate Clashing */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => setIsCollectionsHovered(false)}
-              className="fixed inset-0 top-[60px] sm:top-[68px] bg-black/45 backdrop-blur-xs z-40 pointer-events-auto"
-            />
-
-            {/* Solid Pure White Mega Menu Panel */}
-            <motion.div
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              onMouseEnter={() => setIsCollectionsHovered(true)}
-              onMouseLeave={() => setIsCollectionsHovered(false)}
-              style={{ backgroundColor: '#ffffff' }}
-              className="absolute left-0 right-0 top-full -mt-[1px] w-full bg-white border-b border-[#E5E5E5] text-[#111111] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] pt-5 pb-7 px-4 sm:px-6 md:px-8 lg:px-10 z-50 pointer-events-auto"
-            >
-            <div className="w-full">
-              <div className="flex items-center justify-between mb-4 pb-2 border-b border-black/5 text-[11px] tracking-widest text-[#777777]">
-                <span>EXPLORE CURATED COLLECTIONS</span>
-                <button
-                  onClick={() => {
-                    setIsCollectionsHovered(false);
-                    onNavigateCollection('all');
-                  }}
-                  className="text-[#111111] font-bold hover:text-[#C4823F] transition-colors cursor-pointer"
-                >
-                  VIEW ALL COLLECTIONS →
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-6 gap-5">
-                {MEGA_MENU_COLLECTIONS.map((col) => (
-                  <div
-                    key={col.id}
-                    onClick={() => {
-                      setIsCollectionsHovered(false);
-                      onNavigateCollection(col.slug);
-                    }}
-                    className="group cursor-pointer flex flex-col"
-                  >
-                    <div className="w-full aspect-[4/5] bg-[#F5F5F3] overflow-hidden rounded-xs border border-black/5 mb-2.5">
-                      <img
-                        src={col.image}
-                        alt={col.title}
-                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-                    </div>
-                    <p className="text-[11.5px] font-semibold tracking-wider text-[#111111] uppercase group-hover:text-[#C4823F] transition-colors leading-tight">
-                      {col.title}
-                    </p>
-                    <span className="text-[10px] text-[#888888] font-normal tracking-wide mt-0.5">
-                      {col.count} Fragrances
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* ================= FULLSCREEN MEGA NAVBAR ================= */}
+      <BluorngFullscreenMegaNav
+        isOpen={isMegaNavOpen}
+        onClose={() => setIsMegaNavOpen(false)}
+        cartCount={cartCount}
+        theme={theme}
+        onToggleTheme={onToggleTheme}
+        onOpenCart={onOpenCart}
+        onOpenSearch={onOpenSearch}
+        onOpenStory={onOpenStory}
+        onNavigateHome={onNavigateHome}
+        onNavigateCollection={onNavigateCollection}
+      />
     </motion.header>
   );
 }

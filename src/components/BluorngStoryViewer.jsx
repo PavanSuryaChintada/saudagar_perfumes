@@ -169,7 +169,7 @@ export default function BluorngStoryViewer({
         {/* ================= BOTTOM METADATA & CTA ================= */}
         <div className="relative z-20 p-5 space-y-3 pointer-events-auto">
           <div>
-            <h3 className="text-white text-[18px] sm:text-[20px] font-bold uppercase tracking-wider leading-tight drop-shadow-md">
+            <h3 className="text-white text-[18px] sm:text-[20px] font-bold uppercase tracking-[0.02em] leading-tight drop-shadow-md">
               {currentStory.title}
             </h3>
             <p className="text-white/80 text-[12px] tracking-wide mt-1">
@@ -185,7 +185,7 @@ export default function BluorngStoryViewer({
                 onSelectProduct(currentStory.productId);
               }
             }}
-            className="w-full py-3 bg-[#FFFFFF] hover:bg-[#C4823F] hover:text-white text-[#111111] text-[11.5px] font-bold uppercase tracking-[0.2em] rounded-sm transition-all duration-300 shadow-xl flex items-center justify-center gap-2"
+            className="w-full py-3 bg-[#FFFFFF] hover:bg-[#C4823F] hover:text-white text-[#111111] text-[11.5px] font-bold uppercase tracking-[0.04em] rounded-sm transition-all duration-300 shadow-xl flex items-center justify-center gap-2"
           >
             <span>Shop This Fragrance</span>
             <span>→</span>

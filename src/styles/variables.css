@@ -1,11 +1,11 @@
 :root {
   /* ==========================================================================
-     SAUDAGAR PERFUMES - PRODUCT PAGE EDITORIAL PALETTE (IVORY, BLACK & AMBER GOLD)
+     SAUDAGAR PERFUMES - EDITORIAL LIGHT PALETTE (PURE CRISP CANVAS & AMBER GOLD)
      ========================================================================== */
   
   /* Primary Page & Paper Surface */
-  --theme-brand-bg: #ECEBE6;             /* Warm Editorial Ivory Paper */
-  --theme-brand-surface: #ECEBE6;        /* Subtle Luxury Stone Surface */
+  --theme-brand-bg: #FFFFFF;             /* Pure Crisp Editorial Canvas */
+  --theme-brand-surface: #F8F7F4;        /* Soft Luxury Stone Pedestal */
   --theme-brand-surface-card: #FFFFFF;   /* Clean White Card Surface */
   --theme-brand-alabaster: #F4F3EE;      /* Alabaster Warm Cream */
   
@@ -15,8 +15,8 @@
   --theme-brand-text-muted: #555555;     /* Medium Charcoal Grey */
   --theme-brand-text-light: #777777;     /* Soft Studio Grey */
   
-  /* Brand Amber Gold & Accents (Matching Product Page Tabs & Buttons) */
-  --theme-brand-amber: #C4823F;          /* Warm Amber Caramel (Card Footer & Buttons) */
+  /* Brand Amber Gold & Accents */
+  --theme-brand-amber: #C4823F;          /* Warm Amber Caramel */
   --theme-brand-amber-dark: #B57432;     /* Deepened Amber Tone */
   --theme-brand-gold: #D4AF37;           /* Pure 24K Royal Gold */
   --theme-brand-gold-light: #ECC86A;     /* Bright Champagne Gold */
@@ -41,24 +41,61 @@
   --theme-sand-text: #111111;
   --theme-sand-border: #111111;
 
-  /* Dark Theme Elements (Top Bar & Footers) */
+  /* Dark Theme Reference Elements */
   --theme-dark-bg: #111111;
   --theme-dark-surface: #1A1A1E;
   --theme-dark-text: #FFFFFF;
   --theme-dark-border: rgba(255, 255, 255, 0.15);
 
-  /* Typography */
+  /* Global Typography Foundations */
   --font-heading: 'Poppins', sans-serif;
   --font-serif: 'IM Fell French Canon', 'Zen Antique Soft', serif;
   --font-body: 'Poppins', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-sans: 'Poppins', 'Outfit', sans-serif;
   --font-script: 'Lavishly Yours', cursive;
   --font-lavish: 'Lavishly Yours', cursive;
-  --heading-letter-spacing: 0.16em;
-  --button-letter-spacing: 0.18em;
+  --heading-letter-spacing: 0.02em;
+  --button-letter-spacing: 0.04em;
 
   /* Dimensions */
   --header-height: 84px;
   --announcement-bar-height: 38px;
   --container-max-width: 1440px;
+}
+
+/* ==========================================================================
+   SAUDAGAR PERFUMES - LUXURY DARK THEME PALETTE (NOIR OBSIDIAN & WARM GOLD)
+   ========================================================================== */
+html.dark, [data-theme="dark"] {
+  --theme-brand-bg: #0B0A0D;             /* Deep Midnight Obsidian */
+  --theme-brand-surface: #141318;        /* Dark Atmospheric Pedestal */
+  --theme-brand-surface-card: #18171E;   /* Elevated Velvet Card Surface */
+  --theme-brand-alabaster: #1E1D25;      /* Subtle Charcoal Alabaster */
+  
+  --theme-brand-text: #FFFFFF;           /* Crisp Optical White */
+  --theme-brand-text-dark: #FFFFFF;      /* Pure White */
+  --theme-brand-text-muted: #A39E96;     /* Champagne Warm Grey */
+  --theme-brand-text-light: #7E7870;     /* Soft Smoked Grey */
+  
+  --theme-brand-amber: #C4823F;          /* Radiant Warm Amber */
+  --theme-brand-amber-dark: #DE9954;     /* Luminous Amber */
+  --theme-brand-gold: #D4AF37;           /* 24K Royal Gold */
+  --theme-brand-gold-light: #ECC86A;     /* Bright Champagne Gold */
+  --theme-brand-gold-dark: #B8860B;      /* Matured Antique Gold */
+  
+  --theme-brand-border: rgba(255, 255, 255, 0.10);
+  --theme-brand-border-fine: rgba(255, 255, 255, 0.06);
+  --theme-brand-border-muted: rgba(255, 255, 255, 0.20);
+  
+  --theme-btn-black-bg: #C4823F;         /* Amber Accent Buy Button in Dark Mode */
+  --theme-btn-black-text: #FFFFFF;
+  --theme-btn-light-bg: #18171E;
+  --theme-btn-light-border: rgba(255, 255, 255, 0.18);
+  --theme-btn-light-text: #FFFFFF;
+  --theme-btn-amber-bg: #C4823F;
+  --theme-btn-amber-text: #FFFFFF;
+
+  --theme-sand-bg: #141318;
+  --theme-sand-text: #FFFFFF;
+  --theme-sand-border: rgba(255, 255, 255, 0.10);
 }

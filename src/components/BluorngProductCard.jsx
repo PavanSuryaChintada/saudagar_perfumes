@@ -11,6 +11,7 @@ export default function BluorngProductCard({
   onQuickBuy
 }) {
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
+
   const images = product.images && product.images.length > 0
     ? product.images
     : [product.image || '/images/crystal_square_flacon.png'];
@@ -26,156 +27,121 @@ export default function BluorngProductCard({
   };
 
   const handleCardClick = () => {
-    onSelectProduct(product.id);
+    onSelectProduct && onSelectProduct(product.id);
   };
 
   return (
-    <motion.div
+    <div
       onClick={handleCardClick}
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative flex flex-col bg-[#FFFFFF] border border-[#EEEEEE] hover:border-[#111111]/35 hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 cursor-pointer overflow-hidden will-change-transform"
+      className="group relative flex flex-col cursor-pointer transition-all duration-300 select-none"
     >
-      {/* ================= CARD IMAGE GALLERY CONTAINER ================= */}
-      <div className="relative w-full aspect-[4/5] bg-[#F7F7F6] flex items-center justify-center overflow-hidden select-none p-3 sm:p-5">
-        
-        {/* Main Display Image with Smooth Crossfade */}
+      {/* ================= SOFT PEDESTAL FLACON STAGE (No harsh borders) ================= */}
+      <div className="relative w-full aspect-[4/5] rounded-md flex items-center justify-center p-4 sm:p-5 overflow-hidden transition-all duration-500 select-none bg-[#F8F7F5] dark:bg-[#141318] group-hover:bg-[#F2EFEA] dark:group-hover:bg-[#1C1A22]">
+        {/* Soft Pedestal Ground Shadow */}
+        <div className="absolute bottom-4 w-3/5 h-2.5 rounded-[100%] blur-[5px] transition-all duration-500 pointer-events-none z-0 bg-black/[0.06] dark:bg-black/40 group-hover:scale-110 group-hover:opacity-60" />
+
+        {/* Flacon Image with Gentle Scale on Hover */}
         <AnimatePresence mode="wait">
           <motion.img
             key={images[currentImgIdx]}
             src={images[currentImgIdx]}
             alt={product.name}
-            initial={{ opacity: 0.85, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0.85 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="w-full h-full object-contain object-center group-hover:scale-[1.07] transition-transform duration-700 ease-out filter drop-shadow-[0_10px_24px_rgba(0,0,0,0.15)] group-hover:drop-shadow-[0_16px_32px_rgba(0,0,0,0.22)]"
+            initial={{ opacity: 0.9 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0.9 }}
+            transition={{ duration: 0.25 }}
+            className="relative z-10 w-full h-full object-contain object-center group-hover:scale-105 transition-transform duration-700 ease-out filter drop-shadow-[0_8px_18px_rgba(0,0,0,0.12)]"
             loading="lazy"
           />
         </AnimatePresence>
 
-        {/* Badge (Top-Left) */}
+        {/* Minimal Discrete Badge (Top-Left) */}
         {product.badge && (
-          <div className="absolute top-2.5 left-2.5 z-20">
-            <span className="px-2 py-0.5 text-[9px] font-bold tracking-[0.14em] uppercase bg-[#111111] text-white rounded-xs shadow-xs">
-              {product.badge}
-            </span>
-          </div>
+          <span className="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 text-[9px] uppercase tracking-wider font-medium rounded-sm bg-black/5 dark:bg-white/10 text-[#666666] dark:text-white/90">
+            {product.badge}
+          </span>
         )}
 
-        {/* Wishlist Bookmark Button (Top-Right) */}
-        <motion.button
+        {/* Wishlist Button (Top-Right) */}
+        <button
           type="button"
-          whileTap={{ scale: 0.82 }}
-          whileHover={{ scale: 1.08 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           onClick={(e) => {
             e.stopPropagation();
-            onToggleWishlist(product.id);
+            onToggleWishlist && onToggleWishlist(product.id);
           }}
-          className="absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-xs bg-white/90 hover:bg-white text-[#111111] flex items-center justify-center transition-colors shadow-sm"
+          className="absolute top-2.5 right-2.5 z-20 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-[#111111] dark:text-white"
           title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
           aria-label="Wishlist"
         >
           <svg
-            width="15"
-            height="15"
+            width="13"
+            height="13"
             viewBox="0 0 24 24"
             fill={isWishlisted ? '#C4823F' : 'none'}
-            stroke={isWishlisted ? '#C4823F' : '#111111'}
+            stroke={isWishlisted ? '#C4823F' : 'currentColor'}
             strokeWidth="1.8"
-            className="transition-colors duration-200"
           >
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
           </svg>
-        </motion.button>
+        </button>
 
-        {/* Gallery Slider Prev/Next Controls (visible on hover if multiple images) */}
+        {/* Gallery Slider Controls (hover-only if multiple images) */}
         {images.length > 1 && (
           <>
             <button
               onClick={handlePrevImage}
-              className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-7 h-7 rounded-full bg-white/85 hover:bg-white text-[#111111] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:scale-105"
-              aria-label="Previous image"
+              className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-white/90 dark:bg-black/75 text-[#111111] dark:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm text-xs cursor-pointer"
+              aria-label="Previous"
             >
               ‹
             </button>
             <button
               onClick={handleNextImage}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-7 h-7 rounded-full bg-white/85 hover:bg-white text-[#111111] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:scale-105"
-              aria-label="Next image"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-white/90 dark:bg-black/75 text-[#111111] dark:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm text-xs cursor-pointer"
+              aria-label="Next"
             >
               ›
             </button>
-
-            {/* Pagination Dots */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              {images.map((_, dotIdx) => (
-                <span
-                  key={dotIdx}
-                  className={`block rounded-full transition-all duration-300 ${
-                    dotIdx === currentImgIdx
-                      ? 'w-3 h-1 bg-[#111111]'
-                      : 'w-1 h-1 bg-black/40'
-                  }`}
-                />
-              ))}
-            </div>
           </>
         )}
-      </div>
 
-      {/* ================= CARD INFORMATION FOOTER ================= */}
-      <div className="p-3 sm:p-4 flex flex-col justify-between flex-1 bg-[#FFFFFF]">
-        {/* Title */}
-        <div>
-          <h3 className="text-[12.5px] sm:text-[13.5px] font-semibold uppercase tracking-[0.08em] text-[#111111] line-clamp-1 group-hover:text-[#C4823F] transition-colors duration-200">
-            {product.name}
-          </h3>
-          <div className="flex items-center justify-between mt-0.5">
-            <p className="text-[10px] text-[#777777] uppercase tracking-wider">
-              {product.category || 'Extrait de Parfum'}
-            </p>
-            <span className="font-script text-[#C4823F] text-[14px] normal-case tracking-normal opacity-90">
-              pure extrait
-            </span>
-          </div>
-        </div>
-
-        {/* Price & Quick Add Button Row (Exact Bluorng layout with c-plus-svg) */}
-        <div className="mt-3 pt-2.5 border-t border-[#F0F0F0] flex items-center justify-between">
-          <div className="flex items-baseline gap-2">
-            <span className="text-[13px] sm:text-[14px] font-bold text-[#111111] tracking-wide">
-              {formatPrice(product.price, activeCurrency)}
-            </span>
-            {product.compareAtPrice && product.compareAtPrice > product.price && (
-              <span className="text-[11px] text-[#999999] line-through font-normal">
-                {formatPrice(product.compareAtPrice, activeCurrency)}
-              </span>
-            )}
-          </div>
-
-          {/* Quick Add Plus Button with Tactile Feedback */}
-          <motion.button
+        {/* Effortless Floating + Quick Add Pill on Hover */}
+        <div className="absolute bottom-2.5 left-2.5 right-2.5 z-20 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+          <button
             type="button"
-            whileHover={{ scale: 1.12, backgroundColor: '#111111', color: '#FFFFFF' }}
-            whileTap={{ scale: 0.88 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
             onClick={(e) => {
               e.stopPropagation();
-              onQuickBuy(product);
+              onQuickBuy && onQuickBuy(product);
             }}
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-xs border border-[#111111]/20 hover:border-[#111111] text-[#111111] flex items-center justify-center transition-colors"
-            title="Quick Select Size & Add"
-            aria-label={`Quick add ${product.name}`}
+            className="w-full py-2 text-[10.5px] uppercase tracking-[0.14em] font-medium rounded-sm shadow-md transition-colors cursor-pointer bg-[#111111] text-white hover:bg-[#C4823F] dark:bg-[#C4823F] dark:text-white dark:hover:bg-[#DE9954]"
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-              <path d="M12 5V19" strokeLinecap="round" />
-              <path d="M5 12H19" strokeLinecap="round" />
-            </svg>
-          </motion.button>
+            + Quick Add
+          </button>
         </div>
       </div>
-    </motion.div>
+
+      {/* ================= MINIMAL INFORMATION (Clean Typography, No Lines) ================= */}
+      <div className="pt-3 pb-1 flex flex-col">
+        <div className="flex items-baseline justify-between gap-2">
+          <h3 className="text-[12.5px] sm:text-[13px] font-normal uppercase tracking-[0.04em] transition-colors truncate text-[#111111] dark:text-white group-hover:text-[#C4823F] dark:group-hover:text-[#ECC86A]">
+            {product.name}
+          </h3>
+          <span className="text-[12px] sm:text-[12.5px] font-medium shrink-0 text-[#111111] dark:text-white/95">
+            {formatPrice(product.price, activeCurrency)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between mt-0.5">
+          <p className="text-[10px] sm:text-[10.5px] font-normal tracking-wide truncate text-[#888888] dark:text-white/50">
+            {product.category || 'Extrait de Parfum'}
+          </p>
+          {product.compareAtPrice && product.compareAtPrice > product.price && (
+            <span className="text-[10.5px] line-through font-normal shrink-0 text-[#AAAAAA] dark:text-white/30">
+              {formatPrice(product.compareAtPrice, activeCurrency)}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

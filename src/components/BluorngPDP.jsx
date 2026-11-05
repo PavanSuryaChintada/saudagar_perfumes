@@ -59,30 +59,40 @@ export default function BluorngPDP({
   const relatedProducts = ALL_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4);
 
   return (
-    <div className="w-full bg-[#FFFFFF] text-[#111111] min-h-screen">
-      
+    <div className="relative w-full bg-gradient-to-b from-[#FAF8F5] via-[#F5EFE7] to-[#F8F6F2] dark:from-[#0B0A0D] dark:via-[#111015] dark:to-[#0B0A0D] text-[#111111] dark:text-white min-h-screen overflow-hidden transition-colors duration-300">
+      {/* Background Layer 1: Ambient Radial Glow behind Flacon Stage */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          background: 'radial-gradient(circle 900px at 30% 30%, rgba(196, 130, 63, 0.06) 0%, transparent 70%)'
+        }}
+      />
+
+      {/* Background Layer 3: Tactile Film Grain */}
+      <div className="absolute inset-0 luxury-noise pointer-events-none z-0 opacity-70" />
+
       {/* ================= BREADCRUMBS ================= */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3 text-[11px] uppercase tracking-wider text-[#777777] border-b border-[#EEEEEE] flex items-center gap-2">
-        <button onClick={onNavigateHome} className="hover:text-[#111111] transition-colors cursor-pointer">
+      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-3 text-[11px] uppercase tracking-wider text-[#777777] dark:text-[#A09D96] border-b border-[#ECE5D8] dark:border-white/5 flex items-center gap-2">
+        <button onClick={onNavigateHome} className="hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer">
           Home
         </button>
         <span>/</span>
-        <button onClick={() => onNavigateCollection('all')} className="hover:text-[#111111] transition-colors cursor-pointer">
+        <button onClick={() => onNavigateCollection('all')} className="hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer">
           Collections
         </button>
         <span>/</span>
-        <span className="text-[#111111] font-semibold">{product.name}</span>
+        <span className="text-[#111111] dark:text-white font-semibold">{product.name}</span>
       </div>
 
       {/* ================= MAIN PDP CONTAINER ================= */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-8 sm:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14">
           
           {/* ================= LEFT: MULTI-IMAGE GALLERY (7 COLS) ================= */}
           <div className="lg:col-span-7 flex flex-col sm:flex-row-reverse gap-4">
             
             {/* Primary High-Res Stage Image with Smooth Crossfade */}
-            <div className="flex-1 aspect-[4/5] bg-[#F7F7F6] flex items-center justify-center p-8 sm:p-14 overflow-hidden rounded-xs border border-[#EEEEEE] relative group">
+            <div className="flex-1 aspect-[4/5] bg-[#F7F7F6] dark:bg-[#141318] flex items-center justify-center p-8 sm:p-14 overflow-hidden rounded-xs border border-[#EEEEEE] dark:border-transparent relative group transition-colors duration-300">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={images[activeImgIdx]}
@@ -97,7 +107,7 @@ export default function BluorngPDP({
               </AnimatePresence>
               {product.badge && (
                 <div className="absolute top-4 left-4 z-10">
-                  <span className="px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] uppercase bg-[#111111] text-white shadow-xs">
+                  <span className="px-2.5 py-1 text-[10px] font-bold tracking-[0.04em] uppercase bg-[#111111] dark:bg-[#C4823F] text-white shadow-xs">
                     {product.badge}
                   </span>
                 </div>
@@ -112,9 +122,9 @@ export default function BluorngPDP({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setActiveImgIdx(idx)}
-                  className={`aspect-[4/5] w-16 sm:w-full bg-[#F7F7F6] flex items-center justify-center p-1.5 overflow-hidden rounded-xs border-2 transition-all shrink-0 cursor-pointer ${
+                  className={`aspect-[4/5] w-16 sm:w-full bg-[#F7F7F6] dark:bg-[#141318] flex items-center justify-center p-1.5 overflow-hidden rounded-xs border-2 transition-all shrink-0 cursor-pointer ${
                     activeImgIdx === idx
-                      ? 'border-[#111111] opacity-100 shadow-xs'
+                      ? 'border-[#111111] dark:border-[#C4823F] opacity-100 shadow-xs'
                       : 'border-transparent opacity-60 hover:opacity-100'
                   }`}
                 >
@@ -132,41 +142,41 @@ export default function BluorngPDP({
               {/* Category & Title */}
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10.5px] font-bold tracking-[0.22em] uppercase text-[#C4823F]">
+                  <span className="text-[10.5px] font-bold tracking-[0.06em] uppercase text-[#C4823F]">
                     {product.category || 'Extrait de Parfum'}
                   </span>
                   <span className="font-script text-[#C4823F] text-[18px] sm:text-[21px] normal-case tracking-normal">
                     rare extrait
                   </span>
                 </div>
-                <h1 className="text-[24px] sm:text-[30px] font-black uppercase tracking-[0.12em] text-[#111111] leading-tight mt-1">
+                <h1 className="text-[24px] sm:text-[30px] font-black uppercase tracking-[0.02em] text-[#111111] dark:text-white leading-tight mt-1">
                   {product.name}
                 </h1>
                 
                 {/* Rating & Reviews */}
-                <div className="flex items-center gap-2 mt-2 text-[12px] text-[#555555]">
+                <div className="flex items-center gap-2 mt-2 text-[12px] text-[#555555] dark:text-[#A09D96]">
                   <div className="flex text-[#C4823F]">
                     {'★'.repeat(Math.floor(product.rating || 5))}
                   </div>
-                  <span className="font-bold text-[#111111]">{product.rating || '5.0'}</span>
+                  <span className="font-bold text-[#111111] dark:text-white">{product.rating || '5.0'}</span>
                   <span>•</span>
                   <span className="underline cursor-pointer">{product.reviewsCount || 180} Connoisseur Reviews</span>
                 </div>
               </div>
 
               {/* Pricing Row */}
-              <div className="pt-2 border-t border-[#F0F0F0]">
+              <div className="pt-2 border-t border-[#F0F0F0] dark:border-white/10">
                 <div className="flex items-baseline gap-3">
-                  <span className="text-[22px] sm:text-[26px] font-bold text-[#111111] tracking-wide">
+                  <span className="text-[22px] sm:text-[26px] font-bold text-[#111111] dark:text-white tracking-wide">
                     {formatPrice(currentPrice, activeCurrency)}
                   </span>
                   {product.compareAtPrice && product.compareAtPrice > currentPrice && (
-                    <span className="text-[14px] text-[#999999] line-through">
+                    <span className="text-[14px] text-[#999999] dark:text-white/40 line-through">
                       {formatPrice(product.compareAtPrice, activeCurrency)}
                     </span>
                   )}
                 </div>
-                <p className="text-[10.5px] text-[#777777] uppercase tracking-wider mt-1">
+                <p className="text-[10.5px] text-[#777777] dark:text-[#A09D96] uppercase tracking-wider mt-1">
                   Inclusive of all taxes & complimentary insured express delivery.
                 </p>
               </div>
@@ -174,8 +184,8 @@ export default function BluorngPDP({
               {/* Volume / Size Selector Pills */}
               <div>
                 <div className="flex justify-between items-baseline mb-2">
-                  <label className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#111111]">
-                    Flacon Size: <span className="font-normal text-[#555555]">{selectedSize.label}</span>
+                  <label className="text-[11px] font-bold tracking-[0.04em] uppercase text-[#111111] dark:text-white">
+                    Flacon Size: <span className="font-normal text-[#555555] dark:text-[#A09D96]">{selectedSize.label}</span>
                   </label>
                   <span className="text-[10px] text-[#C4823F] font-semibold tracking-wider">
                     {product.concentration || 'Pure Extrait'}
@@ -187,10 +197,10 @@ export default function BluorngPDP({
                     <button
                       key={sz.label}
                       onClick={() => setSelectedSize(sz)}
-                      className={`px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.12em] rounded-xs transition-all border ${
+                      className={`px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all border ${
                         selectedSize.label === sz.label
-                          ? 'border-[#111111] bg-[#111111] text-white shadow-xs'
-                          : 'border-[#CCCCCC] bg-[#FFFFFF] text-[#111111] hover:border-[#111111]'
+                          ? 'border-[#111111] bg-[#111111] text-white dark:border-[#C4823F] dark:bg-[#C4823F] dark:text-white shadow-xs'
+                          : 'border-[#CCCCCC] dark:border-white/15 bg-[#FFFFFF] dark:bg-[#18171E] text-[#111111] dark:text-white hover:border-[#111111] dark:hover:border-white/40'
                       }`}
                     >
                       {sz.label}
@@ -200,11 +210,11 @@ export default function BluorngPDP({
               </div>
 
               {/* Complimentary Bottle Engraving Feature */}
-              <div className="bg-[#FAF9F6] p-3.5 border border-[#EEEEEE] rounded-xs text-[11px]">
+              <div className="bg-[#FAF9F6] dark:bg-[#141318] p-3.5 border border-[#EEEEEE] dark:border-transparent rounded-xs text-[11px] transition-colors duration-300">
                 <button
                   type="button"
                   onClick={() => setIsEngravingOpen(!isEngravingOpen)}
-                  className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111]"
+                  className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] dark:text-white cursor-pointer"
                 >
                   <span className="flex items-center gap-1.5">
                     <span>✨</span>
@@ -214,8 +224,8 @@ export default function BluorngPDP({
                 </button>
                 
                 {isEngravingOpen && (
-                  <div className="mt-3 pt-2.5 border-t border-[#E5E5E5] space-y-2">
-                    <p className="text-[10px] text-[#666666]">
+                  <div className="mt-3 pt-2.5 border-t border-[#E5E5E5] dark:border-white/10 space-y-2">
+                    <p className="text-[10px] text-[#666666] dark:text-[#A09D96]">
                       Our master calligrapher can engrave up to 12 characters (e.g. initials or names) onto the glass flacon.
                     </p>
                     <input
@@ -224,7 +234,7 @@ export default function BluorngPDP({
                       value={engraving}
                       onChange={(e) => setEngraving(e.target.value.toUpperCase())}
                       placeholder="ENTER INITIALS (MAX 12 CHARS)"
-                      className="w-full px-3 py-2 border border-[#CCCCCC] rounded-xs text-[11px] font-bold uppercase tracking-widest outline-none focus:border-[#111111]"
+                      className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#1E1C24] text-[#111111] dark:text-white rounded-xs text-[11px] font-bold uppercase tracking-widest outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
                     />
                   </div>
                 )}
@@ -233,24 +243,24 @@ export default function BluorngPDP({
               {/* Quantity Stepper & CTA Buttons */}
               <div className="space-y-3 pt-2">
                 <div className="flex items-center gap-3">
-                  <span className="text-[11px] font-bold tracking-wider uppercase text-[#111111]">
+                  <span className="text-[11px] font-bold tracking-wider uppercase text-[#111111] dark:text-white">
                     Quantity:
                   </span>
-                  <div className="flex items-center border border-[#111111] rounded-xs overflow-hidden">
+                  <div className="flex items-center border border-[#111111] dark:border-white/20 rounded-xs overflow-hidden">
                     <motion.button
                       whileTap={{ scale: 0.85 }}
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="w-8 h-8 flex items-center justify-center hover:bg-[#F2F2F2] font-bold cursor-pointer"
+                      className="w-8 h-8 flex items-center justify-center hover:bg-[#F2F2F2] dark:hover:bg-white/10 text-[#111111] dark:text-white font-bold cursor-pointer"
                     >
                       −
                     </motion.button>
-                    <span className="w-10 text-center text-xs font-bold">
+                    <span className="w-10 text-center text-xs font-bold text-[#111111] dark:text-white">
                       {quantity}
                     </span>
                     <motion.button
                       whileTap={{ scale: 0.85 }}
                       onClick={() => setQuantity((q) => q + 1)}
-                      className="w-8 h-8 flex items-center justify-center hover:bg-[#F2F2F2] font-bold cursor-pointer"
+                      className="w-8 h-8 flex items-center justify-center hover:bg-[#F2F2F2] dark:hover:bg-white/10 text-[#111111] dark:text-white font-bold cursor-pointer"
                     >
                       +
                     </motion.button>
@@ -263,7 +273,7 @@ export default function BluorngPDP({
                   whileHover={{ scale: 1.01 }}
                   transition={{ duration: 0.2 }}
                   onClick={handleAddToCartClick}
-                  className="w-full py-4 bg-[#FFFFFF] hover:bg-[#111111] text-[#111111] hover:text-white border-2 border-[#111111] text-[12px] font-bold uppercase tracking-[0.22em] transition-colors duration-300 shadow-sm flex items-center justify-center gap-2 cursor-pointer will-change-transform"
+                  className="w-full py-4 bg-[#FFFFFF] dark:bg-[#18171E] hover:bg-[#111111] dark:hover:bg-[#C4823F] text-[#111111] dark:text-white hover:text-white dark:hover:text-white border-2 border-[#111111] dark:border-white/20 dark:hover:border-[#C4823F] text-[12px] font-bold uppercase tracking-[0.04em] transition-colors duration-300 shadow-sm flex items-center justify-center gap-2 cursor-pointer will-change-transform"
                 >
                   <span>Add To Bag • {formatPrice(currentPrice * quantity, activeCurrency)}</span>
                 </motion.button>
@@ -274,20 +284,20 @@ export default function BluorngPDP({
                   whileHover={{ scale: 1.01 }}
                   transition={{ duration: 0.2 }}
                   onClick={handleBuyNowClick}
-                  className="w-full py-4 bg-[#111111] hover:bg-[#C4823F] text-white text-[12px] font-bold uppercase tracking-[0.22em] transition-colors duration-300 shadow-xl cursor-pointer will-change-transform"
+                  className="w-full py-4 bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[12px] font-bold uppercase tracking-[0.04em] transition-colors duration-300 shadow-xl cursor-pointer will-change-transform"
                 >
                   Buy It Now
                 </motion.button>
               </div>
 
               {/* ================= ACCORDION SPECIFICATIONS ================= */}
-              <div className="pt-4 border-t border-[#E5E5E5] divide-y divide-[#EEEEEE] text-[12px]">
+              <div className="pt-4 border-t border-[#E5E5E5] dark:border-white/10 divide-y divide-[#EEEEEE] dark:divide-white/10 text-[12px]">
                 
                 {/* Fragrance Notes */}
                 <div className="py-3">
                   <button
                     onClick={() => toggleAccordion('notes')}
-                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] cursor-pointer"
+                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] dark:text-white cursor-pointer"
                   >
                     <span>Fragrance Notes & Pyramid</span>
                     <span className="text-[14px]">{openAccordion === 'notes' ? '−' : '+'}</span>
@@ -299,18 +309,18 @@ export default function BluorngPDP({
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden pt-3 pb-1 space-y-2.5 text-[#555555] text-[11.5px]"
+                        className="overflow-hidden pt-3 pb-1 space-y-2.5 text-[#555555] dark:text-[#B3AFA8] text-[11.5px]"
                       >
                         <div>
-                          <strong className="text-[#111111] uppercase tracking-wide text-[10.5px]">Top Notes:</strong>
+                          <strong className="text-[#111111] dark:text-white uppercase tracking-wide text-[10.5px]">Top Notes:</strong>
                           <p>{product.notes?.top?.join(' · ') || 'Wild Bergamot, Saffron, Crushed Pepper'}</p>
                         </div>
                         <div>
-                          <strong className="text-[#111111] uppercase tracking-wide text-[10.5px]">Heart Notes:</strong>
+                          <strong className="text-[#111111] dark:text-white uppercase tracking-wide text-[10.5px]">Heart Notes:</strong>
                           <p>{product.notes?.heart?.join(' · ') || '18-Year Aged Oud, Taif Rose, Resinous Lichen'}</p>
                         </div>
                         <div>
-                          <strong className="text-[#111111] uppercase tracking-wide text-[10.5px]">Base Notes:</strong>
+                          <strong className="text-[#111111] dark:text-white uppercase tracking-wide text-[10.5px]">Base Notes:</strong>
                           <p>{product.notes?.base?.join(' · ') || 'Mysore Sandalwood, Flint Mineral, Dark Ambergris'}</p>
                         </div>
                       </motion.div>
@@ -322,7 +332,7 @@ export default function BluorngPDP({
                 <div className="py-3">
                   <button
                     onClick={() => toggleAccordion('desc')}
-                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] cursor-pointer"
+                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] dark:text-white cursor-pointer"
                   >
                     <span>Olfactory Character & Sillage</span>
                     <span className="text-[14px]">{openAccordion === 'desc' ? '−' : '+'}</span>
@@ -334,10 +344,10 @@ export default function BluorngPDP({
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden pt-3 pb-1 text-[#555555] leading-relaxed text-[11.5px]"
+                        className="overflow-hidden pt-3 pb-1 text-[#555555] dark:text-[#B3AFA8] leading-relaxed text-[11.5px]"
                       >
                         <p>{product.description}</p>
-                        <p className="mt-2 text-[10.5px] text-[#777777]">
+                        <p className="mt-2 text-[10.5px] text-[#777777] dark:text-[#A09D96]">
                           Concentration: {product.concentration} · Designed for monumental 18-24 hour projection.
                         </p>
                       </motion.div>
@@ -349,7 +359,7 @@ export default function BluorngPDP({
                 <div className="py-3">
                   <button
                     onClick={() => toggleAccordion('shipping')}
-                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] cursor-pointer"
+                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] dark:text-white cursor-pointer"
                   >
                     <span>Shipping & Test-First Guarantee</span>
                     <span className="text-[14px]">{openAccordion === 'shipping' ? '−' : '+'}</span>
@@ -361,13 +371,13 @@ export default function BluorngPDP({
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden pt-3 pb-1 text-[#555555] leading-relaxed text-[11.5px] space-y-1.5"
+                        className="overflow-hidden pt-3 pb-1 text-[#555555] dark:text-[#B3AFA8] leading-relaxed text-[11.5px] space-y-1.5"
                       >
                         <p>
-                          📦 <strong>Complimentary 2ml Sample Included:</strong> Test the sample vial before opening the sealed crystal flacon. If not deeply captivated, return the unopened flacon for a 100% full refund.
+                          📦 <strong className="text-[#111111] dark:text-white">Complimentary 2ml Sample Included:</strong> Test the sample vial before opening the sealed crystal flacon. If not deeply captivated, return the unopened flacon for a 100% full refund.
                         </p>
                         <p>
-                          ✈️ <strong>Express Courier:</strong> Dispatched within 24 hours via temperature-controlled air freight.
+                          ✈️ <strong className="text-[#111111] dark:text-white">Express Courier:</strong> Dispatched within 24 hours via temperature-controlled air freight.
                         </p>
                       </motion.div>
                     )}
@@ -382,12 +392,12 @@ export default function BluorngPDP({
         </div>
 
         {/* ================= RELATED / PAIR WITH SECTION ================= */}
-        <ScrollReveal variant="fade-up" className="mt-16 pt-12 border-t border-[#E5E5E5]">
+        <ScrollReveal variant="fade-up" className="mt-16 pt-12 border-t border-[#E5E5E5] dark:border-white/10">
           <div className="mb-6">
-            <span className="text-[10px] font-bold tracking-[0.24em] uppercase text-[#C4823F]">
+            <span className="text-[10px] font-bold tracking-[0.06em] uppercase text-[#C4823F]">
               Curated Pairings
             </span>
-            <h2 className="text-[20px] sm:text-[24px] font-black uppercase tracking-[0.14em] text-[#111111]">
+            <h2 className="text-[20px] sm:text-[24px] font-black uppercase tracking-[0.02em] text-[#111111] dark:text-white">
               You May Also Appreciate
             </h2>
           </div>

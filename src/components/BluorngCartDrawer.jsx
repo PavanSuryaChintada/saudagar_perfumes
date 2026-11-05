@@ -79,23 +79,23 @@ export default function BluorngCartDrawer({
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
-              className="w-screen max-w-md bg-[#FFFFFF] text-[#111111] flex flex-col justify-between shadow-2xl border-l border-[#E5E5E5]"
+              className="w-screen max-w-md bg-[#FFFFFF] dark:bg-[#0E0C10] text-[#111111] dark:text-white flex flex-col justify-between shadow-2xl transition-colors duration-300"
             >
           
           {/* ================= HEADER ================= */}
-          <div className="p-4 sm:p-5 border-b border-[#E5E5E5] flex items-center justify-between">
+          <div className="p-4 sm:p-5 flex items-center justify-between text-[#111111] dark:text-white">
             <div className="flex items-center gap-2">
-              <h2 className="text-[14px] font-bold tracking-[0.18em] uppercase text-[#111111]">
+              <h2 className="text-[14px] font-bold tracking-[0.04em] uppercase text-[#111111] dark:text-white">
                 Your Shopping Bag
               </h2>
-              <span className="text-[12px] text-[#777777] font-medium">
+              <span className="text-[12px] text-[#777777] dark:text-white/60 font-medium">
                 ({cart.reduce((s, i) => s + i.quantity, 0)})
               </span>
             </div>
 
             <button
               onClick={onClose}
-              className="p-1.5 text-[#111111] hover:text-[#C4823F] transition-colors"
+              className="p-1.5 text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors cursor-pointer"
               aria-label="Close cart"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -106,19 +106,19 @@ export default function BluorngCartDrawer({
           </div>
 
           {/* ================= FREE SHIPPING PROGRESS BAR ================= */}
-          <div className="bg-[#FAF9F6] p-3.5 border-b border-[#EEEEEE] text-[11px]">
+          <div className="bg-[#FAF9F6] dark:bg-[#141318] p-3.5 text-[11px] text-[#111111] dark:text-white transition-colors">
             <div className="flex items-center justify-between font-semibold tracking-wider uppercase mb-1.5">
               {amountToFreeShipping > 0 ? (
                 <span>Add {formatPrice(amountToFreeShipping, activeCurrency)} more for Free Express Courier</span>
               ) : (
-                <span className="text-emerald-700 font-bold flex items-center gap-1">
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
                   ✓ Congratulations! You unlocked Free Worldwide Express Shipping
                 </span>
               )}
             </div>
-            <div className="w-full h-1.5 bg-[#E5E5E5] rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-[#E5E5E5] dark:bg-white/10 rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#111111] transition-all duration-300"
+                className="h-full bg-[#111111] dark:bg-[#C4823F] transition-all duration-300"
                 style={{ width: `${freeShippingProgress}%` }}
               />
             </div>
@@ -143,7 +143,7 @@ export default function BluorngCartDrawer({
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-3 px-6 py-2.5 bg-[#111111] hover:bg-[#C4823F] text-white text-[11px] font-bold uppercase tracking-widest transition-colors"
+                  className="mt-3 px-6 py-2.5 bg-[#111111] hover:bg-[#C4823F] text-white text-[11px] font-bold uppercase tracking-wide transition-colors"
                 >
                   Continue Browsing
                 </button>
@@ -158,10 +158,10 @@ export default function BluorngCartDrawer({
                 return (
                   <div
                     key={`${item.productId}-${item.size}-${index}`}
-                    className="flex gap-3.5 pb-4 border-b border-[#F0F0F0]"
+                    className="flex gap-3.5 pb-4"
                   >
                     {/* Thumbnail */}
-                    <div className="w-20 aspect-[4/5] bg-[#F7F7F6] flex items-center justify-center p-1.5 overflow-hidden rounded-xs shrink-0 border border-[#EEEEEE]">
+                    <div className="w-20 aspect-[4/5] bg-[#F7F7F6] dark:bg-[#18171C] flex items-center justify-center p-1.5 overflow-hidden rounded-xs shrink-0 transition-colors">
                       <img
                         src={itemImage}
                         alt={itemName}
@@ -173,12 +173,12 @@ export default function BluorngCartDrawer({
                     <div className="flex-1 flex flex-col justify-between text-[11.5px]">
                       <div>
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-bold uppercase tracking-wider text-[#111111] leading-tight">
+                          <h4 className="font-bold uppercase tracking-wider text-[#111111] dark:text-white leading-tight">
                             {itemName}
                           </h4>
                           <button
                             onClick={() => onRemoveItem(index)}
-                            className="text-[#999999] hover:text-rose-600 transition-colors"
+                            className="text-[#999999] dark:text-white/40 hover:text-rose-500 transition-colors cursor-pointer"
                             title="Remove item"
                             aria-label="Remove item"
                           >
@@ -186,8 +186,8 @@ export default function BluorngCartDrawer({
                           </button>
                         </div>
 
-                        <p className="text-[10px] text-[#777777] uppercase tracking-wider mt-1">
-                          Size: <span className="text-[#111111] font-semibold">{item.size || '50ML'}</span>
+                        <p className="text-[10px] text-[#777777] dark:text-white/60 uppercase tracking-wider mt-1">
+                          Size: <span className="text-[#111111] dark:text-white font-semibold">{item.size || '50ML'}</span>
                         </p>
 
                         {item.engraving && (
@@ -199,27 +199,27 @@ export default function BluorngCartDrawer({
 
                       {/* Quantity Stepper & Price Row */}
                       <div className="flex items-center justify-between mt-2 pt-1">
-                        <div className="flex items-center border border-[#CCCCCC] rounded-xs overflow-hidden">
+                        <div className="flex items-center bg-black/[0.05] dark:bg-white/10 rounded-full overflow-hidden">
                           <button
                             onClick={() => onUpdateQuantity(index, -1)}
-                            className="w-6 h-6 flex items-center justify-center text-xs hover:bg-[#F2F2F2] transition-colors"
+                            className="w-6 h-6 flex items-center justify-center text-xs hover:bg-black/[0.08] dark:hover:bg-white/20 transition-colors cursor-pointer"
                             aria-label="Decrease quantity"
                           >
                             −
                           </button>
-                          <span className="w-8 text-center text-xs font-bold">
+                          <span className="w-8 text-center text-xs font-bold text-[#111111] dark:text-white">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => onUpdateQuantity(index, 1)}
-                            className="w-6 h-6 flex items-center justify-center text-xs hover:bg-[#F2F2F2] transition-colors"
+                            className="w-6 h-6 flex items-center justify-center text-xs hover:bg-black/[0.08] dark:hover:bg-white/20 transition-colors cursor-pointer"
                             aria-label="Increase quantity"
                           >
                             +
                           </button>
                         </div>
 
-                        <span className="font-bold text-[12.5px] text-[#111111]">
+                        <span className="font-bold text-[12.5px] text-[#111111] dark:text-white">
                           {formatPrice(itemPrice * item.quantity, activeCurrency)}
                         </span>
                       </div>
@@ -232,13 +232,13 @@ export default function BluorngCartDrawer({
 
           {/* ================= FOOTER / PROMO / CHECKOUT ================= */}
           {cart.length > 0 && (
-            <div className="p-4 sm:p-5 bg-[#FFFFFF] border-t border-[#E5E5E5] space-y-3.5">
+            <div className="p-4 sm:p-5 bg-white dark:bg-[#0E0C10] text-[#111111] dark:text-white space-y-3.5 transition-colors">
               
               {/* Order Note Toggle */}
               <div>
                 <button
                   onClick={() => setIsNoteOpen(!isNoteOpen)}
-                  className="text-[10.5px] font-semibold tracking-wider uppercase text-[#777777] hover:text-[#111111] flex items-center gap-1"
+                  className="text-[10.5px] font-semibold tracking-wider uppercase text-[#777777] dark:text-white/60 hover:text-[#111111] dark:hover:text-white flex items-center gap-1 cursor-pointer"
                 >
                   <span>{isNoteOpen ? '− Hide Gift Note' : '+ Add Complimentary Gift Note'}</span>
                 </button>
@@ -248,7 +248,7 @@ export default function BluorngCartDrawer({
                     value={orderNote}
                     onChange={(e) => setOrderNote(e.target.value)}
                     placeholder="Enter recipient's name or custom gift note for calligraphy card..."
-                    className="w-full mt-2 p-2 border border-[#CCCCCC] text-[11px] rounded-xs outline-none focus:border-[#111111]"
+                    className="w-full mt-2 p-2.5 bg-black/[0.05] dark:bg-white/[0.07] text-[#111111] dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11px] rounded-xs outline-none"
                   />
                 )}
               </div>
@@ -260,18 +260,18 @@ export default function BluorngCartDrawer({
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
                   placeholder="PROMO CODE (e.g. SAUDAGAR10)"
-                  className="flex-1 px-3 py-2 border border-[#CCCCCC] rounded-xs text-[11px] tracking-wider uppercase outline-none focus:border-[#111111]"
+                  className="flex-1 px-3 py-2 bg-black/[0.05] dark:bg-white/[0.07] text-[#111111] dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 rounded-xs text-[11px] tracking-wider uppercase outline-none"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#111111] hover:bg-[#C4823F] text-white text-[10.5px] font-bold uppercase tracking-widest transition-colors rounded-xs"
+                  className="px-4 py-2 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[10.5px] font-bold uppercase tracking-wide transition-colors rounded-xs cursor-pointer"
                 >
                   Apply
                 </button>
               </form>
 
               {discountSuccess && (
-                <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wide">
+                <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wide">
                   ✓ {discountSuccess}
                 </p>
               )}
@@ -282,31 +282,31 @@ export default function BluorngCartDrawer({
               )}
 
               {/* Totals Summary */}
-              <div className="space-y-1.5 text-[11.5px] pt-1 border-t border-[#F0F0F0]">
-                <div className="flex justify-between text-[#777777]">
+              <div className="space-y-1.5 text-[11.5px] pt-1">
+                <div className="flex justify-between text-[#777777] dark:text-white/60">
                   <span>Subtotal</span>
                   <span>{formatPrice(rawSubtotal, activeCurrency)}</span>
                 </div>
 
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-emerald-600 font-semibold">
+                  <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
                     <span>VIP Privilege ({discountPercent}%)</span>
                     <span>-{formatPrice(discountAmount, activeCurrency)}</span>
                   </div>
                 )}
 
-                <div className="flex justify-between text-[#777777]">
+                <div className="flex justify-between text-[#777777] dark:text-white/60">
                   <span>Estimated Shipping</span>
                   <span>
                     {amountToFreeShipping === 0 ? 'FREE' : formatPrice(250, activeCurrency)}
                   </span>
                 </div>
 
-                <div className="flex justify-between text-[14px] font-bold text-[#111111] pt-1.5 border-t border-[#EEEEEE]">
+                <div className="flex justify-between text-[14px] font-bold text-[#111111] dark:text-white pt-1.5">
                   <span className="uppercase tracking-wider">Total</span>
                   <span>{formatPrice(finalTotal, activeCurrency)}</span>
                 </div>
-                <p className="text-[9.5px] text-[#888888]">
+                <p className="text-[9.5px] text-[#888888] dark:text-white/40">
                   Taxes and insured worldwide courier calculated at checkout.
                 </p>
               </div>
@@ -323,7 +323,7 @@ export default function BluorngCartDrawer({
                     note: orderNote
                   });
                 }}
-                className="w-full py-3.5 bg-[#111111] hover:bg-[#C4823F] text-white text-[12px] font-bold uppercase tracking-[0.2em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group"
+                className="w-full py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
               >
                 <span>Proceed to Checkout</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>

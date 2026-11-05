@@ -3,7 +3,7 @@
 
 export const CURRENCIES = {
   INR: { code: 'INR', symbol: 'RS. ', rate: 1, label: 'INR (₹)' },
-  AED: { code: 'AED', symbol: 'AED ', rate: 0.044, label: 'AED (د.إ)' },
+  AED: { code: 'AED', symbol: 'AED ', rate: 0.044, label: 'AED (UAE Dirham)' },
   USD: { code: 'USD', symbol: '$', rate: 0.012, label: 'USD ($)' },
   EUR: { code: 'EUR', symbol: '€', rate: 0.011, label: 'EUR (€)' },
   GBP: { code: 'GBP', symbol: '£', rate: 0.0095, label: 'GBP (£)' }

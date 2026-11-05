@@ -29,6 +29,7 @@ import {
   getStoredWishlist,
   setStoredWishlist
 } from './data/bluorngSaudagarData.js';
+import { resolveCollectionTheme } from './data/collectionThemes.js';
 
 export default function App() {
   // Navigation State: 'home' | 'product' | 'collection'
@@ -40,6 +41,34 @@ export default function App() {
   const [activeCurrency, setActiveCurrency] = useState(getStoredCurrency());
   const [cart, setCart] = useState(getStoredCart());
   const [wishlist, setWishlist] = useState(getStoredWishlist());
+
+  // Theme State: 'dark' (Noir Obsidian Luxury) | 'light' (Editorial Clean Canvas)
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('saudagar_theme') || 'dark';
+  });
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.body.classList.add('dark');
+      document.documentElement.style.colorScheme = 'dark';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.body.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
+    }
+    localStorage.setItem('saudagar_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const nextTheme = prev === 'dark' ? 'light' : 'dark';
+      triggerToast(nextTheme === 'dark' ? 'Switched to Noir Obsidian Theme' : 'Switched to Editorial Light Theme');
+      return nextTheme;
+    });
+  };
 
   // Modals & Overlays State
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -59,22 +88,46 @@ export default function App() {
     }, 3200);
   };
 
-  // URL Sync
+  // URL Sync supporting both /collections/:slug and ?collection=:slug
   useEffect(() => {
     const handleUrl = () => {
+      const pathname = window.location.pathname;
       const params = new URLSearchParams(window.location.search);
       const prodId = params.get('id');
       const cat = params.get('collection');
 
+      // Product route check
+      if (pathname.startsWith('/product/')) {
+        const pId = pathname.replace('/product/', '').replace(/\/$/, '');
+        if (ALL_PRODUCTS.some((p) => p.id === pId)) {
+          setSelectedProductId(pId);
+          setView('product');
+          return;
+        }
+      }
+
       if (prodId && ALL_PRODUCTS.some((p) => p.id === prodId)) {
         setSelectedProductId(prodId);
         setView('product');
-      } else if (cat) {
+        return;
+      }
+
+      // Dedicated collection routes (/collections/signature, /collections/royal, /collections/exotic)
+      if (pathname.startsWith('/collections/')) {
+        const colSlug = pathname.replace('/collections/', '').replace(/\/$/, '');
+        setSelectedCategory(colSlug || 'signature');
+        setView('collection');
+        return;
+      }
+
+      if (cat) {
         setSelectedCategory(cat);
         setView('collection');
-      } else {
-        setView('home');
+        return;
       }
+
+      // Root path
+      setView('home');
     };
 
     handleUrl();
@@ -82,7 +135,7 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleUrl);
   }, []);
 
-  // Title Update
+  // Dynamic Themed Title Update
   useEffect(() => {
     if (view === 'product') {
       const prod = ALL_PRODUCTS.find((p) => p.id === selectedProductId);
@@ -90,7 +143,8 @@ export default function App() {
         document.title = `${prod.name} | SAUDAGAR PERFUMES · Haute Parfumerie`;
       }
     } else if (view === 'collection') {
-      document.title = `${selectedCategory.toUpperCase()} COLLECTIONS | SAUDAGAR PERFUMES`;
+      const currentTheme = resolveCollectionTheme(selectedCategory);
+      document.title = `${currentTheme.name.toUpperCase()} · ${currentTheme.headline} | SAUDAGAR PERFUMES`;
     } else {
       document.title = 'SAUDAGAR PERFUMES | Haute Parfumerie & Artisanal Fragrances';
     }
@@ -102,35 +156,29 @@ export default function App() {
   const navigateToProduct = (id) => {
     setSelectedProductId(id);
     setView('product');
-    const newUrl = `${window.location.pathname}?id=${id}`;
+    const newUrl = `/product/${id}`;
     window.history.pushState({ id }, '', newUrl);
     scrollTo(0, { duration: 0.85 });
   };
 
   const navigateToHome = () => {
     setView('home');
-    window.history.pushState({}, '', window.location.pathname);
+    window.history.pushState({}, '', '/');
     scrollTo(0, { duration: 0.85 });
   };
 
-  const navigateToCollection = (categorySlug = 'all') => {
-    setSelectedCategory(categorySlug);
+  const navigateToCollection = (categorySlug = 'signature') => {
+    let target = categorySlug;
+    if (categorySlug === 'all') target = 'signature';
+    setSelectedCategory(target);
     setView('collection');
-    const newUrl = `${window.location.pathname}?collection=${categorySlug}`;
-    window.history.pushState({ categorySlug }, '', newUrl);
+    const newUrl = `/collections/${target}`;
+    window.history.pushState({ categorySlug: target }, '', newUrl);
     scrollTo(0, { duration: 0.85 });
   };
 
   const scrollToStores = () => {
-    if (view !== 'home') {
-      setView('home');
-      window.history.pushState({}, '', window.location.pathname);
-      setTimeout(() => {
-        scrollTo('#stores-section', { offset: -68, duration: 1.2 });
-      }, 150);
-    } else {
-      scrollTo('#stores-section', { offset: -68, duration: 1.2 });
-    }
+    triggerToast('Private Boutique Concierge: Delhi, Mumbai & Dubai salons available by appointment.');
   };
 
   // Currency Handler
@@ -227,17 +275,18 @@ export default function App() {
   };
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#111111] flex flex-col font-sans selection:bg-[#C4823F] selection:text-white">
+    <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-[#FFFFFF] flex flex-col font-sans selection:bg-[#C4823F] selection:text-white transition-colors duration-300">
       {/* Toast Notification */}
       <Toast message={toastMessage} />
 
-      {/* 1. MAIN HEADER (Logo, mega menu, search, story, stores, cart badge, 2-line toggle) */}
+      {/* 1. MAIN HEADER (Logo, mega menu, search, story, stores, cart badge, theme toggle) */}
       <BluorngHeader
         isHomePage={view === 'home'}
         cartCount={totalCartCount}
         wishlistCount={wishlist.length}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenStory={() => setIsStoryOpen(true)}
@@ -273,6 +322,8 @@ export default function App() {
               onSelectProduct={navigateToProduct}
               onQuickBuy={(prod) => setQuickBuyProduct(prod)}
               onNavigateHome={navigateToHome}
+              onNavigateCollection={navigateToCollection}
+              onOpenStory={() => setIsStoryOpen(true)}
             />
           ) : (
             <BluorngHome
@@ -294,6 +345,8 @@ export default function App() {
       <BluorngFooter
         activeCurrency={activeCurrency}
         onCurrencyChange={handleCurrencyChange}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         onNavigateHome={navigateToHome}
         onNavigateCollection={navigateToCollection}
         onScrollToStores={scrollToStores}
@@ -303,6 +356,8 @@ export default function App() {
       {/* 5. MOBILE BOTTOM NAVIGATION (Explore, Account, Stories, Boutiques, Bag) */}
       <BluorngMobileBottomNav
         cartCount={totalCartCount}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         onNavigateHome={navigateToHome}
         onNavigateCollection={navigateToCollection}
         onScrollToStores={scrollToStores}
@@ -371,6 +426,8 @@ export default function App() {
         onClose={() => setIsNavDrawerOpen(false)}
         activeCurrency={activeCurrency}
         onCurrencyChange={handleCurrencyChange}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         onNavigateHome={navigateToHome}
         onNavigateCollection={navigateToCollection}
         onScrollToStores={scrollToStores}
