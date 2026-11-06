@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ALL_PRODUCTS, formatPrice } from '../data/bluorngSaudagarData.js';
 import BluorngProductCard from './BluorngProductCard.jsx';
+import BluorngProductReviews from './BluorngProductReviews.jsx';
 import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
-import MagneticButton from './motion/MagneticButton.jsx';
+import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
 
 export default function BluorngPDP({
   productId,
   activeCurrency = 'INR',
+  cartCount = 0,
+  wishlist = [],
+  onToggleWishlist,
+  theme = 'light',
+  onToggleTheme,
+  onOpenCart,
+  onOpenSearch,
+  onOpenStory,
+  onOpenNavDrawer,
   onSelectProduct,
   onAddToCart,
   onBuyNow,
@@ -15,19 +25,124 @@ export default function BluorngPDP({
   onNavigateCollection
 }) {
   const product = ALL_PRODUCTS.find((p) => p.id === productId) || ALL_PRODUCTS[0];
+  const isCurrentWishlisted = wishlist.includes(product.id);
 
   const images = product.images && product.images.length > 0
     ? product.images
-    : [product.image || '/images/crystal_square_flacon.png'];
+    : [product.image || '/images/saudagar_amber_gold.png'];
 
   const [activeImgIdx, setActiveImgIdx] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(
-    product.sizes?.[0] || { ml: 50, label: '50ML', price: product.price }
-  );
+  const [mobileImgIdx, setMobileImgIdx] = useState(0);
+  const trackRef = useRef(null);
+  const { scrollTo } = useSmoothScroll();
+
+  // Ensure immediate scroll reset and state sync when PDP mounts or product changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (window.__lenis) {
+      window.__lenis.scrollTo(0, { immediate: true });
+    }
+    setActiveImgIdx(0);
+    setMobileImgIdx(0);
+  }, [productId]);
+
+  // Track scroll progress through the pinned hero section (Desktop)
+  const { scrollYProgress } = useScroll({
+    target: trackRef,
+    offset: ['start start', 'end end']
+  });
+
+  const numImgs = images.length;
+  const keyframesInput = numImgs === 3
+    ? [0, 0.24, 0.40, 0.64, 0.76, 1]
+    : numImgs === 2
+    ? [0, 0.35, 0.65, 1]
+    : [0, 1];
+
+  const keyframesOutput = numImgs === 3
+    ? ['0%', '0%', '-100%', '-100%', '-200%', '-200%']
+    : numImgs === 2
+    ? ['0%', '0%', '-100%', '-100%']
+    : ['0%', '0%'];
+
+  const yTransform = useTransform(scrollYProgress, keyframesInput, keyframesOutput);
+
+  // Sync the desktop active indicator dot based on scroll progress
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on('change', (latest) => {
+      let newIdx = 0;
+      if (numImgs >= 3) {
+        if (latest < 0.32) newIdx = 0;
+        else if (latest < 0.70) newIdx = 1;
+        else newIdx = 2;
+      } else if (numImgs === 2) {
+        newIdx = latest < 0.5 ? 0 : 1;
+      } else {
+        newIdx = 0;
+      }
+      setActiveImgIdx(newIdx);
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress, numImgs]);
+
+  // Desktop dot click handler
+  const handleDotClick = (targetIdx) => {
+    if (!trackRef.current) return;
+    const rect = trackRef.current.getBoundingClientRect();
+    const trackTop = window.scrollY + rect.top;
+    const totalScrollable = trackRef.current.offsetHeight - window.innerHeight;
+
+    let targetRatio = 0;
+    if (numImgs >= 3) {
+      if (targetIdx === 0) targetRatio = 0.12;
+      else if (targetIdx === 1) targetRatio = 0.52;
+      else targetRatio = 0.88;
+    } else if (numImgs === 2) {
+      targetRatio = targetIdx === 0 ? 0.15 : 0.85;
+    }
+
+    const targetScrollY = trackTop + targetRatio * totalScrollable;
+    if (scrollTo) {
+      scrollTo(targetScrollY, { duration: 0.8 });
+    } else {
+      window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+    }
+  };
+
+  // Mobile horizontal swipe handler (Left & Right swipe)
+  const handleMobileSwipe = (e, info) => {
+    if (images.length <= 1) return;
+    const swipeThreshold = 40;
+    const velocityThreshold = 350;
+
+    if (info.offset.x < -swipeThreshold || info.velocity.x < -velocityThreshold) {
+      // Swiped Left -> Next image
+      setMobileImgIdx((prev) => (prev + 1) % images.length);
+    } else if (info.offset.x > swipeThreshold || info.velocity.x > velocityThreshold) {
+      // Swiped Right -> Previous image
+      setMobileImgIdx((prev) => (prev - 1 + images.length) % images.length);
+    }
+  };
+
+  // Available sizes
+  const defaultSizes = [
+    { ml: 50, label: '50 ml', price: product.price || 5500 },
+    { ml: 75, label: '75 ml', price: Math.round((product.price || 5500) * 1.35) },
+    { ml: 100, label: '100 ml', price: Math.round((product.price || 5500) * 1.62) }
+  ];
+
+  const sizes = product.sizes && product.sizes.length >= 2
+    ? product.sizes.map((sz, idx) => ({
+        ml: sz.ml || (idx === 0 ? 50 : idx === 1 ? 75 : 100),
+        label: `${sz.ml || (idx === 0 ? 50 : idx === 1 ? 75 : 100)} ml`,
+        price: sz.price || product.price
+      }))
+    : defaultSizes;
+
+  const [selectedSize, setSelectedSize] = useState(sizes[0]);
   const [quantity, setQuantity] = useState(1);
   const [engraving, setEngraving] = useState('');
-  const [isEngravingOpen, setIsEngravingOpen] = useState(false);
-  const [openAccordion, setOpenAccordion] = useState('notes'); // 'notes' | 'desc' | 'shipping' | 'craft'
+  const [openAccordion, setOpenAccordion] = useState(null);
 
   const currentPrice = selectedSize.price || product.price;
 
@@ -36,368 +151,711 @@ export default function BluorngPDP({
   };
 
   const handleAddToCartClick = () => {
-    onAddToCart({
-      productId: product.id,
-      size: selectedSize.label,
-      price: currentPrice,
-      quantity,
-      engraving
-    });
+    if (onAddToCart) {
+      onAddToCart({
+        productId: product.id,
+        size: selectedSize.label,
+        price: currentPrice,
+        quantity,
+        engraving
+      });
+    }
   };
 
-  const handleBuyNowClick = () => {
-    onBuyNow({
-      productId: product.id,
-      size: selectedSize.label,
-      price: currentPrice,
-      quantity,
-      engraving
-    });
+  const getDeliveryDateString = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 4);
+    const weekday = d.toLocaleDateString('en-US', { weekday: 'long' });
+    const day = d.getDate();
+    const suffix =
+      day % 10 === 1 && day !== 11
+        ? 'st'
+        : day % 10 === 2 && day !== 12
+        ? 'nd'
+        : day % 10 === 3 && day !== 13
+        ? 'rd'
+        : 'th';
+    const month = d.toLocaleDateString('en-US', { month: 'long' });
+    return `${weekday} ${day}${suffix} of ${month}`;
   };
 
-  // Related products
-  const relatedProducts = ALL_PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4);
+  const cleanTitle = (product.name || 'Saudagar Extrait')
+    .replace(/^saudagar\s+/i, '')
+    .toUpperCase();
+
+  const categoryPrefix = product.category
+    ? product.category.split(' ')[0].toUpperCase()
+    : 'EXTRAIT';
+
+  const allInCat = ALL_PRODUCTS.filter((p) => p.category === product.category);
+  const currentIdx = Math.max(0, allInCat.findIndex((p) => p.id === product.id));
+  const num = String(currentIdx + 1).padStart(2, '0');
+  const total = String(Math.max(1, allInCat.length)).padStart(2, '0');
+
+  const relatedProducts = ALL_PRODUCTS
+    .filter((p) => p.id !== product.id)
+    .slice(0, 4);
+
+  // Animations
+  const flaconHeroVariants = {
+    hidden: { scale: 0.92, y: 32, opacity: 0 },
+    visible: {
+      scale: 1,
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.65,
+        ease: [0.16, 1, 0.3, 1]
+      }
+    }
+  };
+
+  const auraVariants = {
+    hidden: { scale: 0.6, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: 'easeOut'
+      }
+    }
+  };
+
+  const monographContainerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.055,
+        delayChildren: 0.08
+      }
+    }
+  };
+
+  const monographItemVariants = {
+    hidden: { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.48,
+        ease: [0.16, 1, 0.3, 1]
+      }
+    }
+  };
+
+  // Render monograph details (shared between desktop right column and mobile body)
+  const renderMonographDetails = (isMobile = false) => (
+    <motion.div
+      key={`monograph-${product.id}-${isMobile ? 'm' : 'd'}`}
+      variants={monographContainerVariants}
+      initial="hidden"
+      animate="visible"
+      className={`${isMobile ? 'w-full py-4' : 'my-auto py-8 sm:py-12 max-w-[420px] w-full mx-auto lg:mx-0'}`}
+    >
+      {/* 1. Sub-label with Pill Badge & Reviews Anchor */}
+      <motion.div variants={monographItemVariants} className="flex items-center justify-between gap-2 mb-2.5">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#FFF7ED] dark:bg-[#D4AF37]/15 text-[#C4823F] dark:text-[#ECC86A] text-[10.5px] font-medium tracking-wider uppercase border border-[#C4823F]/20 dark:border-[#D4AF37]/30">
+            {categoryPrefix}
+          </span>
+          <span className="text-[12px] sm:text-[13px] text-[#777777] dark:text-[#999999] font-normal tracking-[0.02em]">
+            no. {num} / {total}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            const el = document.getElementById('reviews-section');
+            if (el) {
+              if (window.__lenis) {
+                window.__lenis.scrollTo(el, { offset: -20 });
+              } else {
+                el.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
+          }}
+          className="inline-flex items-center gap-1.5 text-[11px] text-[#C4823F] dark:text-[#ECC86A] hover:underline cursor-pointer select-none"
+          title="Jump to Client Reviews"
+        >
+          <span className="tracking-tight text-[10.5px]">★★★★★</span>
+          <span className="font-semibold text-[#111111] dark:text-white">4.9</span>
+          <span className="text-[#888888] dark:text-white/40">({product.reviewsCount || 42})</span>
+        </button>
+      </motion.div>
+
+      {/* 2. Product Title */}
+      <motion.h1
+        variants={monographItemVariants}
+        className="font-sans font-normal text-[28px] sm:text-[36px] lg:text-[42px] tracking-[-0.015em] text-[#111111] dark:text-white leading-[1.14] mb-3"
+      >
+        {cleanTitle}
+      </motion.h1>
+
+      {/* 3. Description Paragraph */}
+      <motion.p
+        variants={monographItemVariants}
+        className="font-sans font-light text-[13px] sm:text-[13.5px] leading-[1.68] text-[#333333] dark:text-[#CCCCCC] mb-6"
+      >
+        {product.description}
+      </motion.p>
+
+      {/* 4. Size / Volume Selectors */}
+      <motion.div variants={monographItemVariants} className="flex items-center gap-2.5 sm:gap-3 mb-6">
+        {sizes.map((sz) => {
+          const isSelected = selectedSize.label === sz.label;
+          return (
+            <button
+              key={sz.label}
+              onClick={() => setSelectedSize(sz)}
+              className={`min-w-[78px] sm:min-w-[84px] h-[38px] px-4 rounded-[2px] text-[12px] font-normal transition-all flex items-center justify-center cursor-pointer ${
+                isSelected
+                  ? 'bg-[#111111] text-white border border-[#111111] dark:bg-[#D4AF37] dark:text-[#0B0A0D] dark:border-[#D4AF37] shadow-[0_3px_12px_rgba(212,175,55,0.25)] font-medium'
+                  : 'bg-white text-[#111111] border border-[#E0D4D6] hover:border-[#C4823F] hover:text-[#C4823F] dark:bg-transparent dark:text-white dark:border-white/20 dark:hover:border-[#ECC86A] dark:hover:text-[#ECC86A]'
+              }`}
+            >
+              {sz.label}
+            </button>
+          );
+        })}
+      </motion.div>
+
+      {/* 5. Tenet Line + Quantity Stepper Row */}
+      <motion.div variants={monographItemVariants} className="flex items-center justify-between gap-4 mb-5">
+        <span className="text-[12px] sm:text-[12.5px] text-[#444444] dark:text-[#AAAAAA] font-normal tracking-wide flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#C4823F] dark:bg-[#ECC86A]" />
+          <span>Vegan</span>
+          <span className="text-[#C4823F]/60 dark:text-[#ECC86A]/60">•</span>
+          <span>Cruelty Free</span>
+        </span>
+
+        {/* Stepper Box */}
+        <div className="border border-[#E0D4D6] dark:border-white/25 rounded-[2px] h-[34px] flex items-center px-1 bg-white dark:bg-transparent hover:border-[#C4823F]/40 dark:hover:border-[#ECC86A]/40 transition-colors">
+          <button
+            type="button"
+            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+            className="w-6 h-6 flex items-center justify-center text-[14px] text-[#666666] dark:text-white/60 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors cursor-pointer"
+            aria-label="Decrease quantity"
+          >
+            −
+          </button>
+          <span className="w-7 text-center font-medium text-[12px] text-[#111111] dark:text-white">
+            {quantity}
+          </span>
+          <button
+            type="button"
+            onClick={() => setQuantity((q) => q + 1)}
+            className="w-6 h-6 flex items-center justify-center text-[14px] text-[#666666] dark:text-white/60 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors cursor-pointer"
+            aria-label="Increase quantity"
+          >
+            +
+          </button>
+        </div>
+      </motion.div>
+
+      {/* 6. Add To Cart Button + Wishlist Save Bookmark Button */}
+      <motion.div variants={monographItemVariants} className="flex items-center gap-2.5">
+        <button
+          onClick={handleAddToCartClick}
+          className="flex-1 h-[46px] bg-[#111111] hover:bg-[#C4823F] text-white dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] dark:text-[#0B0A0D] rounded-[2px] flex items-center shadow-[0_4px_16px_rgba(0,0,0,0.18)] hover:shadow-[0_6px_20px_rgba(196,130,63,0.3)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.25)] active:scale-[0.99] transition-all cursor-pointer select-none group font-medium"
+        >
+          <span className="flex-1 text-center text-[12.5px] font-medium tracking-[0.03em]">
+            Add to cart
+          </span>
+          <span className="w-[1px] h-[20px] bg-white/20 dark:bg-black/20 shrink-0" />
+          <span className="px-4 sm:px-5 text-center text-[12.5px] font-medium tracking-[0.02em] whitespace-nowrap text-[#FFF7ED] dark:text-[#0B0A0D]">
+            {formatPrice(currentPrice * quantity, activeCurrency)}
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => onToggleWishlist && onToggleWishlist(product.id)}
+          className={`w-[46px] h-[46px] shrink-0 rounded-[2px] border transition-all duration-300 flex items-center justify-center cursor-pointer ${
+            isCurrentWishlisted
+              ? 'border-[#C4823F] bg-[#FFF7ED] text-[#C4823F] dark:border-[#ECC86A] dark:bg-[#D4AF37]/15 dark:text-[#ECC86A] shadow-xs'
+              : 'border-[#E0D4D6] dark:border-white/20 bg-white dark:bg-transparent text-[#777777] dark:text-white/60 hover:border-[#C4823F] hover:text-[#C4823F] dark:hover:border-[#ECC86A] dark:hover:text-[#ECC86A]'
+          }`}
+          title={isCurrentWishlisted ? 'Remove from saved wishlist' : 'Save to private wishlist'}
+          aria-label="Wishlist"
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill={isCurrentWishlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+          </svg>
+        </button>
+      </motion.div>
+
+      {/* 7. Delivery & Trust Micro-lines */}
+      <motion.div
+        variants={monographItemVariants}
+        className="mt-5 space-y-1.5 text-[11px] text-[#777777] dark:text-[#999999] leading-relaxed"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-[12px] leading-none text-[#C4823F] dark:text-[#ECC86A]">✓</span>
+          <span>Order before 17:00 to receive {getDeliveryDateString()}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[12px] leading-none text-[#C4823F] dark:text-[#ECC86A]">•</span>
+          <span>Delivering to all destinations in the European Union & Worldwide</span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
 
   return (
-    <div className="relative w-full bg-gradient-to-b from-[#FAF8F5] via-[#F5EFE7] to-[#F8F6F2] dark:from-[#0B0A0D] dark:via-[#111015] dark:to-[#0B0A0D] text-[#111111] dark:text-white min-h-screen overflow-hidden transition-colors duration-300">
-      {/* Background Layer 1: Ambient Radial Glow behind Flacon Stage */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          background: 'radial-gradient(circle 900px at 30% 30%, rgba(196, 130, 63, 0.06) 0%, transparent 70%)'
-        }}
-      />
-
-      {/* Background Layer 3: Tactile Film Grain */}
-      <div className="absolute inset-0 luxury-noise pointer-events-none z-0 opacity-70" />
-
-      {/* ================= BREADCRUMBS ================= */}
-      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-3 text-[11px] uppercase tracking-wider text-[#777777] dark:text-[#A09D96] border-b border-[#ECE5D8] dark:border-white/5 flex items-center gap-2">
-        <button onClick={onNavigateHome} className="hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer">
-          Home
-        </button>
-        <span>/</span>
-        <button onClick={() => onNavigateCollection('all')} className="hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer">
-          Collections
-        </button>
-        <span>/</span>
-        <span className="text-[#111111] dark:text-white font-semibold">{product.name}</span>
-      </div>
-
-      {/* ================= MAIN PDP CONTAINER ================= */}
-      <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 py-8 sm:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14">
+    <div className="w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-white transition-colors duration-300 flex flex-col font-sans select-none">
+      
+      {/* ============================================================== */}
+      {/* ================= 1. DESKTOP VIEW (>= lg) =================== */}
+      {/* ============================================================== */}
+      <div
+        ref={trackRef}
+        className="hidden lg:block relative w-full"
+        style={{ height: `${Math.max(1, images.length) * 100}vh` }}
+      >
+        {/* Sticky 100vh Split-Screen Viewport */}
+        <div className="sticky top-0 h-screen w-full overflow-hidden grid grid-cols-2 z-10">
           
-          {/* ================= LEFT: MULTI-IMAGE GALLERY (7 COLS) ================= */}
-          <div className="lg:col-span-7 flex flex-col sm:flex-row-reverse gap-4">
+          {/* Left Half: Pedestal with Parallax Vertical Images */}
+          <div className="bg-[#F8F8F8] dark:bg-[#141318] border-r border-[#EEEEEE] dark:border-white/10 h-full relative overflow-hidden flex flex-col justify-between transition-colors duration-300">
             
-            {/* Primary High-Res Stage Image with Smooth Crossfade */}
-            <div className="flex-1 aspect-[4/5] bg-[#F7F7F6] dark:bg-[#141318] flex items-center justify-center p-8 sm:p-14 overflow-hidden rounded-xs border border-[#EEEEEE] dark:border-transparent relative group transition-colors duration-300">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={images[activeImgIdx]}
-                  src={images[activeImgIdx]}
-                  alt={product.name}
-                  initial={{ opacity: 0.8, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0.8 }}
-                  transition={{ duration: 0.35, ease: 'easeOut' }}
-                  className="w-full h-full object-contain object-center group-hover:scale-106 transition-transform duration-700 ease-out filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)]"
+            {/* Top-Left Pinned Brand Logo */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: 'easeOut', delay: 0.05 }}
+              className="absolute top-10 left-10 lg:top-14 lg:left-14 z-30 pointer-events-auto"
+            >
+              <button
+                onClick={onNavigateHome}
+                className="flex items-center hover:opacity-80 transition-opacity cursor-pointer select-none"
+                title="Return to Home"
+                aria-label="Saudagar Perfumers Home"
+              >
+                <img
+                  src="/images/saudagar_logo_black.png"
+                  alt="Saudagar Perfumers"
+                  className="h-7 lg:h-8 w-auto object-contain dark:hidden block"
                 />
-              </AnimatePresence>
-              {product.badge && (
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="px-2.5 py-1 text-[10px] font-bold tracking-[0.04em] uppercase bg-[#111111] dark:bg-[#C4823F] text-white shadow-xs">
-                    {product.badge}
-                  </span>
-                </div>
-              )}
+                <img
+                  src="/images/saudagar_logo_gold.png"
+                  alt="Saudagar Perfumers"
+                  className="h-7 lg:h-8 w-auto object-contain hidden dark:block"
+                />
+              </button>
+            </motion.div>
+
+            {/* Vertical Animated Flacon Stack (Driven by Desktop Scroll) */}
+            <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+              <motion.div
+                style={{ y: yTransform }}
+                className="w-full h-full flex flex-col will-change-transform"
+              >
+                {images.map((img, idx) => (
+                  <div
+                    key={idx}
+                    className="w-full h-screen shrink-0 flex items-center justify-center p-8 sm:p-14 relative"
+                  >
+                    <motion.div
+                      key={`${product.id}-${idx}`}
+                      variants={idx === 0 ? flaconHeroVariants : undefined}
+                      initial={idx === 0 ? "hidden" : undefined}
+                      animate={idx === 0 ? "visible" : undefined}
+                      className="relative w-full max-w-[380px] aspect-[4/5] flex items-center justify-center"
+                    >
+                      {idx === 0 && (
+                        <motion.div
+                          variants={auraVariants}
+                          initial="hidden"
+                          animate="visible"
+                          className="absolute w-64 h-64 rounded-full bg-amber-400/15 dark:bg-[#ECC86A]/12 blur-3xl pointer-events-none"
+                        />
+                      )}
+                      <img
+                        src={img}
+                        alt={`${product.name} perspective ${idx + 1}`}
+                        fetchPriority={idx === 0 ? "high" : "auto"}
+                        loading={idx === 0 ? "eager" : "lazy"}
+                        decoding="async"
+                        className="relative z-10 max-h-[58vh] w-auto object-contain object-center filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.14)]"
+                      />
+                    </motion.div>
+                  </div>
+                ))}
+              </motion.div>
             </div>
 
-            {/* Vertical Thumbnail Rail (Desktop) / Horizontal (Mobile) */}
-            <div className="flex sm:flex-col gap-2.5 overflow-x-auto sm:overflow-y-auto sm:w-20 shrink-0">
-              {images.map((img, idx) => (
-                <motion.button
-                  key={idx}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveImgIdx(idx)}
-                  className={`aspect-[4/5] w-16 sm:w-full bg-[#F7F7F6] dark:bg-[#141318] flex items-center justify-center p-1.5 overflow-hidden rounded-xs border-2 transition-all shrink-0 cursor-pointer ${
-                    activeImgIdx === idx
-                      ? 'border-[#111111] dark:border-[#C4823F] opacity-100 shadow-xs'
-                      : 'border-transparent opacity-60 hover:opacity-100'
-                  }`}
-                >
-                  <img src={img} alt="Thumbnail" className="w-full h-full object-contain" />
-                </motion.button>
-              ))}
-            </div>
-
+            {/* Pinned Bottom Dots Indicator */}
+            {images.length > 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: 'easeOut', delay: 0.3 }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 select-none pointer-events-auto"
+              >
+                {images.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleDotClick(idx)}
+                    className={`transition-all rounded-full cursor-pointer ${
+                      activeImgIdx === idx
+                        ? 'w-6 h-1.5 bg-[#C4823F] dark:bg-[#ECC86A] shadow-[0_0_8px_rgba(196,130,63,0.4)] dark:shadow-[0_0_8px_rgba(212,175,55,0.6)]'
+                        : 'w-1.5 h-1.5 bg-[#D8CED0] dark:bg-white/30 hover:bg-[#888888]'
+                    }`}
+                    aria-label={`View photo angle ${idx + 1}`}
+                  />
+                ))}
+              </motion.div>
+            )}
           </div>
 
-          {/* ================= RIGHT: STICKY PRODUCT FORM (5 COLS) ================= */}
-          <div className="lg:col-span-5 flex flex-col justify-start">
-            <div className="sticky top-24 space-y-5">
+          {/* Right Half: Editorial Details (Pinned with internal scroll) */}
+          <div className="bg-[#FFFFFF] dark:bg-[#0B0A0D] h-full flex flex-col justify-between p-10 lg:p-14 transition-colors duration-300 overflow-y-auto">
+            
+            {/* Top-Right Navigation Bar */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: 'easeOut', delay: 0.08 }}
+              className="flex items-center justify-end gap-7 xl:gap-8 text-[11px] font-normal tracking-[0.14em] uppercase text-[#111111] dark:text-white select-none z-10 shrink-0"
+            >
+              <button
+                onClick={onNavigateHome}
+                className="hover:opacity-60 transition-opacity cursor-pointer"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => onNavigateCollection('all')}
+                className="hover:opacity-60 transition-opacity cursor-pointer"
+              >
+                Collections
+              </button>
+              <button
+                onClick={() => (onOpenStory ? onOpenStory() : onNavigateHome())}
+                className="hover:opacity-60 transition-opacity cursor-pointer"
+              >
+                About
+              </button>
               
-              {/* Category & Title */}
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10.5px] font-bold tracking-[0.06em] uppercase text-[#C4823F]">
-                    {product.category || 'Extrait de Parfum'}
-                  </span>
-                  <span className="font-script text-[#C4823F] text-[18px] sm:text-[21px] normal-case tracking-normal">
-                    rare extrait
-                  </span>
+              <button
+                onClick={onOpenNavDrawer}
+                className="p-1 text-[#111111] dark:text-white hover:opacity-60 transition-opacity cursor-pointer"
+                title="Open Navigation Menu"
+                aria-label="Open Navigation Menu"
+              >
+                <div className="w-5 flex flex-col gap-1">
+                  <span className="w-full h-[1.6px] bg-current rounded-full" />
+                  <span className="w-full h-[1.6px] bg-current rounded-full" />
                 </div>
-                <h1 className="text-[24px] sm:text-[30px] font-black uppercase tracking-[0.02em] text-[#111111] dark:text-white leading-tight mt-1">
-                  {product.name}
-                </h1>
-                
-                {/* Rating & Reviews */}
-                <div className="flex items-center gap-2 mt-2 text-[12px] text-[#555555] dark:text-[#A09D96]">
-                  <div className="flex text-[#C4823F]">
-                    {'★'.repeat(Math.floor(product.rating || 5))}
-                  </div>
-                  <span className="font-bold text-[#111111] dark:text-white">{product.rating || '5.0'}</span>
-                  <span>•</span>
-                  <span className="underline cursor-pointer">{product.reviewsCount || 180} Connoisseur Reviews</span>
-                </div>
-              </div>
+              </button>
 
-              {/* Pricing Row */}
-              <div className="pt-2 border-t border-[#F0F0F0] dark:border-white/10">
-                <div className="flex items-baseline gap-3">
-                  <span className="text-[22px] sm:text-[26px] font-bold text-[#111111] dark:text-white tracking-wide">
-                    {formatPrice(currentPrice, activeCurrency)}
-                  </span>
-                  {product.compareAtPrice && product.compareAtPrice > currentPrice && (
-                    <span className="text-[14px] text-[#999999] dark:text-white/40 line-through">
-                      {formatPrice(product.compareAtPrice, activeCurrency)}
-                    </span>
-                  )}
-                </div>
-                <p className="text-[10.5px] text-[#777777] dark:text-[#A09D96] uppercase tracking-wider mt-1">
-                  Inclusive of all taxes & complimentary insured express delivery.
-                </p>
-              </div>
+              <button
+                onClick={onOpenCart}
+                className="w-6 h-6 rounded-full bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[11px] font-bold flex items-center justify-center cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.25)] hover:opacity-85 transition-opacity"
+                aria-label={`Cart (${cartCount || 1})`}
+                title="View Cart"
+              >
+                {cartCount || 1}
+              </button>
+            </motion.div>
 
-              {/* Volume / Size Selector Pills */}
-              <div>
-                <div className="flex justify-between items-baseline mb-2">
-                  <label className="text-[11px] font-bold tracking-[0.04em] uppercase text-[#111111] dark:text-white">
-                    Flacon Size: <span className="font-normal text-[#555555] dark:text-[#A09D96]">{selectedSize.label}</span>
-                  </label>
-                  <span className="text-[10px] text-[#C4823F] font-semibold tracking-wider">
-                    {product.concentration || 'Pure Extrait'}
-                  </span>
-                </div>
-                
-                <div className="flex flex-wrap gap-2.5">
-                  {product.sizes?.map((sz) => (
-                    <button
-                      key={sz.label}
-                      onClick={() => setSelectedSize(sz)}
-                      className={`px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all border ${
-                        selectedSize.label === sz.label
-                          ? 'border-[#111111] bg-[#111111] text-white dark:border-[#C4823F] dark:bg-[#C4823F] dark:text-white shadow-xs'
-                          : 'border-[#CCCCCC] dark:border-white/15 bg-[#FFFFFF] dark:bg-[#18171E] text-[#111111] dark:text-white hover:border-[#111111] dark:hover:border-white/40'
-                      }`}
-                    >
-                      {sz.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            {/* Desktop Monograph Form */}
+            {renderMonographDetails(false)}
 
-              {/* Complimentary Bottle Engraving Feature */}
-              <div className="bg-[#FAF9F6] dark:bg-[#141318] p-3.5 border border-[#EEEEEE] dark:border-transparent rounded-xs text-[11px] transition-colors duration-300">
+            <div className="h-6" />
+          </div>
+
+        </div>
+      </div>
+
+      {/* ============================================================== */}
+      {/* ================= 2. MOBILE VIEW (< lg) ====================== */}
+      {/* ============================================================== */}
+      <div className="block lg:hidden w-full">
+        
+        {/* Mobile Header Bar */}
+        <div className="w-full px-5 py-3.5 flex items-center justify-between border-b border-[#EEEEEE] dark:border-white/10 bg-white/95 dark:bg-[#0B0A0D]/95 backdrop-blur-md sticky top-0 z-30 transition-colors">
+          <button
+            onClick={onNavigateHome}
+            className="flex items-center cursor-pointer"
+            aria-label="Saudagar Perfumers Home"
+          >
+            <img
+              src="/images/saudagar_logo_black.png"
+              alt="Saudagar Perfumers"
+              className="h-[22px] w-auto object-contain dark:hidden block"
+            />
+            <img
+              src="/images/saudagar_logo_gold.png"
+              alt="Saudagar Perfumers"
+              className="h-[22px] w-auto object-contain hidden dark:block"
+            />
+          </button>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => onToggleWishlist && onToggleWishlist(product.id)}
+              className="p-1.5 cursor-pointer text-[#111111] dark:text-white"
+              aria-label="Wishlist"
+              title={isCurrentWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                className={isCurrentWishlisted ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'currentColor'}
+                fill={isCurrentWishlisted ? 'currentColor' : 'none'}
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+              </svg>
+            </button>
+
+            <button
+              onClick={onOpenNavDrawer}
+              className="p-1.5 text-[#111111] dark:text-white cursor-pointer"
+              aria-label="Open Navigation Menu"
+            >
+              <div className="w-5 flex flex-col gap-1">
+                <span className="w-full h-[1.6px] bg-current rounded-full" />
+                <span className="w-full h-[1.6px] bg-current rounded-full" />
+              </div>
+            </button>
+            
+            <button
+              onClick={onOpenCart}
+              className="w-6 h-6 rounded-full bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[11px] font-bold flex items-center justify-center cursor-pointer shadow-xs"
+              aria-label={`Cart (${cartCount || 1})`}
+            >
+              {cartCount || 1}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Dedicated Flacon Vitrine (NEVER CROPPED, Full Bottle Visible) */}
+        <div className="relative w-full h-[46vh] min-h-[350px] max-h-[440px] bg-[#F8F8F8] dark:bg-[#141318] flex items-center justify-center overflow-hidden border-b border-[#EEEEEE] dark:border-white/10 select-none">
+          {/* Ambient Warm Studio Aura */}
+          <div className="absolute w-56 h-56 rounded-full bg-amber-400/15 dark:bg-[#ECC86A]/12 blur-3xl pointer-events-none" />
+
+          {/* Swipeable Flacon Image Container with Horizontal Left/Right Drag */}
+          <div className="relative w-full h-full flex items-center justify-center p-6 touch-pan-y">
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                key={`${product.id}-${mobileImgIdx}`}
+                drag={images.length > 1 ? "x" : false}
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.22}
+                onDragEnd={handleMobileSwipe}
+                initial={{ opacity: 0, x: 28 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -28 }}
+                transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
+              >
+                <img
+                  src={images[mobileImgIdx]}
+                  alt={`${product.name} perspective ${mobileImgIdx + 1}`}
+                  fetchPriority="high"
+                  loading="eager"
+                  decoding="async"
+                  className="max-h-[300px] sm:max-h-[340px] max-w-[80%] w-auto h-auto object-contain object-center filter drop-shadow-[0_16px_30px_rgba(0,0,0,0.12)] pointer-events-none"
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Left & Right Subtle Chevron Controls (Tap to change) */}
+          {images.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={() => setMobileImgIdx((prev) => (prev - 1 + images.length) % images.length)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/85 dark:bg-black/60 text-[#111111] dark:text-white flex items-center justify-center text-xs backdrop-blur-xs shadow-xs hover:bg-white dark:hover:bg-black transition-colors cursor-pointer"
+                aria-label="Previous view angle"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileImgIdx((prev) => (prev + 1) % images.length)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/85 dark:bg-black/60 text-[#111111] dark:text-white flex items-center justify-center text-xs backdrop-blur-xs shadow-xs hover:bg-white dark:hover:bg-black transition-colors cursor-pointer"
+                aria-label="Next view angle"
+              >
+                ›
+              </button>
+            </>
+          )}
+
+          {/* Swipe Helper & Angle Dots Indicator */}
+          {images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 select-none pointer-events-auto">
+              {images.map((_, idx) => (
                 <button
-                  type="button"
-                  onClick={() => setIsEngravingOpen(!isEngravingOpen)}
-                  className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] dark:text-white cursor-pointer"
-                >
-                  <span className="flex items-center gap-1.5">
-                    <span>✨</span>
-                    <span>Complimentary Crystal Flacon Engraving</span>
-                  </span>
-                  <span>{isEngravingOpen ? '−' : '+'}</span>
-                </button>
-                
-                {isEngravingOpen && (
-                  <div className="mt-3 pt-2.5 border-t border-[#E5E5E5] dark:border-white/10 space-y-2">
-                    <p className="text-[10px] text-[#666666] dark:text-[#A09D96]">
-                      Our master calligrapher can engrave up to 12 characters (e.g. initials or names) onto the glass flacon.
+                  key={idx}
+                  onClick={() => setMobileImgIdx(idx)}
+                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                    mobileImgIdx === idx
+                      ? 'w-6 bg-[#C4823F] dark:bg-[#ECC86A] shadow-[0_0_8px_rgba(196,130,63,0.4)]'
+                      : 'w-1.5 bg-[#D8CED0] dark:bg-white/30'
+                  }`}
+                  aria-label={`View photo angle ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Monograph Details Section */}
+        <div className="w-full px-5 sm:px-8 py-6 bg-white dark:bg-[#0B0A0D] transition-colors">
+          {renderMonographDetails(true)}
+        </div>
+
+      </div>
+
+      {/* ============================================================== */}
+      {/* ================= 3. SHARED ACCORDIONS & ATELIER ============= */}
+      {/* ============================================================== */}
+      <div className="w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] border-t border-[#EAEAEA] dark:border-white/10 px-6 sm:px-10 lg:px-16 py-14 sm:py-16 transition-colors duration-300">
+        <div className="max-w-2xl mx-auto">
+          
+          <div className="mb-6">
+            <span className="text-[11px] uppercase tracking-[0.14em] text-[#777777] dark:text-[#999999]">
+              Atelier Specifications
+            </span>
+            <h2 className="text-[22px] sm:text-[26px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white mt-1">
+              Craft & Olfactory Composition
+            </h2>
+          </div>
+
+          <div className="divide-y divide-[#EAEAEA] dark:divide-white/10 text-[12px]">
+            
+            {/* Accordion 1: Fragrance Pyramid & Notes */}
+            <div className="py-4">
+              <button
+                type="button"
+                onClick={() => toggleAccordion('notes')}
+                className="w-full flex items-center justify-between text-[#111111] dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
+              >
+                <span className="tracking-[0.02em] text-[13px]">Fragrance Pyramid & Olfactory Notes</span>
+                <span className="text-[16px] font-light">{openAccordion === 'notes' ? '−' : '+'}</span>
+              </button>
+              <AnimatePresence>
+                {openAccordion === 'notes' && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                    className="overflow-hidden pt-3 pb-1 space-y-2 text-[#555555] dark:text-[#A09D96] text-[12px]"
+                  >
+                    <p>
+                      <strong className="text-[#C4823F] dark:text-[#ECC86A] font-medium">Top: </strong>
+                      {product.notes?.top?.join(' · ') || 'Wild Bergamot, Black Pepper, Cardamom'}
+                    </p>
+                    <p>
+                      <strong className="text-[#C4823F] dark:text-[#ECC86A] font-medium">Heart: </strong>
+                      {product.notes?.heart?.join(' · ') || '18-Year Cambodi Oud, Taif Rose, Resinous Lichen'}
+                    </p>
+                    <p>
+                      <strong className="text-[#C4823F] dark:text-[#ECC86A] font-medium">Base: </strong>
+                      {product.notes?.base?.join(' · ') || 'Mysore Sandalwood, Dark Ambergris, Charred Leather'}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Accordion 2: Complimentary Flacon Engraving */}
+            <div className="py-4">
+              <button
+                type="button"
+                onClick={() => toggleAccordion('engraving')}
+                className="w-full flex items-center justify-between text-[#111111] dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
+              >
+                <span className="tracking-[0.02em] text-[13px]">Complimentary Flacon Engraving</span>
+                <span className="text-[16px] font-light">{openAccordion === 'engraving' ? '−' : '+'}</span>
+              </button>
+              <AnimatePresence>
+                {openAccordion === 'engraving' && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                    className="overflow-hidden pt-3 pb-1 space-y-2.5 text-[#555555] dark:text-[#A09D96] text-[12px]"
+                  >
+                    <p>
+                      Our master calligrapher can hand-engrave up to 12 characters onto the crystal flacon.
                     </p>
                     <input
                       type="text"
                       maxLength={12}
                       value={engraving}
                       onChange={(e) => setEngraving(e.target.value.toUpperCase())}
-                      placeholder="ENTER INITIALS (MAX 12 CHARS)"
-                      className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#1E1C24] text-[#111111] dark:text-white rounded-xs text-[11px] font-bold uppercase tracking-widest outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
+                      placeholder="ENTER INITIALS (E.G. SK)"
+                      className="w-full px-3.5 py-2.5 border border-[#CCCCCC] dark:border-white/20 bg-white dark:bg-[#141318] text-[#111111] dark:text-white rounded-[2px] text-[11px] font-medium uppercase tracking-widest outline-none focus:border-[#C4823F] dark:focus:border-[#ECC86A]"
                     />
-                  </div>
+                  </motion.div>
                 )}
-              </div>
-
-              {/* Quantity Stepper & CTA Buttons */}
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center gap-3">
-                  <span className="text-[11px] font-bold tracking-wider uppercase text-[#111111] dark:text-white">
-                    Quantity:
-                  </span>
-                  <div className="flex items-center border border-[#111111] dark:border-white/20 rounded-xs overflow-hidden">
-                    <motion.button
-                      whileTap={{ scale: 0.85 }}
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="w-8 h-8 flex items-center justify-center hover:bg-[#F2F2F2] dark:hover:bg-white/10 text-[#111111] dark:text-white font-bold cursor-pointer"
-                    >
-                      −
-                    </motion.button>
-                    <span className="w-10 text-center text-xs font-bold text-[#111111] dark:text-white">
-                      {quantity}
-                    </span>
-                    <motion.button
-                      whileTap={{ scale: 0.85 }}
-                      onClick={() => setQuantity((q) => q + 1)}
-                      className="w-8 h-8 flex items-center justify-center hover:bg-[#F2F2F2] dark:hover:bg-white/10 text-[#111111] dark:text-white font-bold cursor-pointer"
-                    >
-                      +
-                    </motion.button>
-                  </div>
-                </div>
-
-                {/* Primary: Add to Bag */}
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  whileHover={{ scale: 1.01 }}
-                  transition={{ duration: 0.2 }}
-                  onClick={handleAddToCartClick}
-                  className="w-full py-4 bg-[#FFFFFF] dark:bg-[#18171E] hover:bg-[#111111] dark:hover:bg-[#C4823F] text-[#111111] dark:text-white hover:text-white dark:hover:text-white border-2 border-[#111111] dark:border-white/20 dark:hover:border-[#C4823F] text-[12px] font-bold uppercase tracking-[0.04em] transition-colors duration-300 shadow-sm flex items-center justify-center gap-2 cursor-pointer will-change-transform"
-                >
-                  <span>Add To Bag • {formatPrice(currentPrice * quantity, activeCurrency)}</span>
-                </motion.button>
-
-                {/* Secondary: Buy It Now */}
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  whileHover={{ scale: 1.01 }}
-                  transition={{ duration: 0.2 }}
-                  onClick={handleBuyNowClick}
-                  className="w-full py-4 bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[12px] font-bold uppercase tracking-[0.04em] transition-colors duration-300 shadow-xl cursor-pointer will-change-transform"
-                >
-                  Buy It Now
-                </motion.button>
-              </div>
-
-              {/* ================= ACCORDION SPECIFICATIONS ================= */}
-              <div className="pt-4 border-t border-[#E5E5E5] dark:border-white/10 divide-y divide-[#EEEEEE] dark:divide-white/10 text-[12px]">
-                
-                {/* Fragrance Notes */}
-                <div className="py-3">
-                  <button
-                    onClick={() => toggleAccordion('notes')}
-                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] dark:text-white cursor-pointer"
-                  >
-                    <span>Fragrance Notes & Pyramid</span>
-                    <span className="text-[14px]">{openAccordion === 'notes' ? '−' : '+'}</span>
-                  </button>
-                  <AnimatePresence>
-                    {openAccordion === 'notes' && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden pt-3 pb-1 space-y-2.5 text-[#555555] dark:text-[#B3AFA8] text-[11.5px]"
-                      >
-                        <div>
-                          <strong className="text-[#111111] dark:text-white uppercase tracking-wide text-[10.5px]">Top Notes:</strong>
-                          <p>{product.notes?.top?.join(' · ') || 'Wild Bergamot, Saffron, Crushed Pepper'}</p>
-                        </div>
-                        <div>
-                          <strong className="text-[#111111] dark:text-white uppercase tracking-wide text-[10.5px]">Heart Notes:</strong>
-                          <p>{product.notes?.heart?.join(' · ') || '18-Year Aged Oud, Taif Rose, Resinous Lichen'}</p>
-                        </div>
-                        <div>
-                          <strong className="text-[#111111] dark:text-white uppercase tracking-wide text-[10.5px]">Base Notes:</strong>
-                          <p>{product.notes?.base?.join(' · ') || 'Mysore Sandalwood, Flint Mineral, Dark Ambergris'}</p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* Sillage & Longevity */}
-                <div className="py-3">
-                  <button
-                    onClick={() => toggleAccordion('desc')}
-                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] dark:text-white cursor-pointer"
-                  >
-                    <span>Olfactory Character & Sillage</span>
-                    <span className="text-[14px]">{openAccordion === 'desc' ? '−' : '+'}</span>
-                  </button>
-                  <AnimatePresence>
-                    {openAccordion === 'desc' && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden pt-3 pb-1 text-[#555555] dark:text-[#B3AFA8] leading-relaxed text-[11.5px]"
-                      >
-                        <p>{product.description}</p>
-                        <p className="mt-2 text-[10.5px] text-[#777777] dark:text-[#A09D96]">
-                          Concentration: {product.concentration} · Designed for monumental 18-24 hour projection.
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* Shipping & Returns */}
-                <div className="py-3">
-                  <button
-                    onClick={() => toggleAccordion('shipping')}
-                    className="w-full flex items-center justify-between font-bold uppercase tracking-wider text-[#111111] dark:text-white cursor-pointer"
-                  >
-                    <span>Shipping & Test-First Guarantee</span>
-                    <span className="text-[14px]">{openAccordion === 'shipping' ? '−' : '+'}</span>
-                  </button>
-                  <AnimatePresence>
-                    {openAccordion === 'shipping' && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden pt-3 pb-1 text-[#555555] dark:text-[#B3AFA8] leading-relaxed text-[11.5px] space-y-1.5"
-                      >
-                        <p>
-                          📦 <strong className="text-[#111111] dark:text-white">Complimentary 2ml Sample Included:</strong> Test the sample vial before opening the sealed crystal flacon. If not deeply captivated, return the unopened flacon for a 100% full refund.
-                        </p>
-                        <p>
-                          ✈️ <strong className="text-[#111111] dark:text-white">Express Courier:</strong> Dispatched within 24 hours via temperature-controlled air freight.
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-              </div>
-
+              </AnimatePresence>
             </div>
+
+            {/* Accordion 3: Test-First Guarantee & Returns */}
+            <div className="py-4">
+              <button
+                type="button"
+                onClick={() => toggleAccordion('shipping')}
+                className="w-full flex items-center justify-between text-[#111111] dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
+              >
+                <span className="tracking-[0.02em] text-[13px]">Shipping & Test-First Guarantee</span>
+                <span className="text-[16px] font-light">{openAccordion === 'shipping' ? '−' : '+'}</span>
+              </button>
+              <AnimatePresence>
+                {openAccordion === 'shipping' && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                    className="overflow-hidden pt-3 pb-1 space-y-2 text-[#555555] dark:text-[#A09D96] text-[12px]"
+                  >
+                    <p>
+                      Every full-size flacon arrives with a matching 2ml discovery vial. Enjoy the vial first. If it does not resonate with you, return the unopened flacon for a complimentary exchange or full refund.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
           </div>
 
         </div>
+      </div>
 
-        {/* ================= RELATED / PAIR WITH SECTION ================= */}
-        <ScrollReveal variant="fade-up" className="mt-16 pt-12 border-t border-[#E5E5E5] dark:border-white/10">
-          <div className="mb-6">
-            <span className="text-[10px] font-bold tracking-[0.06em] uppercase text-[#C4823F]">
-              Curated Pairings
+      {/* ============================================================== */}
+      {/* ================= 3b. REVIEWS & FEEDBACK SECTION ============= */}
+      {/* ============================================================== */}
+      <BluorngProductReviews
+        productId={product.id}
+        productName={product.name}
+        productCategory={product.category || 'Extrait de Parfum'}
+        theme={theme}
+      />
+
+      {/* ============================================================== */}
+      {/* ================= 4. CURATED PAIRINGS SECTION =============== */}
+      {/* ============================================================== */}
+      <div className="w-full px-6 sm:px-10 lg:px-16 pt-16 pb-28 lg:pb-16 border-t border-[#EAEAEA] dark:border-white/10 bg-[#FFFFFF] dark:bg-[#0B0A0D] transition-colors duration-300">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <span className="text-[11px] uppercase tracking-[0.14em] text-[#C4823F] dark:text-[#ECC86A] font-medium">
+              Curated Selection
             </span>
-            <h2 className="text-[20px] sm:text-[24px] font-black uppercase tracking-[0.02em] text-[#111111] dark:text-white">
+            <h2 className="text-[22px] sm:text-[26px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white mt-1">
               You May Also Appreciate
             </h2>
           </div>
@@ -408,23 +866,26 @@ export default function BluorngPDP({
                 <BluorngProductCard
                   product={relProd}
                   activeCurrency={activeCurrency}
+                  isWishlisted={wishlist.includes(relProd.id)}
+                  onToggleWishlist={onToggleWishlist}
                   onSelectProduct={onSelectProduct}
-                  onToggleWishlist={() => {}}
                   onQuickBuy={() => {
-                    onAddToCart({
-                      productId: relProd.id,
-                      size: '50ML',
-                      price: relProd.price,
-                      quantity: 1
-                    });
+                    if (onAddToCart) {
+                      onAddToCart({
+                        productId: relProd.id,
+                        size: '50 ml',
+                        price: relProd.price,
+                        quantity: 1
+                      });
+                    }
                   }}
                 />
               </StaggerItem>
             ))}
           </StaggerContainer>
-        </ScrollReveal>
-
+        </div>
       </div>
+
     </div>
   );
 }

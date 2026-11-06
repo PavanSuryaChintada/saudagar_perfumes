@@ -65,7 +65,7 @@ export default function BluorngCheckoutModal({
               className="h-6 sm:h-7 w-auto object-contain hidden dark:block"
             />
             <span className="text-[#888888] dark:text-white/30">•</span>
-            <span className="text-[11px] font-bold tracking-wide uppercase text-[#C4823F]">
+            <span className="text-[11px] font-bold tracking-wide uppercase text-[#C4823F] dark:text-[#ECC86A]">
               Secure Checkout
             </span>
           </div>
@@ -111,7 +111,7 @@ export default function BluorngCheckoutModal({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#D4AF37]"
                   />
                 </div>
                 <div>
@@ -123,7 +123,7 @@ export default function BluorngCheckoutModal({
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#D4AF37]"
                   />
                 </div>
               </div>
@@ -139,7 +139,7 @@ export default function BluorngCheckoutModal({
                     required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#D4AF37]"
                   />
                 </div>
                 <div>
@@ -151,7 +151,7 @@ export default function BluorngCheckoutModal({
                     required
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#D4AF37]"
                   />
                 </div>
               </div>
@@ -166,7 +166,7 @@ export default function BluorngCheckoutModal({
                   required
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
+                  className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#D4AF37]"
                 />
               </div>
 
@@ -181,7 +181,7 @@ export default function BluorngCheckoutModal({
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#D4AF37]"
                   />
                 </div>
                 <div>
@@ -193,7 +193,7 @@ export default function BluorngCheckoutModal({
                     required
                     value={state}
                     onChange={(e) => setState(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#D4AF37]"
                   />
                 </div>
                 <div>
@@ -205,7 +205,7 @@ export default function BluorngCheckoutModal({
                     required
                     value={pinCode}
                     onChange={(e) => setPinCode(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#C4823F]"
+                    className="w-full px-3 py-2 border border-[#CCCCCC] dark:border-white/15 bg-white dark:bg-[#18171E] text-[#111111] dark:text-white rounded-xs outline-none focus:border-[#111111] dark:focus:border-[#D4AF37]"
                   />
                 </div>
               </div>
@@ -220,7 +220,7 @@ export default function BluorngCheckoutModal({
                     onClick={() => setShippingMethod('express')}
                     className={`flex items-center justify-between p-3 border rounded-xs cursor-pointer transition-all ${
                       shippingMethod === 'express'
-                        ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                        ? 'border-[#111111] dark:border-[#D4AF37] bg-[#FAF9F6] dark:bg-[#18171E]'
                         : 'border-[#E5E5E5] dark:border-white/10'
                     }`}
                   >
@@ -239,7 +239,7 @@ export default function BluorngCheckoutModal({
                     onClick={() => setShippingMethod('priority')}
                     className={`flex items-center justify-between p-3 border rounded-xs cursor-pointer transition-all ${
                       shippingMethod === 'priority'
-                        ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                        ? 'border-[#111111] dark:border-[#D4AF37] bg-[#FAF9F6] dark:bg-[#18171E]'
                         : 'border-[#E5E5E5] dark:border-white/10'
                     }`}
                   >
@@ -260,7 +260,7 @@ export default function BluorngCheckoutModal({
               <div className="pt-3 border-t border-[#E5E5E5] dark:border-white/10 flex justify-end">
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-8 py-3.5 bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[11.5px] font-bold uppercase tracking-[0.04em] rounded-xs transition-colors cursor-pointer shadow-md"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11.5px] font-bold uppercase tracking-[0.04em] rounded-xs transition-colors cursor-pointer shadow-md"
                 >
                   Continue to Payment →
                 </button>
@@ -278,7 +278,7 @@ export default function BluorngCheckoutModal({
                 <button
                   type="button"
                   onClick={() => setStep('shipping')}
-                  className="text-[11px] text-[#C4823F] font-bold uppercase tracking-wider cursor-pointer"
+                  className="text-[11px] text-[#C4823F] dark:text-[#ECC86A] font-bold uppercase tracking-wider cursor-pointer"
                 >
                   ← Edit Address
                 </button>
@@ -313,7 +313,7 @@ export default function BluorngCheckoutModal({
                   onClick={() => setPaymentMethod('upi')}
                   className={`flex flex-col p-3.5 border rounded-xs cursor-pointer transition-all ${
                     paymentMethod === 'upi'
-                      ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                      ? 'border-[#111111] dark:border-[#D4AF37] bg-[#FAF9F6] dark:bg-[#18171E]'
                       : 'border-[#E5E5E5] dark:border-white/10'
                   }`}
                 >
@@ -342,7 +342,7 @@ export default function BluorngCheckoutModal({
                   onClick={() => setPaymentMethod('card')}
                   className={`flex flex-col p-3.5 border rounded-xs cursor-pointer transition-all ${
                     paymentMethod === 'card'
-                      ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                      ? 'border-[#111111] dark:border-[#D4AF37] bg-[#FAF9F6] dark:bg-[#18171E]'
                       : 'border-[#E5E5E5] dark:border-white/10'
                   }`}
                 >
@@ -364,7 +364,7 @@ export default function BluorngCheckoutModal({
                   onClick={() => setPaymentMethod('cod')}
                   className={`flex flex-col p-3.5 border rounded-xs cursor-pointer transition-all ${
                     paymentMethod === 'cod'
-                      ? 'border-[#111111] dark:border-[#C4823F] bg-[#FAF9F6] dark:bg-[#18171E]'
+                      ? 'border-[#111111] dark:border-[#D4AF37] bg-[#FAF9F6] dark:bg-[#18171E]'
                       : 'border-[#E5E5E5] dark:border-white/10'
                   }`}
                 >
@@ -394,7 +394,7 @@ export default function BluorngCheckoutModal({
 
                 <button
                   type="submit"
-                  className="px-8 py-4 bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-colors shadow-xl cursor-pointer"
+                  className="px-8 py-4 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-colors shadow-xl cursor-pointer"
                 >
                   Authorize Order • {formatPrice(grandTotal, activeCurrency)}
                 </button>
@@ -410,7 +410,7 @@ export default function BluorngCheckoutModal({
               </div>
 
               <div>
-                <span className="text-[10.5px] font-bold tracking-[0.06em] uppercase text-[#C4823F]">
+                <span className="text-[10.5px] font-bold tracking-[0.06em] uppercase text-[#C4823F] dark:text-[#ECC86A]">
                   Order Placed Successfully
                 </span>
                 <h2 className="text-[22px] font-black uppercase tracking-[0.02em] text-[#111111] dark:text-white mt-1">
@@ -438,7 +438,7 @@ export default function BluorngCheckoutModal({
 
               <button
                 onClick={onClose}
-                className="mt-4 px-8 py-3.5 bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[11.5px] font-bold uppercase tracking-wide transition-colors rounded-xs cursor-pointer shadow-md"
+                className="mt-4 px-8 py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11.5px] font-bold uppercase tracking-wide transition-colors rounded-xs cursor-pointer shadow-md"
               >
                 Return to Saudagar Home
               </button>

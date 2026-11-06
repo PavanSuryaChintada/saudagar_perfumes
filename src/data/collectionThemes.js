@@ -10,9 +10,10 @@ export const UNIFIED_PALETTE = {
   stageHover: '#F2EFEA',              // Subtle hover tone
   stageBorder: 'transparent',
   stageShadow: 'none',
-  accent: '#C4823F',                  // Iconic Saudagar warm amber gold
-  accentHover: '#A86828',
-  secondaryAccent: '#D89B58',
+  accent: '#C4823F',                  // Iconic Saudagar warm amber gold (Light Theme)
+  darkAccent: '#ECC86A',              // Champagne Gold (Dark Theme)
+  accentHover: '#B57432',
+  secondaryAccent: '#DE9954',
   tabUnderline: '#111111',            // Clean minimal black underline
   activePillBg: '#111111',            // Crisp obsidian pill
   activePillText: '#FFFFFF',
@@ -24,7 +25,8 @@ export const UNIFIED_PALETTE = {
   borderSubtle: '#EEEEEE',            // Clean hairline divider
   quickAddBg: '#111111',
   quickAddText: '#FFFFFF',
-  quickAddHoverBg: '#C4823F'
+  quickAddHoverBg: '#C4823F',
+  darkQuickAddHoverBg: '#D4AF37'
 };
 
 export const COLLECTION_THEMES = {

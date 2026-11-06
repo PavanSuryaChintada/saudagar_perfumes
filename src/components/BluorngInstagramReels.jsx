@@ -121,7 +121,7 @@ export default function BluorngInstagramReels({
         {/* Top Reel Header inside Card */}
         <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between text-white z-10 pointer-events-none">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-[9px] uppercase tracking-wider font-medium text-white/90">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C4823F] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C4823F] dark:bg-[#ECC86A] animate-pulse" />
             <span>Reel</span>
           </div>
 
@@ -135,7 +135,7 @@ export default function BluorngInstagramReels({
 
         {/* Center Play Button on Hover */}
         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md text-white flex items-center justify-center transform scale-90 opacity-70 group-hover:scale-100 group-hover:opacity-100 group-hover:bg-[#C4823F] transition-all duration-300 shadow-xl">
+          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md text-white flex items-center justify-center transform scale-90 opacity-70 group-hover:scale-100 group-hover:opacity-100 group-hover:bg-[#C4823F] dark:group-hover:bg-[#D4AF37] dark:group-hover:text-[#0B0A0D] transition-all duration-300 shadow-xl">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="ml-1">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
@@ -146,7 +146,7 @@ export default function BluorngInstagramReels({
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-20 flex flex-col gap-2">
           {/* Audio track line */}
           <div className="flex items-center gap-1.5 text-[9.5px] text-white/60 truncate font-light">
-            <span className="text-[#C4823F]">♫</span>
+            <span className="text-[#C4823F] dark:text-[#ECC86A]">♫</span>
             <span className="truncate">{reel.audio}</span>
           </div>
 
@@ -181,9 +181,6 @@ export default function BluorngInstagramReels({
       id="instagram-reels-section" 
       className="relative w-full bg-[#FAF9F6] dark:bg-[#0E0C10] py-16 sm:py-24 text-[#111111] dark:text-white select-none overflow-hidden transition-colors duration-300"
     >
-      {/* Ambient Radial Illumination */}
-      <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[800px] h-[500px] bg-[#C4823F]/5 dark:bg-[#C4823F]/8 blur-3xl pointer-events-none" />
-
       {/* ================= 1. SECTION HEADER (Contained for Editorial Balance) ================= */}
       <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto mb-8 sm:mb-12">
         <ScrollReveal variant="fade-up" className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -221,7 +218,7 @@ export default function BluorngInstagramReels({
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/[0.1] dark:hover:bg-white/[0.14] text-[#111111] dark:text-white/80 text-[10.5px] uppercase tracking-wider transition-colors cursor-pointer"
               title={isPaused ? "Resume Auto-scroll" : "Pause Auto-scroll"}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${isPaused ? 'bg-[#ECC86A]' : 'bg-[#C4823F] animate-pulse'}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${isPaused ? 'bg-[#C4823F] dark:bg-[#ECC86A]' : 'bg-[#C4823F] dark:bg-[#ECC86A] animate-pulse'}`} />
               <span>{isPaused ? 'Paused ⏸' : 'Auto-scrolling'}</span>
             </button>
 
@@ -230,7 +227,7 @@ export default function BluorngInstagramReels({
               href="https://www.instagram.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] text-white hover:bg-[#C4823F] dark:bg-white dark:text-[#111111] dark:hover:bg-[#C4823F] dark:hover:text-white text-[11px] font-semibold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer shadow-md"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#111111] text-white hover:bg-[#C4823F] dark:bg-white dark:text-[#111111] dark:hover:bg-[#D4AF37] dark:hover:text-[#0B0A0D] text-[11px] font-semibold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer shadow-md"
             >
               <span>Follow</span>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

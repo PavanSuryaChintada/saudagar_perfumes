@@ -51,7 +51,7 @@ export default function BluorngHeader({
   }, [isHomePage, lenis]);
 
   // Transparent initially on homepage only when in dark theme; switches to crisp ivory canvas in light theme
-  const isTransparent = isHomePage && !isScrolled && !isMegaNavOpen && theme === 'dark';
+  const isTransparent = isHomePage && !isScrolled && !isMegaNavOpen;
 
   return (
     <motion.header
@@ -61,159 +61,88 @@ export default function BluorngHeader({
       className={`sticky top-0 z-50 w-full select-none transition-all duration-300 relative ${
         isTransparent
           ? 'bg-transparent text-white'
-          : theme === 'dark'
-            ? 'bg-[#0B0A0D]/95 backdrop-blur-md shadow-xs text-white'
-            : 'bg-white/95 backdrop-blur-md shadow-xs text-[#111111]'
+          : 'bg-white/95 dark:bg-[#0B0A0D]/95 backdrop-blur-md shadow-xs text-[#111111] dark:text-white'
       }`}
     >
       <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 h-[60px] sm:h-[68px] relative flex items-stretch justify-between">
         
-        {/* ================= LEFT ZONE (Mobile Hamburger / Desktop Nav Links) ================= */}
-        <div className="flex items-stretch z-10 h-full self-stretch">
-          {/* Mobile Hamburger Button */}
-          <div className="lg:hidden flex items-center">
-            <button
-              onClick={() => setIsMegaNavOpen(true)}
-              className="p-2 -ml-2 transition-colors cursor-pointer hover:opacity-75"
-              aria-label="Open Navigation Menu"
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <line x1="3" y1="6" x2="21" y2="6" strokeLinecap="round" />
-                <line x1="3" y1="12" x2="21" y2="12" strokeLinecap="round" />
-                <line x1="3" y1="18" x2="21" y2="18" strokeLinecap="round" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Desktop Nav Links - Clean & Minimal */}
-          <nav className="hidden lg:flex items-stretch gap-8 text-[12px] font-normal tracking-[0.06em] uppercase h-full self-stretch">
-            {/* Collections Trigger -> Opens Fullscreen Mega Nav */}
-            <button
-              onClick={() => setIsMegaNavOpen(true)}
-              className={`transition-colors h-full flex items-center gap-1.5 cursor-pointer ${
-                isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
-              }`}
-            >
-              <span>Collections</span>
-              <svg
-                width="9"
-                height="5"
-                viewBox="0 0 10 6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                className={`transition-transform duration-200 ${isMegaNavOpen ? 'rotate-180' : ''}`}
-              >
-                <path d="M1 1L5 5L9 1" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-
-            {/* Signature */}
-            <button
-              onClick={() => onNavigateCollection('signature')}
-              className={`transition-colors h-full flex items-center cursor-pointer ${
-                isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
-              }`}
-            >
-              <span>Signature</span>
-            </button>
-
-            {/* Royal */}
-            <button
-              onClick={() => onNavigateCollection('royal')}
-              className={`transition-colors h-full flex items-center cursor-pointer ${
-                isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
-              }`}
-            >
-              <span>Royal</span>
-            </button>
-
-            {/* Exotic */}
-            <button
-              onClick={() => onNavigateCollection('exotic')}
-              className={`transition-colors h-full flex items-center cursor-pointer ${
-                isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
-              }`}
-            >
-              <span>Exotic</span>
-            </button>
-          </nav>
+        {/* ================= LEFT ZONE (Menu Button -> Fullscreen Mega Nav) ================= */}
+        <div className="flex items-center z-10 h-full self-stretch">
+          {/* Two-Bar Menu Button -> Fullscreen Mega Nav */}
+          <button
+            onClick={() => setIsMegaNavOpen(true)}
+            className={`flex flex-col justify-center items-center gap-1.5 w-8 h-8 -ml-1 rounded transition-colors p-1 cursor-pointer ${
+              isTransparent ? 'hover:bg-white/10' : 'hover:bg-black/5 dark:hover:bg-white/10'
+            }`}
+            title="Explore Saudagar Directory"
+            aria-label="Open Navigation Menu"
+          >
+            <span className={`w-5 h-[1.8px] rounded-full transition-colors ${
+              isTransparent ? 'bg-white' : 'bg-[#111111] dark:bg-white'
+            }`} />
+            <span className={`w-5 h-[1.8px] rounded-full transition-colors ${
+              isTransparent ? 'bg-white' : 'bg-[#111111] dark:bg-white'
+            }`} />
+          </button>
         </div>
 
         {/* ================= CENTER ZONE: MATHEMATICALLY PERFECTLY CENTERED ================= */}
         <div
           onClick={onNavigateHome}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-center cursor-pointer select-none py-1 flex items-center justify-center"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-center cursor-pointer select-none py-1 flex items-center justify-center max-w-[42%] sm:max-w-none pointer-events-auto"
         >
-          <img
-            src={
-              isTransparent
-                ? '/images/saudagar_logo_white.png'
-                : theme === 'dark'
-                  ? '/images/saudagar_logo_gold.png'
-                  : '/images/saudagar_logo_black.png'
-            }
-            alt="Saudagar Perfumers - Premium Fragrances"
-            className="h-8 sm:h-9 md:h-10 w-auto object-contain transition-all duration-300 hover:opacity-85"
-          />
+          {isTransparent ? (
+            <img
+              src="/images/saudagar_logo_white.png"
+              alt="Saudagar Perfumers"
+              className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85"
+            />
+          ) : (
+            <>
+              <img
+                src="/images/saudagar_logo_black.png"
+                alt="Saudagar Perfumers"
+                className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 block dark:hidden"
+              />
+              <img
+                src="/images/saudagar_logo_gold.png"
+                alt="Saudagar Perfumers"
+                className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 hidden dark:block"
+              />
+            </>
+          )}
         </div>
 
         {/* ================= RIGHT ZONE: ACTION ICONS ================= */}
-        <div className={`flex items-center gap-2.5 sm:gap-4 z-10 transition-colors duration-300 ${
-          isTransparent || theme === 'dark' ? 'text-white' : 'text-[#111111]'
+        <div className={`flex items-center gap-1.5 sm:gap-3 md:gap-4 z-10 transition-colors duration-300 ${
+          isTransparent ? 'text-white' : 'text-[#111111] dark:text-white'
         }`}>
           
-          {/* Stories Reel Icon Button */}
-          <button
-            onClick={onOpenStory}
-            className={`hidden sm:flex items-center justify-center p-2 rounded-xs transition-all relative group cursor-pointer ${
-              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
-            }`}
-            title="Watch Fragrance Stories"
-            aria-label="Watch Fragrance Stories"
-          >
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#C4823F] animate-ping"></span>
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <circle cx="12" cy="12" r="10" />
-              <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" />
-            </svg>
-          </button>
-
-          {/* Stores Pin Icon Button */}
-          <button
-            onClick={onScrollToStores}
-            className={`hidden sm:flex items-center justify-center p-2 rounded-xs transition-all cursor-pointer ${
-              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
-            }`}
-            title="Walk-in Boutiques"
-            aria-label="Walk-in Boutiques"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-          </button>
-
-          {/* Search Icon Button */}
-          <button
+          {/* Search Icon Button with Luxury Micro-Animation */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
             onClick={onOpenSearch}
-            className={`p-2 rounded-xs transition-all cursor-pointer ${
+            className={`p-1.5 sm:px-2 sm:py-1 rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${
               isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
             }`}
-            title="Search Fragrances"
+            title="Search Fragrances (⌘K)"
             aria-label="Search Fragrances"
           >
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" strokeLinecap="round" />
             </svg>
-          </button>
+            <span className="hidden xl:inline-block text-[9px] uppercase tracking-wider font-mono opacity-60 border border-current px-1.5 py-0.5 rounded">
+              ⌘K
+            </span>
+          </motion.button>
 
-          {/* Luxury Dual-Segmented Capsule Theme Toggle (Light / Dark) */}
+          {/* Luxury Dual-Segmented Capsule Theme Toggle (Light / Dark) - Desktop & Tablet */}
           {onToggleTheme && (
             <div
               onClick={onToggleTheme}
-              className={`inline-flex items-center p-0.5 rounded-full transition-all duration-300 select-none cursor-pointer ${
+              className={`hidden sm:inline-flex items-center p-0.5 rounded-full transition-all duration-300 select-none cursor-pointer ${
                 isTransparent
                   ? 'bg-white/20 backdrop-blur-md'
                   : theme === 'dark'
@@ -224,7 +153,7 @@ export default function BluorngHeader({
               aria-label="Toggle Light and Dark Theme"
               title={`Switch to ${theme === 'dark' ? 'Light' : 'Noir Dark'} Theme`}
             >
-              {/* Light Option (Sun) */}
+              {/* Light Option (Sun) - Orange in Light Theme */}
               <button
                 type="button"
                 onClick={(e) => {
@@ -256,7 +185,7 @@ export default function BluorngHeader({
                 </svg>
               </button>
 
-              {/* Dark Option (Moon) */}
+              {/* Dark Option (Moon) - Gold in Dark Theme */}
               <button
                 type="button"
                 onClick={(e) => {
@@ -265,7 +194,7 @@ export default function BluorngHeader({
                 }}
                 className={`flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200 cursor-pointer ${
                   theme === 'dark'
-                    ? 'bg-[#C4823F] text-white shadow-xs'
+                    ? 'bg-[#D4AF37] text-[#0B0A0D] shadow-xs'
                     : isTransparent || theme === 'dark'
                       ? 'text-white/60 hover:text-white'
                       : 'text-[#111111]/60 hover:text-[#111111]'
@@ -300,7 +229,7 @@ export default function BluorngHeader({
           {/* Wishlist Bookmark Button with Badge */}
           <button
             onClick={() => onNavigateCollection('wishlist')}
-            className={`relative p-2 rounded-xs transition-all cursor-pointer ${
+            className={`relative p-1.5 sm:p-2 rounded-xs transition-all cursor-pointer ${
               isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
             }`}
             title="Wishlist"
@@ -310,7 +239,7 @@ export default function BluorngHeader({
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
             </svg>
             {wishlistCount > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 bg-[#C4823F] text-white text-[9px] font-bold rounded-xs flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-0.5 sm:top-1 sm:right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#C4823F] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[8.5px] sm:text-[9px] font-bold rounded-xs flex items-center justify-center">
                 {wishlistCount}
               </span>
             )}
@@ -318,15 +247,13 @@ export default function BluorngHeader({
 
           {/* Cart Icon / Cart (N) link */}
           <button
+            data-cart-target
             onClick={onOpenCart}
-            className={`flex items-center gap-1.5 p-2 rounded-xs transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 p-1.5 sm:p-2 rounded-xs transition-all cursor-pointer ${
               isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
             }`}
             aria-label={`Shopping Cart (${cartCount})`}
           >
-            <span className="text-[11.5px] font-bold tracking-wider uppercase hidden md:inline">
-              Cart ({cartCount})
-            </span>
             <div className="relative">
               <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -339,7 +266,7 @@ export default function BluorngHeader({
                   initial={{ scale: 1.45 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-                  className="md:hidden absolute -top-1 -right-1 w-4 h-4 bg-[#C4823F] text-white text-[9px] font-bold rounded-xs flex items-center justify-center shadow-xs"
+                  className="absolute -top-1 -right-1 w-4 h-4 bg-[#C4823F] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[9px] font-bold rounded-xs flex items-center justify-center shadow-xs"
                 >
                   {cartCount}
                 </motion.span>
@@ -347,22 +274,6 @@ export default function BluorngHeader({
             </div>
           </button>
 
-          {/* 2-Bar Fullscreen Navigation Drawer Toggle */}
-          <button
-            onClick={() => setIsMegaNavOpen(true)}
-            className={`hidden lg:flex flex-col justify-center items-center gap-1.5 w-8 h-8 rounded transition-colors p-1 cursor-pointer ${
-              isTransparent || theme === 'dark' ? 'hover:bg-white/10' : 'hover:bg-black/5'
-            }`}
-            title="Explore Saudagar Directory"
-            aria-label="Explore Saudagar Directory"
-          >
-            <span className={`w-5 h-[1.8px] rounded-full transition-colors ${
-              isTransparent || theme === 'dark' ? 'bg-white' : 'bg-[#111111]'
-            }`} />
-            <span className={`w-5 h-[1.8px] rounded-full transition-colors ${
-              isTransparent || theme === 'dark' ? 'bg-white' : 'bg-[#111111]'
-            }`} />
-          </button>
         </div>
 
       </div>

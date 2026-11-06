@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
-// 6 Curated Categories - Pure, Haute Luxury Olfactory Families
+// 6 Curated Categories - Pure, Minimal Haute Luxury Olfactory Families
 export const CATEGORY_ITEMS = [
   {
     id: 'cat-oud-royale',
@@ -11,7 +11,7 @@ export const CATEGORY_ITEMS = [
     count: '8 Formulations',
     description: '40-year wild Assam agarwood distilled in copper alembics. Smoked, flinty, and deeply resinous.',
     notes: ['Wild Assam Oud', 'Smoked Birch', 'Dark Ambergris'],
-    concentration: 'Extrait de Parfum · 38%',
+    concentration: 'Extrait · 38% Pure Oil',
     image: '/images/saudagar_imperial_ruby.png',
     slug: 'royal'
   },
@@ -23,7 +23,7 @@ export const CATEGORY_ITEMS = [
     count: '9 Formulations',
     description: 'Ancestral botanical attars compounded without alcohol. High-altitude Taif damask rose aged over sandalwood.',
     notes: ['Taif Damask Rose', 'Mysore Sandalwood', 'Kashmiri Saffron'],
-    concentration: '100% Botanical Attar Oil',
+    concentration: '100% Pure Botanical Attar',
     image: '/images/flacon_rooh_mysore.png',
     slug: 'royal'
   },
@@ -35,7 +35,7 @@ export const CATEGORY_ITEMS = [
     count: '7 Formulations',
     description: 'Sunlit Calabrian bergamot infused with Mediterranean sea spray and sun-bleached coastal cedar.',
     notes: ['Calabrian Bergamot', 'Oceanic Saline', 'Riviera Blue Amber'],
-    concentration: 'Extrait de Parfum · 32%',
+    concentration: 'Extrait · 32% Pure Oil',
     image: '/images/saudagar_royal_sapphire.png',
     slug: 'fresh'
   },
@@ -47,7 +47,7 @@ export const CATEGORY_ITEMS = [
     count: '8 Formulations',
     description: 'Volcanic earth, crushed pine needles, and obsidian minerals captured in dense nighttime extraits.',
     notes: ['Mountain Cypress', 'Obsidian Flint', 'Smoked Vetiver'],
-    concentration: 'Extrait de Parfum · 42%',
+    concentration: 'Extrait · 42% Pure Oil',
     image: '/images/saudagar_noir_matte.png',
     slug: 'exotic'
   },
@@ -59,7 +59,7 @@ export const CATEGORY_ITEMS = [
     count: '12 Formulations',
     description: 'Tears of Somalian frankincense melded with Siam benzoin, warm golden labdanum, and bourbon vanilla.',
     notes: ['Golden Labdanum', 'Frankincense Tears', 'Bourbon Vanilla'],
-    concentration: 'Extrait de Parfum · 36%',
+    concentration: 'Extrait · 36% Pure Oil',
     image: '/images/saudagar_amber_gold.png',
     slug: 'signature'
   },
@@ -79,60 +79,32 @@ export const CATEGORY_ITEMS = [
 
 export default function BluorngCategories({ onSelectCategory }) {
   const [activeIdx, setActiveIdx] = useState(0);
-  const mobileScrollRef = useRef(null);
-
-  const scrollMobile = (direction) => {
-    if (mobileScrollRef.current) {
-      const scrollAmount = direction === 'left' ? -280 : 280;
-      mobileScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-10 sm:py-14 overflow-hidden select-none transition-colors duration-300">
+    <section id="shop-by-category" className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-8 sm:py-14 overflow-hidden select-none transition-colors duration-300 scroll-mt-20">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
-        {/* ================= MINIMAL EDITORIAL HEADER ================= */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
+        {/* ================= EDITORIAL HEADER ================= */}
+        <div className="flex items-end justify-between mb-5">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-white/50 font-medium block mb-0.5">
+            <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#88857F] font-medium block mb-0.5">
               01 / Olfactory Families
             </span>
-            <h2 className="text-[20px] sm:text-[24px] font-normal uppercase tracking-[0.02em] text-[#111111] dark:text-white">
+            <h2 className="text-[19px] sm:text-[24px] font-normal uppercase tracking-[0.03em] text-[#111111] dark:text-white">
               Shop by Category
             </h2>
           </div>
 
-          <div className="flex items-center gap-6">
-            <button
-              onClick={() => onSelectCategory && onSelectCategory('all')}
-              className="text-[11px] uppercase tracking-[0.12em] text-[#111111] dark:text-white hover:text-[#B8860B] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-2 cursor-pointer font-normal"
-            >
-              <span>View All Fragrances</span>
-              <span className="text-[13px]">→</span>
-            </button>
-
-            {/* Mobile Scroll Arrows */}
-            <div className="flex items-center gap-2 sm:hidden">
-              <button
-                onClick={() => scrollMobile('left')}
-                aria-label="Previous"
-                className="w-7 h-7 rounded-full bg-[#F5F3EF] dark:bg-[#1C1A22] flex items-center justify-center text-[12px] text-[#555555] dark:text-white/70"
-              >
-                ‹
-              </button>
-              <button
-                onClick={() => scrollMobile('right')}
-                aria-label="Next"
-                className="w-7 h-7 rounded-full bg-[#F5F3EF] dark:bg-[#1C1A22] flex items-center justify-center text-[12px] text-[#555555] dark:text-white/70"
-              >
-                ›
-              </button>
-            </div>
-          </div>
+          <button
+            onClick={() => onSelectCategory && onSelectCategory('all')}
+            className="text-[11px] uppercase tracking-[0.12em] text-[#888888] hover:text-[#111111] dark:text-[#88857F] dark:hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer font-normal"
+          >
+            <span>View All</span>
+            <span className="text-[13px]">→</span>
+          </button>
         </div>
 
-        {/* ================= DESKTOP: MINIMAL COMPACT EXPANDING PAVILION ================= */}
+        {/* ================= DESKTOP: MINIMAL EXPANDING PAVILION ================= */}
         <div className="hidden md:flex h-[350px] w-full rounded-xl bg-[#F8F7F4] dark:bg-[#141318] overflow-hidden p-1.5 gap-1.5 transition-colors duration-300">
           {CATEGORY_ITEMS.map((item, idx) => {
             const isExpanded = activeIdx === idx;
@@ -158,7 +130,7 @@ export default function BluorngCategories({ onSelectCategory }) {
               >
                 {/* Numeral and count top row */}
                 <div className="px-4 py-3 flex items-center justify-between text-[#888888] dark:text-white/50">
-                  <span className={`text-[11px] font-mono tracking-wider transition-colors ${isExpanded ? 'text-[#B8860B] dark:text-[#ECC86A]' : 'text-[#AAAAAA] dark:text-white/40'}`}>
+                  <span className={`text-[11px] font-mono tracking-wider transition-colors ${isExpanded ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'text-[#AAAAAA] dark:text-white/40'}`}>
                     {item.numeral}
                   </span>
                   <span className="text-[9.5px] uppercase tracking-wider text-[#999999] dark:text-white/40">
@@ -178,7 +150,7 @@ export default function BluorngCategories({ onSelectCategory }) {
                     {/* Left: Details */}
                     <div className="flex-1 flex flex-col justify-between h-full py-1">
                       <div>
-                        <span className="text-[9.5px] uppercase tracking-[0.14em] text-[#B8860B] dark:text-[#ECC86A] font-medium block mb-0.5">
+                        <span className="text-[9.5px] uppercase tracking-[0.14em] text-[#C4823F] dark:text-[#ECC86A] font-medium block mb-0.5">
                           {item.concentration}
                         </span>
                         <h3 className="text-[22px] sm:text-[25px] font-normal uppercase tracking-tight text-[#111111] dark:text-white leading-tight">
@@ -203,7 +175,7 @@ export default function BluorngCategories({ onSelectCategory }) {
                             e.stopPropagation();
                             onSelectCategory && onSelectCategory(item.slug);
                           }}
-                          className="text-[10.5px] uppercase tracking-[0.12em] text-[#111111] dark:text-white hover:text-[#B8860B] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
+                          className="text-[10.5px] uppercase tracking-[0.12em] text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
                         >
                           <span>Explore Collection</span>
                           <span className="text-[12px]">→</span>
@@ -254,53 +226,32 @@ export default function BluorngCategories({ onSelectCategory }) {
           })}
         </div>
 
-        {/* ================= MOBILE: COMPACT HORIZONTAL SWIPE ================= */}
-        <div
-          ref={mobileScrollRef}
-          className="flex md:hidden gap-3 overflow-x-auto pb-3 no-scrollbar scroll-smooth snap-x snap-mandatory pt-1"
-        >
+        {/* ================= MOBILE: PURE ULTRA-MINIMAL 2-COLUMN FLACON GRID ================= */}
+        <div className="grid grid-cols-2 gap-x-3.5 gap-y-6 md:hidden">
           {CATEGORY_ITEMS.map((item) => (
             <div
               key={item.id}
               onClick={() => onSelectCategory && onSelectCategory(item.slug)}
-              className="flex-shrink-0 w-[240px] bg-[#F8F7F4] dark:bg-[#141318] rounded-lg p-4 snap-start cursor-pointer flex flex-col justify-between transition-colors"
+              className="flex flex-col group cursor-pointer select-none active:opacity-75 transition-opacity"
             >
-              {/* Header */}
-              <div className="flex items-center justify-between pb-1">
-                <span className="text-[10.5px] font-mono text-[#B8860B] dark:text-[#ECC86A] font-bold">
-                  {item.numeral}
-                </span>
-                <span className="text-[9.5px] uppercase tracking-wider text-[#888888] dark:text-white/50">
-                  {item.count}
-                </span>
-              </div>
-
-              {/* Flacon Stage */}
-              <div className="w-full aspect-[4/3] bg-white dark:bg-[#1C1A22] rounded-md my-2.5 flex items-center justify-center p-3 relative transition-colors">
+              {/* Clean Soft Pedestal Stage (No heavy borders, no box-in-box, pure flacon) */}
+              <div className="w-full aspect-square rounded-md bg-[#F8F7F5] dark:bg-[#141318] flex items-center justify-center p-4 relative overflow-hidden transition-colors">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="relative z-10 max-h-[110px] object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.15)]"
+                  className="max-h-[110px] w-auto object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.12)] group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                 />
               </div>
 
-              {/* Title & Notes */}
-              <div>
-                <span className="text-[9px] uppercase tracking-[0.14em] text-[#B8860B] dark:text-[#ECC86A] font-medium block">
-                  {item.concentration}
-                </span>
-                <h3 className="text-[15px] font-normal uppercase tracking-tight text-[#111111] dark:text-white mt-0.5">
+              {/* Minimal Clean Typography: Title & Count */}
+              <div className="pt-2 text-center flex flex-col items-center">
+                <h3 className="text-[12px] font-medium uppercase tracking-[0.1em] text-[#111111] dark:text-white line-clamp-1">
                   {item.title}
                 </h3>
-                <p className="text-[10.5px] text-[#777777] dark:text-white/60 mt-0.5 line-clamp-1">
-                  {item.subtitle}
-                </p>
-
-                <div className="mt-3 pt-2 flex items-center justify-between text-[10.5px] uppercase tracking-wider text-[#111111] dark:text-white font-medium">
-                  <span>Explore</span>
-                  <span>→</span>
-                </div>
+                <span className="text-[10px] tracking-wider uppercase text-[#888888] dark:text-[#88857F] mt-0.5">
+                  {item.count}
+                </span>
               </div>
             </div>
           ))}

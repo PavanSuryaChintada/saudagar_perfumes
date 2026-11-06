@@ -30,9 +30,18 @@ export default function BluorngProductCard({
     onSelectProduct && onSelectProduct(product.id);
   };
 
+  const handleMouseEnter = () => {
+    // Prefetch product images on hover for instant opening
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  };
+
   return (
     <div
       onClick={handleCardClick}
+      onMouseEnter={handleMouseEnter}
       className="group relative flex flex-col cursor-pointer transition-all duration-300 select-none"
     >
       {/* ================= SOFT PEDESTAL FLACON STAGE (No harsh borders) ================= */}
@@ -77,8 +86,9 @@ export default function BluorngProductCard({
             width="13"
             height="13"
             viewBox="0 0 24 24"
-            fill={isWishlisted ? '#C4823F' : 'none'}
-            stroke={isWishlisted ? '#C4823F' : 'currentColor'}
+            className={isWishlisted ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'text-[#111111] dark:text-white'}
+            fill={isWishlisted ? 'currentColor' : 'none'}
+            stroke="currentColor"
             strokeWidth="1.8"
           >
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
@@ -113,7 +123,7 @@ export default function BluorngProductCard({
               e.stopPropagation();
               onQuickBuy && onQuickBuy(product);
             }}
-            className="w-full py-2 text-[10.5px] uppercase tracking-[0.14em] font-medium rounded-sm shadow-md transition-colors cursor-pointer bg-[#111111] text-white hover:bg-[#C4823F] dark:bg-[#C4823F] dark:text-white dark:hover:bg-[#DE9954]"
+            className="w-full py-2 text-[10.5px] uppercase tracking-[0.14em] font-medium rounded-sm shadow-md transition-colors cursor-pointer bg-[#111111] text-white hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:text-[#0B0A0D] dark:hover:bg-[#ECC86A]"
           >
             + Quick Add
           </button>

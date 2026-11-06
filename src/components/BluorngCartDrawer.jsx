@@ -118,7 +118,7 @@ export default function BluorngCartDrawer({
             </div>
             <div className="w-full h-1.5 bg-[#E5E5E5] dark:bg-white/10 rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#111111] dark:bg-[#C4823F] transition-all duration-300"
+                className="h-full bg-[#C4823F] dark:bg-[#D4AF37] transition-all duration-300"
                 style={{ width: `${freeShippingProgress}%` }}
               />
             </div>
@@ -143,7 +143,7 @@ export default function BluorngCartDrawer({
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-3 px-6 py-2.5 bg-[#111111] hover:bg-[#C4823F] text-white text-[11px] font-bold uppercase tracking-wide transition-colors"
+                  className="mt-3 px-6 py-2.5 bg-[#111111] hover:bg-[#C4823F] dark:hover:bg-[#D4AF37] dark:hover:text-[#0B0A0D] text-white text-[11px] font-bold uppercase tracking-wide transition-colors"
                 >
                   Continue Browsing
                 </button>
@@ -191,7 +191,7 @@ export default function BluorngCartDrawer({
                         </p>
 
                         {item.engraving && (
-                          <p className="text-[10px] text-[#C4823F] font-medium tracking-wide mt-0.5">
+                          <p className="text-[10px] text-[#C4823F] dark:text-[#ECC86A] font-medium tracking-wide mt-0.5">
                             Engraving: "{item.engraving}"
                           </p>
                         )}
@@ -264,7 +264,7 @@ export default function BluorngCartDrawer({
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[10.5px] font-bold uppercase tracking-wide transition-colors rounded-xs cursor-pointer"
+                  className="px-4 py-2 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[10.5px] font-bold uppercase tracking-wide transition-colors rounded-xs cursor-pointer"
                 >
                   Apply
                 </button>
@@ -323,7 +323,7 @@ export default function BluorngCartDrawer({
                     note: orderNote
                   });
                 }}
-                className="w-full py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
+                className="w-full py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
               >
                 <span>Proceed to Checkout</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>

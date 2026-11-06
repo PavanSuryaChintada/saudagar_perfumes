@@ -45,26 +45,59 @@ export default function BluorngCollectionHero({
   activeCollectionId = 'signature',
   onSwitchCollection
 }) {
-  const videoRef = useRef(null);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const videoRefs = useRef({});
   const [isMuted, setIsMuted] = useState(true);
 
   const activeHero = HERO_COLLECTIONS.find((c) => c.id === activeCollectionId) || HERO_COLLECTIONS[0];
   const activeTheme = COLLECTION_THEMES[activeHero.id] || COLLECTION_THEMES.signature;
 
+  const [currentId, setCurrentId] = useState(activeHero.id);
+  const [prevId, setPrevId] = useState(null);
+  const prevHeroIdRef = useRef(activeHero.id);
+
+  // Seamless film-style video dissolve:
+  // Target video fades in at solid opacity-100 on z-20 while previous video stays at z-10.
+  // After crossfade completes (550ms), previous video is retired & paused so zero overlapping can ever happen.
   useEffect(() => {
-    setIsVideoLoaded(false);
-    if (videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => {});
+    if (activeHero.id !== prevHeroIdRef.current) {
+      const oldId = prevHeroIdRef.current;
+      prevHeroIdRef.current = activeHero.id;
+
+      setPrevId(oldId);
+      setCurrentId(activeHero.id);
+
+      const targetVid = videoRefs.current[activeHero.id];
+      if (targetVid) {
+        targetVid.muted = isMuted;
+        targetVid.play().catch(() => {});
+      }
+
+      const timer = setTimeout(() => {
+        setPrevId(null);
+        Object.entries(videoRefs.current).forEach(([id, vid]) => {
+          if (id !== activeHero.id && vid && !vid.paused) {
+            vid.pause();
+          }
+        });
+      }, 550);
+
+      return () => clearTimeout(timer);
+    } else {
+      // Ensure initial active video is playing
+      const currentVid = videoRefs.current[activeHero.id];
+      if (currentVid && currentVid.paused) {
+        currentVid.muted = isMuted;
+        currentVid.play().catch(() => {});
+      }
     }
-  }, [activeHero.id]);
+  }, [activeHero.id, isMuted]);
 
   const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    Object.values(videoRefs.current).forEach((vid) => {
+      if (vid) vid.muted = nextMuted;
+    });
   };
 
   return (
@@ -73,45 +106,58 @@ export default function BluorngCollectionHero({
     >
       
       {/* ================= 1. CINEMATIC CLEAN HERO BANNER ================= */}
-      <div className="relative w-full h-[52vh] min-h-[380px] max-h-[560px] overflow-hidden bg-[#111111]">
+      <div className="relative w-full h-[52vh] min-h-[380px] max-h-[560px] overflow-hidden bg-[#0B0A0D]">
         
-        {/* Full-Bleed Video Element */}
-        <video
-          ref={videoRef}
-          key={activeHero.video}
-          src={activeHero.video}
-          poster={activeHero.poster}
-          autoPlay
-          loop
-          muted={isMuted}
-          playsInline
-          onLoadedData={() => setIsVideoLoaded(true)}
-          className={`w-full h-full object-cover object-center transition-opacity duration-700 ${
-            isVideoLoaded ? 'opacity-90' : 'opacity-70'
-          }`}
-        />
+        {/* Multi-Video Crossfade Stage: Guaranteed Zero Black Flash / Glitch */}
+        {HERO_COLLECTIONS.map((col) => {
+          const isCurrent = col.id === currentId;
+          const isPrev = col.id === prevId;
+
+          return (
+            <video
+              key={col.id}
+              ref={(el) => {
+                if (el) videoRefs.current[col.id] = el;
+              }}
+              src={col.video}
+              poster={col.poster}
+              autoPlay={isCurrent}
+              loop
+              muted={isMuted}
+              playsInline
+              preload="auto"
+              className={`absolute inset-0 w-full h-full object-cover object-center pointer-events-none transition-opacity duration-500 ease-in-out will-change-opacity ${
+                isCurrent
+                  ? 'opacity-100 z-20'
+                  : isPrev
+                  ? 'opacity-100 z-10'
+                  : 'opacity-0 z-0 pointer-events-none'
+              }`}
+            />
+          );
+        })}
 
         {/* Soft, Natural Dark Vignette for Crisp Legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/30 pointer-events-none" />
+        <div className="absolute inset-0 z-25 bg-gradient-to-t from-black/80 via-black/35 to-black/30 pointer-events-none" />
 
         {/* Subtle Sound Toggle */}
         <button
           onClick={toggleMute}
           aria-label={isMuted ? 'Unmute' : 'Mute'}
-          className="absolute top-6 right-6 z-20 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center text-[11px] backdrop-blur-md border border-white/20 transition-all cursor-pointer"
+          className="absolute top-6 right-6 z-30 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center text-[11px] backdrop-blur-md border border-white/20 transition-all cursor-pointer"
         >
           {isMuted ? '🔇' : '🔊'}
         </button>
 
         {/* Centered Minimal Typography Overlay */}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6">
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6 pointer-events-none">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeHero.id}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.45 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               className="max-w-2xl"
             >
               <span className="text-[10px] font-medium tracking-[0.22em] uppercase text-white/75 block mb-2">
@@ -149,7 +195,7 @@ export default function BluorngCollectionHero({
                 {isActive && (
                   <motion.span
                     layoutId="activeCollectionUnderline"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#111111] dark:bg-[#C4823F]"
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#111111] dark:bg-[#D4AF37]"
                   />
                 )}
               </button>

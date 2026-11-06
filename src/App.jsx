@@ -11,9 +11,14 @@ import BluorngStoryViewer from './components/BluorngStoryViewer.jsx';
 import BluorngCartDrawer from './components/BluorngCartDrawer.jsx';
 import BluorngSearchModal from './components/BluorngSearchModal.jsx';
 import BluorngQuickBuyModal from './components/BluorngQuickBuyModal.jsx';
-import BluorngCheckoutModal from './components/BluorngCheckoutModal.jsx';
+import BluorngCheckoutPage from './components/BluorngCheckoutPage.jsx';
 import BluorngNavDrawer from './components/BluorngNavDrawer.jsx';
+import BluorngWishlistPage from './components/BluorngWishlistPage.jsx';
+import BluorngAccountPage from './components/BluorngAccountPage.jsx';
+import BluorngStoryPage from './components/BluorngStoryPage.jsx';
 import Toast from './components/Toast.jsx';
+import { playSound } from './utils/sound.js';
+import { flyToCart } from './utils/flyToCart.js';
 
 // Luxury Motion System
 import LuxuryPreloader from './components/motion/LuxuryPreloader.jsx';
@@ -32,19 +37,56 @@ import {
 import { resolveCollectionTheme } from './data/collectionThemes.js';
 
 export default function App() {
-  // Navigation State: 'home' | 'product' | 'collection'
-  const [view, setView] = useState('home');
-  const [selectedProductId, setSelectedProductId] = useState('saudagar-thunderstruck-oud');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  // Navigation State initialized synchronously from URL to prevent blank screen flash on refresh
+  const [view, setView] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const pathname = window.location.pathname;
+      const params = new URLSearchParams(window.location.search);
+      if (pathname.startsWith('/product/') || params.get('id')) return 'product';
+      if (pathname.startsWith('/wishlist')) return 'wishlist';
+      if (pathname.startsWith('/story') || pathname.startsWith('/about')) return 'story';
+      if (pathname.startsWith('/account') || pathname.startsWith('/profile')) return 'account';
+      if (pathname.startsWith('/checkout')) return 'checkout';
+      if (pathname.startsWith('/collections/') || params.get('collection')) return 'collection';
+    }
+    return 'home';
+  });
+
+  const [selectedProductId, setSelectedProductId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const pathname = window.location.pathname;
+      const params = new URLSearchParams(window.location.search);
+      if (pathname.startsWith('/product/')) {
+        const pId = pathname.replace('/product/', '').replace(/\/$/, '');
+        if (ALL_PRODUCTS.some((p) => p.id === pId)) return pId;
+      }
+      const prodId = params.get('id');
+      if (prodId && ALL_PRODUCTS.some((p) => p.id === prodId)) return prodId;
+    }
+    return 'saudagar-deep-canopy';
+  });
+
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const pathname = window.location.pathname;
+      const params = new URLSearchParams(window.location.search);
+      if (pathname.startsWith('/collections/')) {
+        return pathname.replace('/collections/', '').replace(/\/$/, '') || 'all';
+      }
+      const cat = params.get('collection');
+      if (cat) return cat;
+    }
+    return 'all';
+  });
 
   // Global State
   const [activeCurrency, setActiveCurrency] = useState(getStoredCurrency());
   const [cart, setCart] = useState(getStoredCart());
   const [wishlist, setWishlist] = useState(getStoredWishlist());
 
-  // Theme State: 'dark' (Noir Obsidian Luxury) | 'light' (Editorial Clean Canvas)
+  // Theme State: 'light' (Editorial Clean Canvas) | 'dark' (Noir Obsidian Luxury)
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('saudagar_theme') || 'dark';
+    return localStorage.getItem('saudagar_theme_mode') || 'light';
   });
 
   useEffect(() => {
@@ -59,13 +101,13 @@ export default function App() {
       document.body.classList.remove('dark');
       document.documentElement.style.colorScheme = 'light';
     }
-    localStorage.setItem('saudagar_theme', theme);
+    localStorage.setItem('saudagar_theme_mode', theme);
   }, [theme]);
 
   const toggleTheme = () => {
     setTheme((prev) => {
       const nextTheme = prev === 'dark' ? 'light' : 'dark';
-      triggerToast(nextTheme === 'dark' ? 'Switched to Noir Obsidian Theme' : 'Switched to Editorial Light Theme');
+      triggerToast(nextTheme === 'dark' ? 'Switched to Noir Obsidian Theme' : 'Switched to Editorial Light Theme', 'theme');
       return nextTheme;
     });
   };
@@ -78,10 +120,23 @@ export default function App() {
   const [quickBuyProduct, setQuickBuyProduct] = useState(null);
   const [checkoutData, setCheckoutData] = useState(null);
 
+  // Global Keyboard Shortcut: Cmd+K / Ctrl+K toggles luxury search
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Toast State
   const [toastMessage, setToastMessage] = useState('');
 
-  const triggerToast = (msg) => {
+  const triggerToast = (msg, sound) => {
+    if (sound) playSound(sound);
     setToastMessage(msg);
     setTimeout(() => {
       setToastMessage('');
@@ -109,6 +164,30 @@ export default function App() {
       if (prodId && ALL_PRODUCTS.some((p) => p.id === prodId)) {
         setSelectedProductId(prodId);
         setView('product');
+        return;
+      }
+
+      // Saved fragrances page
+      if (pathname.startsWith('/wishlist')) {
+        setView('wishlist');
+        return;
+      }
+
+      // Dedicated brand story and journey page route
+      if (pathname.startsWith('/story') || pathname.startsWith('/about')) {
+        setView('story');
+        return;
+      }
+
+      // Connoisseur user profile account page route
+      if (pathname.startsWith('/account') || pathname.startsWith('/profile')) {
+        setView('account');
+        return;
+      }
+
+      // Dedicated checkout page route
+      if (pathname.startsWith('/checkout')) {
+        setView('checkout');
         return;
       }
 
@@ -145,6 +224,14 @@ export default function App() {
     } else if (view === 'collection') {
       const currentTheme = resolveCollectionTheme(selectedCategory);
       document.title = `${currentTheme.name.toUpperCase()} · ${currentTheme.headline} | SAUDAGAR PERFUMES`;
+    } else if (view === 'wishlist') {
+      document.title = 'SAVED FRAGRANCES | SAUDAGAR PERFUMES';
+    } else if (view === 'story') {
+      document.title = 'THE MAISON & COMPLETE BRAND JOURNEY | SAUDAGAR PERFUMES';
+    } else if (view === 'account') {
+      document.title = 'CONNOISSEUR ACCOUNT & PROFILE | SAUDAGAR PERFUMES';
+    } else if (view === 'checkout') {
+      document.title = 'SECURE CHECKOUT | SAUDAGAR PERFUMES · Haute Parfumerie';
     } else {
       document.title = 'SAUDAGAR PERFUMES | Haute Parfumerie & Artisanal Fragrances';
     }
@@ -152,29 +239,94 @@ export default function App() {
 
   const { scrollTo } = useSmoothScroll();
 
+  // Fast instant scroll reset helper
+  const resetScrollToTop = () => {
+    window.scrollTo(0, 0);
+    if (window.__lenis) {
+      window.__lenis.scrollTo(0, { immediate: true });
+    }
+  };
+
+  // Idle preloader for key collection and product flacon images
+  useEffect(() => {
+    const preloadHeroImages = () => {
+      const topProducts = ALL_PRODUCTS.slice(0, 8);
+      topProducts.forEach((p) => {
+        const imgs = p.images || (p.image ? [p.image] : []);
+        imgs.forEach((src) => {
+          const img = new Image();
+          img.src = src;
+        });
+      });
+    };
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(preloadHeroImages, { timeout: 1500 });
+    } else {
+      setTimeout(preloadHeroImages, 300);
+    }
+  }, []);
+
   // Navigation Handlers
   const navigateToProduct = (id) => {
     setSelectedProductId(id);
     setView('product');
     const newUrl = `/product/${id}`;
     window.history.pushState({ id }, '', newUrl);
-    scrollTo(0, { duration: 0.85 });
+    resetScrollToTop();
   };
 
   const navigateToHome = () => {
     setView('home');
     window.history.pushState({}, '', '/');
-    scrollTo(0, { duration: 0.85 });
+    resetScrollToTop();
+  };
+
+  const navigateToWishlist = () => {
+    setView('wishlist');
+    window.history.pushState({}, '', '/wishlist');
+    resetScrollToTop();
+  };
+
+  const navigateToAccount = () => {
+    playSound('nav');
+    setView('account');
+    window.history.pushState({}, '', '/account');
+    resetScrollToTop();
+  };
+
+  const navigateToStory = () => {
+    playSound('nav');
+    setView('story');
+    window.history.pushState({}, '', '/story');
+    resetScrollToTop();
+  };
+
+  const navigateToCheckout = (data = null) => {
+    if (data) {
+      setCheckoutData(data);
+    }
+    setIsCartOpen(false);
+    setView('checkout');
+    window.history.pushState({}, '', '/checkout');
+    resetScrollToTop();
   };
 
   const navigateToCollection = (categorySlug = 'signature') => {
+    if (categorySlug === 'wishlist') {
+      navigateToWishlist();
+      return;
+    }
     let target = categorySlug;
     if (categorySlug === 'all') target = 'signature';
+    const wasInCollection = view === 'collection';
     setSelectedCategory(target);
     setView('collection');
     const newUrl = `/collections/${target}`;
     window.history.pushState({ categorySlug: target }, '', newUrl);
-    scrollTo(0, { duration: 0.85 });
+    if (!wasInCollection) {
+      resetScrollToTop();
+    }
   };
 
   const scrollToStores = () => {
@@ -185,7 +337,7 @@ export default function App() {
   const handleCurrencyChange = (newCurr) => {
     setActiveCurrency(newCurr);
     setStoredCurrency(newCurr);
-    triggerToast(`Currency updated to ${newCurr}.`);
+    triggerToast(`Currency updated to ${newCurr}.`, 'currency');
   };
 
   // Wishlist Handler
@@ -194,10 +346,10 @@ export default function App() {
       let updated;
       if (prevList.includes(productId)) {
         updated = prevList.filter((id) => id !== productId);
-        triggerToast('Removed from your saved Wishlist.');
+        triggerToast('Removed from your saved Wishlist.', 'remove');
       } else {
         updated = [...prevList, productId];
-        triggerToast('Saved to your Wishlist.');
+        triggerToast('Saved to your Wishlist.', 'wishlist');
       }
       setStoredWishlist(updated);
       return updated;
@@ -205,7 +357,7 @@ export default function App() {
   };
 
   // Cart Handlers
-  const handleAddToCart = (item) => {
+  const handleAddToCart = (item, { openCart = true } = {}) => {
     setCart((prevCart) => {
       const existing = prevCart.find(
         (i) =>
@@ -226,17 +378,27 @@ export default function App() {
     });
 
     const prod = ALL_PRODUCTS.find((p) => p.id === item.productId);
+    const productImage = prod ? prod.images?.[0] || prod.image : null;
+
     triggerToast(`${prod ? prod.name : 'Fragrance'} added to your bag.`);
-    setIsCartOpen(true);
+
+    // Product flies into the bag; the bag chime plays as it lands, then the drawer opens
+    flyToCart({
+      src: productImage,
+      onLand: () => {
+        playSound('bag');
+        if (openCart) setIsCartOpen(true);
+      }
+    });
   };
 
   const handleBuyNow = (item) => {
-    handleAddToCart(item);
+    handleAddToCart(item, { openCart: false });
     setIsCartOpen(false);
     const prod = ALL_PRODUCTS.find((p) => p.id === item.productId);
     const price = item.price || (prod ? prod.price : 5500);
     const total = price * (item.quantity || 1);
-    setCheckoutData({
+    navigateToCheckout({
       items: [item],
       subtotal: total,
       discount: 0,
@@ -246,14 +408,18 @@ export default function App() {
   };
 
   const handleUpdateQuantity = (index, delta) => {
+    playSound('tap');
     setCart((prevCart) => {
-      const updated = [...prevCart];
-      if (updated[index]) {
-        updated[index].quantity += delta;
-        if (updated[index].quantity <= 0) {
-          updated.splice(index, 1);
-        }
-      }
+      const target = prevCart[index];
+      if (!target) return prevCart;
+
+      // Pure update (no mutation): React StrictMode runs updaters twice in development
+      const newQuantity = target.quantity + delta;
+      const updated =
+        newQuantity <= 0
+          ? prevCart.filter((_, i) => i !== index)
+          : prevCart.map((item, i) => (i === index ? { ...item, quantity: newQuantity } : item));
+
       setStoredCart(updated);
       return updated;
     });
@@ -265,48 +431,97 @@ export default function App() {
       setStoredCart(updated);
       return updated;
     });
-    triggerToast('Item removed from your bag.');
+    triggerToast('Item removed from your bag.', 'remove');
   };
 
   const handleOrderSuccess = (orderInfo) => {
     setCart([]);
     setStoredCart([]);
-    triggerToast(`Order ${orderInfo.orderId} confirmed! Check your email.`);
+    triggerToast(`Order ${orderInfo.orderId} confirmed! Check your email.`, 'success');
   };
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   return (
-    <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-[#FFFFFF] flex flex-col font-sans selection:bg-[#C4823F] selection:text-white transition-colors duration-300">
+    <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-[#FFFFFF] flex flex-col font-sans selection:bg-[#C4823F] dark:selection:bg-[#D4AF37] dark:selection:text-[#0B0A0D] selection:text-white transition-colors duration-300">
       {/* Toast Notification */}
       <Toast message={toastMessage} />
 
       {/* 1. MAIN HEADER (Logo, mega menu, search, story, stores, cart badge, theme toggle) */}
-      <BluorngHeader
-        isHomePage={view === 'home'}
-        cartCount={totalCartCount}
-        wishlistCount={wishlist.length}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenStory={() => setIsStoryOpen(true)}
-        onOpenNavDrawer={() => setIsNavDrawerOpen(true)}
-        onNavigateHome={navigateToHome}
-        onNavigateCollection={navigateToCollection}
-        onScrollToStores={scrollToStores}
-        onOpenAccount={() => alert('Customer Account: Welcome to Saudagar VIP Privileges. Logged in as VIP Client.')}
-      />
+      {view !== 'product' && view !== 'checkout' && view !== 'account' && view !== 'story' && (
+        <BluorngHeader
+          isHomePage={view === 'home'}
+          cartCount={totalCartCount}
+          wishlistCount={wishlist.length}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onOpenCart={() => setIsCartOpen(true)}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenStory={navigateToStory}
+          onOpenNavDrawer={() => setIsNavDrawerOpen(true)}
+          onNavigateHome={navigateToHome}
+          onNavigateCollection={navigateToCollection}
+          onScrollToStores={scrollToStores}
+          onOpenAccount={navigateToAccount}
+        />
+      )}
 
-      {/* Luxury Branded Preloader */}
-      <LuxuryPreloader />
+      {/* Luxury Branded Preloader (only runs once on home page, never blocking interior pages) */}
+      {view === 'home' && <LuxuryPreloader />}
 
       {/* 3. MAIN PAGE CONTENT VIEW WITH LUXURY ROUTE TRANSITIONS */}
       <main className="flex-1">
-        <PageTransition routeKey={view === 'product' ? `product-${selectedProductId}` : view === 'collection' ? `collection-${selectedCategory}` : 'home'}>
-          {view === 'product' ? (
+        <PageTransition routeKey={view === 'product' ? `product-${selectedProductId}` : view === 'collection' ? 'collection' : view === 'wishlist' ? 'wishlist' : view === 'checkout' ? 'checkout' : view === 'account' ? 'account' : view === 'story' ? 'story' : 'home'}>
+          {view === 'checkout' ? (
+            <BluorngCheckoutPage
+              cart={cart}
+              checkoutData={checkoutData}
+              activeCurrency={activeCurrency}
+              theme={theme}
+              onToggleTheme={toggleTheme}
+              onNavigateHome={navigateToHome}
+              onNavigateCollection={navigateToCollection}
+              onOrderSuccess={handleOrderSuccess}
+              onClearCart={() => setCart([])}
+            />
+          ) : view === 'story' ? (
+            <BluorngStoryPage
+              theme={theme}
+              onToggleTheme={toggleTheme}
+              onNavigateHome={navigateToHome}
+              onNavigateCollection={navigateToCollection}
+            />
+          ) : view === 'account' ? (
+            <BluorngAccountPage
+              activeCurrency={activeCurrency}
+              onChangeCurrency={handleCurrencyChange}
+              theme={theme}
+              onToggleTheme={toggleTheme}
+              onNavigateHome={navigateToHome}
+              onNavigateCollection={navigateToCollection}
+              onSelectProduct={navigateToProduct}
+            />
+          ) : view === 'wishlist' ? (
+            <BluorngWishlistPage
+              wishlist={wishlist}
+              activeCurrency={activeCurrency}
+              onToggleWishlist={handleToggleWishlist}
+              onSelectProduct={navigateToProduct}
+              onQuickBuy={(prod) => setQuickBuyProduct(prod)}
+              onNavigateCollection={navigateToCollection}
+            />
+          ) : view === 'product' ? (
             <BluorngPDP
               productId={selectedProductId}
               activeCurrency={activeCurrency}
+              cartCount={totalCartCount}
+              wishlist={wishlist}
+              onToggleWishlist={handleToggleWishlist}
+              theme={theme}
+              onToggleTheme={toggleTheme}
+              onOpenCart={() => setIsCartOpen(true)}
+              onOpenSearch={() => setIsSearchOpen(true)}
+              onOpenStory={navigateToStory}
+              onOpenNavDrawer={() => setIsNavDrawerOpen(true)}
               onSelectProduct={navigateToProduct}
               onAddToCart={handleAddToCart}
               onBuyNow={handleBuyNow}
@@ -323,7 +538,7 @@ export default function App() {
               onQuickBuy={(prod) => setQuickBuyProduct(prod)}
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
-              onOpenStory={() => setIsStoryOpen(true)}
+              onOpenStory={navigateToStory}
             />
           ) : (
             <BluorngHome
@@ -335,36 +550,40 @@ export default function App() {
               onNavigateCollection={navigateToCollection}
               onSelectCategory={(cat) => navigateToCollection(cat)}
               onScrollToStores={scrollToStores}
-              onOpenStory={() => setIsStoryOpen(true)}
+              onOpenStory={navigateToStory}
             />
           )}
         </PageTransition>
       </main>
 
       {/* 4. MASTER LUXURY FOOTER (Links, newsletter, currency, massive SAUDAGAR brand wordmark) */}
-      <BluorngFooter
-        activeCurrency={activeCurrency}
-        onCurrencyChange={handleCurrencyChange}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onNavigateHome={navigateToHome}
-        onNavigateCollection={navigateToCollection}
-        onScrollToStores={scrollToStores}
-        onOpenStory={() => setIsStoryOpen(true)}
-      />
+      {view !== 'checkout' && view !== 'account' && view !== 'story' && (
+        <BluorngFooter
+          activeCurrency={activeCurrency}
+          onCurrencyChange={handleCurrencyChange}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onNavigateHome={navigateToHome}
+          onNavigateCollection={navigateToCollection}
+          onScrollToStores={scrollToStores}
+          onOpenStory={navigateToStory}
+        />
+      )}
 
       {/* 5. MOBILE BOTTOM NAVIGATION (Explore, Account, Stories, Boutiques, Bag) */}
-      <BluorngMobileBottomNav
-        cartCount={totalCartCount}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onNavigateHome={navigateToHome}
-        onNavigateCollection={navigateToCollection}
-        onScrollToStores={scrollToStores}
-        onOpenStory={() => setIsStoryOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenAccount={() => alert('Customer Account: Welcome to Saudagar VIP Privileges.')}
-      />
+      {view !== 'checkout' && (
+        <BluorngMobileBottomNav
+          cartCount={totalCartCount}
+          theme={theme}
+          onToggleTheme={toggleTheme}
+          onNavigateHome={navigateToHome}
+          onNavigateCollection={navigateToCollection}
+          onScrollToStores={scrollToStores}
+          onOpenStory={() => setIsStoryOpen(true)}
+          onOpenCart={() => setIsCartOpen(true)}
+          onOpenAccount={navigateToAccount}
+        />
+      )}
 
       {/* ================= GLOBAL OVERLAYS & MODALS ================= */}
 
@@ -384,7 +603,7 @@ export default function App() {
         onRemoveItem={handleRemoveItem}
         activeCurrency={activeCurrency}
         onProceedToCheckout={(data) => {
-          setCheckoutData(data);
+          navigateToCheckout(data);
         }}
       />
 
@@ -394,6 +613,8 @@ export default function App() {
         onClose={() => setIsSearchOpen(false)}
         onSelectProduct={navigateToProduct}
         activeCurrency={activeCurrency}
+        wishlist={wishlist}
+        onToggleWishlist={handleToggleWishlist}
       />
 
       {/* Quick Buy Size Modal (Triggered by "+" on Product Cards) */}
@@ -403,22 +624,17 @@ export default function App() {
             key="quick-buy-modal"
             product={quickBuyProduct}
             activeCurrency={activeCurrency}
+            wishlist={wishlist}
+            onToggleWishlist={handleToggleWishlist}
             onClose={() => setQuickBuyProduct(null)}
             onAddToCart={handleAddToCart}
+            onViewDetails={(productId) => {
+              setQuickBuyProduct(null);
+              navigateToProduct(productId);
+            }}
           />
         )}
       </AnimatePresence>
-
-      {/* Full Checkout Journey Modal */}
-      {checkoutData && (
-        <BluorngCheckoutModal
-          isOpen={Boolean(checkoutData)}
-          checkoutData={checkoutData}
-          activeCurrency={activeCurrency}
-          onClose={() => setCheckoutData(null)}
-          onOrderSuccess={handleOrderSuccess}
-        />
-      )}
 
       {/* Side Navigation Drawer */}
       <BluorngNavDrawer
@@ -433,11 +649,11 @@ export default function App() {
         onScrollToStores={scrollToStores}
         onOpenStory={() => {
           setIsNavDrawerOpen(false);
-          setIsStoryOpen(true);
+          navigateToStory();
         }}
         onOpenAccount={() => {
           setIsNavDrawerOpen(false);
-          alert('Customer Account: Welcome to Saudagar VIP Privileges.');
+          navigateToAccount();
         }}
       />
     </div>

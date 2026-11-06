@@ -10,6 +10,8 @@ import BluorngInstagramReels from './BluorngInstagramReels.jsx';
 import BluorngFooterAccordions from './BluorngFooterAccordions.jsx';
 import LuxuryKineticMarquee from './motion/LuxuryKineticMarquee.jsx';
 import AnimatedCampaignBanner from './AnimatedCampaignBanner.jsx';
+import BluorngTestimonials from './BluorngTestimonials.jsx';
+import BluorngEditorial from './BluorngEditorial.jsx';
 
 export default function BluorngHome({
   activeCurrency,
@@ -110,6 +112,12 @@ export default function BluorngHome({
         speed={36}
         reverse={true}
       />
+
+      {/* 9a. EDITORIAL STORY (typography statement, bento grid, collection entry points) */}
+      <BluorngEditorial onNavigateCollection={onNavigateCollection} />
+
+      {/* 9b. TESTIMONIALS (placeholder content - replace with real reviews) */}
+      <BluorngTestimonials />
 
       {/* 10. INSTAGRAM REELS ("Community & Atelier Reels - Screening Lounge") */}
       <BluorngInstagramReels

@@ -17,6 +17,8 @@ function heroVideosPlugin() {
       .readdirSync(videosDir)
       .filter((f) => /\.(mp4|webm|mov|m4v)$/i.test(f) && !f.startsWith('.'))
       .sort((a, b) => {
+        if (a.includes('Perfume_bottles_in_royal_palace')) return -1;
+        if (b.includes('Perfume_bottles_in_royal_palace')) return 1;
         if (a.includes('Automotive_Noir_Night')) return -1;
         if (b.includes('Automotive_Noir_Night')) return 1;
         return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });

@@ -29,7 +29,7 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
           </div>
 
           <div className="text-[11px] font-normal text-[#888888] dark:text-[#A09D96] tracking-wider uppercase hidden md:flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C4823F]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C4823F] dark:bg-[#ECC86A]" />
             <span>Exhibition Trilogy</span>
           </div>
         </ScrollReveal>
@@ -47,7 +47,7 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
                 {/* Curator Placard Above Image */}
                 <div className="px-5 py-3.5 bg-transparent flex items-center justify-between">
                   <div>
-                    <span className="text-[9.5px] font-normal tracking-[0.1em] text-[#C4823F] uppercase block">
+                    <span className="text-[9.5px] font-normal tracking-[0.1em] text-[#C4823F] dark:text-[#ECC86A] uppercase block">
                       {tile.exhibitionNo}
                     </span>
                     <h3 className="text-[13px] sm:text-[14px] font-medium tracking-[0.03em] uppercase text-[#111111] dark:text-white group-hover:text-[#C4823F] dark:group-hover:text-[#ECC86A] transition-colors duration-200 mt-0.5">
@@ -55,7 +55,7 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
                     </h3>
                   </div>
 
-                  <div className="w-7 h-7 rounded-full bg-white/80 dark:bg-white/10 group-hover:bg-[#111111] dark:group-hover:bg-[#C4823F] text-[#111111] dark:text-white group-hover:text-white flex items-center justify-center text-[12px] transition-all duration-200 shadow-xs">
+                  <div className="w-7 h-7 rounded-full bg-white/80 dark:bg-white/10 group-hover:bg-[#111111] dark:group-hover:bg-[#D4AF37] dark:group-hover:text-[#0B0A0D] text-[#111111] dark:text-white group-hover:text-white flex items-center justify-center text-[12px] transition-all duration-200 shadow-xs">
                     ↗
                   </div>
                 </div>

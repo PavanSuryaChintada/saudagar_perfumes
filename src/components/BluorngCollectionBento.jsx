@@ -69,7 +69,7 @@ export default function CollectionBentoSection({
           {/* Flacon Stage */}
           <div className="w-full sm:w-1/2 aspect-square flex items-center justify-center relative">
             <div className="absolute top-0 left-0">
-              <span className="text-[9.5px] uppercase tracking-[0.18em] font-medium text-[#C4823F]">
+              <span className="text-[9.5px] uppercase tracking-[0.18em] font-medium text-[#C4823F] dark:text-[#ECC86A]">
                 Crown Flacon
               </span>
             </div>
@@ -86,8 +86,9 @@ export default function CollectionBentoSection({
                 width="14"
                 height="14"
                 viewBox="0 0 24 24"
-                fill={isWish ? '#C4823F' : 'none'}
-                stroke={isWish ? '#C4823F' : 'currentColor'}
+                className={isWish ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'text-[#111111] dark:text-white'}
+                fill={isWish ? 'currentColor' : 'none'}
+                stroke="currentColor"
                 strokeWidth="1.6"
               >
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -135,7 +136,7 @@ export default function CollectionBentoSection({
                   e.stopPropagation();
                   onQuickBuy(featuredProduct);
                 }}
-                className="px-5 py-2 rounded-full bg-[#111111] dark:bg-[#C4823F] hover:bg-[#C4823F] dark:hover:bg-[#DE9954] text-white text-[10.5px] uppercase tracking-wider font-medium transition-all duration-300 cursor-pointer shadow-sm"
+                className="px-5 py-2 rounded-full bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[10.5px] uppercase tracking-wider font-medium transition-all duration-300 cursor-pointer shadow-sm"
               >
                 + Quick Buy
               </button>
@@ -156,7 +157,7 @@ export default function CollectionBentoSection({
           </div>
 
           <div className="relative z-10">
-            <span className="text-[9.5px] font-medium uppercase tracking-[0.2em] text-[#C4823F]">
+            <span className="text-[9.5px] font-medium uppercase tracking-[0.2em] text-[#C4823F] dark:text-[#ECC86A]">
               Botanical Terroir
             </span>
           </div>
@@ -178,7 +179,7 @@ export default function CollectionBentoSection({
         >
           <div>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[9.5px] uppercase tracking-[0.2em] font-medium text-[#C4823F]">
+              <span className="text-[9.5px] uppercase tracking-[0.2em] font-medium text-[#C4823F] dark:text-[#ECC86A]">
                 Privilege
               </span>
               <span className="text-[9px] uppercase tracking-wider text-[#111111] dark:text-white bg-white dark:bg-white/10 px-2 py-0.5 rounded-full">

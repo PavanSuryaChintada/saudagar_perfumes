@@ -5,9 +5,9 @@
   
   /* Primary Page & Paper Surface */
   --theme-brand-bg: #FFFFFF;             /* Pure Crisp Editorial Canvas */
-  --theme-brand-surface: #F8F7F4;        /* Soft Luxury Stone Pedestal */
+  --theme-brand-surface: #FFFFFF;        /* Pure Crisp White */
   --theme-brand-surface-card: #FFFFFF;   /* Clean White Card Surface */
-  --theme-brand-alabaster: #F4F3EE;      /* Alabaster Warm Cream */
+  --theme-brand-alabaster: #FFFFFF;      /* Clean White Surface */
   
   /* Typography Colors */
   --theme-brand-text: #111111;           /* Deep Obsidian Charcoal */
@@ -15,12 +15,19 @@
   --theme-brand-text-muted: #555555;     /* Medium Charcoal Grey */
   --theme-brand-text-light: #777777;     /* Soft Studio Grey */
   
-  /* Brand Amber Gold & Accents */
+  /* Brand Amber Orange & Accents (Light Theme Iconic Palette) */
   --theme-brand-amber: #C4823F;          /* Warm Amber Caramel */
   --theme-brand-amber-dark: #B57432;     /* Deepened Amber Tone */
   --theme-brand-gold: #D4AF37;           /* Pure 24K Royal Gold */
   --theme-brand-gold-light: #ECC86A;     /* Bright Champagne Gold */
   --theme-brand-gold-dark: #9E7D23;      /* Bronzed Antique Gold */
+
+  /* Brand Royal Gold Palette */
+  --theme-brand-maroon: #D4AF37;
+  --theme-brand-maroon-dark: #9E7D23;
+  --theme-brand-maroon-vivid: #D4AF37;
+  --theme-brand-maroon-light: #ECC86A;
+  --theme-brand-maroon-soft: rgba(212, 175, 55, 0.12);
   
   /* Architectural Hairline Borders */
   --theme-brand-border: #111111;                      /* Crisp 1px Black Border */
@@ -37,7 +44,7 @@
   --theme-btn-amber-text: #FFFFFF;
 
   /* Secondary Section Theme */
-  --theme-sand-bg: #FAF9F5;              /* Clean Stone Ivory */
+  --theme-sand-bg: #FFFFFF;              /* Clean White */
   --theme-sand-text: #111111;
   --theme-sand-border: #111111;
 
@@ -49,11 +56,11 @@
 
   /* Global Typography Foundations */
   --font-heading: 'Poppins', sans-serif;
-  --font-serif: 'IM Fell French Canon', 'Zen Antique Soft', serif;
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   --font-body: 'Poppins', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-sans: 'Poppins', 'Outfit', sans-serif;
-  --font-script: 'Lavishly Yours', cursive;
-  --font-lavish: 'Lavishly Yours', cursive;
+  --font-script: 'Cormorant Garamond', Georgia, serif;
+  --font-lavish: 'Cormorant Garamond', Georgia, serif;
   --heading-letter-spacing: 0.02em;
   --button-letter-spacing: 0.04em;
 
@@ -77,8 +84,8 @@ html.dark, [data-theme="dark"] {
   --theme-brand-text-muted: #A39E96;     /* Champagne Warm Grey */
   --theme-brand-text-light: #7E7870;     /* Soft Smoked Grey */
   
-  --theme-brand-amber: #C4823F;          /* Radiant Warm Amber */
-  --theme-brand-amber-dark: #DE9954;     /* Luminous Amber */
+  --theme-brand-amber: #ECC86A;          /* Radiant Champagne Gold */
+  --theme-brand-amber-dark: #D4AF37;     /* 24K Royal Gold */
   --theme-brand-gold: #D4AF37;           /* 24K Royal Gold */
   --theme-brand-gold-light: #ECC86A;     /* Bright Champagne Gold */
   --theme-brand-gold-dark: #B8860B;      /* Matured Antique Gold */
@@ -87,15 +94,22 @@ html.dark, [data-theme="dark"] {
   --theme-brand-border-fine: rgba(255, 255, 255, 0.06);
   --theme-brand-border-muted: rgba(255, 255, 255, 0.20);
   
-  --theme-btn-black-bg: #C4823F;         /* Amber Accent Buy Button in Dark Mode */
-  --theme-btn-black-text: #FFFFFF;
+  --theme-btn-black-bg: #D4AF37;         /* Gold Accent Buy Button in Dark Mode */
+  --theme-btn-black-text: #0B0A0D;
   --theme-btn-light-bg: #18171E;
-  --theme-btn-light-border: rgba(255, 255, 255, 0.18);
-  --theme-btn-light-text: #FFFFFF;
-  --theme-btn-amber-bg: #C4823F;
-  --theme-btn-amber-text: #FFFFFF;
+  --theme-btn-light-border: rgba(212, 175, 55, 0.35);
+  --theme-btn-light-text: #ECC86A;
+  --theme-btn-amber-bg: #D4AF37;
+  --theme-btn-amber-text: #0B0A0D;
 
   --theme-sand-bg: #141318;
   --theme-sand-text: #FFFFFF;
   --theme-sand-border: rgba(255, 255, 255, 0.10);
+
+  /* Gold Theme Overrides for any legacy Maroon variable */
+  --theme-brand-maroon: #D4AF37;
+  --theme-brand-maroon-dark: #9E7D23;
+  --theme-brand-maroon-vivid: #D4AF37;
+  --theme-brand-maroon-light: #ECC86A;
+  --theme-brand-maroon-soft: rgba(212, 175, 55, 0.12);
 }

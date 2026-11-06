@@ -32,12 +32,7 @@ export default function BluorngFooter({
   };
 
   return (
-    <footer className="relative w-full bg-[#FAF9F5] dark:bg-[#0C0B0A] text-[#111111] dark:text-white select-none overflow-hidden pt-16 sm:pt-24 pb-12 sm:pb-16 transition-colors duration-300">
-      
-      {/* Subtle Warm Amber Atmospheric Ambient Glows (No harsh borders or lines) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-b from-[#C4823F]/8 dark:from-[#C4823F]/12 via-[#C4823F]/3 dark:via-[#C4823F]/4 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[400px] bg-gradient-to-t from-[#C4823F]/4 dark:from-[#C4823F]/6 via-transparent to-transparent blur-3xl pointer-events-none" />
-
+    <footer className="relative w-full bg-white dark:bg-[#0B0A0D] border-t border-[#EEEEEE] dark:border-white/10 text-[#111111] dark:text-white select-none overflow-hidden pt-16 sm:pt-24 pb-12 sm:pb-16 transition-colors duration-300">
       <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
         
         {/* ================= 1. VIP INNER CIRCLE NEWSLETTER & CONCIERGE CARD ================= */}
@@ -47,8 +42,8 @@ export default function BluorngFooter({
             {/* Left: Headline & Manifesto */}
             <div className="lg:col-span-7 flex flex-col items-start text-left">
               <div className="inline-flex items-center gap-2 mb-3">
-                <span className="text-[#C4823F] text-[10px]">✦</span>
-                <span className="text-[10.5px] uppercase tracking-[0.24em] text-[#C4823F] font-medium">
+                <span className="text-[#C4823F] dark:text-[#ECC86A] text-[10px]">✦</span>
+                <span className="text-[10.5px] uppercase tracking-[0.24em] text-[#C4823F] dark:text-[#ECC86A] font-medium">
                   Atelier Private Client Concierge
                 </span>
               </div>
@@ -75,7 +70,7 @@ export default function BluorngFooter({
                 <button
                   type="submit"
                   disabled={subscribed}
-                  className="absolute right-1.5 top-1.5 bottom-1.5 px-6 bg-[#C4823F] hover:bg-[#ECC86A] text-white hover:text-[#0C0B0A] text-[10.5px] font-semibold uppercase tracking-[0.18em] rounded-full transition-all duration-300 cursor-pointer shadow-md shrink-0 flex items-center justify-center"
+                  className="absolute right-1.5 top-1.5 bottom-1.5 px-6 bg-[#C4823F] hover:bg-[#B57432] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[10.5px] font-semibold uppercase tracking-[0.18em] rounded-full transition-all duration-300 cursor-pointer shadow-md shrink-0 flex items-center justify-center"
                 >
                   {subscribed ? 'Confirmed ✓' : 'Subscribe'}
                 </button>
@@ -127,7 +122,7 @@ export default function BluorngFooter({
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                         theme === 'dark'
-                          ? 'bg-[#C4823F] text-white shadow-xs font-semibold'
+                          ? 'bg-[#D4AF37] text-[#0B0A0D] shadow-xs font-semibold'
                           : 'text-[#666666] dark:text-white/70 hover:text-[#111111] dark:hover:text-white'
                       }`}
                     >
@@ -293,12 +288,12 @@ export default function BluorngFooter({
           >
             <img
               src="/images/saudagar_logo_black.png"
-              alt="Saudagar Perfumers - Premium Fragrances"
+              alt="Saudagar Perfumers"
               className="w-full max-w-[420px] sm:max-w-[480px] h-auto object-contain opacity-90 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700 ease-out dark:hidden block"
             />
             <img
               src="/images/saudagar_logo_gold.png"
-              alt="Saudagar Perfumers - Premium Fragrances"
+              alt="Saudagar Perfumers"
               className="w-full max-w-[420px] sm:max-w-[480px] h-auto object-contain opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700 ease-out filter drop-shadow-[0_10px_35px_rgba(212,175,55,0.45)] hidden dark:block"
             />
           </div>
@@ -314,7 +309,7 @@ export default function BluorngFooter({
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/[0.05] hover:bg-black/[0.1] text-[#555555] hover:text-[#111111] dark:bg-white/[0.05] dark:hover:bg-white/[0.12] dark:text-white/70 dark:hover:text-white text-[10.5px] uppercase tracking-[0.18em] transition-all duration-300 cursor-pointer"
           >
             <span>Back to top</span>
-            <span className="text-[10px] text-[#C4823F]">↑</span>
+            <span className="text-[10px] text-[#C4823F] dark:text-[#ECC86A]">↑</span>
           </button>
         </div>
 

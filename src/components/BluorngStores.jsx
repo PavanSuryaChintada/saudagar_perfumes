@@ -5,15 +5,7 @@ import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReve
 
 export default function BluorngStores() {
   return (
-    <section id="stores-section" className="relative w-full bg-gradient-to-b from-[#FAF8F5] via-[#F4EFE7] to-[#F8F6F2] dark:from-[#0B0A0D] dark:via-[#111015] dark:to-[#0B0A0D] py-14 sm:py-20 border-b border-[#ECE5D8] dark:border-white/5 overflow-hidden transition-colors duration-300">
-      {/* Background Layer 1: Ambient Radial Glow */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          background: 'radial-gradient(circle 900px at 70% 30%, rgba(196, 130, 63, 0.06) 0%, transparent 75%)'
-        }}
-      />
-
+    <section id="stores-section" className="relative w-full bg-white dark:bg-[#0B0A0D] py-14 sm:py-20 border-b border-[#ECE5D8] dark:border-white/5 overflow-hidden transition-colors duration-300">
       {/* Background Layer 3: Tactile Film Grain */}
       <div className="absolute inset-0 luxury-noise pointer-events-none z-0 opacity-70" />
 
@@ -31,10 +23,10 @@ export default function BluorngStores() {
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
-              <span className="px-2 py-0.5 text-[9.5px] font-bold tracking-[0.12em] uppercase bg-[#C4823F]/10 text-[#C4823F] rounded-xs border border-[#C4823F]/20">
+              <span className="px-2 py-0.5 text-[9.5px] font-bold tracking-[0.12em] uppercase bg-[#C4823F]/10 text-[#C4823F] border border-[#C4823F]/20 dark:bg-[#D4AF37]/15 dark:text-[#ECC86A] dark:border-[#D4AF37]/30 rounded-xs">
                 Walk-in Ateliers
               </span>
-              <span className="font-script text-[#C4823F] text-[18px] sm:text-[22px] normal-case tracking-normal">
+              <span className="font-script text-[#C4823F] dark:text-[#ECC86A] text-[18px] sm:text-[22px] normal-case tracking-normal">
                 private tasting salons
               </span>
             </div>
@@ -48,7 +40,7 @@ export default function BluorngStores() {
 
           <div className="text-[11px] font-semibold text-[#888888] dark:text-[#A09D96] tracking-widest uppercase hidden md:flex items-center gap-2">
             <span>VIP Concierge Available</span>
-            <span className="text-[#C4823F]">✦</span>
+            <span className="text-[#C4823F] dark:text-[#ECC86A]">✦</span>
           </div>
         </ScrollReveal>
 
@@ -59,7 +51,7 @@ export default function BluorngStores() {
               <motion.div
                 whileHover={{ y: -6 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="bg-[#FFFFFF] dark:bg-[#141318] border border-[#E3DDD1] dark:border-white/10 hover:border-[#111111] dark:hover:border-[#C4823F] rounded-xs transition-all duration-400 overflow-hidden flex flex-col justify-between group shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.12)] will-change-transform h-full"
+                className="bg-[#FFFFFF] dark:bg-[#141318] border border-[#E3DDD1] dark:border-white/10 hover:border-[#111111] dark:hover:border-[#D4AF37] rounded-xs transition-all duration-400 overflow-hidden flex flex-col justify-between group shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.12)] will-change-transform h-full"
               >
                 {/* Boutique Image with "Open now" Tag */}
                 <div className="relative w-full aspect-[16/10] overflow-hidden bg-[#ECEBE6] dark:bg-[#1C1A22]">

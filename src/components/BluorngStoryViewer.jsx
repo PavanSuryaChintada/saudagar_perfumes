@@ -120,7 +120,7 @@ export default function BluorngStoryViewer({
           {/* User profile / Tag & Close button */}
           <div className="flex items-center justify-between text-white">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-[#C4823F] p-0.5 border border-white/40 overflow-hidden flex items-center justify-center text-[10px] font-bold text-white">
+              <div className="w-8 h-8 rounded-full bg-[#C4823F] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] p-0.5 border border-white/40 overflow-hidden flex items-center justify-center text-[10px] font-bold text-white">
                 S
               </div>
               <div>
@@ -185,7 +185,7 @@ export default function BluorngStoryViewer({
                 onSelectProduct(currentStory.productId);
               }
             }}
-            className="w-full py-3 bg-[#FFFFFF] hover:bg-[#C4823F] hover:text-white text-[#111111] text-[11.5px] font-bold uppercase tracking-[0.04em] rounded-sm transition-all duration-300 shadow-xl flex items-center justify-center gap-2"
+            className="w-full py-3 bg-[#FFFFFF] hover:bg-[#C4823F] dark:hover:bg-[#D4AF37] dark:hover:text-[#0B0A0D] hover:text-white text-[#111111] text-[11.5px] font-bold uppercase tracking-[0.04em] rounded-sm transition-all duration-300 shadow-xl flex items-center justify-center gap-2"
           >
             <span>Shop This Fragrance</span>
             <span>→</span>

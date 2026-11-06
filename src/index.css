@@ -27,6 +27,11 @@
     color: #FFFFFF;
   }
 
+  html.dark ::selection, [data-theme="dark"] ::selection {
+    background-color: #D4AF37;
+    color: #0B0A0D;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     letter-spacing: var(--heading-letter-spacing);
@@ -35,12 +40,13 @@
 
   .font-serif {
     font-family: var(--font-serif);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     text-transform: none;
   }
 
   .font-script, .font-lavish {
-    font-family: 'Lavishly Yours', cursive;
+    font-family: var(--font-serif);
+    font-style: italic;
     letter-spacing: 0.02em;
     text-transform: none;
   }
@@ -69,7 +75,7 @@
     background-color: #E2DDD3;
   }
 
-  /* Amber Caramel Button (OUR STORY / EXPLORE / TABS) */
+  /* Button (OUR STORY / EXPLORE / TABS): Orange in light theme, Maroon in dark theme */
   .btn-amber {
     @apply inline-flex items-center justify-center px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.04em] transition-all duration-200;
     background-color: #C4823F;
@@ -78,8 +84,16 @@
   .btn-amber:hover {
     background-color: #B57432;
   }
+  html.dark .btn-amber, [data-theme="dark"] .btn-amber {
+    background-color: #D4AF37;
+    color: #0B0A0D;
+  }
+  html.dark .btn-amber:hover, [data-theme="dark"] .btn-amber:hover {
+    background-color: #ECC86A;
+    color: #0B0A0D;
+  }
 
-  /* Primary Gold Action */
+  /* Primary Action */
   .btn-primary {
     @apply inline-flex items-center justify-center px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.04em] transition-all duration-300;
     background-color: #111111;
@@ -90,6 +104,11 @@
     background-color: #C4823F;
     border-color: #C4823F;
     color: #FFFFFF;
+  }
+  html.dark .btn-primary:hover, [data-theme="dark"] .btn-primary:hover {
+    background-color: #D4AF37;
+    border-color: #D4AF37;
+    color: #0B0A0D;
   }
 
   .btn-secondary {
@@ -106,16 +125,27 @@
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #ECEBE6;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #C4823F;
+  background: #D5D0C7;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #111111;
+  background: #A0988A;
+}
+html.dark ::-webkit-scrollbar-track, [data-theme="dark"] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+html.dark ::-webkit-scrollbar-thumb, [data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #2A2830;
+  border-radius: 9999px;
+}
+html.dark ::-webkit-scrollbar-thumb:hover, [data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #44404E;
 }
 
 /* Animations matching Bluorng slide-over and fade overlays */
@@ -199,6 +229,10 @@ html.lenis, html.lenis body {
   background: linear-gradient(90deg, #111111 0%, #C4823F 50%, #111111 100%);
   background-size: 200% 100%;
   animation: goldShimmer 3s infinite linear;
+}
+
+html.dark .gold-shimmer, [data-theme="dark"] .gold-shimmer {
+  background: linear-gradient(90deg, #111111 0%, #D4AF37 50%, #111111 100%);
 }
 
 /* ================= HARDWARE ACCELERATED CONTINUOUS MARQUEE KEYFRAMES ================= */

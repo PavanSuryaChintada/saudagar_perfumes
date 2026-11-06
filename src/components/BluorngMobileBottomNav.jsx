@@ -30,28 +30,12 @@ export default function BluorngMobileBottomNav({
           </button>
         </li>
 
-        {/* Stories Reels */}
-        <li>
-          <button
-            onClick={onOpenStory}
-            className="flex flex-col items-center justify-center gap-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors p-1 relative cursor-pointer"
-            aria-label="Fragrance Stories"
-          >
-            <span className="absolute top-0 right-1 w-2 h-2 rounded-full bg-[#C4823F] animate-ping" />
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <circle cx="12" cy="12" r="10" />
-              <polygon points="10 8 16 12 10 16 10 8" fill="#C4823F" stroke="#C4823F" />
-            </svg>
-            <span className="text-[9px] font-bold tracking-wider uppercase text-[#C4823F] dark:text-[#ECC86A]">Stories</span>
-          </button>
-        </li>
-
         {/* Mobile Theme Toggle Button */}
         {onToggleTheme && (
           <li>
             <button
               onClick={onToggleTheme}
-              className="flex flex-col items-center justify-center gap-1 text-[#C4823F] hover:text-[#ECC86A] transition-colors p-1 cursor-pointer"
+              className="flex flex-col items-center justify-center gap-1 text-[#C4823F] dark:text-[#ECC86A] hover:opacity-80 transition-colors p-1 cursor-pointer"
               aria-label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Theme`}
             >
               {theme === 'dark' ? (
@@ -71,7 +55,7 @@ export default function BluorngMobileBottomNav({
                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                 </svg>
               )}
-              <span className="text-[9px] font-bold tracking-wider uppercase">{theme === 'dark' ? 'Light' : 'Dark'}</span>
+              <span className="text-[9.5px] font-medium tracking-[0.08em] uppercase">{theme === 'dark' ? 'Light' : 'Dark'}</span>
             </button>
           </li>
         )}
@@ -91,15 +75,31 @@ export default function BluorngMobileBottomNav({
           </button>
         </li>
 
+        {/* Patron Account */}
+        <li>
+          <button
+            onClick={onOpenAccount}
+            className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 cursor-pointer"
+            aria-label="Connoisseur Account"
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span className="text-[9px] font-bold tracking-wider uppercase">Account</span>
+          </button>
+        </li>
+
         {/* Cart Bag */}
         <li>
           <button
+            data-cart-target
             onClick={onOpenCart}
             className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 relative cursor-pointer"
             aria-label={`Cart (${cartCount})`}
           >
             {cartCount > 0 && (
-              <span className="absolute top-0 right-1 w-4 h-4 rounded-xs bg-[#111111] dark:bg-[#C4823F] text-white text-[9px] font-bold flex items-center justify-center">
+              <span className="absolute top-0 right-1 w-4 h-4 rounded-xs bg-[#C4823F] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[9px] font-bold flex items-center justify-center">
                 {cartCount}
               </span>
             )}

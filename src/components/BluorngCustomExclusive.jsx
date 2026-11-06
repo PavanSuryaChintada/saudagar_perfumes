@@ -18,14 +18,6 @@ export default function BluorngCustomExclusive({
 
   return (
     <section className="relative w-full bg-[#FFFFFF] dark:bg-[#121114] py-16 sm:py-24 text-[#111111] dark:text-white overflow-hidden select-none transition-colors duration-300">
-      {/* Background Layer: Ambient Royal Amber Spotlight */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0 opacity-40 dark:opacity-100 transition-opacity duration-300"
-        style={{
-          background: 'radial-gradient(ellipse 80% 65% at 50% 0%, rgba(196, 130, 63, 0.12) 0%, rgba(212, 175, 55, 0.03) 45%, transparent 75%)'
-        }}
-      />
-
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}

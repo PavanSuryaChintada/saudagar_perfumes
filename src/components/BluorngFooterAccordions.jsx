@@ -110,7 +110,7 @@ export default function BluorngFooterAccordions({ onSelectSearchTerm }) {
               >
                 By category
                 {activeTab === 'category' && (
-                  <motion.span layoutId="tab-underline-footer" className="absolute bottom-[-2px] left-0 right-0 h-[1.5px] bg-[#C4823F]" />
+                  <motion.span layoutId="tab-underline-footer" className="absolute bottom-[-2px] left-0 right-0 h-[1.5px] bg-[#C4823F] dark:bg-[#D4AF37]" />
                 )}
               </button>
 
@@ -126,7 +126,7 @@ export default function BluorngFooterAccordions({ onSelectSearchTerm }) {
               >
                 By family
                 {activeTab === 'style' && (
-                  <motion.span layoutId="tab-underline-footer" className="absolute bottom-[-2px] left-0 right-0 h-[1.5px] bg-[#C4823F]" />
+                  <motion.span layoutId="tab-underline-footer" className="absolute bottom-[-2px] left-0 right-0 h-[1.5px] bg-[#C4823F] dark:bg-[#D4AF37]" />
                 )}
               </button>
 
@@ -142,7 +142,7 @@ export default function BluorngFooterAccordions({ onSelectSearchTerm }) {
               >
                 By flacon
                 {activeTab === 'color' && (
-                  <motion.span layoutId="tab-underline-footer" className="absolute bottom-[-2px] left-0 right-0 h-[1.5px] bg-[#C4823F]" />
+                  <motion.span layoutId="tab-underline-footer" className="absolute bottom-[-2px] left-0 right-0 h-[1.5px] bg-[#C4823F] dark:bg-[#D4AF37]" />
                 )}
               </button>
             </div>
@@ -163,7 +163,7 @@ export default function BluorngFooterAccordions({ onSelectSearchTerm }) {
                       onClick={() => onSelectSearchTerm(item.query)}
                       className="text-left text-[#555555] dark:text-[#B3AFA8] hover:text-[#C4823F] dark:hover:text-[#ECC86A] hover:translate-x-1 transition-all flex items-center gap-1.5 py-0.5 cursor-pointer duration-200"
                     >
-                      <span className="text-[#C4823F] font-normal text-[10px]">›</span>
+                      <span className="text-[#C4823F] dark:text-[#ECC86A] font-normal text-[10px]">›</span>
                       <span>{item.label}</span>
                     </button>
                   </li>
