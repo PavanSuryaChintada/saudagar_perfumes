@@ -55,6 +55,19 @@ export default function BluorngCollectionHero({
   const [prevId, setPrevId] = useState(null);
   const prevHeroIdRef = useRef(activeHero.id);
 
+  const tabsContainerRef = useRef(null);
+  const activeTabRef = useRef(null);
+
+  // Auto-scroll active collection tab into view on mobile/narrow screens
+  useEffect(() => {
+    if (activeTabRef.current && tabsContainerRef.current) {
+      const container = tabsContainerRef.current;
+      const tab = activeTabRef.current;
+      const scrollTarget = tab.offsetLeft - (container.clientWidth / 2) + (tab.clientWidth / 2);
+      container.scrollTo({ left: Math.max(0, scrollTarget), behavior: 'smooth' });
+    }
+  }, [activeHero.id]);
+
   // Seamless film-style video dissolve:
   // Target video fades in at solid opacity-100 on z-20 while previous video stays at z-10.
   // After crossfade completes (550ms), previous video is retired & paused so zero overlapping can ever happen.
@@ -106,7 +119,7 @@ export default function BluorngCollectionHero({
     >
       
       {/* ================= 1. CINEMATIC CLEAN HERO BANNER ================= */}
-      <div className="relative w-full h-[52vh] min-h-[380px] max-h-[560px] overflow-hidden bg-[#0B0A0D]">
+      <div className="relative w-full h-[54vh] sm:h-[62vh] 2xl:h-[70vh] min-h-[440px] sm:min-h-[560px] max-h-[720px] 2xl:max-h-[840px] overflow-hidden bg-[#0B0A0D]">
         
         {/* Multi-Video Crossfade Stage: Guaranteed Zero Black Flash / Glitch */}
         {HERO_COLLECTIONS.map((col) => {
@@ -137,38 +150,40 @@ export default function BluorngCollectionHero({
           );
         })}
 
-        {/* Soft, Natural Dark Vignette for Crisp Legibility */}
-        <div className="absolute inset-0 z-25 bg-gradient-to-t from-black/80 via-black/35 to-black/30 pointer-events-none" />
+        {/* Cinema-Grade Luxury Gradient Scrim: Video remains vibrant while typography is 100% crystal-clear */}
+        <div className="absolute inset-0 z-25 bg-black/25 pointer-events-none" />
+        <div className="absolute inset-0 z-26 bg-gradient-to-t from-[#0B0A0D] via-black/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 z-26 hidden sm:block bg-gradient-to-r from-[#0B0A0D]/85 via-black/30 to-transparent pointer-events-none" />
 
         {/* Subtle Sound Toggle */}
         <button
           onClick={toggleMute}
           aria-label={isMuted ? 'Unmute' : 'Mute'}
-          className="absolute top-6 right-6 z-30 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center text-[11px] backdrop-blur-md border border-white/20 transition-all cursor-pointer"
+          className="absolute top-5 right-5 sm:top-6 sm:right-6 z-30 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center text-[11px] backdrop-blur-md border border-white/20 transition-all cursor-pointer"
         >
           {isMuted ? '🔇' : '🔊'}
         </button>
 
-        {/* Centered Minimal Typography Overlay */}
-        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center text-center px-6 pointer-events-none">
+        {/* Editorial Masthead Typography: Sits on the left runway on desktop and bottom on mobile */}
+        <div className="absolute inset-0 z-30 flex flex-col justify-end items-center sm:items-start text-center sm:text-left px-6 sm:px-12 lg:px-16 pb-8 sm:pb-12 pointer-events-none">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeHero.id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
+              exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-2xl"
+              className="max-w-md sm:max-w-lg lg:max-w-xl"
             >
-              <span className="text-[10px] font-medium tracking-[0.22em] uppercase text-white/75 block mb-2">
+              <span className="text-[9.5px] sm:text-[11px] font-semibold tracking-[0.28em] uppercase text-[#ECC86A] block mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                 Saudagar Haute Parfumerie · {activeTheme.hero.accentTag || activeTheme.shortName}
               </span>
 
-              <h1 className="font-serif text-[28px] sm:text-[42px] font-normal tracking-[0.04em] uppercase text-white leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+              <h1 className="font-serif text-[26px] xs:text-[30px] sm:text-[40px] lg:text-[48px] font-normal tracking-[0.04em] uppercase text-white leading-[1.08] drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
                 {activeHero.title}
               </h1>
 
-              <p className="font-sans text-[11px] sm:text-[13px] font-normal tracking-[0.14em] uppercase text-white/85 mt-2.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">
+              <p className="font-sans text-[10.5px] sm:text-[12.5px] font-light tracking-[0.16em] uppercase text-white/90 mt-2.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                 {activeHero.tagline}
               </p>
             </motion.div>
@@ -178,29 +193,36 @@ export default function BluorngCollectionHero({
       </div>
 
       {/* ================= 2. ULTRA-MINIMAL COLLECTION TAB SWITCHER (Borderless) ================= */}
-      <div className="w-full bg-white dark:bg-[#0B0A0D] transition-colors duration-300">
-        <div className="max-w-4xl mx-auto px-4 flex items-center justify-center gap-6 sm:gap-10 overflow-x-auto scrollbar-none">
-          {HERO_COLLECTIONS.map((col) => {
-            const isActive = activeHero.id === col.id;
+      <div className="w-full bg-white dark:bg-[#0B0A0D] border-b border-black/[0.06] dark:border-white/[0.08] transition-colors duration-300">
+        <div 
+          ref={tabsContainerRef}
+          data-lenis-prevent="true"
+          className="w-full overflow-x-auto scrollbar-none touch-pan-x overscroll-contain"
+        >
+          <div className="flex items-center justify-start sm:justify-center gap-6 sm:gap-10 px-6 sm:px-8 min-w-max mx-auto py-0.5">
+            {HERO_COLLECTIONS.map((col) => {
+              const isActive = activeHero.id === col.id;
 
-            return (
-              <button
-                key={col.id}
-                onClick={() => onSwitchCollection(col.slug)}
-                className={`py-4 text-[11px] sm:text-[12px] uppercase tracking-[0.14em] transition-all relative cursor-pointer whitespace-nowrap ${
-                  isActive ? 'text-[#111111] dark:text-white font-semibold' : 'text-[#888888] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-white font-normal'
-                }`}
-              >
-                <span>{col.name}</span>
-                {isActive && (
-                  <motion.span
-                    layoutId="activeCollectionUnderline"
-                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#111111] dark:bg-[#D4AF37]"
-                  />
-                )}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={col.id}
+                  ref={isActive ? activeTabRef : null}
+                  onClick={() => onSwitchCollection(col.slug)}
+                  className={`py-3.5 sm:py-4 text-[11px] sm:text-[12px] uppercase tracking-[0.14em] transition-all relative cursor-pointer whitespace-nowrap shrink-0 ${
+                    isActive ? 'text-[#111111] dark:text-white font-semibold' : 'text-[#777777] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-white font-normal'
+                  }`}
+                >
+                  <span>{col.name}</span>
+                  {isActive && (
+                    <motion.span
+                      layoutId="activeCollectionUnderline"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#111111] dark:bg-[#D4AF37]"
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 

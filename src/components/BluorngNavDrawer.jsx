@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MEGA_MENU_COLLECTIONS, CURRENCIES } from '../data/bluorngSaudagarData.js';
 
@@ -15,6 +15,32 @@ export default function BluorngNavDrawer({
   onOpenStory,
   onOpenAccount
 }) {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    if (window.__lenis) {
+      window.__lenis.stop();
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      if (window.__lenis) {
+        window.__lenis.start();
+      }
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -40,7 +66,8 @@ export default function BluorngNavDrawer({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
-              className="w-screen max-w-sm sm:max-w-md bg-[#FFFFFF] dark:bg-[#0E0C10] text-[#111111] dark:text-white flex flex-col justify-between shadow-2xl p-6 sm:p-8"
+              data-lenis-prevent="true"
+              className="w-screen max-w-sm sm:max-w-md h-full max-h-screen overflow-y-auto overscroll-contain bg-[#FFFFFF] dark:bg-[#0E0C10] text-[#111111] dark:text-white flex flex-col justify-between shadow-2xl p-6 sm:p-8"
             >
           
           {/* Top Bar: Brand Logo & Close */}

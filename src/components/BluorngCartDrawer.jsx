@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatPrice, ALL_PRODUCTS } from '../data/bluorngSaudagarData.js';
 
@@ -17,6 +17,33 @@ export default function BluorngCartDrawer({
   const [discountSuccess, setDiscountSuccess] = useState('');
   const [orderNote, setOrderNote] = useState('');
   const [isNoteOpen, setIsNoteOpen] = useState(false);
+
+  // Lock body scroll and pause Lenis smooth scroll while cart drawer is open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    if (window.__lenis) {
+      window.__lenis.stop();
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      if (window.__lenis) {
+        window.__lenis.start();
+      }
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   const FREE_SHIPPING_THRESHOLD = 3500; // in INR
 
@@ -62,7 +89,7 @@ export default function BluorngCartDrawer({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="fixed inset-0 z-50 overflow-hidden select-none"
+          className="fixed inset-0 z-50 overflow-hidden"
         >
           {/* Backdrop Dim */}
           <motion.div
@@ -73,17 +100,18 @@ export default function BluorngCartDrawer({
             onClick={onClose}
           />
 
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10 pointer-events-none">
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
-              className="w-screen max-w-md bg-[#FFFFFF] dark:bg-[#0E0C10] text-[#111111] dark:text-white flex flex-col justify-between shadow-2xl transition-colors duration-300"
+              transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.35 }}
+              data-lenis-prevent="true"
+              className="pointer-events-auto w-screen max-w-md h-full max-h-screen bg-[#FFFFFF] dark:bg-[#0E0C10] text-[#111111] dark:text-white flex flex-col shadow-2xl transition-colors duration-300 overflow-hidden"
             >
           
           {/* ================= HEADER ================= */}
-          <div className="p-4 sm:p-5 flex items-center justify-between text-[#111111] dark:text-white">
+          <div className="shrink-0 p-4 sm:p-5 flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.08] text-[#111111] dark:text-white">
             <div className="flex items-center gap-2">
               <h2 className="text-[14px] font-bold tracking-[0.04em] uppercase text-[#111111] dark:text-white">
                 Your Shopping Bag
@@ -106,7 +134,7 @@ export default function BluorngCartDrawer({
           </div>
 
           {/* ================= FREE SHIPPING PROGRESS BAR ================= */}
-          <div className="bg-[#FAF9F6] dark:bg-[#141318] p-3.5 text-[11px] text-[#111111] dark:text-white transition-colors">
+          <div className="shrink-0 bg-[#FAF9F6] dark:bg-[#141318] p-3.5 text-[11px] text-[#111111] dark:text-white border-b border-black/[0.06] dark:border-white/[0.08] transition-colors">
             <div className="flex items-center justify-between font-semibold tracking-wider uppercase mb-1.5">
               {amountToFreeShipping > 0 ? (
                 <span>Add {formatPrice(amountToFreeShipping, activeCurrency)} more for Free Express Courier</span>
@@ -125,7 +153,11 @@ export default function BluorngCartDrawer({
           </div>
 
           {/* ================= CART ITEMS LIST ================= */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+          <div 
+            data-lenis-prevent="true"
+            className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4 touch-pan-y"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-16 space-y-3">
                 <div className="w-16 h-16 rounded-full bg-[#F5F5F3] flex items-center justify-center text-[#777777]">
@@ -232,7 +264,7 @@ export default function BluorngCartDrawer({
 
           {/* ================= FOOTER / PROMO / CHECKOUT ================= */}
           {cart.length > 0 && (
-            <div className="p-4 sm:p-5 bg-white dark:bg-[#0E0C10] text-[#111111] dark:text-white space-y-3.5 transition-colors">
+            <div className="shrink-0 p-4 sm:p-5 bg-white dark:bg-[#0E0C10] border-t border-black/[0.06] dark:border-white/[0.08] text-[#111111] dark:text-white space-y-3.5 shadow-[0_-8px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_-8px_20px_rgba(0,0,0,0.3)] transition-colors">
               
               {/* Order Note Toggle */}
               <div>

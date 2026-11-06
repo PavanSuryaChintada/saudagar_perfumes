@@ -4,111 +4,101 @@ import { motion } from 'framer-motion';
 export default function LuxuryPreloader({ onComplete }) {
   const [progress, setProgress] = useState(0);
   const [isOpening, setIsOpening] = useState(false);
-  const [isDone, setIsDone] = useState(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        // Never block direct visits to product or other interior routes
-        if (window.location.pathname !== '/' && window.location.pathname !== '') {
-          return true;
-        }
-        if (sessionStorage.getItem('saudagar_preloader_done') === 'true' || localStorage.getItem('saudagar_preloader_done') === 'true') {
-          return true;
-        }
-      }
-    } catch (e) {}
-    return false;
-  });
-  const hasFinishedRef = useRef(isDone);
+  const [isDone, setIsDone] = useState(false);
+  const hasFinishedRef = useRef(false);
 
-  // Smooth numerical progression from 0 to 100 over ~1.4 seconds
+  // Clear legacy blocking flags from previous buggy versions so it never gets permanently blocked
   useEffect(() => {
-    if (isDone) {
-      if (onComplete) onComplete();
-      return;
-    }
+    try {
+      localStorage.removeItem('saudagar_preloader_done');
+      sessionStorage.removeItem('saudagar_preloader_done');
+    } catch (e) {}
+  }, []);
 
-    const originalOverflow = document.body.style.overflow;
+  // Quick skip on click or keyboard press (Space, Enter, Escape)
+  const handleQuickSkip = () => {
+    if (isOpening || hasFinishedRef.current) return;
+    hasFinishedRef.current = true;
+    setIsOpening(true);
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      setIsDone(true);
+      if (onComplete) onComplete();
+    }, 600);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+        handleQuickSkip();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpening]);
+
+  // Smooth numerical progression from 0 to 100 over ~1.0s
+  useEffect(() => {
     document.body.style.overflow = 'hidden';
 
-    // Snappy failsafe: preloader will unconditionally unmount after 650ms max
-    const hardTimeout = setTimeout(() => {
-      if (!hasFinishedRef.current) {
-        hasFinishedRef.current = true;
-        setIsOpening(true);
-        document.body.style.overflow = originalOverflow;
-        try {
-          sessionStorage.setItem('saudagar_preloader_done', 'true');
-          localStorage.setItem('saudagar_preloader_done', 'true');
-        } catch (e) {}
-        setTimeout(() => {
-          setIsDone(true);
-          if (onComplete) onComplete();
-        }, 200);
-      }
-    }, 650);
-
-    const startTime = performance.now();
-    const duration = 500; // ms to reach 100%
+    let startTime = null;
+    const duration = 1000; // ms to reach 100% (snappy, prestigious luxury tempo)
 
     let animationFrameId;
 
     const updateProgress = (currentTime) => {
+      if (startTime === null) startTime = currentTime;
       const elapsed = currentTime - startTime;
-      const rawProgress = Math.min(elapsed / duration, 1);
+      const rawProgress = Math.max(0, Math.min(elapsed / duration, 1));
 
-      // Snappy luxury ease-out
+      // Silky luxury cubic ease-out
       const eased = 1 - Math.pow(1 - rawProgress, 2.2);
-      const currentVal = Math.round(eased * 100);
+      const currentVal = Math.max(0, Math.min(100, Math.round(eased * 100)));
       setProgress(currentVal);
 
       if (rawProgress < 1) {
         animationFrameId = requestAnimationFrame(updateProgress);
       } else {
+        setProgress(100);
         setTimeout(() => {
           if (!hasFinishedRef.current) {
             setIsOpening(true);
-            document.body.style.overflow = originalOverflow;
+            document.body.style.overflow = '';
           }
-        }, 50);
+        }, 100);
 
         setTimeout(() => {
           if (!hasFinishedRef.current) {
             hasFinishedRef.current = true;
             setIsDone(true);
-            document.body.style.overflow = originalOverflow;
-            try {
-              sessionStorage.setItem('saudagar_preloader_done', 'true');
-              localStorage.setItem('saudagar_preloader_done', 'true');
-            } catch (e) {}
+            document.body.style.overflow = '';
             if (onComplete) onComplete();
           }
-        }, 280);
+        }, 800);
       }
     };
 
     animationFrameId = requestAnimationFrame(updateProgress);
 
+    // Failsafe timeout: in case anything throttles, gracefully reveal after 2.8s max
+    const hardTimeout = setTimeout(() => {
+      if (!hasFinishedRef.current) {
+        hasFinishedRef.current = true;
+        setIsOpening(true);
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          setIsDone(true);
+          if (onComplete) onComplete();
+        }, 450);
+      }
+    }, 2800);
+
     return () => {
       cancelAnimationFrame(animationFrameId);
       clearTimeout(hardTimeout);
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow = '';
     };
-  }, [isDone, onComplete]);
-
-  // Click / tap to fast-forward into the boutique
-  const handleQuickSkip = () => {
-    if (isOpening || isDone) return;
-    setIsOpening(true);
-    document.body.style.overflow = '';
-    try { sessionStorage.setItem('saudagar_preloader_done', 'true'); } catch (e) {}
-    setTimeout(() => {
-      if (!hasFinishedRef.current) {
-        hasFinishedRef.current = true;
-        setIsDone(true);
-        if (onComplete) onComplete();
-      }
-    }, 350);
-  };
+  }, [onComplete]);
 
   if (isDone) return null;
 
@@ -127,7 +117,7 @@ export default function LuxuryPreloader({ onComplete }) {
       <motion.div
         initial={{ y: '0%' }}
         animate={{ y: isOpening ? '-101%' : '0%' }}
-        transition={{ duration: 0.85, ease: revealEase }}
+        transition={{ duration: 0.8, ease: revealEase }}
         className="absolute top-0 left-0 right-0 h-1/2 z-20 bg-[#070608] border-b border-[#D4AF37]/35 shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden"
       >
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(212,175,55,0.18)_0%,transparent_75%)] pointer-events-none" />
@@ -138,7 +128,7 @@ export default function LuxuryPreloader({ onComplete }) {
       <motion.div
         initial={{ y: '0%' }}
         animate={{ y: isOpening ? '101%' : '0%' }}
-        transition={{ duration: 0.85, ease: revealEase }}
+        transition={{ duration: 0.8, ease: revealEase }}
         className="absolute bottom-0 left-0 right-0 h-1/2 z-20 bg-[#070608] border-t border-[#D4AF37]/35 shadow-[0_-25px_60px_rgba(0,0,0,0.95)] overflow-hidden"
       >
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,175,55,0.18)_0%,transparent_75%)] pointer-events-none" />
@@ -150,7 +140,7 @@ export default function LuxuryPreloader({ onComplete }) {
         initial={{ opacity: 0.85, scaleX: 1 }}
         animate={{
           opacity: isOpening ? 0 : 0.85,
-          scaleX: isOpening ? 1.3 : 1,
+          scaleX: isOpening ? 1.4 : 1,
         }}
         transition={{ duration: 0.35 }}
         className="absolute top-1/2 left-0 right-0 h-[1.5px] -translate-y-1/2 z-30 pointer-events-none bg-gradient-to-r from-transparent via-[#ECC86A] to-transparent shadow-[0_0_14px_rgba(212,175,55,0.8)]"
@@ -158,15 +148,15 @@ export default function LuxuryPreloader({ onComplete }) {
 
       {/* ================= CENTER LOGO HERO PRESENTATION ================= */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.94 }}
+        initial={{ opacity: 0 }}
         animate={{
           opacity: isOpening ? 0 : 1,
           scale: isOpening ? 1.05 : 1,
           y: isOpening ? -14 : 0,
         }}
         transition={{
-          duration: isOpening ? 0.55 : 0.8,
-          ease: revealEase,
+          duration: isOpening ? 0.45 : 0.35,
+          ease: 'easeOut',
         }}
         className="absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none px-6"
       >
@@ -177,10 +167,10 @@ export default function LuxuryPreloader({ onComplete }) {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[
             { top: '34%', left: '26%', delay: 0, size: 2.5 },
-            { top: '62%', left: '74%', delay: 0.35, size: 3 },
-            { top: '40%', left: '70%', delay: 0.2, size: 2 },
-            { top: '66%', left: '30%', delay: 0.55, size: 2 },
-            { top: '28%', left: '50%', delay: 0.75, size: 3 },
+            { top: '62%', left: '74%', delay: 0.2, size: 3 },
+            { top: '40%', left: '70%', delay: 0.1, size: 2 },
+            { top: '66%', left: '30%', delay: 0.35, size: 2 },
+            { top: '28%', left: '50%', delay: 0.5, size: 3 },
           ].map((mote, idx) => (
             <motion.span
               key={idx}
@@ -208,9 +198,9 @@ export default function LuxuryPreloader({ onComplete }) {
 
         {/* SAUDAGAR TYPOGRAPHIC LOGO WITH METALLIC LIGHT SWEEP */}
         <motion.div
-          initial={{ opacity: 0, y: 14, scale: 0.94 }}
+          initial={{ opacity: 0, y: 8, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.85, delay: 0.1, ease: revealEase }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
           className="relative w-80 sm:w-[420px] md:w-[500px] max-w-[90vw] flex items-center justify-center p-2 mb-1"
         >
           {/* Clean Caption-Free Master Gold Logo */}
@@ -230,7 +220,7 @@ export default function LuxuryPreloader({ onComplete }) {
               }}
               transition={{
                 duration: 1.45,
-                delay: 0.4,
+                delay: 0.2,
                 ease: [0.25, 0.1, 0.25, 1],
               }}
               className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-[-24deg] mix-blend-overlay"
@@ -243,27 +233,27 @@ export default function LuxuryPreloader({ onComplete }) {
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: revealEase }}
+            transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
             className="flex-1 h-[1px] origin-right bg-gradient-to-l from-[#ECC86A] to-transparent shadow-[0_0_8px_rgba(212,175,55,0.6)]"
           />
           <motion.span
             initial={{ scale: 0, rotate: 0 }}
             animate={{ scale: 1, rotate: 45 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            transition={{ duration: 0.4, delay: 0.15 }}
             className="w-1.5 h-1.5 bg-[#ECC86A] shadow-[0_0_8px_#ECC86A]"
           />
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ duration: 0.7, delay: 0.3, ease: revealEase }}
+            transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
             className="flex-1 h-[1px] origin-left bg-gradient-to-r from-[#ECC86A] to-transparent shadow-[0_0_8px_rgba(212,175,55,0.6)]"
           />
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 6 }}
+          initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, delay: 0.4, ease: revealEase }}
+          transition={{ duration: 0.4, delay: 0.15, ease: 'easeOut' }}
           className="flex flex-col items-center gap-1"
         >
           <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.36em] text-[#ECC86A]/90 font-light">
@@ -278,7 +268,7 @@ export default function LuxuryPreloader({ onComplete }) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.25 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
           className="mt-7 sm:mt-8 flex flex-col items-center gap-2"
         >
           {/* 1.5px Gold Fill Track */}
@@ -301,7 +291,7 @@ export default function LuxuryPreloader({ onComplete }) {
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.35 }}
-          transition={{ delay: 1.1, duration: 0.6 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
           className="absolute bottom-6 text-[8.5px] uppercase tracking-[0.24em] text-white/40 font-light"
         >
           Tap anywhere to enter

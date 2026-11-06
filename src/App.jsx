@@ -120,6 +120,9 @@ export default function App() {
   const [quickBuyProduct, setQuickBuyProduct] = useState(null);
   const [checkoutData, setCheckoutData] = useState(null);
 
+  // Luxury Preloader State: plays smoothly on initial site entry / reload
+  const [isPreloaderDone, setIsPreloaderDone] = useState(false);
+
   // Global Keyboard Shortcut: Cmd+K / Ctrl+K toggles luxury search
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -465,8 +468,10 @@ export default function App() {
         />
       )}
 
-      {/* Luxury Branded Preloader (only runs once on home page, never blocking interior pages) */}
-      {view === 'home' && <LuxuryPreloader />}
+      {/* Luxury Branded Preloader (runs smoothly on initial application mount / reload) */}
+      {!isPreloaderDone && (
+        <LuxuryPreloader onComplete={() => setIsPreloaderDone(true)} />
+      )}
 
       {/* 3. MAIN PAGE CONTENT VIEW WITH LUXURY ROUTE TRANSITIONS */}
       <main className="flex-1">
