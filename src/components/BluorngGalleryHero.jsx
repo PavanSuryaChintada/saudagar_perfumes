@@ -11,7 +11,7 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
   ];
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-14 sm:py-20 overflow-hidden transition-colors duration-300">
+    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-14 sm:py-20 overflow-hidden transition-colors duration-300">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL GALLERY TITLE (Borderless, Minimal) ================= */}
@@ -20,7 +20,7 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
             <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#A09D96] font-medium block mb-1">
               The Olfactory Vault · Curations
             </span>
-            <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-[#111111] dark:text-white">
+            <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
               Discover Collections
             </h2>
             <p className="text-[12px] text-[#777777] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
@@ -29,7 +29,7 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
           </div>
 
           <div className="text-[11px] font-normal text-[#888888] dark:text-[#A09D96] tracking-wider uppercase hidden md:flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C4823F] dark:bg-[#ECC86A]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night" />
             <span>Exhibition Trilogy</span>
           </div>
         </ScrollReveal>
@@ -47,21 +47,21 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
                 {/* Curator Placard Above Image */}
                 <div className="px-5 py-3.5 bg-transparent flex items-center justify-between">
                   <div>
-                    <span className="text-[9.5px] font-normal tracking-[0.1em] text-[#C4823F] dark:text-[#ECC86A] uppercase block">
+                    <span className="text-[9.5px] font-normal tracking-[0.1em] text-tk-accent dark:text-tk-accent-night uppercase block">
                       {tile.exhibitionNo}
                     </span>
-                    <h3 className="text-[13px] sm:text-[14px] font-medium tracking-[0.03em] uppercase text-[#111111] dark:text-white group-hover:text-[#C4823F] dark:group-hover:text-[#ECC86A] transition-colors duration-200 mt-0.5">
+                    <h3 className="text-[13px] sm:text-[14px] font-medium tracking-[0.03em] uppercase text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night transition-colors duration-200 mt-0.5">
                       {tile.title}
                     </h3>
                   </div>
 
-                  <div className="w-7 h-7 rounded-full bg-white/80 dark:bg-white/10 group-hover:bg-[#111111] dark:group-hover:bg-[#D4AF37] dark:group-hover:text-[#0B0A0D] text-[#111111] dark:text-white group-hover:text-white flex items-center justify-center text-[12px] transition-all duration-200 shadow-xs">
+                  <div className="w-7 h-7 rounded-full bg-white/80 dark:bg-white/10 group-hover:bg-tk-ink dark:group-hover:bg-tk-gold dark:group-hover:text-tk-night text-tk-ink dark:text-white group-hover:text-white flex items-center justify-center text-[12px] transition-all duration-200 shadow-xs">
                     ↗
                   </div>
                 </div>
 
                 {/* Tile Image with Responsive Picture */}
-                <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-[#111111] m-2 mb-2 rounded-md">
+                <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-tk-ink m-2 mb-2 rounded-md">
                   <img
                     src={tile.imageDesktop}
                     alt={tile.title}

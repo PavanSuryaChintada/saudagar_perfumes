@@ -45,7 +45,7 @@ export default function LoginPage({ admin = false }: { admin?: boolean }) {
         admin ? null : (
           <>
             New to Saudagar?{' '}
-            <Link to={`/register${nextQuery}`} className="text-[#111111] dark:text-white underline underline-offset-4 hover:text-[#C4823F]">
+            <Link to={`/register${nextQuery}`} className="text-tk-ink dark:text-white underline underline-offset-4 hover:text-tk-accent">
               Create an account
             </Link>
           </>
@@ -64,7 +64,7 @@ export default function LoginPage({ admin = false }: { admin?: boolean }) {
           onChange={(e) => setPassword(e.target.value)}
         />
         <div className="flex justify-end -mt-2 mb-6">
-          <Link to="/forgot-password" className="text-[11px] text-[#777777] dark:text-white/60 hover:text-[#C4823F] underline-offset-4 hover:underline">
+          <Link to="/forgot-password" className="text-[11px] text-[#777777] dark:text-white/60 hover:text-tk-accent underline-offset-4 hover:underline">
             Forgot password?
           </Link>
         </div>

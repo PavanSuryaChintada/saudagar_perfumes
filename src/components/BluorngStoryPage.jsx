@@ -64,17 +64,17 @@ export default function BluorngStoryPage({
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-white transition-colors duration-300 font-sans pb-32 select-none">
+    <div className="min-h-screen bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300 font-sans pb-32 select-none">
       
       {/* ============================================================== */}
       {/* ================= 1. MINIMAL CLEAN HEADER ==================== */}
       {/* ============================================================== */}
-      <header className="w-full border-b border-[#F0F0F0] dark:border-white/10 bg-white/90 dark:bg-[#0B0A0D]/90 backdrop-blur-md sticky top-0 z-30 transition-colors">
+      <header className="w-full border-b border-[#F0F0F0] dark:border-white/10 bg-white/90 dark:bg-tk-night/90 backdrop-blur-md sticky top-0 z-30 transition-colors">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 h-16 flex items-center justify-between">
           
           <button
             onClick={onNavigateHome}
-            className="text-[11px] uppercase tracking-[0.18em] text-[#777777] hover:text-[#111111] dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
+            className="text-[11px] uppercase tracking-[0.18em] text-[#777777] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
           >
             <span>←</span>
             <span>Boutique</span>
@@ -97,7 +97,7 @@ export default function BluorngStoryPage({
             {onToggleTheme && (
               <button
                 onClick={onToggleTheme}
-                className="text-[11px] uppercase tracking-wider text-[#777777] dark:text-[#999999] hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
+                className="text-[11px] uppercase tracking-wider text-[#777777] dark:text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
                 title="Toggle Theme"
               >
                 {theme === 'dark' ? 'Light' : 'Dark'}
@@ -119,11 +119,11 @@ export default function BluorngStoryPage({
           transition={{ duration: 0.6 }}
           className="space-y-4"
         >
-          <span className="text-[10.5px] uppercase tracking-[0.28em] text-[#C4823F] dark:text-[#ECC86A] font-medium block">
+          <span className="text-[10.5px] uppercase tracking-[0.28em] text-tk-accent dark:text-tk-accent-night font-medium block">
             Maison Saudagar · Established in Dubai
           </span>
 
-          <h1 className="text-[34px] sm:text-[48px] md:text-[56px] font-normal tracking-[-0.02em] text-[#111111] dark:text-white leading-[1.08] max-w-3xl mx-auto">
+          <h1 className="text-[34px] sm:text-[48px] md:text-[56px] font-normal tracking-[-0.02em] text-tk-ink dark:text-white leading-[1.08] max-w-3xl mx-auto">
             Born in the Alleys of Al Fahidi, Destined for the World.
           </h1>
 
@@ -146,7 +146,7 @@ export default function BluorngStoryPage({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
           <div className="absolute bottom-5 left-6 right-6 text-left text-white">
-            <span className="text-[9.5px] uppercase tracking-[0.2em] text-[#ECC86A] block">
+            <span className="text-[9.5px] uppercase tracking-[0.2em] text-tk-accent-night block">
               The Maceration Chambers · Dubai Atelier
             </span>
             <span className="text-[12px] text-white/80 font-light">
@@ -166,7 +166,7 @@ export default function BluorngStoryPage({
           <span className="text-[10px] uppercase tracking-[0.2em] text-[#888888] font-medium block mb-1">
             Our Creed
           </span>
-          <h2 className="text-[24px] sm:text-[30px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white">
+          <h2 className="text-[24px] sm:text-[30px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white">
             The Pillars of Saudagar Haute Parfumerie
           </h2>
         </div>
@@ -174,10 +174,10 @@ export default function BluorngStoryPage({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
           {tenets.map((t) => (
             <div key={t.num} className="space-y-2.5">
-              <span className="font-mono text-[13px] text-[#C4823F] dark:text-[#ECC86A] block">
+              <span className="font-mono text-[13px] text-tk-accent dark:text-tk-accent-night block">
                 {t.num}
               </span>
-              <h3 className="text-[16px] font-medium text-[#111111] dark:text-white">
+              <h3 className="text-[16px] font-medium text-tk-ink dark:text-white">
                 {t.title}
               </h3>
               <p className="text-[13px] text-[#666666] dark:text-[#AAAAAA] leading-relaxed font-light">
@@ -198,7 +198,7 @@ export default function BluorngStoryPage({
           <span className="text-[10px] uppercase tracking-[0.2em] text-[#888888] font-medium block mb-1">
             Chronology
           </span>
-          <h2 className="text-[24px] sm:text-[30px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white">
+          <h2 className="text-[24px] sm:text-[30px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white">
             How The House Started &amp; Established
           </h2>
           <p className="text-[13px] text-[#777777] dark:text-[#999999] mt-1 font-light max-w-xl">
@@ -212,10 +212,10 @@ export default function BluorngStoryPage({
             <div key={idx} className="relative pl-9 sm:pl-14 space-y-2">
               
               {/* Dot marker */}
-              <div className="absolute left-2 sm:left-4 top-1.5 w-2.5 h-2.5 -translate-x-1/2 rounded-full bg-[#111111] dark:bg-[#ECC86A] ring-4 ring-white dark:ring-[#0B0A0D]" />
+              <div className="absolute left-2 sm:left-4 top-1.5 w-2.5 h-2.5 -translate-x-1/2 rounded-full bg-tk-ink dark:bg-tk-accent-night ring-4 ring-white dark:ring-tk-night" />
 
               <div className="flex flex-wrap items-baseline gap-3">
-                <span className="font-mono text-[14px] font-medium text-[#C4823F] dark:text-[#ECC86A]">
+                <span className="font-mono text-[14px] font-medium text-tk-accent dark:text-tk-accent-night">
                   {ch.year}
                 </span>
                 <span className="text-[11px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#777777]">
@@ -223,7 +223,7 @@ export default function BluorngStoryPage({
                 </span>
               </div>
 
-              <h3 className="text-[19px] sm:text-[22px] font-normal tracking-[-0.01em] text-[#111111] dark:text-white">
+              <h3 className="text-[19px] sm:text-[22px] font-normal tracking-[-0.01em] text-tk-ink dark:text-white">
                 {ch.title}
               </h3>
 
@@ -255,7 +255,7 @@ export default function BluorngStoryPage({
           </div>
 
           <div className="space-y-4 sm:pl-4">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-[#C4823F] dark:text-[#ECC86A] font-medium block">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-tk-accent dark:text-tk-accent-night font-medium block">
               The Botanical Terroir
             </span>
             <h2 className="text-[22px] sm:text-[28px] font-normal tracking-[-0.015em] leading-tight">
@@ -280,7 +280,7 @@ export default function BluorngStoryPage({
       {/* ============================================================== */}
       <section className="max-w-3xl mx-auto px-6 sm:px-10 pt-16 text-center space-y-6">
         
-        <div className="w-8 h-[1px] bg-[#C4823F] dark:bg-[#ECC86A] mx-auto" />
+        <div className="w-8 h-[1px] bg-tk-accent dark:bg-tk-accent-night mx-auto" />
 
         <p className="font-serif italic text-[18px] sm:text-[22px] text-[#222222] dark:text-white/90 leading-relaxed max-w-xl mx-auto">
           &ldquo;A Saudagar creation is never worn to be noticed; it is worn to be remembered.&rdquo;
@@ -293,7 +293,7 @@ export default function BluorngStoryPage({
         <div className="pt-4 flex items-center justify-center gap-4">
           <button
             onClick={() => onNavigateCollection('all')}
-            className="px-8 py-3.5 bg-[#111111] hover:bg-[#C4823F] text-white dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] dark:text-[#0B0A0D] text-[11px] uppercase tracking-[0.16em] font-medium rounded-[2px] shadow-sm transition-all cursor-pointer"
+            className="px-8 py-3.5 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:hover:bg-tk-accent-night dark:text-tk-night text-[11px] uppercase tracking-[0.16em] font-medium rounded-[2px] shadow-sm transition-all cursor-pointer"
           >
             Explore The Extraits
           </button>

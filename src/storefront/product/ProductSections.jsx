@@ -18,16 +18,16 @@ export function NotePyramid({ notes }) {
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-10">
       {tiers.map((t) => (
         <div key={t.key}>
-          <p className="text-[10.5px] uppercase tracking-[0.16em] text-[#C4823F] dark:text-[#ECC86A] font-medium">{t.label}</p>
+          <p className="text-[10.5px] uppercase tracking-[0.16em] text-tk-accent dark:text-tk-accent-night font-medium">{t.label}</p>
           <p className="text-[11px] text-[#999999] dark:text-white/40 mb-3">{t.hint}</p>
           <ul className="space-y-2.5">
             {notes[t.key].map((n) => (
               <li key={n.slug}>
-                <Link to={`/notes/${n.slug}`} className="group flex items-center gap-3 text-[13px] text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors">
+                <Link to={`/notes/${n.slug}`} className="group flex items-center gap-3 text-[13px] text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors">
                   {n.image ? (
                     <img src={n.image} alt="" loading="lazy" className="w-9 h-9 object-cover rounded-full bg-[#F4F3EE] dark:bg-white/5 shrink-0" />
                   ) : (
-                    <span className="w-9 h-9 rounded-full bg-[#F4F3EE] dark:bg-white/5 shrink-0 flex items-center justify-center text-[11px] text-[#C4823F] dark:text-[#ECC86A]">
+                    <span className="w-9 h-9 rounded-full bg-[#F4F3EE] dark:bg-white/5 shrink-0 flex items-center justify-center text-[11px] text-tk-accent dark:text-tk-accent-night">
                       {n.name.charAt(0)}
                     </span>
                   )}
@@ -58,7 +58,7 @@ export function AccordBars({ accords }) {
                 whileInView={{ width: `${a.strength ?? 60}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="h-full bg-[#C4823F] dark:bg-[#ECC86A]"
+                className="h-full bg-tk-accent dark:bg-tk-accent-night"
               />
             </div>
           </div>
@@ -95,7 +95,7 @@ function Accordion({ id, title, open, onToggle, children }) {
         type="button"
         onClick={() => onToggle(id)}
         aria-expanded={open}
-        className="w-full flex items-center justify-between text-[#111111] dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
+        className="w-full flex items-center justify-between text-tk-ink dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
       >
         <span className="tracking-[0.02em] text-[13px]">{title}</span>
         <span className="text-[16px] font-light">{open ? '−' : '+'}</span>
@@ -174,7 +174,7 @@ export function ProductAccordions({ detail, selectedSize, openAccordion, onToggl
           )}
           {hasText(detail.how_to_wear) && (
             <div className="pt-1">
-              <p className="text-[#C4823F] dark:text-[#ECC86A] font-medium mb-1">How to wear</p>
+              <p className="text-tk-accent dark:text-tk-accent-night font-medium mb-1">How to wear</p>
               <div className="[&_p]:mb-2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(detail.how_to_wear) }} />
             </div>
           )}

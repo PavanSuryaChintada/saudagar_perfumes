@@ -17,7 +17,7 @@ function Row({ id, children }: { id: string; children: ReactNode }) {
         {...attributes}
         {...listeners}
         aria-label="Drag to reorder"
-        className="px-2 flex items-center text-[#BBBBBB] hover:text-[#111111] cursor-grab active:cursor-grabbing touch-none"
+        className="px-2 flex items-center text-[#BBBBBB] hover:text-tk-ink cursor-grab active:cursor-grabbing touch-none"
       >
         <GripVertical size={15} />
       </button>

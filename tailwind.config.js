@@ -8,6 +8,12 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Theme tokens: set at runtime from Admin → Site content → Theme (src/cms/ThemeRuntime.tsx)
+        'tk-accent': 'rgb(var(--c-accent) / <alpha-value>)',
+        'tk-accent-night': 'rgb(var(--c-accent-night) / <alpha-value>)',
+        'tk-gold': 'rgb(var(--c-gold) / <alpha-value>)',
+        'tk-ink': 'rgb(var(--c-ink) / <alpha-value>)',
+        'tk-night': 'rgb(var(--c-night) / <alpha-value>)',
         'brand-black': '#111111',
         'brand-surface': '#ECEBE6',
         'brand-card': '#FFFFFF',
@@ -36,13 +42,13 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['"Poppins"', '"Outfit"', '"DM Sans"', 'Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['var(--font-body)', '"Poppins"', '"Outfit"', '"DM Sans"', 'Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
         poppins: ['"Poppins"', 'sans-serif'],
         heading: ['"Poppins"', 'sans-serif'],
         outfit: ['"Outfit"', 'sans-serif'],
         dmsans: ['"DM Sans"', 'sans-serif'],
         prompt: ['"Prompt"', 'sans-serif'],
-        serif: ['"IM Fell French Canon"', '"Zen Antique Soft"', 'Cormorant Garamond', 'Garamond', 'Georgia', 'serif'],
+        serif: ['var(--font-display)', '"IM Fell French Canon"', '"Zen Antique Soft"', 'Cormorant Garamond', 'Garamond', 'Georgia', 'serif'],
         script: ['"Lavishly Yours"', '"Imperial Script"', 'cursive'],
         imperial: ['"Imperial Script"', 'cursive'],
         canon: ['"IM Fell French Canon"', 'serif'],

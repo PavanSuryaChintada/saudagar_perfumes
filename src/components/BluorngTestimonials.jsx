@@ -33,7 +33,7 @@ const AUTOPLAY_MS = 7000;
 
 function Stars({ count }) {
   return (
-    <div className="flex items-center justify-center gap-1 text-[#C4823F] dark:text-[#ECC86A]" aria-label={`${count} out of 5 stars`}>
+    <div className="flex items-center justify-center gap-1 text-tk-accent dark:text-tk-accent-night" aria-label={`${count} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill={i < count ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.6">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -65,7 +65,7 @@ export default function BluorngTestimonials({ items = TESTIMONIALS }) {
       onMouseLeave={() => setPaused(false)}
     >
       <div className="max-w-[880px] mx-auto text-center">
-        <span className="block text-[10.5px] uppercase tracking-[0.22em] font-medium text-[#C4823F] dark:text-[#ECC86A] mb-8">
+        <span className="block text-[10.5px] uppercase tracking-[0.22em] font-medium text-tk-accent dark:text-tk-accent-night mb-8">
           Words from the Atelier
         </span>
 
@@ -80,12 +80,12 @@ export default function BluorngTestimonials({ items = TESTIMONIALS }) {
             >
               <Stars count={current.rating} />
 
-              <blockquote className="mt-6 font-serif italic text-[22px] sm:text-[30px] leading-[1.35] text-[#111111] dark:text-white">
+              <blockquote className="mt-6 font-serif italic text-[22px] sm:text-[30px] leading-[1.35] text-tk-ink dark:text-white">
                 &ldquo;{current.quote}&rdquo;
               </blockquote>
 
               <figcaption className="mt-8 flex flex-col items-center gap-1">
-                <span className="text-[12px] uppercase tracking-[0.16em] font-semibold text-[#111111] dark:text-white">
+                <span className="text-[12px] uppercase tracking-[0.16em] font-semibold text-tk-ink dark:text-white">
                   {current.name}
                 </span>
                 <span className="text-[11px] uppercase tracking-[0.12em] text-[#888888] dark:text-[#A09D96]">
@@ -108,8 +108,8 @@ export default function BluorngTestimonials({ items = TESTIMONIALS }) {
                 aria-current={i === index}
                 className={`h-[3px] rounded-full transition-all duration-500 cursor-pointer ${
                   i === index
-                    ? 'w-8 bg-[#C4823F] dark:bg-[#ECC86A]'
-                    : 'w-3 bg-[#111111]/20 dark:bg-white/25 hover:bg-[#111111]/40 dark:hover:bg-white/50'
+                    ? 'w-8 bg-tk-accent dark:bg-tk-accent-night'
+                    : 'w-3 bg-tk-ink/20 dark:bg-white/25 hover:bg-tk-ink/40 dark:hover:bg-white/50'
                 }`}
               />
             ))}

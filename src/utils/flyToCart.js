@@ -3,8 +3,15 @@
 // and the bag rings, bumps and shows a "+1" when it lands.
 // Built on the Web Animations API, so there are no extra dependencies.
 
-const GOLD = '#ECC86A';
-const BRONZE = '#C4823F';
+// Colours follow the theme tokens (Admin → Site content → Theme).
+const tokenColor = (name, fallback) => {
+  try {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return v ? `rgb(${v.split(/\s+/).join(', ')})` : fallback;
+  } catch {
+    return fallback;
+  }
+};
 const FLIGHT_MS = 1300;
 const STEPS = 36;
 
@@ -84,8 +91,8 @@ function spawnSparkles(cx, cy) {
       width: `${size}px`,
       height: `${size}px`,
       borderRadius: '9999px',
-      background: GOLD,
-      boxShadow: `0 0 8px ${GOLD}`,
+      background: tokenColor('--c-accent-night', 'rgb(236, 200, 106)'),
+      boxShadow: `0 0 8px ${tokenColor('--c-accent-night', 'rgb(236, 200, 106)')}`,
       zIndex: '1001'
     });
     dot.animate(
@@ -106,7 +113,7 @@ function landingEffects(tx, ty) {
     width: '28px',
     height: '28px',
     borderRadius: '9999px',
-    border: `1.5px solid ${BRONZE}`,
+    border: `1.5px solid ${tokenColor('--c-accent', 'rgb(196, 130, 63)')}`,
     zIndex: '1001'
   });
   ring.animate(
@@ -124,7 +131,7 @@ function landingEffects(tx, ty) {
     fontSize: '11px',
     fontWeight: '600',
     letterSpacing: '0.08em',
-    color: BRONZE,
+    color: tokenColor('--c-accent', 'rgb(196, 130, 63)'),
     zIndex: '1001'
   });
   plus.textContent = '+1';

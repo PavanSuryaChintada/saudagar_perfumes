@@ -110,13 +110,13 @@ export default function BluorngCartDrawer({
               exit={{ x: '100%' }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.35 }}
               data-lenis-prevent="true"
-              className="pointer-events-auto w-screen max-w-md h-full max-h-screen bg-[#FFFFFF] dark:bg-[#0E0C10] text-[#111111] dark:text-white flex flex-col shadow-2xl transition-colors duration-300 overflow-hidden"
+              className="pointer-events-auto w-screen max-w-md h-full max-h-screen bg-[#FFFFFF] dark:bg-[#0E0C10] text-tk-ink dark:text-white flex flex-col shadow-2xl transition-colors duration-300 overflow-hidden"
             >
           
           {/* ================= HEADER ================= */}
-          <div className="shrink-0 p-4 sm:p-5 flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.08] text-[#111111] dark:text-white">
+          <div className="shrink-0 p-4 sm:p-5 flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.08] text-tk-ink dark:text-white">
             <div className="flex items-center gap-2">
-              <h2 className="text-[14px] font-bold tracking-[0.04em] uppercase text-[#111111] dark:text-white">
+              <h2 className="text-[14px] font-bold tracking-[0.04em] uppercase text-tk-ink dark:text-white">
                 Your Shopping Bag
               </h2>
               <span className="text-[12px] text-[#777777] dark:text-white/60 font-medium">
@@ -126,7 +126,7 @@ export default function BluorngCartDrawer({
 
             <button
               onClick={onClose}
-              className="p-1.5 text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors cursor-pointer"
+              className="p-1.5 text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
               aria-label="Close cart"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -137,7 +137,7 @@ export default function BluorngCartDrawer({
           </div>
 
           {/* ================= FREE SHIPPING PROGRESS BAR ================= */}
-          <div className="shrink-0 bg-[#FAF9F6] dark:bg-[#141318] p-3.5 text-[11px] text-[#111111] dark:text-white border-b border-black/[0.06] dark:border-white/[0.08] transition-colors">
+          <div className="shrink-0 bg-[#FAF9F6] dark:bg-[#141318] p-3.5 text-[11px] text-tk-ink dark:text-white border-b border-black/[0.06] dark:border-white/[0.08] transition-colors">
             <div className="flex items-center justify-between font-semibold tracking-wider uppercase mb-1.5">
               {amountToFreeShipping > 0 ? (
                 <span>Add {formatPrice(amountToFreeShipping)} more for Free Express Courier</span>
@@ -149,7 +149,7 @@ export default function BluorngCartDrawer({
             </div>
             <div className="w-full h-1.5 bg-[#E5E5E5] dark:bg-white/10 rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#C4823F] dark:bg-[#D4AF37] transition-all duration-300"
+                className="h-full bg-tk-accent dark:bg-tk-gold transition-all duration-300"
                 style={{ width: `${freeShippingProgress}%` }}
               />
             </div>
@@ -170,7 +170,7 @@ export default function BluorngCartDrawer({
                     <path d="M16 10a4 4 0 0 1-8 0" />
                   </svg>
                 </div>
-                <p className="text-[13px] font-bold tracking-wider uppercase text-[#111111]">
+                <p className="text-[13px] font-bold tracking-wider uppercase text-tk-ink">
                   Your Bag is Currently Empty
                 </p>
                 <p className="text-[11.5px] text-[#777777] max-w-xs">
@@ -178,7 +178,7 @@ export default function BluorngCartDrawer({
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-3 px-6 py-2.5 bg-[#111111] hover:bg-[#C4823F] dark:hover:bg-[#D4AF37] dark:hover:text-[#0B0A0D] text-white text-[11px] font-bold uppercase tracking-wide transition-colors"
+                  className="mt-3 px-6 py-2.5 bg-tk-ink hover:bg-tk-accent dark:hover:bg-tk-gold dark:hover:text-tk-night text-white text-[11px] font-bold uppercase tracking-wide transition-colors"
                 >
                   Continue Browsing
                 </button>
@@ -208,7 +208,7 @@ export default function BluorngCartDrawer({
                     <div className="flex-1 flex flex-col justify-between text-[11.5px]">
                       <div>
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-bold uppercase tracking-wider text-[#111111] dark:text-white leading-tight">
+                          <h4 className="font-bold uppercase tracking-wider text-tk-ink dark:text-white leading-tight">
                             {itemName}
                           </h4>
                           <button
@@ -222,7 +222,7 @@ export default function BluorngCartDrawer({
                         </div>
 
                         <p className="text-[10px] text-[#777777] dark:text-white/60 uppercase tracking-wider mt-1">
-                          Size: <span className="text-[#111111] dark:text-white font-semibold">{item.size || '50ML'}</span>
+                          Size: <span className="text-tk-ink dark:text-white font-semibold">{item.size || '50ML'}</span>
                         </p>
 
                       </div>
@@ -237,7 +237,7 @@ export default function BluorngCartDrawer({
                           >
                             −
                           </button>
-                          <span className="w-8 text-center text-xs font-bold text-[#111111] dark:text-white">
+                          <span className="w-8 text-center text-xs font-bold text-tk-ink dark:text-white">
                             {item.quantity}
                           </span>
                           <button
@@ -249,7 +249,7 @@ export default function BluorngCartDrawer({
                           </button>
                         </div>
 
-                        <span className="font-bold text-[12.5px] text-[#111111] dark:text-white">
+                        <span className="font-bold text-[12.5px] text-tk-ink dark:text-white">
                           {formatPrice(itemPrice * item.quantity)}
                         </span>
                       </div>
@@ -262,13 +262,13 @@ export default function BluorngCartDrawer({
 
           {/* ================= FOOTER / PROMO / CHECKOUT ================= */}
           {cart.length > 0 && (
-            <div className="shrink-0 p-4 sm:p-5 bg-white dark:bg-[#0E0C10] border-t border-black/[0.06] dark:border-white/[0.08] text-[#111111] dark:text-white space-y-3.5 shadow-[0_-8px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_-8px_20px_rgba(0,0,0,0.3)] transition-colors">
+            <div className="shrink-0 p-4 sm:p-5 bg-white dark:bg-[#0E0C10] border-t border-black/[0.06] dark:border-white/[0.08] text-tk-ink dark:text-white space-y-3.5 shadow-[0_-8px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_-8px_20px_rgba(0,0,0,0.3)] transition-colors">
               
               {/* Order Note Toggle */}
               <div>
                 <button
                   onClick={() => setIsNoteOpen(!isNoteOpen)}
-                  className="text-[10.5px] font-semibold tracking-wider uppercase text-[#777777] dark:text-white/60 hover:text-[#111111] dark:hover:text-white flex items-center gap-1 cursor-pointer"
+                  className="text-[10.5px] font-semibold tracking-wider uppercase text-[#777777] dark:text-white/60 hover:text-tk-ink dark:hover:text-white flex items-center gap-1 cursor-pointer"
                 >
                   <span>{isNoteOpen ? '− Hide note' : '+ Add a note for us'}</span>
                 </button>
@@ -278,7 +278,7 @@ export default function BluorngCartDrawer({
                     value={orderNote}
                     onChange={(e) => setOrderNote(e.target.value)}
                     placeholder="Anything we should know about your order (optional)"
-                    className="w-full mt-2 p-2.5 bg-black/[0.05] dark:bg-white/[0.07] text-[#111111] dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11px] rounded-xs outline-none"
+                    className="w-full mt-2 p-2.5 bg-black/[0.05] dark:bg-white/[0.07] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11px] rounded-xs outline-none"
                   />
                 )}
               </div>
@@ -290,11 +290,11 @@ export default function BluorngCartDrawer({
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
                   placeholder="PROMO CODE (e.g. SAUDAGAR10)"
-                  className="flex-1 px-3 py-2 bg-black/[0.05] dark:bg-white/[0.07] text-[#111111] dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 rounded-xs text-[11px] tracking-wider uppercase outline-none"
+                  className="flex-1 px-3 py-2 bg-black/[0.05] dark:bg-white/[0.07] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 rounded-xs text-[11px] tracking-wider uppercase outline-none"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[10.5px] font-bold uppercase tracking-wide transition-colors rounded-xs cursor-pointer"
+                  className="px-4 py-2 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[10.5px] font-bold uppercase tracking-wide transition-colors rounded-xs cursor-pointer"
                 >
                   Apply
                 </button>
@@ -332,7 +332,7 @@ export default function BluorngCartDrawer({
                   </span>
                 </div>
 
-                <div className="flex justify-between text-[14px] font-bold text-[#111111] dark:text-white pt-1.5">
+                <div className="flex justify-between text-[14px] font-bold text-tk-ink dark:text-white pt-1.5">
                   <span className="uppercase tracking-wider">Total</span>
                   <span>{formatPrice(finalTotal)}</span>
                 </div>
@@ -353,7 +353,7 @@ export default function BluorngCartDrawer({
                     note: orderNote
                   });
                 }}
-                className="w-full py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
+                className="w-full py-3.5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
               >
                 <span>Proceed to Checkout</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>

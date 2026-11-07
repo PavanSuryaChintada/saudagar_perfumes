@@ -100,7 +100,7 @@ export default function MediaLibraryPage() {
                 <p className="text-[11px] text-rose-600 mt-0.5">{it.error}</p>
               ) : (
                 <div className="h-1 bg-[#EEEEEE] mt-1">
-                  <div className="h-1 bg-[#C4823F] transition-all" style={{ width: `${it.progress * 100}%` }} />
+                  <div className="h-1 bg-tk-accent transition-all" style={{ width: `${it.progress * 100}%` }} />
                 </div>
               )}
             </div>
@@ -136,7 +136,7 @@ export default function MediaLibraryPage() {
               )}
             </div>
             <figcaption className="p-2.5 space-y-2 text-[11px]">
-              <p className="truncate text-[#111111]" title={a.original_name ?? a.path}>
+              <p className="truncate text-tk-ink" title={a.original_name ?? a.path}>
                 {a.original_name ?? a.path}
               </p>
               <p className="text-[#888888]">

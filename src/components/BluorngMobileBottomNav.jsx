@@ -19,7 +19,7 @@ export default function BluorngMobileBottomNav({
         <li>
           <button
             onClick={() => onNavigateCollection('all')}
-            className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 cursor-pointer"
+            className="flex flex-col items-center justify-center gap-1 hover:text-tk-ink dark:hover:text-white transition-colors p-1 cursor-pointer"
             aria-label="Explore Collections"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -35,7 +35,7 @@ export default function BluorngMobileBottomNav({
           <li>
             <button
               onClick={onToggleTheme}
-              className="flex flex-col items-center justify-center gap-1 text-[#C4823F] dark:text-[#ECC86A] hover:opacity-80 transition-colors p-1 cursor-pointer"
+              className="flex flex-col items-center justify-center gap-1 text-tk-accent dark:text-tk-accent-night hover:opacity-80 transition-colors p-1 cursor-pointer"
               aria-label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Theme`}
             >
               {theme === 'dark' ? (
@@ -64,7 +64,7 @@ export default function BluorngMobileBottomNav({
         <li>
           <button
             onClick={onScrollToStores}
-            className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 cursor-pointer"
+            className="flex flex-col items-center justify-center gap-1 hover:text-tk-ink dark:hover:text-white transition-colors p-1 cursor-pointer"
             aria-label="Walk-in Stores"
           >
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -79,7 +79,7 @@ export default function BluorngMobileBottomNav({
         <li>
           <button
             onClick={onOpenAccount}
-            className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 cursor-pointer"
+            className="flex flex-col items-center justify-center gap-1 hover:text-tk-ink dark:hover:text-white transition-colors p-1 cursor-pointer"
             aria-label="Connoisseur Account"
           >
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -95,11 +95,11 @@ export default function BluorngMobileBottomNav({
           <button
             data-cart-target
             onClick={onOpenCart}
-            className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 relative cursor-pointer"
+            className="flex flex-col items-center justify-center gap-1 hover:text-tk-ink dark:hover:text-white transition-colors p-1 relative cursor-pointer"
             aria-label={`Cart (${cartCount})`}
           >
             {cartCount > 0 && (
-              <span className="absolute top-0 right-1 w-4 h-4 rounded-xs bg-[#C4823F] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[9px] font-bold flex items-center justify-center">
+              <span className="absolute top-0 right-1 w-4 h-4 rounded-xs bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[9px] font-bold flex items-center justify-center">
                 {cartCount}
               </span>
             )}

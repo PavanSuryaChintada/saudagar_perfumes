@@ -88,16 +88,16 @@ export default function BluorngCheckoutPage({
   const displayTotal = confirmedTotal > 0 ? confirmedTotal : total;
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-white transition-colors duration-300 select-none pb-24">
+    <div className="min-h-screen bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300 select-none pb-24">
       
       {/* ================= DEDICATED DISTRACTION-FREE CHECKOUT HEADER ================= */}
-      <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-[#0B0A0D]/95 backdrop-blur-md border-b border-[#EAEAEA] dark:border-white/10 transition-colors">
+      <header className="sticky top-0 z-40 w-full bg-white/95 dark:bg-tk-night/95 backdrop-blur-md border-b border-[#EAEAEA] dark:border-white/10 transition-colors">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
           {/* Left: Return to Shopping */}
           <button
             onClick={onNavigateHome}
-            className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] font-medium text-[#777777] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] font-medium text-[#777777] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
           >
             <span>←</span>
             <span className="hidden sm:inline">Return to Shopping</span>
@@ -135,7 +135,7 @@ export default function BluorngCheckoutPage({
             {onToggleTheme && (
               <button
                 onClick={onToggleTheme}
-                className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[#888888] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-[#888888] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
                 aria-label="Toggle Theme"
               >
                 {theme === 'dark' ? (
@@ -185,20 +185,20 @@ export default function BluorngCheckoutPage({
               </motion.div>
 
               <div>
-                <span className="text-[10px] uppercase tracking-[0.24em] font-medium text-[#C4823F] dark:text-[#ECC86A] block">
+                <span className="text-[10px] uppercase tracking-[0.24em] font-medium text-tk-accent dark:text-tk-accent-night block">
                   Order Confirmed · Dispatched to Royal Atelier
                 </span>
-                <h1 className="text-[28px] sm:text-[34px] font-normal uppercase tracking-tight text-[#111111] dark:text-white mt-1">
+                <h1 className="text-[28px] sm:text-[34px] font-normal uppercase tracking-tight text-tk-ink dark:text-white mt-1">
                   Thank You, {firstName}.
                 </h1>
                 <p className="text-[12.5px] text-[#777777] dark:text-[#A09D96] tracking-wide mt-1.5 flex flex-wrap items-center justify-center gap-2">
                   <span>Your formulation allocation reference is</span>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#F4F3F0] dark:bg-[#1A1820] text-[#111111] dark:text-white font-mono font-bold text-[12px] whitespace-nowrap shrink-0 border border-[#E0DDD5] dark:border-white/10">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#F4F3F0] dark:bg-[#1A1820] text-tk-ink dark:text-white font-mono font-bold text-[12px] whitespace-nowrap shrink-0 border border-[#E0DDD5] dark:border-white/10">
                     <span>{orderId}</span>
                     <button
                       type="button"
                       onClick={handleCopyOrderId}
-                      className="text-[10px] uppercase font-sans text-[#C4823F] dark:text-[#ECC86A] hover:opacity-80 cursor-pointer ml-1"
+                      className="text-[10px] uppercase font-sans text-tk-accent dark:text-tk-accent-night hover:opacity-80 cursor-pointer ml-1"
                       title="Copy Order ID"
                     >
                       {isCopied ? 'Copied!' : 'Copy'}
@@ -217,12 +217,12 @@ export default function BluorngCheckoutPage({
                 Fulfillment Protocol · Royal Atelier
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
-                <div className="flex flex-col gap-1 border-l-2 border-[#111111] dark:border-[#D4AF37] pl-3">
-                  <span className="text-[10px] uppercase font-bold text-[#111111] dark:text-[#ECC86A]">1. Order Placed</span>
+                <div className="flex flex-col gap-1 border-l-2 border-tk-ink dark:border-tk-gold pl-3">
+                  <span className="text-[10px] uppercase font-bold text-tk-ink dark:text-tk-accent-night">1. Order Placed</span>
                   <span className="text-[11px] text-[#777777] dark:text-[#A09D96] font-light">Payment Verified</span>
                 </div>
-                <div className="flex flex-col gap-1 border-l-2 border-[#111111] dark:border-[#D4AF37] pl-3">
-                  <span className="text-[10px] uppercase font-bold text-[#111111] dark:text-[#ECC86A]">2. Atelier Compounding</span>
+                <div className="flex flex-col gap-1 border-l-2 border-tk-ink dark:border-tk-gold pl-3">
+                  <span className="text-[10px] uppercase font-bold text-tk-ink dark:text-tk-accent-night">2. Atelier Compounding</span>
                   <span className="text-[11px] text-[#777777] dark:text-[#A09D96] font-light">Hand-Numbered Flacon</span>
                 </div>
                 <div className="flex flex-col gap-1 border-l-2 border-[#CCCCCC] dark:border-white/20 pl-3">
@@ -242,7 +242,7 @@ export default function BluorngCheckoutPage({
                 <span className="text-[10px] uppercase tracking-[0.18em] font-medium text-[#888888] dark:text-[#88857F]">
                   Allocated Flacons ({displayItems.length})
                 </span>
-                <span className="text-[11px] text-[#C4823F] dark:text-[#ECC86A] font-medium">
+                <span className="text-[11px] text-tk-accent dark:text-tk-accent-night font-medium">
                   + Complimentary 2ml Discovery Vial Included
                 </span>
               </div>
@@ -264,7 +264,7 @@ export default function BluorngCheckoutPage({
                           />
                         </div>
                         <div>
-                          <h4 className="text-[13px] font-medium uppercase text-[#111111] dark:text-white line-clamp-1">
+                          <h4 className="text-[13px] font-medium uppercase text-tk-ink dark:text-white line-clamp-1">
                             {name}
                           </h4>
                           <p className="text-[11px] text-[#888888] dark:text-[#A09D96] mt-0.5">
@@ -273,7 +273,7 @@ export default function BluorngCheckoutPage({
                         </div>
                       </div>
 
-                      <span className="text-[13px] font-semibold text-[#111111] dark:text-white tabular-nums">
+                      <span className="text-[13px] font-semibold text-tk-ink dark:text-white tabular-nums">
                         {formatPrice(itemPrice * (item.quantity || 1))}
                       </span>
                     </div>
@@ -290,7 +290,7 @@ export default function BluorngCheckoutPage({
                 <span className="text-[10px] uppercase tracking-[0.18em] font-medium text-[#888888] dark:text-[#88857F] block mb-1">
                   Delivery Destination
                 </span>
-                <p className="font-semibold text-[#111111] dark:text-white text-[13px]">
+                <p className="font-semibold text-tk-ink dark:text-white text-[13px]">
                   {firstName} {lastName}
                 </p>
                 <p className="text-[#666666] dark:text-[#A09D96] leading-relaxed">
@@ -311,7 +311,7 @@ export default function BluorngCheckoutPage({
                 </span>
                 <div className="flex justify-between text-[#666666] dark:text-[#A09D96]">
                   <span>Payment Channel:</span>
-                  <span className="font-medium text-[#111111] dark:text-white">
+                  <span className="font-medium text-tk-ink dark:text-white">
                     {paymentMethod === 'upi' ? 'UPI Instant Payment' : paymentMethod === 'card' ? 'Credit / Debit Card' : 'Cash on Delivery'}
                   </span>
                 </div>
@@ -324,8 +324,8 @@ export default function BluorngCheckoutPage({
                   <span className="text-emerald-700 dark:text-emerald-400 font-medium">INCLUDED</span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-[#EAEAEA] dark:border-white/10 text-[14px]">
-                  <span className="font-medium uppercase tracking-wider text-[#111111] dark:text-white">Total Amount Paid:</span>
-                  <span className="font-bold text-[#111111] dark:text-[#ECC86A] tabular-nums">
+                  <span className="font-medium uppercase tracking-wider text-tk-ink dark:text-white">Total Amount Paid:</span>
+                  <span className="font-bold text-tk-ink dark:text-tk-accent-night tabular-nums">
                     {formatPrice(displayTotal)}
                   </span>
                 </div>
@@ -338,7 +338,7 @@ export default function BluorngCheckoutPage({
               <button
                 type="button"
                 onClick={onNavigateHome}
-                className="w-full sm:w-auto px-10 py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer shadow-md text-center"
+                className="w-full sm:w-auto px-10 py-3.5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer shadow-md text-center"
               >
                 Return to Saudagar Home
               </button>
@@ -346,7 +346,7 @@ export default function BluorngCheckoutPage({
               <button
                 type="button"
                 onClick={() => onNavigateCollection && onNavigateCollection('all')}
-                className="w-full sm:w-auto px-8 py-3.5 bg-transparent hover:bg-black/5 dark:hover:bg-white/10 border border-[#CCCCCC] dark:border-white/20 text-[#111111] dark:text-white text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer text-center"
+                className="w-full sm:w-auto px-8 py-3.5 bg-transparent hover:bg-black/5 dark:hover:bg-white/10 border border-[#CCCCCC] dark:border-white/20 text-tk-ink dark:text-white text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer text-center"
               >
                 Explore More Fragrances →
               </button>
@@ -355,10 +355,10 @@ export default function BluorngCheckoutPage({
         ) : items.length === 0 ? (
           /* Empty Bag State */
           <div className="py-24 text-center max-w-md mx-auto">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-[#C4823F] dark:text-[#ECC86A] font-semibold block mb-2">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-tk-accent dark:text-tk-accent-night font-semibold block mb-2">
               Privilege Bag
             </span>
-            <h2 className="text-[22px] font-normal uppercase tracking-tight text-[#111111] dark:text-white">
+            <h2 className="text-[22px] font-normal uppercase tracking-tight text-tk-ink dark:text-white">
               Your bag is currently empty
             </h2>
             <p className="text-[12px] text-[#777777] dark:text-[#A09D96] mt-2 font-light leading-relaxed">
@@ -366,7 +366,7 @@ export default function BluorngCheckoutPage({
             </p>
             <button
               onClick={() => onNavigateCollection && onNavigateCollection('all')}
-              className="mt-6 px-8 py-3 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer shadow-md"
+              className="mt-6 px-8 py-3 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer shadow-md"
             >
               Explore Collections →
             </button>
@@ -379,11 +379,11 @@ export default function BluorngCheckoutPage({
               
               {/* Checkout Progress Stepper */}
               <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.14em] font-medium mb-8 pb-4 border-b border-[#EAEAEA] dark:border-white/10">
-                <span className={step === 'shipping' ? 'text-[#111111] dark:text-white font-semibold' : 'text-[#888888] dark:text-[#A09D96]'}>
+                <span className={step === 'shipping' ? 'text-tk-ink dark:text-white font-semibold' : 'text-[#888888] dark:text-[#A09D96]'}>
                   1. Delivery Address
                 </span>
                 <span className="text-[#CCCCCC] dark:text-white/20">/</span>
-                <span className={step === 'payment' ? 'text-[#111111] dark:text-white font-semibold' : 'text-[#888888] dark:text-[#A09D96]'}>
+                <span className={step === 'payment' ? 'text-tk-ink dark:text-white font-semibold' : 'text-[#888888] dark:text-[#A09D96]'}>
                   2. Payment Method
                 </span>
               </div>
@@ -402,7 +402,7 @@ export default function BluorngCheckoutPage({
                   className="space-y-6"
                 >
                   <div>
-                    <h2 className="text-[18px] sm:text-[20px] font-normal uppercase tracking-[0.02em] text-[#111111] dark:text-white">
+                    <h2 className="text-[18px] sm:text-[20px] font-normal uppercase tracking-[0.02em] text-tk-ink dark:text-white">
                       Contact Information
                     </h2>
                     <p className="text-[11.5px] text-[#777777] dark:text-[#A09D96] mt-0.5 font-light">
@@ -420,7 +420,7 @@ export default function BluorngCheckoutPage({
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[#111111] dark:text-white outline-none focus:border-[#C4823F] dark:focus:border-[#D4AF37] transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-tk-ink dark:text-white outline-none focus:border-tk-accent dark:focus:border-tk-gold transition-colors"
                       />
                     </div>
                     <div>
@@ -432,13 +432,13 @@ export default function BluorngCheckoutPage({
                         required
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[#111111] dark:text-white outline-none focus:border-[#C4823F] dark:focus:border-[#D4AF37] transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-tk-ink dark:text-white outline-none focus:border-tk-accent dark:focus:border-tk-gold transition-colors"
                       />
                     </div>
                   </div>
 
                   <div className="pt-2">
-                    <h2 className="text-[18px] sm:text-[20px] font-normal uppercase tracking-[0.02em] text-[#111111] dark:text-white">
+                    <h2 className="text-[18px] sm:text-[20px] font-normal uppercase tracking-[0.02em] text-tk-ink dark:text-white">
                       Delivery Destination
                     </h2>
                   </div>
@@ -453,7 +453,7 @@ export default function BluorngCheckoutPage({
                         required
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[#111111] dark:text-white outline-none focus:border-[#C4823F] dark:focus:border-[#D4AF37] transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-tk-ink dark:text-white outline-none focus:border-tk-accent dark:focus:border-tk-gold transition-colors"
                       />
                     </div>
                     <div>
@@ -465,7 +465,7 @@ export default function BluorngCheckoutPage({
                         required
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[#111111] dark:text-white outline-none focus:border-[#C4823F] dark:focus:border-[#D4AF37] transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-tk-ink dark:text-white outline-none focus:border-tk-accent dark:focus:border-tk-gold transition-colors"
                       />
                     </div>
                   </div>
@@ -480,7 +480,7 @@ export default function BluorngCheckoutPage({
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       placeholder="House / Flat No., Building, Street Name"
-                      className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[#111111] dark:text-white outline-none focus:border-[#C4823F] dark:focus:border-[#D4AF37] transition-colors"
+                      className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-tk-ink dark:text-white outline-none focus:border-tk-accent dark:focus:border-tk-gold transition-colors"
                     />
                   </div>
 
@@ -494,7 +494,7 @@ export default function BluorngCheckoutPage({
                         required
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[#111111] dark:text-white outline-none focus:border-[#C4823F] dark:focus:border-[#D4AF37] transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-tk-ink dark:text-white outline-none focus:border-tk-accent dark:focus:border-tk-gold transition-colors"
                       />
                     </div>
                     <div>
@@ -506,7 +506,7 @@ export default function BluorngCheckoutPage({
                         required
                         value={state}
                         onChange={(e) => setState(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[#111111] dark:text-white outline-none focus:border-[#C4823F] dark:focus:border-[#D4AF37] transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-tk-ink dark:text-white outline-none focus:border-tk-accent dark:focus:border-tk-gold transition-colors"
                       />
                     </div>
                     <div>
@@ -518,7 +518,7 @@ export default function BluorngCheckoutPage({
                         required
                         value={pinCode}
                         onChange={(e) => setPinCode(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[#111111] dark:text-white outline-none focus:border-[#C4823F] dark:focus:border-[#D4AF37] transition-colors"
+                        className="w-full px-3.5 py-2.5 rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-tk-ink dark:text-white outline-none focus:border-tk-accent dark:focus:border-tk-gold transition-colors"
                       />
                     </div>
                   </div>
@@ -527,7 +527,7 @@ export default function BluorngCheckoutPage({
                   <div className="pt-4 flex justify-end">
                     <button
                       type="submit"
-                      className="w-full sm:w-auto px-9 py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer shadow-md"
+                      className="w-full sm:w-auto px-9 py-3.5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer shadow-md"
                     >
                       Continue to Payment Method →
                     </button>
@@ -547,7 +547,7 @@ export default function BluorngCheckoutPage({
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="text-[18px] sm:text-[20px] font-normal uppercase tracking-[0.02em] text-[#111111] dark:text-white">
+                      <h2 className="text-[18px] sm:text-[20px] font-normal uppercase tracking-[0.02em] text-tk-ink dark:text-white">
                         Payment Selection
                       </h2>
                       <p className="text-[11.5px] text-[#777777] dark:text-[#A09D96] mt-0.5 font-light">
@@ -557,7 +557,7 @@ export default function BluorngCheckoutPage({
                     <button
                       type="button"
                       onClick={() => setStep('shipping')}
-                      className="text-[11px] uppercase tracking-wider text-[#C4823F] dark:text-[#ECC86A] font-medium hover:underline cursor-pointer"
+                      className="text-[11px] uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-medium hover:underline cursor-pointer"
                     >
                       ← Edit Address
                     </button>
@@ -569,7 +569,7 @@ export default function BluorngCheckoutPage({
                       <span className="text-[#888888] dark:text-[#88857F] block text-[10px] uppercase tracking-wider">
                         Delivering To:
                       </span>
-                      <span className="font-medium text-[#111111] dark:text-white">
+                      <span className="font-medium text-tk-ink dark:text-white">
                         {firstName} {lastName} · {address}, {city} ({pinCode})
                       </span>
                     </div>
@@ -585,18 +585,18 @@ export default function BluorngCheckoutPage({
                       onClick={() => setPaymentMethod('upi')}
                       className={`flex flex-col p-4 rounded-lg border cursor-pointer transition-all ${
                         paymentMethod === 'upi'
-                          ? 'border-[#111111] dark:border-[#D4AF37] bg-[#F9F8F5] dark:bg-[#17161D]'
+                          ? 'border-tk-ink dark:border-tk-gold bg-[#F9F8F5] dark:bg-[#17161D]'
                           : 'border-[#EAEAEA] dark:border-white/10 hover:border-[#CCCCCC]'
                       }`}
                     >
-                      <div className="flex items-center justify-between font-medium text-[#111111] dark:text-white">
+                      <div className="flex items-center justify-between font-medium text-tk-ink dark:text-white">
                         <div className="flex items-center gap-3">
                           <input
                             type="radio"
                             name="paymentMethod"
                             checked={paymentMethod === 'upi'}
                             onChange={() => setPaymentMethod('upi')}
-                            className="accent-[#111111] dark:accent-[#D4AF37]"
+                            className="accent-tk-ink dark:accent-tk-gold"
                           />
                           <span>UPI Instant Payment (GPay, PhonePe, Paytm, QR)</span>
                         </div>
@@ -616,18 +616,18 @@ export default function BluorngCheckoutPage({
                       onClick={() => setPaymentMethod('card')}
                       className={`flex flex-col p-4 rounded-lg border cursor-pointer transition-all ${
                         paymentMethod === 'card'
-                          ? 'border-[#111111] dark:border-[#D4AF37] bg-[#F9F8F5] dark:bg-[#17161D]'
+                          ? 'border-tk-ink dark:border-tk-gold bg-[#F9F8F5] dark:bg-[#17161D]'
                           : 'border-[#EAEAEA] dark:border-white/10 hover:border-[#CCCCCC]'
                       }`}
                     >
-                      <div className="flex items-center justify-between font-medium text-[#111111] dark:text-white">
+                      <div className="flex items-center justify-between font-medium text-tk-ink dark:text-white">
                         <div className="flex items-center gap-3">
                           <input
                             type="radio"
                             name="paymentMethod"
                             checked={paymentMethod === 'card'}
                             onChange={() => setPaymentMethod('card')}
-                            className="accent-[#111111] dark:accent-[#D4AF37]"
+                            className="accent-tk-ink dark:accent-tk-gold"
                           />
                           <span>Credit / Debit Card (Visa, Mastercard, Amex, RuPay)</span>
                         </div>
@@ -642,18 +642,18 @@ export default function BluorngCheckoutPage({
                       onClick={() => setPaymentMethod('cod')}
                       className={`flex flex-col p-4 rounded-lg border cursor-pointer transition-all ${
                         paymentMethod === 'cod'
-                          ? 'border-[#111111] dark:border-[#D4AF37] bg-[#F9F8F5] dark:bg-[#17161D]'
+                          ? 'border-tk-ink dark:border-tk-gold bg-[#F9F8F5] dark:bg-[#17161D]'
                           : 'border-[#EAEAEA] dark:border-white/10 hover:border-[#CCCCCC]'
                       }`}
                     >
-                      <div className="flex items-center justify-between font-medium text-[#111111] dark:text-white">
+                      <div className="flex items-center justify-between font-medium text-tk-ink dark:text-white">
                         <div className="flex items-center gap-3">
                           <input
                             type="radio"
                             name="paymentMethod"
                             checked={paymentMethod === 'cod'}
                             onChange={() => setPaymentMethod('cod')}
-                            className="accent-[#111111] dark:accent-[#D4AF37]"
+                            className="accent-tk-ink dark:accent-tk-gold"
                           />
                           <span>Cash on Delivery (Available for PIN: {pinCode})</span>
                         </div>
@@ -669,14 +669,14 @@ export default function BluorngCheckoutPage({
                     <button
                       type="button"
                       onClick={() => setStep('shipping')}
-                      className="text-[11px] font-medium tracking-wider uppercase text-[#777777] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-white cursor-pointer"
+                      className="text-[11px] font-medium tracking-wider uppercase text-[#777777] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-white cursor-pointer"
                     >
                       ← Back to Address
                     </button>
 
                     <button
                       type="submit"
-                      className="px-9 py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer shadow-md"
+                      className="px-9 py-3.5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer shadow-md"
                     >
                       Authorize Order · {formatPrice(total)}
                     </button>
@@ -691,7 +691,7 @@ export default function BluorngCheckoutPage({
               <div className="sticky top-24 rounded-2xl bg-[#F8F7F5] dark:bg-[#141318] p-6 sm:p-7 border border-[#EAE8E2] dark:border-white/10 transition-colors">
                 
                 <div className="flex items-center justify-between pb-4 border-b border-[#EAEAEA] dark:border-white/10">
-                  <h3 className="text-[14px] font-medium uppercase tracking-[0.08em] text-[#111111] dark:text-white">
+                  <h3 className="text-[14px] font-medium uppercase tracking-[0.08em] text-tk-ink dark:text-white">
                     Order Summary
                   </h3>
                   <span className="text-[11px] text-[#888888] dark:text-[#A09D96]">
@@ -717,7 +717,7 @@ export default function BluorngCheckoutPage({
                         </div>
 
                         <div className="flex-1 min-w-0 text-[11.5px]">
-                          <h4 className="font-normal uppercase tracking-wide text-[#111111] dark:text-white line-clamp-1">
+                          <h4 className="font-normal uppercase tracking-wide text-tk-ink dark:text-white line-clamp-1">
                             {name}
                           </h4>
                           <p className="text-[10.5px] text-[#888888] dark:text-[#A09D96]">
@@ -725,7 +725,7 @@ export default function BluorngCheckoutPage({
                           </p>
                         </div>
 
-                        <span className="text-[12px] font-medium text-[#111111] dark:text-white tabular-nums shrink-0">
+                        <span className="text-[12px] font-medium text-tk-ink dark:text-white tabular-nums shrink-0">
                           {formatPrice(itemPrice * (item.quantity || 1))}
                         </span>
                       </div>
@@ -740,11 +740,11 @@ export default function BluorngCheckoutPage({
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
                     placeholder="PROMO CODE (E.G. SAUDAGAR10)"
-                    className="flex-1 px-3 py-2 text-[10.5px] uppercase tracking-wider rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#1B1922] text-[#111111] dark:text-white outline-none focus:border-[#C4823F] dark:focus:border-[#D4AF37]"
+                    className="flex-1 px-3 py-2 text-[10.5px] uppercase tracking-wider rounded-md border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#1B1922] text-tk-ink dark:text-white outline-none focus:border-tk-accent dark:focus:border-tk-gold"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 text-[10.5px] font-medium uppercase tracking-wider rounded-md bg-[#111111] text-white dark:bg-white/15 dark:hover:bg-white/25 hover:bg-[#C4823F] transition-colors cursor-pointer shrink-0"
+                    className="px-4 py-2 text-[10.5px] font-medium uppercase tracking-wider rounded-md bg-tk-ink text-white dark:bg-white/15 dark:hover:bg-white/25 hover:bg-tk-accent transition-colors cursor-pointer shrink-0"
                   >
                     Apply
                   </button>
@@ -754,7 +754,7 @@ export default function BluorngCheckoutPage({
                 <div className="pt-3 border-t border-[#EAEAEA] dark:border-white/10 space-y-2 text-[11.5px]">
                   <div className="flex justify-between text-[#666666] dark:text-[#A09D96]">
                     <span>Subtotal</span>
-                    <span className="text-[#111111] dark:text-white font-medium">{formatPrice(subtotal)}</span>
+                    <span className="text-tk-ink dark:text-white font-medium">{formatPrice(subtotal)}</span>
                   </div>
 
                   {discountAmount > 0 && (
@@ -766,7 +766,7 @@ export default function BluorngCheckoutPage({
 
                   <div className="flex justify-between text-[#666666] dark:text-[#A09D96]">
                     <span>Insured Courier Delivery</span>
-                    <span className={shippingCost === 0 ? 'text-emerald-700 dark:text-emerald-400 font-medium' : 'text-[#111111] dark:text-white'}>
+                    <span className={shippingCost === 0 ? 'text-emerald-700 dark:text-emerald-400 font-medium' : 'text-tk-ink dark:text-white'}>
                       {shippingCost === 0 ? 'COMPLIMENTARY' : `+${formatPrice(shippingCost)}`}
                     </span>
                   </div>
@@ -776,9 +776,9 @@ export default function BluorngCheckoutPage({
                     <span className="text-emerald-700 dark:text-emerald-400 font-medium">INCLUDED</span>
                   </div>
 
-                  <div className="flex justify-between text-[14px] font-medium text-[#111111] dark:text-white pt-2 border-t border-[#EAEAEA] dark:border-white/10">
+                  <div className="flex justify-between text-[14px] font-medium text-tk-ink dark:text-white pt-2 border-t border-[#EAEAEA] dark:border-white/10">
                     <span className="uppercase tracking-wider">Payable Total</span>
-                    <span className="font-semibold text-[#111111] dark:text-[#ECC86A] tabular-nums">
+                    <span className="font-semibold text-tk-ink dark:text-tk-accent-night tabular-nums">
                       {formatPrice(total)}
                     </span>
                   </div>
@@ -787,15 +787,15 @@ export default function BluorngCheckoutPage({
                 {/* Trust & Guarantee Badges */}
                 <div className="mt-5 pt-4 border-t border-[#EAEAEA] dark:border-white/10 space-y-2 text-[10px] text-[#777777] dark:text-[#88857F] uppercase tracking-wider font-medium">
                   <div className="flex items-center gap-2">
-                    <span className="text-[#C4823F] dark:text-[#ECC86A]">✦</span>
+                    <span className="text-tk-accent dark:text-tk-accent-night">✦</span>
                     <span>Complimentary 2ml Discovery Vial with every flacon</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[#C4823F] dark:text-[#ECC86A]">✦</span>
+                    <span className="text-tk-accent dark:text-tk-accent-night">✦</span>
                     <span>Test-First Guarantee: Unopened flacon free refund</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[#C4823F] dark:text-[#ECC86A]">✦</span>
+                    <span className="text-tk-accent dark:text-tk-accent-night">✦</span>
                     <span>100% Hand-Compounded Artisanal Formulation</span>
                   </div>
                 </div>

@@ -77,7 +77,7 @@ export default function BluorngProductCard({
             e.stopPropagation();
             onToggleWishlist && onToggleWishlist(product.id);
           }}
-          className="absolute top-2.5 right-2.5 z-20 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-[#111111] dark:text-white"
+          className="absolute top-2.5 right-2.5 z-20 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-tk-ink dark:text-white"
           title={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
           aria-label="Wishlist"
         >
@@ -85,7 +85,7 @@ export default function BluorngProductCard({
             width="13"
             height="13"
             viewBox="0 0 24 24"
-            className={isWishlisted ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'text-[#111111] dark:text-white'}
+            className={isWishlisted ? 'text-tk-accent dark:text-tk-accent-night' : 'text-tk-ink dark:text-white'}
             fill={isWishlisted ? 'currentColor' : 'none'}
             stroke="currentColor"
             strokeWidth="1.8"
@@ -99,14 +99,14 @@ export default function BluorngProductCard({
           <>
             <button
               onClick={handlePrevImage}
-              className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-white/90 dark:bg-black/75 text-[#111111] dark:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm text-xs cursor-pointer"
+              className="absolute left-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-white/90 dark:bg-black/75 text-tk-ink dark:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm text-xs cursor-pointer"
               aria-label="Previous"
             >
               ‹
             </button>
             <button
               onClick={handleNextImage}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-white/90 dark:bg-black/75 text-[#111111] dark:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm text-xs cursor-pointer"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-white/90 dark:bg-black/75 text-tk-ink dark:text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm text-xs cursor-pointer"
               aria-label="Next"
             >
               ›
@@ -122,7 +122,7 @@ export default function BluorngProductCard({
               e.stopPropagation();
               onQuickBuy && onQuickBuy(product);
             }}
-            className="w-full py-2 text-[10.5px] uppercase tracking-[0.14em] font-medium rounded-sm shadow-md transition-colors cursor-pointer bg-[#111111] text-white hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:text-[#0B0A0D] dark:hover:bg-[#ECC86A]"
+            className="w-full py-2 text-[10.5px] uppercase tracking-[0.14em] font-medium rounded-sm shadow-md transition-colors cursor-pointer bg-tk-ink text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night"
           >
             + Quick Add
           </button>
@@ -132,10 +132,10 @@ export default function BluorngProductCard({
       {/* ================= MINIMAL INFORMATION (Clean Typography, No Lines) ================= */}
       <div className="pt-3 pb-1 flex flex-col">
         <div className="flex items-baseline justify-between gap-2">
-          <h3 className="text-[12.5px] sm:text-[13px] font-normal uppercase tracking-[0.04em] transition-colors truncate text-[#111111] dark:text-white group-hover:text-[#C4823F] dark:group-hover:text-[#ECC86A]">
+          <h3 className="text-[12.5px] sm:text-[13px] font-normal uppercase tracking-[0.04em] transition-colors truncate text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night">
             {product.name}
           </h3>
-          <span className="text-[12px] sm:text-[12.5px] font-medium shrink-0 text-[#111111] dark:text-white/95">
+          <span className="text-[12px] sm:text-[12.5px] font-medium shrink-0 text-tk-ink dark:text-white/95">
             {formatPrice(product.price)}
           </span>
         </div>

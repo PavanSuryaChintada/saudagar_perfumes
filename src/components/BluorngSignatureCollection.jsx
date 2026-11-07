@@ -24,7 +24,7 @@ export default function BluorngSignatureCollection({
   const { products: signatureProducts } = useLegacyProducts({ attrs: activeTab.attrs, page_size: 8 });
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">
+    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
@@ -33,7 +33,7 @@ export default function BluorngSignatureCollection({
             <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#A09D96] font-medium block mb-1">
               Curated Formulations
             </span>
-            <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-[#111111] dark:text-white">
+            <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
               Fragrances & Pure Attars
             </h2>
             <p className="text-[12px] text-[#777777] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
@@ -51,8 +51,8 @@ export default function BluorngSignatureCollection({
                   onClick={() => setSelectedFilter(f.value)}
                   className={`px-4 py-1.5 text-[10.5px] font-normal uppercase tracking-wider transition-all duration-300 rounded-full whitespace-nowrap cursor-pointer ${
                     isActive
-                      ? 'bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] shadow-sm font-medium'
-                      : 'text-[#666666] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-[#ECC86A]'
+                      ? 'bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night shadow-sm font-medium'
+                      : 'text-[#666666] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-tk-accent-night'
                   }`}
                 >
                   {f.label}

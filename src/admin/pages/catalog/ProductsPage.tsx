@@ -60,7 +60,7 @@ export default function ProductsPage() {
               key={s}
               type="button"
               onClick={() => setStatus(s)}
-              className={`px-3 py-1.5 text-[12px] border ${status === s ? 'bg-[#111111] text-white border-[#111111]' : 'bg-white border-[#D5D3CC] text-[#555555] hover:border-[#111111]'}`}
+              className={`px-3 py-1.5 text-[12px] border ${status === s ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#D5D3CC] text-[#555555] hover:border-tk-ink'}`}
             >
               {s[0].toUpperCase() + s.slice(1)} ({counts[s]})
             </button>
@@ -84,7 +84,7 @@ export default function ProductsPage() {
                 {p.image && <img src={p.image} alt="" className="w-full h-full object-contain" loading="lazy" />}
               </div>
               <Link to={`/admin/products/${p.id}`} className="min-w-0 flex-1 basis-[180px] group">
-                <p className="text-[13px] text-[#111111] group-hover:text-[#C4823F] truncate">{p.name}</p>
+                <p className="text-[13px] text-tk-ink group-hover:text-tk-accent truncate">{p.name}</p>
                 <p className="text-[11px] text-[#888888] truncate">
                   /{p.slug}
                   {p.admin_note?.startsWith('SAMPLE') && <span className="ml-2 text-amber-700">· sample content</span>}
@@ -94,14 +94,14 @@ export default function ProductsPage() {
               <span className="w-[140px] text-[12px] text-[#555555] tabular-nums">{price}</span>
               <span className={`w-[80px] text-[12px] tabular-nums ${p.total_stock <= 5 ? 'text-rose-600' : 'text-[#555555]'}`}>{p.total_stock} in stock</span>
               <div className="flex gap-1 ml-auto">
-                <a href={`/product/${p.slug}`} target="_blank" rel="noreferrer" className="p-2 text-[#777777] hover:text-[#111111]" title="View on site" aria-label="View on site">
+                <a href={`/product/${p.slug}`} target="_blank" rel="noreferrer" className="p-2 text-[#777777] hover:text-tk-ink" title="View on site" aria-label="View on site">
                   <ExternalLink size={14} />
                 </a>
                 <button
                   type="button"
                   title="Duplicate"
                   aria-label="Duplicate"
-                  className="p-2 text-[#777777] hover:text-[#111111]"
+                  className="p-2 text-[#777777] hover:text-tk-ink"
                   onClick={() =>
                     run(async () => {
                       const id = await rpc<string>('duplicate_product', { p_id: p.id });
@@ -116,13 +116,13 @@ export default function ProductsPage() {
                     type="button"
                     title="Restore from archive"
                     aria-label="Restore from archive"
-                    className="p-2 text-[#777777] hover:text-[#111111]"
+                    className="p-2 text-[#777777] hover:text-tk-ink"
                     onClick={() => run(() => rpc('archive_product', { p_id: p.id, p_archived: false }), 'Restored as a draft.')}
                   >
                     <ArchiveRestore size={14} />
                   </button>
                 ) : (
-                  <button type="button" title="Archive" aria-label="Archive" className="p-2 text-[#777777] hover:text-[#111111]" onClick={() => setConfirm({ kind: 'archive', product: p })}>
+                  <button type="button" title="Archive" aria-label="Archive" className="p-2 text-[#777777] hover:text-tk-ink" onClick={() => setConfirm({ kind: 'archive', product: p })}>
                     <Archive size={14} />
                   </button>
                 )}

@@ -20,21 +20,21 @@ export default function NotesIndexPage() {
   }, [data]);
 
   return (
-    <div className="w-full min-h-screen bg-white dark:bg-[#0B0A0D] text-[#111111] dark:text-white pb-28">
+    <div className="w-full min-h-screen bg-white dark:bg-tk-night text-tk-ink dark:text-white pb-28">
       <ListingHeader eyebrow="The Library" title="Fragrance Notes" description="Explore by ingredient. Each note leads to every Saudagar creation that carries it." />
       <div className="px-4 sm:px-8 lg:px-12 py-12 space-y-12">
         {isLoading && <p className="text-[12.5px] text-[#888888]">Loading notes…</p>}
         {groups.map((g) => (
           <section key={g.label}>
-            <h2 className="text-[11px] uppercase tracking-[0.18em] text-[#C4823F] dark:text-[#ECC86A] mb-4">{g.label}</h2>
+            <h2 className="text-[11px] uppercase tracking-[0.18em] text-tk-accent dark:text-tk-accent-night mb-4">{g.label}</h2>
             <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-3">
               {g.notes.map((n) => (
                 <li key={n.slug}>
-                  <Link to={`/notes/${n.slug}`} className="flex items-center gap-3 text-[13px] hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors">
+                  <Link to={`/notes/${n.slug}`} className="flex items-center gap-3 text-[13px] hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors">
                     {n.image ? (
                       <img src={n.image} alt="" className="w-8 h-8 rounded-full object-cover bg-[#F4F3EE] dark:bg-white/5" loading="lazy" />
                     ) : (
-                      <span className="w-8 h-8 rounded-full bg-[#F4F3EE] dark:bg-white/5 flex items-center justify-center text-[11px] text-[#C4823F] dark:text-[#ECC86A] shrink-0">
+                      <span className="w-8 h-8 rounded-full bg-[#F4F3EE] dark:bg-white/5 flex items-center justify-center text-[11px] text-tk-accent dark:text-tk-accent-night shrink-0">
                         {n.name.charAt(0)}
                       </span>
                     )}

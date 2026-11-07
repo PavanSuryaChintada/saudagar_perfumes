@@ -61,7 +61,7 @@ export default function BluorngHeader({
       className={`sticky top-0 z-50 w-full select-none transition-all duration-300 relative ${
         isTransparent
           ? 'bg-transparent text-white'
-          : 'bg-white/95 dark:bg-[#0B0A0D]/95 backdrop-blur-md shadow-xs text-[#111111] dark:text-white'
+          : 'bg-white/95 dark:bg-tk-night/95 backdrop-blur-md shadow-xs text-tk-ink dark:text-white'
       }`}
     >
       <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 h-[60px] sm:h-[68px] relative flex items-stretch justify-between">
@@ -78,10 +78,10 @@ export default function BluorngHeader({
             aria-label="Open Navigation Menu"
           >
             <span className={`w-5 h-[1.8px] rounded-full transition-colors ${
-              isTransparent ? 'bg-white' : 'bg-[#111111] dark:bg-white'
+              isTransparent ? 'bg-white' : 'bg-tk-ink dark:bg-white'
             }`} />
             <span className={`w-5 h-[1.8px] rounded-full transition-colors ${
-              isTransparent ? 'bg-white' : 'bg-[#111111] dark:bg-white'
+              isTransparent ? 'bg-white' : 'bg-tk-ink dark:bg-white'
             }`} />
           </button>
         </div>
@@ -115,7 +115,7 @@ export default function BluorngHeader({
 
         {/* ================= RIGHT ZONE: ACTION ICONS ================= */}
         <div className={`flex items-center gap-1.5 sm:gap-3 md:gap-4 z-10 transition-colors duration-300 ${
-          isTransparent ? 'text-white' : 'text-[#111111] dark:text-white'
+          isTransparent ? 'text-white' : 'text-tk-ink dark:text-white'
         }`}>
           
           {/* Search Icon Button with Luxury Micro-Animation */}
@@ -124,7 +124,7 @@ export default function BluorngHeader({
             whileTap={{ scale: 0.94 }}
             onClick={onOpenSearch}
             className={`p-1.5 sm:px-2 sm:py-1 rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${
-              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
+              isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             title="Search Fragrances (⌘K)"
             aria-label="Search Fragrances"
@@ -162,10 +162,10 @@ export default function BluorngHeader({
                 }}
                 className={`flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200 cursor-pointer ${
                   theme === 'light'
-                    ? 'bg-[#C4823F] text-white shadow-xs'
+                    ? 'bg-tk-accent text-white shadow-xs'
                     : isTransparent || theme === 'dark'
                       ? 'text-white/60 hover:text-white'
-                      : 'text-[#111111]/60 hover:text-[#111111]'
+                      : 'text-tk-ink/60 hover:text-tk-ink'
                 }`}
                 title="Light Theme"
                 aria-label="Light Theme"
@@ -194,10 +194,10 @@ export default function BluorngHeader({
                 }}
                 className={`flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200 cursor-pointer ${
                   theme === 'dark'
-                    ? 'bg-[#D4AF37] text-[#0B0A0D] shadow-xs'
+                    ? 'bg-tk-gold text-tk-night shadow-xs'
                     : isTransparent || theme === 'dark'
                       ? 'text-white/60 hover:text-white'
-                      : 'text-[#111111]/60 hover:text-[#111111]'
+                      : 'text-tk-ink/60 hover:text-tk-ink'
                 }`}
                 title="Noir Dark Theme"
                 aria-label="Noir Dark Theme"
@@ -215,7 +215,7 @@ export default function BluorngHeader({
           <button
             onClick={onOpenAccount}
             className={`hidden sm:flex p-2 rounded-xs transition-all cursor-pointer ${
-              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
+              isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             title="Customer Account"
             aria-label="Customer Account"
@@ -230,7 +230,7 @@ export default function BluorngHeader({
           <button
             onClick={() => onNavigateCollection('wishlist')}
             className={`relative p-1.5 sm:p-2 rounded-xs transition-all cursor-pointer ${
-              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
+              isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             title="Wishlist"
             aria-label="Wishlist"
@@ -239,7 +239,7 @@ export default function BluorngHeader({
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
             </svg>
             {wishlistCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 sm:top-1 sm:right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-[#C4823F] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[8.5px] sm:text-[9px] font-bold rounded-xs flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-0.5 sm:top-1 sm:right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[8.5px] sm:text-[9px] font-bold rounded-xs flex items-center justify-center">
                 {wishlistCount}
               </span>
             )}
@@ -250,7 +250,7 @@ export default function BluorngHeader({
             data-cart-target
             onClick={onOpenCart}
             className={`flex items-center gap-1.5 p-1.5 sm:p-2 rounded-xs transition-all cursor-pointer ${
-              isTransparent || theme === 'dark' ? 'hover:text-[#ECC86A]' : 'hover:text-[#C4823F]'
+              isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             aria-label={`Shopping Cart (${cartCount})`}
           >
@@ -266,7 +266,7 @@ export default function BluorngHeader({
                   initial={{ scale: 1.45 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-                  className="absolute -top-1 -right-1 w-4 h-4 bg-[#C4823F] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[9px] font-bold rounded-xs flex items-center justify-center shadow-xs"
+                  className="absolute -top-1 -right-1 w-4 h-4 bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[9px] font-bold rounded-xs flex items-center justify-center shadow-xs"
                 >
                   {cartCount}
                 </motion.span>

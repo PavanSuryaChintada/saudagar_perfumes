@@ -35,12 +35,12 @@ export default function ValueProps() {
   ];
 
   return (
-    <section className="py-14 sm:py-16 bg-[#141418] text-[#F7F5F0] border-b border-[#D4AF37]/20">
+    <section className="py-14 sm:py-16 bg-[#141418] text-[#F7F5F0] border-b border-tk-gold/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-[#D4AF37]/20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-tk-gold/20">
           {items.map((item, idx) => (
             <div key={idx} className="flex flex-col items-center px-4 pt-6 md:pt-0">
-              <div className="w-14 h-14 rounded-full bg-[#0A0A0C] border border-[#D4AF37]/40 text-[#D4AF37] flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
+              <div className="w-14 h-14 rounded-full bg-[#0A0A0C] border border-tk-gold/40 text-tk-gold flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
                 {item.icon}
               </div>
               <h4 className="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-white mb-2 font-sans">

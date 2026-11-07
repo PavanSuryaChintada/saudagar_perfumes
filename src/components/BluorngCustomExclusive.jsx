@@ -14,16 +14,16 @@ export default function BluorngCustomExclusive({
   const { products: exclusiveProducts } = useLegacyProducts({ collection: 'exclusive-coffrets', page_size: 12 });
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-[#121114] py-16 sm:py-24 text-[#111111] dark:text-white overflow-hidden select-none transition-colors duration-300">
+    <section className="relative w-full bg-[#FFFFFF] dark:bg-[#121114] py-16 sm:py-24 text-tk-ink dark:text-white overflow-hidden select-none transition-colors duration-300">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
         <ScrollReveal variant="fade-up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.16em] text-[#C4823F] dark:text-[#ECC86A] font-medium block mb-1">
+            <span className="text-[10px] uppercase tracking-[0.16em] text-tk-accent dark:text-tk-accent-night font-medium block mb-1">
               Collector Series · Private Vault
             </span>
-            <h2 className="text-[22px] sm:text-[28px] font-normal uppercase tracking-[0.03em] text-[#111111] dark:text-white">
+            <h2 className="text-[22px] sm:text-[28px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
               Discovery Coffrets
             </h2>
             <p className="text-[12px] text-[#666666] dark:text-white/60 tracking-wide mt-1.5 max-w-lg font-normal">
@@ -37,7 +37,7 @@ export default function BluorngCustomExclusive({
             </span>
             <button
               onClick={onDiscoverMore}
-              className="text-[11px] sm:text-[12px] font-normal tracking-[0.08em] uppercase text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-1.5 group cursor-pointer"
+              className="text-[11px] sm:text-[12px] font-normal tracking-[0.08em] uppercase text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 group cursor-pointer"
             >
               <span>Explore All Coffrets</span>
               <span className="group-hover:translate-x-1.5 transition-transform duration-300 text-[13px]">→</span>

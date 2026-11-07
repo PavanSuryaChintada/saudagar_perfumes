@@ -30,7 +30,7 @@ export default function BluorngHome({
   };
 
   return (
-    <div className="w-full text-[#111111] dark:text-white">
+    <div className="w-full text-tk-ink dark:text-white">
       
       {/* 1. HERO SECTION (Campaign banner & Shop now CTA) - STRICTLY UNTOUCHED */}
       <BluorngHero

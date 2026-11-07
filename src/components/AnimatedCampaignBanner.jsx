@@ -51,7 +51,7 @@ export default function AnimatedCampaignBanner({
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 mb-3.5"
           >
-            <span className="text-[#C4823F] dark:text-[#ECC86A] text-[11px]">✦</span>
+            <span className="text-tk-accent dark:text-tk-accent-night text-[11px]">✦</span>
             <span className="text-[11px] sm:text-[12px] font-medium uppercase tracking-[0.24em] text-white/80">
               Saudagar Perfumes
             </span>
@@ -87,7 +87,7 @@ export default function AnimatedCampaignBanner({
             viewport={{ once: true }}
             style={{ originX: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="w-14 h-[1.5px] bg-[#C4823F] dark:bg-[#D4AF37] mb-5 shadow-[0_0_10px_rgba(212,175,55,0.4)]"
+            className="w-14 h-[1.5px] bg-tk-accent dark:bg-tk-gold mb-5 shadow-[0_0_10px_rgba(212,175,55,0.4)]"
           />
 
           {/* Editorial Manifesto & Description */}
@@ -120,9 +120,9 @@ export default function AnimatedCampaignBanner({
             className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-[10.5px] uppercase tracking-[0.16em] text-white/75 mb-7"
           >
             <span className="text-white font-medium">Top: Bergamot & Pepper</span>
-            <span className="text-[#C4823F] dark:text-[#ECC86A]">✦</span>
+            <span className="text-tk-accent dark:text-tk-accent-night">✦</span>
             <span className="text-white font-medium">Heart: Cambodi Oud & Taif Rose</span>
-            <span className="text-[#C4823F] dark:text-[#ECC86A]">✦</span>
+            <span className="text-tk-accent dark:text-tk-accent-night">✦</span>
             <span className="text-white font-medium">Base: Mysore Santal</span>
           </motion.div>
 
@@ -136,7 +136,7 @@ export default function AnimatedCampaignBanner({
           >
             <button
               onClick={onExploreCollections}
-              className="px-8 py-3.5 sm:py-4 bg-[#C4823F] hover:bg-[#B57432] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.3)] cursor-pointer hover:shadow-xl"
+              className="px-8 py-3.5 sm:py-4 bg-tk-accent hover:bg-[#B57432] dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.3)] cursor-pointer hover:shadow-xl"
             >
               Explore Collection →
             </button>
@@ -153,7 +153,7 @@ export default function AnimatedCampaignBanner({
 
         {/* Right Column: Floating Palace Atelier Badge Aligned With Bottom CTAs */}
         <div className="hidden lg:flex items-center gap-2.5 bg-black/45 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/20 text-[10px] uppercase tracking-[0.2em] text-white/85 shadow-lg shrink-0 mb-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#C4823F] dark:bg-[#ECC86A] animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night animate-pulse" />
           <span>Royal Palace Atelier · 35% Pure Extrait</span>
         </div>
 

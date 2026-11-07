@@ -14,7 +14,7 @@ export default function BluorngFeaturedCollection({
   const { products: latestProducts } = useLegacyProducts({ collection: 'latest-drop', page_size: 8 });
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">
+    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
@@ -23,7 +23,7 @@ export default function BluorngFeaturedCollection({
             <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-white/50 font-medium block mb-1">
               Edition 2026 · Latest Drop
             </span>
-            <h2 className="text-[22px] sm:text-[28px] font-normal uppercase tracking-[0.03em] text-[#111111] dark:text-white leading-tight">
+            <h2 className="text-[22px] sm:text-[28px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white leading-tight">
               Featured Flacons
             </h2>
             <p className="text-[12px] text-[#777777] dark:text-white/60 tracking-wide mt-1.5 font-normal max-w-lg">
@@ -37,7 +37,7 @@ export default function BluorngFeaturedCollection({
             </span>
             <button
               onClick={onDiscoverMore}
-              className="text-[11px] sm:text-[12px] font-normal tracking-[0.08em] uppercase text-[#111111] dark:text-white hover:text-[#B8860B] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-1.5 group cursor-pointer"
+              className="text-[11px] sm:text-[12px] font-normal tracking-[0.08em] uppercase text-tk-ink dark:text-white hover:text-[#B8860B] dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 group cursor-pointer"
             >
               <span>Discover all drops</span>
               <span className="group-hover:translate-x-1.5 transition-transform duration-300 text-[13px]">→</span>

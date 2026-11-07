@@ -24,7 +24,7 @@ const COLLECTION_ENTRIES = [
 
 export default function BluorngEditorial({ onNavigateCollection }) {
   return (
-    <section className="relative w-full bg-white dark:bg-[#0B0A0D] text-[#111111] dark:text-white px-6 sm:px-10 lg:px-16 py-24 sm:py-32 transition-colors duration-300">
+    <section className="relative w-full bg-white dark:bg-tk-night text-tk-ink dark:text-white px-6 sm:px-10 lg:px-16 py-24 sm:py-32 transition-colors duration-300">
       <div className="max-w-[1400px] mx-auto">
 
         {/* ============ 1. TYPOGRAPHIC STATEMENT ============ */}
@@ -35,7 +35,7 @@ export default function BluorngEditorial({ onNavigateCollection }) {
           viewport={{ once: true, amount: 0.4 }}
           className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end"
         >
-          <span className="lg:col-span-3 text-[10.5px] uppercase tracking-[0.22em] font-medium text-[#C4823F] dark:text-[#ECC86A]">
+          <span className="lg:col-span-3 text-[10.5px] uppercase tracking-[0.22em] font-medium text-tk-accent dark:text-tk-accent-night">
             The House of Saudagar
           </span>
 
@@ -90,9 +90,9 @@ export default function BluorngEditorial({ onNavigateCollection }) {
             whileInView="show"
             viewport={{ once: true, amount: 0.25 }}
             custom={1}
-            className="md:col-span-3 lg:col-span-5 flex flex-col justify-between rounded-sm bg-[#111111] dark:bg-[#17151B] text-white p-7 sm:p-9"
+            className="md:col-span-3 lg:col-span-5 flex flex-col justify-between rounded-sm bg-tk-ink dark:bg-[#17151B] text-white p-7 sm:p-9"
           >
-            <span className="text-[10px] uppercase tracking-[0.22em] text-[#ECC86A]">The heart</span>
+            <span className="text-[10px] uppercase tracking-[0.22em] text-tk-accent-night">The heart</span>
             <div>
               <p className="font-serif text-[52px] sm:text-[72px] leading-none">40</p>
               <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-white/60">Years of wild Cambodi oud</p>
@@ -118,7 +118,7 @@ export default function BluorngEditorial({ onNavigateCollection }) {
               />
             </div>
             <div className="relative">
-              <span className="block text-[10px] uppercase tracking-[0.22em] text-[#C4823F] dark:text-[#ECC86A]">Sourced at dawn</span>
+              <span className="block text-[10px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night">Sourced at dawn</span>
               <p className="mt-2 font-serif italic text-[24px] sm:text-[30px] leading-tight">Assam & Grasse</p>
             </div>
           </motion.div>
@@ -146,7 +146,7 @@ export default function BluorngEditorial({ onNavigateCollection }) {
             <button
               type="button"
               onClick={() => onNavigateCollection('all')}
-              className="hidden sm:inline text-[11px] uppercase tracking-[0.18em] font-medium hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors cursor-pointer"
+              className="hidden sm:inline text-[11px] uppercase tracking-[0.18em] font-medium hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
             >
               View all
             </button>

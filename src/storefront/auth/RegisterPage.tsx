@@ -59,7 +59,7 @@ export default function RegisterPage() {
           Already have an account?{' '}
           <Link
             to={`/login${params.get('next') ? `?next=${encodeURIComponent(next)}` : ''}`}
-            className="text-[#111111] dark:text-white underline underline-offset-4 hover:text-[#C4823F]"
+            className="text-tk-ink dark:text-white underline underline-offset-4 hover:text-tk-accent"
           >
             Sign in
           </Link>

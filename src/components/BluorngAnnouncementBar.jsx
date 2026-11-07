@@ -32,7 +32,7 @@ export default function BluorngAnnouncementBar() {
           {/* Dropdown Notification Content */}
           {isNotiOpen && (
             <div className="absolute left-0 top-full mt-2 w-72 bg-[#121212] border border-white/15 p-3 rounded shadow-2xl z-50 text-[11px] text-white/90 space-y-2 animate-fadeIn">
-              <div className="flex items-center justify-between pb-1 border-b border-white/10 font-bold uppercase tracking-widest text-[9px] text-[#C4823F] dark:text-[#ECC86A]">
+              <div className="flex items-center justify-between pb-1 border-b border-white/10 font-bold uppercase tracking-widest text-[9px] text-tk-accent dark:text-tk-accent-night">
                 <span>House Bulletins</span>
                 <button
                   onClick={() => setIsNotiOpen(false)}
@@ -54,7 +54,7 @@ export default function BluorngAnnouncementBar() {
         {/* Center: Mathematically Centered Announcement Ticker */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-auto max-w-[65%] sm:max-w-none overflow-hidden pointer-events-none">
           <div className="inline-flex items-center gap-2 tracking-[0.04em] uppercase font-semibold text-[10.5px] sm:text-[11px] text-white/95 truncate">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#C4823F] dark:bg-[#ECC86A] animate-pulse shrink-0"></span>
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night animate-pulse shrink-0"></span>
             <span className="transition-all duration-500 ease-in-out truncate">
               {NOTIFICATIONS[currentIdx]}
             </span>
@@ -65,7 +65,7 @@ export default function BluorngAnnouncementBar() {
         <div className="hidden md:flex items-center gap-4 text-[10px] tracking-[0.04em] uppercase text-white/70 z-20 flex-shrink-0">
           <span>Express Across India</span>
           <span className="text-white/30">•</span>
-          <span className="text-[#C4823F] dark:text-[#ECC86A] font-semibold">100% Artisanal</span>
+          <span className="text-tk-accent dark:text-tk-accent-night font-semibold">100% Artisanal</span>
         </div>
       </div>
     </div>

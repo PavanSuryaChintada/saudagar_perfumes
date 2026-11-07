@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function CampaignBanner({ onExplore }) {
   return (
-    <section className="relative w-full py-28 sm:py-36 overflow-hidden bg-[#0A0A0C] text-white border-b border-[#D4AF37]/25">
+    <section className="relative w-full py-28 sm:py-36 overflow-hidden bg-[#0A0A0C] text-white border-b border-tk-gold/25">
       {/* Background Image with Dark Luxury Overlay */}
       <div className="absolute inset-0">
         <img
@@ -15,7 +15,7 @@ export default function CampaignBanner({ onExplore }) {
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
-        <p className="text-[11px] sm:text-xs tracking-[0.3em] uppercase text-[#D4AF37] font-semibold mb-3">
+        <p className="text-[11px] sm:text-xs tracking-[0.3em] uppercase text-tk-gold font-semibold mb-3">
           HAUTE PARFUMERIE EDITORIAL
         </p>
 
@@ -29,7 +29,7 @@ export default function CampaignBanner({ onExplore }) {
 
         <button
           onClick={onExplore}
-          className="bg-[#D4AF37] text-[#0A0A0C] hover:bg-[#ECC86A] text-xs font-bold uppercase tracking-[0.22em] px-10 py-3.5 transition-all duration-300 shadow-2xl hover:-translate-y-0.5"
+          className="bg-tk-gold text-[#0A0A0C] hover:bg-tk-accent-night text-xs font-bold uppercase tracking-[0.22em] px-10 py-3.5 transition-all duration-300 shadow-2xl hover:-translate-y-0.5"
         >
           Explore
         </button>

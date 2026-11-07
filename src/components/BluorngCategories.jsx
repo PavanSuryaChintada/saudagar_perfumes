@@ -81,7 +81,7 @@ export default function BluorngCategories({ onSelectCategory }) {
   const [activeIdx, setActiveIdx] = useState(0);
 
   return (
-    <section id="shop-by-category" className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-8 sm:py-14 overflow-hidden select-none transition-colors duration-300 scroll-mt-20">
+    <section id="shop-by-category" className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-8 sm:py-14 overflow-hidden select-none transition-colors duration-300 scroll-mt-20">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL HEADER ================= */}
@@ -90,14 +90,14 @@ export default function BluorngCategories({ onSelectCategory }) {
             <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#88857F] font-medium block mb-0.5">
               01 / Olfactory Families
             </span>
-            <h2 className="text-[19px] sm:text-[24px] font-normal uppercase tracking-[0.03em] text-[#111111] dark:text-white">
+            <h2 className="text-[19px] sm:text-[24px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
               Shop by Category
             </h2>
           </div>
 
           <button
             onClick={() => onSelectCategory && onSelectCategory('all')}
-            className="text-[11px] uppercase tracking-[0.12em] text-[#888888] hover:text-[#111111] dark:text-[#88857F] dark:hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer font-normal"
+            className="text-[11px] uppercase tracking-[0.12em] text-[#888888] hover:text-tk-ink dark:text-[#88857F] dark:hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer font-normal"
           >
             <span>View All</span>
             <span className="text-[13px]">→</span>
@@ -130,7 +130,7 @@ export default function BluorngCategories({ onSelectCategory }) {
               >
                 {/* Numeral and count top row */}
                 <div className="px-4 py-3 flex items-center justify-between text-[#888888] dark:text-white/50">
-                  <span className={`text-[11px] font-mono tracking-wider transition-colors ${isExpanded ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'text-[#AAAAAA] dark:text-white/40'}`}>
+                  <span className={`text-[11px] font-mono tracking-wider transition-colors ${isExpanded ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#AAAAAA] dark:text-white/40'}`}>
                     {item.numeral}
                   </span>
                   <span className="text-[9.5px] uppercase tracking-wider text-[#999999] dark:text-white/40">
@@ -150,10 +150,10 @@ export default function BluorngCategories({ onSelectCategory }) {
                     {/* Left: Details */}
                     <div className="flex-1 flex flex-col justify-between h-full py-1">
                       <div>
-                        <span className="text-[9.5px] uppercase tracking-[0.14em] text-[#C4823F] dark:text-[#ECC86A] font-medium block mb-0.5">
+                        <span className="text-[9.5px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night font-medium block mb-0.5">
                           {item.concentration}
                         </span>
-                        <h3 className="text-[22px] sm:text-[25px] font-normal uppercase tracking-tight text-[#111111] dark:text-white leading-tight">
+                        <h3 className="text-[22px] sm:text-[25px] font-normal uppercase tracking-tight text-tk-ink dark:text-white leading-tight">
                           {item.title}
                         </h3>
                         <p className="text-[11px] text-[#777777] dark:text-white/60 mt-0.5">
@@ -175,7 +175,7 @@ export default function BluorngCategories({ onSelectCategory }) {
                             e.stopPropagation();
                             onSelectCategory && onSelectCategory(item.slug);
                           }}
-                          className="text-[10.5px] uppercase tracking-[0.12em] text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
+                          className="text-[10.5px] uppercase tracking-[0.12em] text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
                         >
                           <span>Explore Collection</span>
                           <span className="text-[12px]">→</span>
@@ -212,7 +212,7 @@ export default function BluorngCategories({ onSelectCategory }) {
 
                     {/* Vertical Category Title */}
                     <div className="py-4 flex flex-col items-center justify-center gap-1">
-                      <span className="text-[10.5px] font-normal uppercase tracking-[0.16em] text-[#555555] dark:text-white/60 group-hover:text-[#111111] dark:group-hover:text-white whitespace-nowrap rotate-[-90deg] block transition-colors">
+                      <span className="text-[10.5px] font-normal uppercase tracking-[0.16em] text-[#555555] dark:text-white/60 group-hover:text-tk-ink dark:group-hover:text-white whitespace-nowrap rotate-[-90deg] block transition-colors">
                         {item.title}
                       </span>
                     </div>
@@ -246,7 +246,7 @@ export default function BluorngCategories({ onSelectCategory }) {
 
               {/* Minimal Clean Typography: Title & Count */}
               <div className="pt-2 text-center flex flex-col items-center">
-                <h3 className="text-[12px] font-medium uppercase tracking-[0.1em] text-[#111111] dark:text-white line-clamp-1">
+                <h3 className="text-[12px] font-medium uppercase tracking-[0.1em] text-tk-ink dark:text-white line-clamp-1">
                   {item.title}
                 </h3>
                 <span className="text-[10px] tracking-wider uppercase text-[#888888] dark:text-[#88857F] mt-0.5">

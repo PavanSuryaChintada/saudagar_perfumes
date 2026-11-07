@@ -316,7 +316,7 @@ export default function App() {
     return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   }
   if (needsSignIn && authLoading) {
-    return <div className="min-h-screen bg-white dark:bg-[#0B0A0D]" aria-busy="true" />;
+    return <div className="min-h-screen bg-white dark:bg-tk-night" aria-busy="true" />;
   }
   if (isAuthView) {
     return (
@@ -330,7 +330,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-[#FFFFFF] flex flex-col font-sans selection:bg-[#C4823F] dark:selection:bg-[#D4AF37] dark:selection:text-[#0B0A0D] selection:text-white transition-colors duration-300">
+    <div className="min-h-screen bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-[#FFFFFF] flex flex-col font-sans selection:bg-tk-accent dark:selection:bg-tk-gold dark:selection:text-tk-night selection:text-white transition-colors duration-300">
       {/* Toast Notification */}
       <Toast message={toastMessage} />
 

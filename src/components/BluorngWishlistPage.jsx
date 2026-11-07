@@ -15,14 +15,14 @@ export default function BluorngWishlistPage({
   const count = savedProducts.length;
 
   return (
-    <div className="w-full min-h-[70vh] bg-white dark:bg-[#0B0A0D] text-[#111111] dark:text-white transition-colors duration-300">
+    <div className="w-full min-h-[70vh] bg-white dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300">
       {/* ================= HEADER ================= */}
       <section className="px-6 sm:px-12 lg:px-16 pt-14 sm:pt-20 pb-10 sm:pb-14 text-center border-b border-black/[0.06] dark:border-white/[0.08]">
         <motion.span
           initial={{ opacity: 0, letterSpacing: '0.08em' }}
           animate={{ opacity: 1, letterSpacing: '0.24em' }}
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          className="block text-[10.5px] uppercase font-medium text-[#C4823F] dark:text-[#ECC86A]"
+          className="block text-[10.5px] uppercase font-medium text-tk-accent dark:text-tk-accent-night"
         >
           Your Private Selection
         </motion.span>
@@ -55,10 +55,10 @@ export default function BluorngWishlistPage({
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center text-center py-16 sm:py-24"
           >
-            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="mb-6 text-[#C4823F] dark:text-[#ECC86A]">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="mb-6 text-tk-accent dark:text-tk-accent-night">
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
             </svg>
-            <p className="font-serif italic text-[22px] sm:text-[26px] text-[#111111] dark:text-white">
+            <p className="font-serif italic text-[22px] sm:text-[26px] text-tk-ink dark:text-white">
               Your wishlist is waiting for its first scent.
             </p>
             <p className="mt-3 max-w-[420px] text-[13px] leading-relaxed text-[#777777] dark:text-[#A09D96]">
@@ -67,7 +67,7 @@ export default function BluorngWishlistPage({
             <button
               type="button"
               onClick={() => onNavigateCollection('all')}
-              className="mt-10 px-8 py-3 rounded-sm bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-[0.14em] font-medium hover:bg-[#C4823F] dark:hover:bg-[#ECC86A] transition-colors cursor-pointer shadow-md"
+              className="mt-10 px-8 py-3 rounded-sm bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] uppercase tracking-[0.14em] font-medium hover:bg-tk-accent dark:hover:bg-tk-accent-night transition-colors cursor-pointer shadow-md"
             >
               Explore Collections
             </button>
@@ -107,7 +107,7 @@ export default function BluorngWishlistPage({
             <button
               type="button"
               onClick={() => onNavigateCollection('all')}
-              className="text-[11px] uppercase tracking-[0.16em] font-medium text-[#111111] dark:text-white border-b border-[#111111]/30 dark:border-white/30 pb-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] hover:border-[#C4823F] dark:hover:border-[#ECC86A] transition-colors cursor-pointer"
+              className="text-[11px] uppercase tracking-[0.16em] font-medium text-tk-ink dark:text-white border-b border-tk-ink/30 dark:border-white/30 pb-1 hover:text-tk-accent dark:hover:text-tk-accent-night hover:border-tk-accent dark:hover:border-tk-accent-night transition-colors cursor-pointer"
             >
               Continue Exploring
             </button>

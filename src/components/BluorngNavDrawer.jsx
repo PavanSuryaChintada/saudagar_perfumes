@@ -65,7 +65,7 @@ export default function BluorngNavDrawer({
               exit={{ x: '-100%' }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
               data-lenis-prevent="true"
-              className="w-screen max-w-sm sm:max-w-md h-full max-h-screen overflow-y-auto overscroll-contain bg-[#FFFFFF] dark:bg-[#0E0C10] text-[#111111] dark:text-white flex flex-col justify-between shadow-2xl p-6 sm:p-8"
+              className="w-screen max-w-sm sm:max-w-md h-full max-h-screen overflow-y-auto overscroll-contain bg-[#FFFFFF] dark:bg-[#0E0C10] text-tk-ink dark:text-white flex flex-col justify-between shadow-2xl p-6 sm:p-8"
             >
           
           {/* Top Bar: Brand Logo & Close */}
@@ -83,7 +83,7 @@ export default function BluorngNavDrawer({
 
               <button
                 onClick={onClose}
-                className="p-1.5 text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors"
+                className="p-1.5 text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors"
                 aria-label="Close menu"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -101,7 +101,7 @@ export default function BluorngNavDrawer({
                     onClose();
                     onNavigateCollection('new-in');
                   }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center justify-between group"
+                  className="w-full text-left py-1 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center justify-between group"
                 >
                   <span className="text-emerald-700 dark:text-emerald-400">New Arrivals 2026</span>
                   <span className="text-[10px] text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 rounded-xs font-bold tracking-wider">
@@ -116,7 +116,7 @@ export default function BluorngNavDrawer({
                     onClose();
                     onNavigateCollection('all');
                   }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center justify-between"
+                  className="w-full text-left py-1 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center justify-between"
                 >
                   <span>All Fragrances</span>
                   <span>→</span>
@@ -132,7 +132,7 @@ export default function BluorngNavDrawer({
                       onClose();
                       onNavigateCollection(c.slug);
                     }}
-                    className="w-full text-left hover:text-[#C4823F] dark:hover:text-[#ECC86A] hover:translate-x-1 transition-all flex items-center justify-between"
+                    className="w-full text-left hover:text-tk-accent dark:hover:text-tk-accent-night hover:translate-x-1 transition-all flex items-center justify-between"
                   >
                     <span>{c.title}</span>
                     <span className="text-[10px] text-[#999999] dark:text-white/40">({c.count})</span>
@@ -146,10 +146,10 @@ export default function BluorngNavDrawer({
                     onClose();
                     onNavigateCollection('wishlist');
                   }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center justify-between"
+                  className="w-full text-left py-1 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-[#C4823F] dark:text-[#ECC86A]">🔖</span>
+                    <span className="text-tk-accent dark:text-tk-accent-night">🔖</span>
                     <span>Saved Fragrances / Wishlist</span>
                   </div>
                   <span>→</span>
@@ -160,9 +160,9 @@ export default function BluorngNavDrawer({
                     onClose();
                     onScrollToStores();
                   }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-2"
+                  className="w-full text-left py-1 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-2"
                 >
-                  <span className="text-[#C4823F] dark:text-[#ECC86A]">📍</span>
+                  <span className="text-tk-accent dark:text-tk-accent-night">📍</span>
                   <span>Walk-in Boutiques & Stores</span>
                 </button>
 
@@ -171,9 +171,9 @@ export default function BluorngNavDrawer({
                     onClose();
                     onOpenStory();
                   }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-2"
+                  className="w-full text-left py-1 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-2"
                 >
-                  <span className="text-[#C4823F] dark:text-[#ECC86A]">🎬</span>
+                  <span className="text-tk-accent dark:text-tk-accent-night">🎬</span>
                   <span>Behind the Bottle Stories</span>
                 </button>
 
@@ -182,9 +182,9 @@ export default function BluorngNavDrawer({
                     onClose();
                     onOpenAccount();
                   }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-2"
+                  className="w-full text-left py-1 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-2"
                 >
-                  <span className="text-[#C4823F] dark:text-[#ECC86A]">👤</span>
+                  <span className="text-tk-accent dark:text-tk-accent-night">👤</span>
                   <span>Customer Account & Orders</span>
                 </button>
 
@@ -202,8 +202,8 @@ export default function BluorngNavDrawer({
                         }}
                         className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                           theme === 'light'
-                            ? 'bg-[#C4823F] text-white shadow-xs font-semibold'
-                            : 'text-[#111111]/70 dark:text-white/70 hover:text-[#111111] dark:hover:text-white'
+                            ? 'bg-tk-accent text-white shadow-xs font-semibold'
+                            : 'text-tk-ink/70 dark:text-white/70 hover:text-tk-ink dark:hover:text-white'
                         }`}
                       >
                         <span>☀</span>
@@ -216,8 +216,8 @@ export default function BluorngNavDrawer({
                         }}
                         className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                           theme === 'dark'
-                            ? 'bg-[#D4AF37] text-[#0B0A0D] shadow-xs font-semibold'
-                            : 'text-[#111111]/70 dark:text-white/70 hover:text-[#111111] dark:hover:text-white'
+                            ? 'bg-tk-gold text-tk-night shadow-xs font-semibold'
+                            : 'text-tk-ink/70 dark:text-white/70 hover:text-tk-ink dark:hover:text-white'
                         }`}
                       >
                         <span>☾</span>

@@ -95,11 +95,11 @@ export default function BluorngCollectionHero({
 
   return (
     <div 
-      className="w-full select-none transition-colors duration-500 bg-[#FFFFFF] dark:bg-[#0B0A0D]"
+      className="w-full select-none transition-colors duration-500 bg-[#FFFFFF] dark:bg-tk-night"
     >
       
       {/* ================= 1. CINEMATIC CLEAN HERO BANNER ================= */}
-      <div className="relative w-full h-[54vh] sm:h-[62vh] 2xl:h-[70vh] min-h-[440px] sm:min-h-[560px] max-h-[720px] 2xl:max-h-[840px] overflow-hidden bg-[#0B0A0D]">
+      <div className="relative w-full h-[54vh] sm:h-[62vh] 2xl:h-[70vh] min-h-[440px] sm:min-h-[560px] max-h-[720px] 2xl:max-h-[840px] overflow-hidden bg-tk-night">
         
         {/* Multi-Video Crossfade Stage: Guaranteed Zero Black Flash / Glitch */}
         {HERO_COLLECTIONS.map((col) => {
@@ -132,8 +132,8 @@ export default function BluorngCollectionHero({
 
         {/* Cinema-Grade Luxury Gradient Scrim: Video remains vibrant while typography is 100% crystal-clear */}
         <div className="absolute inset-0 z-25 bg-black/25 pointer-events-none" />
-        <div className="absolute inset-0 z-26 bg-gradient-to-t from-[#0B0A0D] via-black/40 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 z-26 hidden sm:block bg-gradient-to-r from-[#0B0A0D]/85 via-black/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 z-26 bg-gradient-to-t from-tk-night via-black/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 z-26 hidden sm:block bg-gradient-to-r from-tk-night/85 via-black/30 to-transparent pointer-events-none" />
 
         {/* Subtle Sound Toggle */}
         <button
@@ -155,7 +155,7 @@ export default function BluorngCollectionHero({
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               className="max-w-md sm:max-w-lg lg:max-w-xl"
             >
-              <span className="text-[9.5px] sm:text-[11px] font-semibold tracking-[0.28em] uppercase text-[#ECC86A] block mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+              <span className="text-[9.5px] sm:text-[11px] font-semibold tracking-[0.28em] uppercase text-tk-accent-night block mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                 Saudagar Haute Parfumerie · {activeHero.accentTag}
               </span>
 
@@ -173,7 +173,7 @@ export default function BluorngCollectionHero({
       </div>
 
       {/* ================= 2. ULTRA-MINIMAL COLLECTION TAB SWITCHER (Borderless) ================= */}
-      <div className="w-full bg-white dark:bg-[#0B0A0D] border-b border-black/[0.06] dark:border-white/[0.08] transition-colors duration-300">
+      <div className="w-full bg-white dark:bg-tk-night border-b border-black/[0.06] dark:border-white/[0.08] transition-colors duration-300">
         <div 
           ref={tabsContainerRef}
           data-lenis-prevent="true"
@@ -189,14 +189,14 @@ export default function BluorngCollectionHero({
                   ref={isActive ? activeTabRef : null}
                   onClick={() => onSwitchCollection(col.slug)}
                   className={`py-3.5 sm:py-4 text-[11px] sm:text-[12px] uppercase tracking-[0.14em] transition-all relative cursor-pointer whitespace-nowrap shrink-0 ${
-                    isActive ? 'text-[#111111] dark:text-white font-semibold' : 'text-[#777777] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-white font-normal'
+                    isActive ? 'text-tk-ink dark:text-white font-semibold' : 'text-[#777777] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-white font-normal'
                   }`}
                 >
                   <span>{col.name}</span>
                   {isActive && (
                     <motion.span
                       layoutId="activeCollectionUnderline"
-                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#111111] dark:bg-[#D4AF37]"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-tk-ink dark:bg-tk-gold"
                     />
                   )}
                 </button>
