@@ -2,6 +2,8 @@ export type StorefrontView =
   | 'home'
   | 'product'
   | 'collection'
+  | 'listing'
+  | 'notes'
   | 'wishlist'
   | 'story'
   | 'account'
@@ -12,10 +14,16 @@ export type StorefrontView =
   | 'reset-password'
   | 'notfound';
 
+export interface ListingRoute {
+  kind: 'shop' | 'category' | 'note' | 'search';
+  slug?: string;
+}
+
 export interface ResolvedView {
   view: StorefrontView;
   productId?: string;
   collectionSlug?: string;
+  listing?: ListingRoute;
   redirectTo?: string;
 }
 
@@ -27,14 +35,17 @@ const EXACT: Record<string, StorefrontView> = {
   '/story': 'story',
   '/about': 'story',
   '/checkout': 'checkout',
+  '/notes': 'notes',
   '/login': 'login',
   '/register': 'register',
   '/forgot-password': 'forgot-password',
   '/reset-password': 'reset-password',
 };
 
-/** Maps a URL onto the storefront's existing view switch. Pure, so routing rules are unit-tested. */
-export function resolveStorefrontView(pathname: string, search: string, productExists: (id: string) => boolean): ResolvedView {
+const tail = (path: string, prefix: string) => decodeURIComponent(path.slice(prefix.length));
+
+/** Maps a URL onto the storefront's view switch. Pure, so routing rules are unit-tested. */
+export function resolveStorefrontView(pathname: string, search: string): ResolvedView {
   const params = new URLSearchParams(search);
   const legacyId = params.get('id');
   const legacyCollection = params.get('collection');
@@ -43,14 +54,14 @@ export function resolveStorefrontView(pathname: string, search: string, productE
   if (path === '/' && legacyId) return { view: 'home', redirectTo: `/product/${encodeURIComponent(legacyId)}` };
   if (path === '/' && legacyCollection) return { view: 'home', redirectTo: `/collections/${encodeURIComponent(legacyCollection)}` };
 
-  if (path.startsWith('/product/')) {
-    const id = decodeURIComponent(path.slice('/product/'.length));
-    return productExists(id) ? { view: 'product', productId: id } : { view: 'notfound' };
-  }
+  if (path.startsWith('/product/')) return { view: 'product', productId: tail(path, '/product/') };
   if (path === '/collections' || path.startsWith('/collections/')) {
-    const slug = decodeURIComponent(path.slice('/collections/'.length)) || 'signature';
-    return { view: 'collection', collectionSlug: slug };
+    return { view: 'collection', collectionSlug: tail(path, '/collections/') || 'signature' };
   }
+  if (path === '/shop') return { view: 'listing', listing: { kind: 'shop' } };
+  if (path === '/search') return { view: 'listing', listing: { kind: 'search' } };
+  if (path.startsWith('/categories/')) return { view: 'listing', listing: { kind: 'category', slug: tail(path, '/categories/') } };
+  if (path.startsWith('/notes/')) return { view: 'listing', listing: { kind: 'note', slug: tail(path, '/notes/') } };
   if (path === '/account' || path.startsWith('/account/') || path === '/profile') return { view: 'account' };
 
   const exact = EXACT[path];

@@ -1,6 +1,6 @@
 import React from 'react';
 import BluorngProductCard from './BluorngProductCard.jsx';
-import { ALL_PRODUCTS } from '../data/bluorngSaudagarData.js';
+import { useLegacyProducts } from '../storefront/catalog/hooks';
 import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 
 export default function BluorngCustomExclusive({
@@ -11,9 +11,7 @@ export default function BluorngCustomExclusive({
   onDiscoverMore
 }) {
   // Discovery Coffrets & Exclusive sets
-  const exclusiveProducts = ALL_PRODUCTS.filter(
-    (p) => p.collection === 'Exclusive Coffrets'
-  );
+  const { products: exclusiveProducts } = useLegacyProducts({ collection: 'exclusive-coffrets', page_size: 12 });
 
   return (
     <section className="relative w-full bg-[#FFFFFF] dark:bg-[#121114] py-16 sm:py-24 text-[#111111] dark:text-white overflow-hidden select-none transition-colors duration-300">

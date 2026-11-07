@@ -48,6 +48,11 @@ change the home page, run a coupon, ship an order and process a return, all from
 - A redesign. The current look is kept exactly.
 - Cloudinary. All media goes to Supabase Storage.
 - Native mobile apps.
+- **WhatsApp automation** (owner's decision, 2026-11-07): no Meta Cloud API, templates, queue,
+  campaigns or abandoned-cart messages. §16 is withdrawn. A floating "chat on WhatsApp" button (a
+  plain link to the number in settings) stays. Welcome and birthday coupon codes are shown on the
+  customer's account page instead of being messaged. "Notify me when it's back" requests are saved
+  and listed for the admin.
 
 **Anti-goals (the project fails if any of these happen, even if it "works")**
 - The browser decides a price, discount, shipping fee, sample entitlement or amount to charge.
@@ -677,7 +682,7 @@ The reference spec §7 carries over, minus COD advances:
   - If the customer dismisses the payment window, show "Payment cancelled" and leave the order
     PENDING. The customer can retry from Orders.
 
-## 16. WhatsApp (Meta Cloud API — built, off)
+## 16. WhatsApp (Meta Cloud API) — WITHDRAWN by the owner; kept for reference only
 The reference spec §11 carries over in full:
 - Tables: templates, queue, logs, preferences, campaigns, abandoned carts.
 - Every trigger listed there, minus `cod_verification` advance wording.
@@ -738,9 +743,8 @@ report plainly what passed and what failed. The store can take real COD orders a
 8. **Returns:** cancellations, returns (photos, approval, reverse pickup, restock vs write-off),
    refunds, replacement orders.
 9. **Reviews and back-in-stock.**
-10. **WhatsApp:** templates, queue, cron, webhook, campaigns, abandoned carts. Switched off.
-11. **Admin extras:** dashboard, customers, notifications bell, data export.
-12. **Launch hardening:**
+10. **Admin extras:** dashboard, customers, notifications bell, data export.
+11. **Launch hardening:**
     - SEO, analytics, rate limits, the security review, a 360 px pass and `vercel.json`.
     - SETUP.md: every account step, every secret and the function that uses it, deploy commands,
       cron SQL, the SMTP and Pro-upgrade steps, a staging-project recommendation, and the go-live

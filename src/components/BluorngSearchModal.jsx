@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ALL_PRODUCTS, formatPrice } from '../data/bluorngSaudagarData.js';
+import { useNavigate } from 'react-router';
+import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { useLegacyProducts, useSearchSuggest } from '../storefront/catalog/hooks';
+import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 
 export default function BluorngSearchModal({
   isOpen,
@@ -35,20 +38,19 @@ export default function BluorngSearchModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Filter products by query
-  const searchResults = query.trim() === ''
-    ? []
-    : ALL_PRODUCTS.filter((p) => {
-        const q = query.toLowerCase();
-        const matchesName = p.name?.toLowerCase().includes(q);
-        const matchesCat = p.category?.toLowerCase().includes(q);
-        const matchesNotes =
-          p.notes?.top?.some((n) => n.toLowerCase().includes(q)) ||
-          p.notes?.heart?.some((n) => n.toLowerCase().includes(q)) ||
-          p.notes?.base?.some((n) => n.toLowerCase().includes(q));
-        const matchesTag = p.tag?.toLowerCase().includes(q) || p.badge?.toLowerCase().includes(q);
-        return matchesName || matchesCat || matchesNotes || matchesTag;
-      });
+  // Search runs in the database over names, notes, families and collections.
+  const navigate = useNavigate();
+  const term = query.trim();
+  const searching = term.length >= 2;
+  const { products: found, total: foundTotal } = useLegacyProducts({ q: term, page_size: 12 }, searching);
+  const searchResults = searching ? found : [];
+  const resultCount = searching ? foundTotal : 0;
+  const { data: suggest } = useSearchSuggest(term);
+  const noteMatches = searching ? suggest?.notes ?? [] : [];
+  const goTo = (path) => {
+    onClose();
+    navigate(path);
+  };
 
   const popularSearches = [
     'Oud Extrait',
@@ -240,9 +242,31 @@ export default function BluorngSearchModal({
                       Results for <span className="text-[#111111] dark:text-white font-bold">"{query}"</span>
                     </span>
                     <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-bold text-[#C4823F] dark:text-[#ECC86A]">
-                      {searchResults.length} {searchResults.length === 1 ? 'Creation' : 'Creations'} Found
+                      {resultCount} {resultCount === 1 ? 'Creation' : 'Creations'} Found
                     </span>
                   </div>
+
+                  {(noteMatches.length > 0 || resultCount > searchResults.length) && (
+                    <div className="flex flex-wrap items-center gap-2 mb-4 text-[11px]">
+                      {noteMatches.map((n) => (
+                        <button
+                          key={n.slug}
+                          type="button"
+                          onClick={() => goTo(`/notes/${n.slug}`)}
+                          className="px-3 py-1 rounded-full border border-[#E0DDD5] dark:border-white/15 hover:border-[#C4823F] dark:hover:border-[#ECC86A] text-[#444444] dark:text-[#CCCCCC]"
+                        >
+                          Note: {n.name}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => goTo(`/search?q=${encodeURIComponent(term)}`)}
+                        className="ml-auto text-[#C4823F] dark:text-[#ECC86A] hover:underline"
+                      >
+                        See all results →
+                      </button>
+                    </div>
+                  )}
 
                   {searchResults.length === 0 ? (
                     /* Animated Empty State with Floating Motes & Quick Suggestions */
@@ -323,7 +347,7 @@ export default function BluorngSearchModal({
                               {/* Flacon Pedestal with Image Zoom */}
                               <div className="w-full aspect-[4/5] bg-[#F8F8F7] dark:bg-[#1A1822] rounded-md overflow-hidden mb-2.5 relative flex items-center justify-center p-3 transition-colors duration-300">
                                 <img
-                                  src={product.images?.[0] || product.image || '/images/saudagar_amber_gold.png'}
+                                  src={product.images?.[0] || product.image || PLACEHOLDER_IMAGE}
                                   alt={product.name}
                                   className="w-full h-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.10)] group-hover:scale-108 transition-transform duration-500 ease-out"
                                 />

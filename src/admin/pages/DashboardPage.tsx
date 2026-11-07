@@ -5,7 +5,6 @@ import { useAuth } from '../../lib/auth';
 const SETUP = [
   { label: 'Razorpay keys (online payments)', detail: 'Until then the store takes cash on delivery only.' },
   { label: 'Delhivery token and pickup location', detail: 'Until then shipments are booked manually with a tracking number.' },
-  { label: 'Meta WhatsApp Business number and templates', detail: 'Until then order messages are logged, not sent.' },
   { label: 'Email provider (SMTP)', detail: 'Needed before password-reset emails reach customers.' },
   { label: 'Supabase Pro plan', detail: 'Needed before launch for bandwidth and image resizing.' },
   { label: 'GSTIN, business address and policy pages', detail: 'Placeholders are in use.' },

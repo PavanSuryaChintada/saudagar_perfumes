@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatPrice, ALL_PRODUCTS } from '../data/bluorngSaudagarData.js';
+import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 
 export default function BluorngCheckoutPage({
   cart = [],
@@ -37,11 +38,7 @@ export default function BluorngCheckoutPage({
   const items = checkoutData?.items && checkoutData.items.length > 0 ? checkoutData.items : cart;
 
   // Calculate pricing
-  const subtotal = items.reduce((sum, item) => {
-    const prod = ALL_PRODUCTS.find((p) => p.id === (item.productId || item.id));
-    const price = item.price || (prod ? prod.price : 5500);
-    return sum + price * (item.quantity || 1);
-  }, 0);
+  const subtotal = items.reduce((sum, item) => sum + (item.price ?? 0) * (item.quantity || 1), 0);
 
   const shippingCost = 0; // replaced by the server quote in phase 4
   const discountAmount = appliedDiscount > 0 ? Math.round(subtotal * (appliedDiscount / 100)) : (checkoutData?.discount || 0);
@@ -54,7 +51,7 @@ export default function BluorngCheckoutPage({
     } else if (promoCode.trim().toUpperCase() === 'ROYALVIP') {
       setAppliedDiscount(15);
     } else {
-      alert('Invalid promotional code. Try SAUDAGAR10 for 10% privilege.');
+      setAppliedDiscount(0);
     }
   };
 
@@ -62,7 +59,7 @@ export default function BluorngCheckoutPage({
     e.preventDefault();
     const newOrderId = `SAU-${Math.floor(100000 + Math.random() * 900000)}`;
     setOrderId(newOrderId);
-    setConfirmedItems(items.length > 0 ? [...items] : [ALL_PRODUCTS[0]]);
+    setConfirmedItems([...items]);
     setConfirmedTotal(total);
     setStep('confirmation');
 
@@ -87,8 +84,8 @@ export default function BluorngCheckoutPage({
   };
 
   // Display items for confirmation screen (fall back gracefully if needed)
-  const displayItems = confirmedItems.length > 0 ? confirmedItems : items.length > 0 ? items : [ALL_PRODUCTS[0]];
-  const displayTotal = confirmedTotal > 0 ? confirmedTotal : total > 0 ? total : 5500;
+  const displayItems = confirmedItems.length > 0 ? confirmedItems : items;
+  const displayTotal = confirmedTotal > 0 ? confirmedTotal : total;
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-white transition-colors duration-300 select-none pb-24">
@@ -252,10 +249,9 @@ export default function BluorngCheckoutPage({
 
               <div className="divide-y divide-[#EAEAEA] dark:divide-white/10 my-2">
                 {displayItems.map((item, idx) => {
-                  const prod = ALL_PRODUCTS.find((p) => p.id === (item.productId || item.id));
-                  const image = item.image || prod?.images?.[0] || prod?.image || '/images/crystal_square_flacon.png';
-                  const name = item.name || prod?.name || 'Saudagar Formulation';
-                  const itemPrice = item.price || (prod ? prod.price : 5500);
+                  const image = item.image || PLACEHOLDER_IMAGE;
+                  const name = item.name || 'Fragrance';
+                  const itemPrice = item.price ?? 0;
 
                   return (
                     <div key={`${item.productId || item.id}-${idx}`} className="py-3.5 flex items-center justify-between gap-4">
@@ -706,10 +702,9 @@ export default function BluorngCheckoutPage({
                 {/* Items List */}
                 <div className="divide-y divide-[#EAEAEA] dark:divide-white/10 max-h-[280px] overflow-y-auto pr-1 scrollbar-none my-2">
                   {items.map((item, idx) => {
-                    const prod = ALL_PRODUCTS.find((p) => p.id === (item.productId || item.id));
-                    const image = item.image || prod?.images?.[0] || prod?.image || '/images/crystal_square_flacon.png';
-                    const name = item.name || prod?.name || 'Saudagar Formulation';
-                    const itemPrice = item.price || (prod ? prod.price : 5500);
+                    const image = item.image || PLACEHOLDER_IMAGE;
+                    const name = item.name || 'Fragrance';
+                    const itemPrice = item.price ?? 0;
 
                     return (
                       <div key={`${item.productId || item.id}-${idx}`} className="py-3 flex items-center gap-3">

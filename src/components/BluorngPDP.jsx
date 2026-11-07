@@ -1,13 +1,37 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { ALL_PRODUCTS, formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatPrice } from '../data/bluorngSaudagarData.js';
 import BluorngProductCard from './BluorngProductCard.jsx';
 import BluorngProductReviews from './BluorngProductReviews.jsx';
-import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
+import { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
+import { useProductDetail, useProductsBySlugs, useSimilarProducts } from '../storefront/catalog/hooks';
+import { toLegacyProduct } from '../storefront/catalog/adapter';
+import { recordView } from '../storefront/catalog/recentlyViewed';
+import { useSetting } from '../lib/bootstrap';
+import { NotePyramid, AccordBars, ProductAccordions } from '../storefront/product/ProductSections.jsx';
+import NotFoundPage from '../storefront/NotFoundPage';
 
-export default function BluorngPDP({
-  productId,
+export default function BluorngPDP(props) {
+  const { data: detail, isLoading, error } = useProductDetail(props.productId);
+  const product = useMemo(() => (detail ? toLegacyProduct(detail) : null), [detail]);
+
+  useEffect(() => {
+    if (product) document.title = `${product.name} | SAUDAGAR PERFUMES · Haute Parfumerie`;
+  }, [product]);
+
+  if (isLoading) {
+    return <div className="min-h-screen bg-white dark:bg-[#0B0A0D]" aria-busy="true" />;
+  }
+  if (error || !detail || !product) {
+    return <NotFoundPage onNavigateHome={props.onNavigateHome} onNavigateCollection={props.onNavigateCollection} />;
+  }
+  return <PDPView key={product.id} {...props} product={product} detail={detail} />;
+}
+
+function PDPView({
+  product,
+  detail,
   cartCount = 0,
   wishlist = [],
   onToggleWishlist,
@@ -21,14 +45,11 @@ export default function BluorngPDP({
   onAddToCart,
   onBuyNow,
   onNavigateHome,
-  onNavigateCollection
+  onNavigateCollection,
+  onQuickBuy
 }) {
-  const product = ALL_PRODUCTS.find((p) => p.id === productId) || ALL_PRODUCTS[0];
   const isCurrentWishlisted = wishlist.includes(product.id);
-
-  const images = product.images && product.images.length > 0
-    ? product.images
-    : [product.image || '/images/saudagar_amber_gold.png'];
+  const images = product.images;
 
   const [activeImgIdx, setActiveImgIdx] = useState(0);
   const [mobileImgIdx, setMobileImgIdx] = useState(0);
@@ -43,7 +64,7 @@ export default function BluorngPDP({
     }
     setActiveImgIdx(0);
     setMobileImgIdx(0);
-  }, [productId]);
+  }, [product.id]);
 
   // Track scroll progress through the pinned hero section (Desktop)
   const { scrollYProgress } = useScroll({
@@ -123,75 +144,65 @@ export default function BluorngPDP({
     }
   };
 
-  // Available sizes
-  const defaultSizes = [
-    { ml: 50, label: '50 ml', price: product.price || 5500 },
-    { ml: 75, label: '75 ml', price: Math.round((product.price || 5500) * 1.35) },
-    { ml: 100, label: '100 ml', price: Math.round((product.price || 5500) * 1.62) }
-  ];
-
-  const sizes = product.sizes && product.sizes.length >= 2
-    ? product.sizes.map((sz, idx) => ({
-        ml: sz.ml || (idx === 0 ? 50 : idx === 1 ? 75 : 100),
-        label: `${sz.ml || (idx === 0 ? 50 : idx === 1 ? 75 : 100)} ml`,
-        price: sz.price || product.price
-      }))
-    : defaultSizes;
-
-  const [selectedSize, setSelectedSize] = useState(sizes[0]);
+  // Bottle sizes come straight from the database; sold-out sizes stay visible but cannot be added.
+  const sizes = product.sizes;
+  const [selectedSize, setSelectedSize] = useState(() => sizes.find((sz) => sz.stock > 0) || sizes[0] || null);
   const [quantity, setQuantity] = useState(1);
   const [openAccordion, setOpenAccordion] = useState(null);
+  const maxQty = Math.max(1, Math.min(99, selectedSize?.stock ?? 0));
+  const canBuy = !!selectedSize && selectedSize.stock > 0;
+  const currentPrice = selectedSize?.price ?? product.price;
+  const currentCompare = selectedSize?.compareAt ?? null;
 
-  const currentPrice = selectedSize.price || product.price;
+  const etaRange = useSetting('shipping.default_eta', { min: 3, max: 7 });
+  const samplesOn = useSetting('samples.enabled', true);
+  const mlPerSample = useSetting('samples.ml_per_sample', 50);
+  const sampleSize = useSetting('samples.sample_size_ml', 5);
+  const etaText = `Delivered across India in ${etaRange.min}–${etaRange.max} days.`;
+  const sampleCopy = samplesOn && detail.counts_toward_samples
+    ? `Every ${mlPerSample} ml of perfume in your order earns a free ${sampleSize} ml sample of your choice.`
+    : null;
+
+  const { products: similarProducts } = useSimilarProducts(product.slug, 4);
+  const [recentSlugs, setRecentSlugs] = useState([]);
+  useEffect(() => setRecentSlugs(recordView(product.slug).slice(0, 4)), [product.slug]);
+  const { products: recentProducts } = useProductsBySlugs(recentSlugs);
+
+  // Sticky mobile add-to-bag bar appears once the main button scrolls away.
+  const mobileBuyRef = useRef(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  useEffect(() => {
+    const el = mobileBuyRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(([entry]) => setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const toggleAccordion = (tab) => {
     setOpenAccordion(openAccordion === tab ? null : tab);
   };
 
   const handleAddToCartClick = () => {
-    if (onAddToCart) {
-      onAddToCart({
-        productId: product.id,
-        size: selectedSize.label,
-        price: currentPrice,
-        quantity
-      });
-    }
-  };
-
-  const getDeliveryDateString = () => {
-    const d = new Date();
-    d.setDate(d.getDate() + 4);
-    const weekday = d.toLocaleDateString('en-US', { weekday: 'long' });
-    const day = d.getDate();
-    const suffix =
-      day % 10 === 1 && day !== 11
-        ? 'st'
-        : day % 10 === 2 && day !== 12
-        ? 'nd'
-        : day % 10 === 3 && day !== 13
-        ? 'rd'
-        : 'th';
-    const month = d.toLocaleDateString('en-US', { month: 'long' });
-    return `${weekday} ${day}${suffix} of ${month}`;
+    if (!canBuy || !onAddToCart) return;
+    onAddToCart({
+      productId: product.id,
+      variantId: selectedSize.variantId,
+      size: selectedSize.label,
+      name: product.name,
+      image: images[0],
+      price: currentPrice,
+      quantity: Math.min(quantity, maxQty)
+    });
   };
 
   const cleanTitle = (product.name || 'Saudagar Extrait')
     .replace(/^saudagar\s+/i, '')
     .toUpperCase();
 
-  const categoryPrefix = product.category
-    ? product.category.split(' ')[0].toUpperCase()
-    : 'EXTRAIT';
-
-  const allInCat = ALL_PRODUCTS.filter((p) => p.category === product.category);
-  const currentIdx = Math.max(0, allInCat.findIndex((p) => p.id === product.id));
-  const num = String(currentIdx + 1).padStart(2, '0');
-  const total = String(Math.max(1, allInCat.length)).padStart(2, '0');
-
-  const relatedProducts = ALL_PRODUCTS
-    .filter((p) => p.id !== product.id)
-    .slice(0, 4);
+  const categoryPrefix = (product.category || product.concentration || 'Parfum').split(' ')[0].toUpperCase();
+  const familyLine = product.family || product.collection || '';
+  const accords = detail.attributes?.accord ?? [];
 
   // Animations
   const flaconHeroVariants = {
@@ -257,9 +268,11 @@ export default function BluorngPDP({
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#FFF7ED] dark:bg-[#D4AF37]/15 text-[#C4823F] dark:text-[#ECC86A] text-[10.5px] font-medium tracking-wider uppercase border border-[#C4823F]/20 dark:border-[#D4AF37]/30">
             {categoryPrefix}
           </span>
-          <span className="text-[12px] sm:text-[13px] text-[#777777] dark:text-[#999999] font-normal tracking-[0.02em]">
-            no. {num} / {total}
-          </span>
+          {familyLine && (
+            <span className="text-[12px] sm:text-[13px] text-[#777777] dark:text-[#999999] font-normal tracking-[0.02em]">
+              {familyLine}
+            </span>
+          )}
         </div>
 
         <button
@@ -277,9 +290,15 @@ export default function BluorngPDP({
           className="inline-flex items-center gap-1.5 text-[11px] text-[#C4823F] dark:text-[#ECC86A] hover:underline cursor-pointer select-none"
           title="Jump to Client Reviews"
         >
-          <span className="tracking-tight text-[10.5px]">★★★★★</span>
-          <span className="font-semibold text-[#111111] dark:text-white">4.9</span>
-          <span className="text-[#888888] dark:text-white/40">({product.reviewsCount || 42})</span>
+          {product.reviewsCount > 0 ? (
+            <>
+              <span className="tracking-tight text-[10.5px]">★★★★★</span>
+              <span className="font-semibold text-[#111111] dark:text-white">{product.rating.toFixed(1)}</span>
+              <span className="text-[#888888] dark:text-white/40">({product.reviewsCount})</span>
+            </>
+          ) : (
+            <span className="text-[#888888] dark:text-white/50">No reviews yet</span>
+          )}
         </button>
       </motion.div>
 
@@ -300,23 +319,47 @@ export default function BluorngPDP({
       </motion.p>
 
       {/* 4. Size / Volume Selectors */}
-      <motion.div variants={monographItemVariants} className="flex items-center gap-2.5 sm:gap-3 mb-6">
-        {sizes.map((sz) => {
-          const isSelected = selectedSize.label === sz.label;
-          return (
-            <button
-              key={sz.label}
-              onClick={() => setSelectedSize(sz)}
-              className={`min-w-[78px] sm:min-w-[84px] h-[38px] px-4 rounded-[2px] text-[12px] font-normal transition-all flex items-center justify-center cursor-pointer ${
-                isSelected
-                  ? 'bg-[#111111] text-white border border-[#111111] dark:bg-[#D4AF37] dark:text-[#0B0A0D] dark:border-[#D4AF37] shadow-[0_3px_12px_rgba(212,175,55,0.25)] font-medium'
-                  : 'bg-white text-[#111111] border border-[#E0D4D6] hover:border-[#C4823F] hover:text-[#C4823F] dark:bg-transparent dark:text-white dark:border-white/20 dark:hover:border-[#ECC86A] dark:hover:text-[#ECC86A]'
-              }`}
-            >
-              {sz.label}
-            </button>
-          );
-        })}
+      {sizes.length > 0 ? (
+        <motion.div variants={monographItemVariants} className="flex flex-wrap items-center gap-2.5 sm:gap-3 mb-4">
+          {sizes.map((sz) => {
+            const isSelected = selectedSize?.variantId === sz.variantId;
+            const soldOut = sz.stock <= 0;
+            return (
+              <button
+                key={sz.variantId}
+                onClick={() => {
+                  setSelectedSize(sz);
+                  setQuantity(1);
+                }}
+                aria-pressed={isSelected}
+                title={soldOut ? 'Sold out' : undefined}
+                className={`min-w-[78px] sm:min-w-[84px] h-[38px] px-4 rounded-[2px] text-[12px] font-normal transition-all flex items-center justify-center cursor-pointer ${
+                  soldOut ? 'line-through opacity-50 ' : ''
+                }${
+                  isSelected
+                    ? 'bg-[#111111] text-white border border-[#111111] dark:bg-[#D4AF37] dark:text-[#0B0A0D] dark:border-[#D4AF37] shadow-[0_3px_12px_rgba(212,175,55,0.25)] font-medium'
+                    : 'bg-white text-[#111111] border border-[#E0D4D6] hover:border-[#C4823F] hover:text-[#C4823F] dark:bg-transparent dark:text-white dark:border-white/20 dark:hover:border-[#ECC86A] dark:hover:text-[#ECC86A]'
+                }`}
+              >
+                {sz.label}
+              </button>
+            );
+          })}
+        </motion.div>
+      ) : null}
+
+      {/* 4b. Price with MRP strike-through and stock state */}
+      <motion.div variants={monographItemVariants} className="flex items-baseline gap-3 mb-5 text-[13px]">
+        <span className="font-medium text-[#111111] dark:text-white">{formatPrice(currentPrice)}</span>
+        {currentCompare && currentCompare > currentPrice && (
+          <>
+            <span className="line-through text-[#999999] dark:text-white/40">{formatPrice(currentCompare)}</span>
+            <span className="text-[11px] text-[#C4823F] dark:text-[#ECC86A] font-medium">{Math.round((1 - currentPrice / currentCompare) * 100)}% off</span>
+          </>
+        )}
+        <span className="ml-auto text-[11px] text-[#777777] dark:text-[#999999]">
+          {!selectedSize ? 'Currently unavailable' : selectedSize.stock <= 0 ? 'Sold out' : selectedSize.stock <= 5 ? `Only ${selectedSize.stock} left` : 'In stock'}
+        </span>
       </motion.div>
 
       {/* 5. Tenet Line + Quantity Stepper Row */}
@@ -343,7 +386,7 @@ export default function BluorngPDP({
           </span>
           <button
             type="button"
-            onClick={() => setQuantity((q) => q + 1)}
+            onClick={() => setQuantity((q) => Math.min(maxQty, q + 1))}
             className="w-6 h-6 flex items-center justify-center text-[14px] text-[#666666] dark:text-white/60 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors cursor-pointer"
             aria-label="Increase quantity"
           >
@@ -353,17 +396,18 @@ export default function BluorngPDP({
       </motion.div>
 
       {/* 6. Add To Cart Button + Wishlist Save Bookmark Button */}
-      <motion.div variants={monographItemVariants} className="flex items-center gap-2.5">
+      <motion.div ref={isMobile ? mobileBuyRef : undefined} variants={monographItemVariants} className="flex items-center gap-2.5">
         <button
           onClick={handleAddToCartClick}
-          className="flex-1 h-[46px] bg-[#111111] hover:bg-[#C4823F] text-white dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] dark:text-[#0B0A0D] rounded-[2px] flex items-center shadow-[0_4px_16px_rgba(0,0,0,0.18)] hover:shadow-[0_6px_20px_rgba(196,130,63,0.3)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.25)] active:scale-[0.99] transition-all cursor-pointer select-none group font-medium"
+          disabled={!canBuy}
+          className="disabled:opacity-50 disabled:cursor-not-allowed flex-1 h-[46px] bg-[#111111] hover:bg-[#C4823F] text-white dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] dark:text-[#0B0A0D] rounded-[2px] flex items-center shadow-[0_4px_16px_rgba(0,0,0,0.18)] hover:shadow-[0_6px_20px_rgba(196,130,63,0.3)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.25)] active:scale-[0.99] transition-all cursor-pointer select-none group font-medium"
         >
           <span className="flex-1 text-center text-[12.5px] font-medium tracking-[0.03em]">
-            Add to cart
+            {canBuy ? 'Add to cart' : 'Sold out'}
           </span>
           <span className="w-[1px] h-[20px] bg-white/20 dark:bg-black/20 shrink-0" />
           <span className="px-4 sm:px-5 text-center text-[12.5px] font-medium tracking-[0.02em] whitespace-nowrap text-[#FFF7ED] dark:text-[#0B0A0D]">
-            {formatPrice(currentPrice * quantity)}
+            {formatPrice(currentPrice * Math.min(quantity, maxQty))}
           </span>
         </button>
 
@@ -391,12 +435,18 @@ export default function BluorngPDP({
       >
         <div className="flex items-center gap-2">
           <span className="text-[12px] leading-none text-[#C4823F] dark:text-[#ECC86A]">✓</span>
-          <span>Order before 17:00 to receive {getDeliveryDateString()}</span>
+          <span>{etaText}</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-[12px] leading-none text-[#C4823F] dark:text-[#ECC86A]">•</span>
           <span>Delivering across India</span>
         </div>
+        {sampleCopy && (
+          <div className="flex items-center gap-2">
+            <span className="text-[12px] leading-none text-[#C4823F] dark:text-[#ECC86A]">•</span>
+            <span>{sampleCopy}</span>
+          </div>
+        )}
       </motion.div>
     </motion.div>
   );
@@ -552,10 +602,10 @@ export default function BluorngPDP({
               <button
                 onClick={onOpenCart}
                 className="w-6 h-6 rounded-full bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[11px] font-bold flex items-center justify-center cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.25)] hover:opacity-85 transition-opacity"
-                aria-label={`Cart (${cartCount || 1})`}
+                aria-label={`Cart (${cartCount})`}
                 title="View Cart"
               >
-                {cartCount || 1}
+                {cartCount}
               </button>
             </motion.div>
 
@@ -626,9 +676,9 @@ export default function BluorngPDP({
             <button
               onClick={onOpenCart}
               className="w-6 h-6 rounded-full bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[11px] font-bold flex items-center justify-center cursor-pointer shadow-xs"
-              aria-label={`Cart (${cartCount || 1})`}
+              aria-label={`Cart (${cartCount})`}
             >
-              {cartCount || 1}
+              {cartCount}
             </button>
           </div>
         </div>
@@ -728,72 +778,16 @@ export default function BluorngPDP({
             </h2>
           </div>
 
-          <div className="divide-y divide-[#EAEAEA] dark:divide-white/10 text-[12px]">
-            
-            {/* Accordion 1: Fragrance Pyramid & Notes */}
-            <div className="py-4">
-              <button
-                type="button"
-                onClick={() => toggleAccordion('notes')}
-                className="w-full flex items-center justify-between text-[#111111] dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
-              >
-                <span className="tracking-[0.02em] text-[13px]">Fragrance Pyramid & Olfactory Notes</span>
-                <span className="text-[16px] font-light">{openAccordion === 'notes' ? '−' : '+'}</span>
-              </button>
-              <AnimatePresence>
-                {openAccordion === 'notes' && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                    className="overflow-hidden pt-3 pb-1 space-y-2 text-[#555555] dark:text-[#A09D96] text-[12px]"
-                  >
-                    <p>
-                      <strong className="text-[#C4823F] dark:text-[#ECC86A] font-medium">Top: </strong>
-                      {product.notes?.top?.join(' · ') || 'Wild Bergamot, Black Pepper, Cardamom'}
-                    </p>
-                    <p>
-                      <strong className="text-[#C4823F] dark:text-[#ECC86A] font-medium">Heart: </strong>
-                      {product.notes?.heart?.join(' · ') || '18-Year Cambodi Oud, Taif Rose, Resinous Lichen'}
-                    </p>
-                    <p>
-                      <strong className="text-[#C4823F] dark:text-[#ECC86A] font-medium">Base: </strong>
-                      {product.notes?.base?.join(' · ') || 'Mysore Sandalwood, Dark Ambergris, Charred Leather'}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Accordion 3: Test-First Guarantee & Returns */}
-            <div className="py-4">
-              <button
-                type="button"
-                onClick={() => toggleAccordion('shipping')}
-                className="w-full flex items-center justify-between text-[#111111] dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
-              >
-                <span className="tracking-[0.02em] text-[13px]">Shipping & Test-First Guarantee</span>
-                <span className="text-[16px] font-light">{openAccordion === 'shipping' ? '−' : '+'}</span>
-              </button>
-              <AnimatePresence>
-                {openAccordion === 'shipping' && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                    className="overflow-hidden pt-3 pb-1 space-y-2 text-[#555555] dark:text-[#A09D96] text-[12px]"
-                  >
-                    <p>
-                      Every full-size flacon arrives with a matching 2ml discovery vial. Enjoy the vial first. If it does not resonate with you, return the unopened flacon for a complimentary exchange or full refund.
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-          </div>
+          <NotePyramid notes={detail.notes} />
+          <AccordBars accords={accords} />
+          <ProductAccordions
+            detail={detail}
+            selectedSize={selectedSize}
+            openAccordion={openAccordion}
+            onToggle={toggleAccordion}
+            sampleCopy={sampleCopy}
+            etaText={etaText}
+          />
 
         </div>
       </div>
@@ -802,50 +796,66 @@ export default function BluorngPDP({
       {/* ================= 3b. REVIEWS & FEEDBACK SECTION ============= */}
       {/* ============================================================== */}
       <BluorngProductReviews
-        productId={product.id}
         productName={product.name}
-        productCategory={product.category || 'Extrait de Parfum'}
-        theme={theme}
+        ratingAvg={product.rating}
+        ratingCount={product.reviewsCount}
       />
 
-      {/* ============================================================== */}
-      {/* ================= 4. CURATED PAIRINGS SECTION =============== */}
-      {/* ============================================================== */}
-      <div className="w-full px-6 sm:px-10 lg:px-16 pt-16 pb-28 lg:pb-16 border-t border-[#EAEAEA] dark:border-white/10 bg-[#FFFFFF] dark:bg-[#0B0A0D] transition-colors duration-300">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <span className="text-[11px] uppercase tracking-[0.14em] text-[#C4823F] dark:text-[#ECC86A] font-medium">
-              Curated Selection
-            </span>
-            <h2 className="text-[22px] sm:text-[26px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white mt-1">
-              You May Also Appreciate
-            </h2>
+      {/* ================= 4. SIMILAR SCENTS & RECENTLY VIEWED ========== */}
+      {[
+        { key: 'similar', eyebrow: 'Similar Scents', title: 'You May Also Appreciate', items: similarProducts },
+        { key: 'recent', eyebrow: 'Your Journey', title: 'Recently Viewed', items: recentProducts },
+      ]
+        .filter((block) => block.items.length > 0)
+        .map((block) => (
+          <div key={block.key} className="w-full px-6 sm:px-10 lg:px-16 pt-16 pb-16 last:pb-28 lg:last:pb-16 border-t border-[#EAEAEA] dark:border-white/10 bg-[#FFFFFF] dark:bg-[#0B0A0D] transition-colors duration-300">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-8">
+                <span className="text-[11px] uppercase tracking-[0.14em] text-[#C4823F] dark:text-[#ECC86A] font-medium">{block.eyebrow}</span>
+                <h2 className="text-[22px] sm:text-[26px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white mt-1">{block.title}</h2>
+              </div>
+              <StaggerContainer staggerDelay={0.06} className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                {block.items.map((relProd) => (
+                  <StaggerItem key={relProd.id}>
+                    <BluorngProductCard
+                      product={relProd}
+                      isWishlisted={wishlist.includes(relProd.id)}
+                      onToggleWishlist={onToggleWishlist}
+                      onSelectProduct={onSelectProduct}
+                      onQuickBuy={() => onQuickBuy && onQuickBuy(relProd)}
+                    />
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
+            </div>
           </div>
+        ))}
 
-          <StaggerContainer staggerDelay={0.06} className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {relatedProducts.map((relProd) => (
-              <StaggerItem key={relProd.id}>
-                <BluorngProductCard
-                  product={relProd}
-                  isWishlisted={wishlist.includes(relProd.id)}
-                  onToggleWishlist={onToggleWishlist}
-                  onSelectProduct={onSelectProduct}
-                  onQuickBuy={() => {
-                    if (onAddToCart) {
-                      onAddToCart({
-                        productId: relProd.id,
-                        size: '50 ml',
-                        price: relProd.price,
-                        quantity: 1
-                      });
-                    }
-                  }}
-                />
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
-        </div>
-      </div>
+      {/* Sticky mobile add-to-bag bar */}
+      <AnimatePresence>
+        {showStickyBar && (
+          <motion.div
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 80, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="lg:hidden fixed left-0 right-0 bottom-[64px] z-30 px-4 py-2.5 bg-white/95 dark:bg-[#0E0C10]/95 backdrop-blur-md border-t border-[#EEEEEE] dark:border-white/10 flex items-center gap-3"
+          >
+            <div className="min-w-0 flex-1">
+              <p className="text-[12px] text-[#111111] dark:text-white truncate">{cleanTitle}</p>
+              <p className="text-[11px] text-[#777777] dark:text-[#999999]">{selectedSize?.label} · {formatPrice(currentPrice)}</p>
+            </div>
+            <button
+              type="button"
+              onClick={handleAddToCartClick}
+              disabled={!canBuy}
+              className="shrink-0 h-10 px-5 bg-[#111111] hover:bg-[#C4823F] text-white dark:bg-[#D4AF37] dark:text-[#0B0A0D] text-[12px] font-medium rounded-[2px] disabled:opacity-50"
+            >
+              {canBuy ? 'Add to bag' : 'Sold out'}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

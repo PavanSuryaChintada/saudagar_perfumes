@@ -1,55 +1,35 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { COLLECTION_THEMES } from '../data/collectionThemes.js';
+import { useCollections } from '../storefront/catalog/hooks';
 
-export const HERO_COLLECTIONS = [
-  {
-    id: 'signature',
-    slug: 'signature',
-    name: 'Signature Collection',
-    title: 'THE SIGNATURE COLLECTION',
-    tagline: 'A DISTINCTIVE EXPRESSION OF PERSONALITY.',
-    video: '/videos/Perfume_bottle_in_luxury_setting_e094f368_1080p.mp4',
-    poster: '/images/saudagar_signature_collection_banner_4k.png'
-  },
-  {
-    id: 'royal',
-    slug: 'royal',
-    name: 'Royal Collection',
-    title: 'THE ROYAL COLLECTION',
-    tagline: 'INSPIRED BY HERITAGE. CREATED FOR THE EXTRAORDINARY.',
-    video: '/videos/Ruby_red_perfume_bottle_displayed_4a5d2be2_1080p.mp4',
-    poster: '/images/saudagar_imperial_ruby.png'
-  },
-  {
-    id: 'exotic',
-    slug: 'exotic',
-    name: 'Exotic Collection',
-    title: 'THE EXOTIC COLLECTION',
-    tagline: 'DISCOVER THE EXTRAORDINARY. EMBRACE THE UNTAMED.',
-    video: '/videos/Perfume_bottle_in_desert_92b81cd7_1080p_gwr_video_mvp.mp4',
-    poster: '/images/saudagar_noir_matte.png'
-  },
-  {
-    id: 'fresh',
-    slug: 'fresh',
-    name: 'Fresh Collection',
-    title: 'THE FRESH COLLECTION',
-    tagline: 'CRISP OCEAN AIR. RADIANT SUNLIT CITRUS.',
-    video: '/videos/Perfume_bottle_on_coastal_landscape_76c07432_1080p.mp4',
-    poster: '/images/saudagar_royal_sapphire.png'
-  }
-];
+/** Collections with a hero film, as edited in Admin → Collections. */
+export function useHeroCollections() {
+  const { data = [] } = useCollections();
+  return data
+    .filter((c) => c.hero_video_url || c.hero_poster_url)
+    .map((c) => ({
+      id: c.slug,
+      slug: c.slug,
+      name: (c.name || '').replace(/^the\s+/i, ''),
+      title: c.hero_title || c.name,
+      tagline: c.hero_tagline || c.tagline || '',
+      video: c.hero_video_url,
+      poster: c.hero_poster_url,
+      accentTag: c.hero_accent_tag || c.short_name || c.name
+    }));
+}
 
 export default function BluorngCollectionHero({
   activeCollectionId = 'signature',
   onSwitchCollection
 }) {
+  const HERO_COLLECTIONS = useHeroCollections();
   const videoRefs = useRef({});
   const [isMuted, setIsMuted] = useState(true);
 
-  const activeHero = HERO_COLLECTIONS.find((c) => c.id === activeCollectionId) || HERO_COLLECTIONS[0];
-  const activeTheme = COLLECTION_THEMES[activeHero.id] || COLLECTION_THEMES.signature;
+  const activeHero = HERO_COLLECTIONS.find((c) => c.id === activeCollectionId) || HERO_COLLECTIONS[0] || {
+    id: activeCollectionId, slug: activeCollectionId, name: '', title: '', tagline: '', video: null, poster: null, accentTag: ''
+  };
 
   const [currentId, setCurrentId] = useState(activeHero.id);
   const [prevId, setPrevId] = useState(null);
@@ -176,7 +156,7 @@ export default function BluorngCollectionHero({
               className="max-w-md sm:max-w-lg lg:max-w-xl"
             >
               <span className="text-[9.5px] sm:text-[11px] font-semibold tracking-[0.28em] uppercase text-[#ECC86A] block mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                Saudagar Haute Parfumerie · {activeTheme.hero.accentTag || activeTheme.shortName}
+                Saudagar Haute Parfumerie · {activeHero.accentTag}
               </span>
 
               <h1 className="font-serif text-[26px] xs:text-[30px] sm:text-[40px] lg:text-[48px] font-normal tracking-[0.04em] uppercase text-white leading-[1.08] drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
