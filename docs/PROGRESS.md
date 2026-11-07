@@ -1,0 +1,158 @@
+# Saudagar Store: Build Progress
+
+`[x]` done · `[ ]` not yet · ◐ = phase in progress
+
+**Overall: phase 1 done, phase 2 in progress, 10 phases left**
+
+---
+
+## Phase 1: Foundation ✅ (merged, PR #1)
+- [x] TypeScript, lint, unit tests, browser tests
+- [x] Supabase database (Mumbai region)
+- [x] Roles: admin / customer
+- [x] Profiles, address book, store settings
+- [x] Row-level security on every table
+- [x] Migration runner (blocks edited migrations)
+- [x] Sign up (email + password only)
+- [x] Login, forgot password, reset password
+- [x] Account: personal details
+- [x] Birthday (set once, locked)
+- [x] Address book (one default)
+- [x] Admin panel at /admin (guarded)
+- [x] Admin: dashboard
+- [x] Admin: settings page
+- [x] Admin: media library (Supabase Storage uploads)
+- [x] Image compression on upload
+- [x] Real page URLs + old link redirects
+- [x] 404 page
+- [x] Removed: currency switcher
+- [x] Removed: engraving
+- [x] Removed: priority / special-pack delivery
+- [x] Removed: unused components, mock data
+- [x] Test admin login (test@gmail.com)
+
+## Phase 2: Catalog ◐ (issue #2)
+- [x] Categories (tree)
+- [x] Collections (hero, video, old-link aliases)
+- [x] Notes library + note families
+- [x] Scent profile options (family, accords, concentration, intensity, longevity, sillage, season, day/night, occasion, gender)
+- [x] Products + bottle sizes (ml variants)
+- [x] Sample vials (5 ml) as stock items
+- [x] Compliance fields (MRP, origin, manufacturer, HSN, GST…)
+- [x] Story fields (perfumer, year, inspiration, how to wear)
+- [x] Stock changes only with a reason, every change logged
+- [x] Sold sizes hidden, never deleted
+- [x] Sold products: archive only
+- [x] Search (names, notes, families, collections)
+- [x] Filters: AND across types, OR within a type
+- [x] Similar scents ranking
+- [x] Sample catalog: current 16 products moved into the database
+- [ ] Storefront reads products from the database
+- [ ] Shop / category / note / search pages
+- [ ] Filters saved in the URL
+- [ ] Product page: note pyramid, accords, profile, compliance, similar, recently viewed
+- [ ] Fake reviews removed ("No reviews yet")
+- [ ] Admin: products list
+- [ ] Admin: product editor
+- [ ] Admin: categories
+- [ ] Admin: collections
+- [ ] Admin: notes
+- [ ] Admin: scent profile options
+
+## Phase 3: CMS (everything editable)
+- [ ] Page builder (add / reorder / hide / duplicate / delete sections)
+- [ ] Every home section editable
+- [ ] Story page editable
+- [ ] New pages (landing pages, text pages)
+- [ ] Policy pages (shipping, returns, privacy, terms)
+- [ ] Header, mega menu, mobile menu
+- [ ] Footer
+- [ ] Announcement bars (with dates)
+- [ ] Stories viewer content
+- [ ] Instagram reels content
+- [ ] Testimonials, FAQs
+- [ ] Theme colours + fonts
+- [ ] Brand: logo, socials, contact
+- [ ] Preloader settings
+- [ ] SEO per page
+- [ ] Stockists / boutiques section (hidden until filled)
+
+## Phase 4: Bag, samples, orders
+- [ ] Bag saved to account
+- [ ] Server-side prices (quote)
+- [ ] Free 5 ml samples: earned per 50 ml
+- [ ] Sample picker in bag ("Surprise me")
+- [ ] Free-shipping progress bar
+- [ ] Checkout: address → payment → review
+- [ ] Cash on delivery orders
+- [ ] Order success page
+- [ ] My orders + order details
+- [ ] Cancel order (while pending)
+- [ ] Admin: orders (live updates, status changes)
+- [ ] Admin: inventory (stock in/out with reasons, history)
+- [ ] Admin: free samples page
+- [ ] Invoice (GST) + packing slip print
+
+## Phase 5: Coupons
+- [ ] Coupon codes (percent / flat)
+- [ ] Limits, dates, min order, first order
+- [ ] Category scope + excluded products
+- [ ] Personal codes
+- [ ] "Apply coupon" sheet with best offers
+- [ ] Welcome offer on signup
+- [ ] Birthday coupons
+- [ ] Admin: coupons pages
+
+## Phase 6: Online payments (Razorpay, off until keys)
+- [ ] UPI / cards / netbanking / wallets
+- [ ] Payment verify + webhook
+- [ ] Auto refund if out of stock
+- [ ] Admin refunds
+
+## Phase 7: Shipping
+- [ ] Manual courier mode (enter tracking number)
+- [ ] India Post flow
+- [ ] Delhivery (off until token)
+- [ ] Pincode check (product page + checkout)
+- [ ] Auto status updates
+- [ ] Tracking link for customers
+- [ ] Admin: shipping settings
+
+## Phase 8: Returns and refunds
+- [ ] Return request with photos
+- [ ] Approve / reject
+- [ ] Restock or write off
+- [ ] Refund or replacement order
+- [ ] Admin: returns, refunds pages
+
+## Phase 9: Reviews and back-in-stock
+- [ ] Verified-buyer reviews with photos
+- [ ] Longevity / sillage feedback
+- [ ] Admin approval
+- [ ] Ratings on products
+- [ ] Helpful votes
+- [ ] Wishlist saved to account
+- [ ] "Notify me when back"
+
+## Phase 10: WhatsApp (off until keys)
+- [ ] Message templates
+- [ ] Order / shipping / delivery messages
+- [ ] Abandoned bag reminders
+- [ ] Campaigns
+- [ ] STOP = opt out
+- [ ] Admin: WhatsApp pages
+
+## Phase 11: Admin extras
+- [ ] Dashboard charts + KPIs
+- [ ] Customers list + birthdays
+- [ ] Notifications bell
+- [ ] Data export (CSV)
+
+## Phase 12: Launch
+- [ ] SEO tags, sitemap, product schema
+- [ ] Google Analytics events
+- [ ] Rate limits
+- [ ] Security review
+- [ ] 360 px mobile pass
+- [ ] Vercel config
+- [ ] SETUP.md (keys, accounts, go-live checklist)
