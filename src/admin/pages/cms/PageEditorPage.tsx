@@ -104,10 +104,13 @@ export default function PageEditorPage() {
   const addSection = async (type: string) => {
     try {
       const def = SECTION_TYPES[type];
+      // Start from the content of an existing section of this type, so the admin edits rather than starts blank.
+      const { data: sample } = await supabase.from('website_sections').select('config').eq('section_type', type).order('updated_at', { ascending: false }).limit(1).maybeSingle();
+      const startConfig = sample?.config && typeof sample.config === 'object' && Object.keys(sample.config).length ? structuredClone(sample.config) : emptyItem(def.fields);
       const row = (await throwIf(
         supabase
           .from('website_sections')
-          .insert({ page_id: page.id, section_type: type, label: def.label, position: sections.length, is_visible: true, config: emptyItem(def.fields) as never })
+          .insert({ page_id: page.id, section_type: type, label: def.label, position: sections.length, is_visible: true, config: startConfig as never })
           .select('*')
           .single(),
       )) as SectionRow;
@@ -271,7 +274,7 @@ export default function PageEditorPage() {
         </div>
       </Panel>
 
-      <Modal open={adding} onOpenChange={setAdding} title="Add a section" wide>
+      <Modal open={adding} onOpenChange={setAdding} title="Add a section" description="New sections start with sample content copied from an existing section of the same kind. Edit it, then save." wide>
         <div className="grid sm:grid-cols-2 gap-2">
           {Object.entries(SECTION_TYPES).map(([type, def]) => (
             <button key={type} type="button" onClick={() => addSection(type)} className="text-left border border-[#EAEAEA] p-3 hover:border-tk-ink">

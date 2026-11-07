@@ -15,11 +15,24 @@ import PagesPage from './pages/cms/PagesPage';
 import PageEditorPage from './pages/cms/PageEditorPage';
 import SiteContentPage from './pages/cms/SiteContentPage';
 import ContentListPage from './pages/cms/ContentListPage';
+import OrdersPage from './pages/orders/OrdersPage';
+import OrderDetailPage from './pages/orders/OrderDetailPage';
+import PrintOrderPage from './pages/orders/PrintOrderPage';
+import InventoryPage from './pages/orders/InventoryPage';
+import SamplesPage from './pages/orders/SamplesPage';
 
 export default function AdminApp() {
   return (
     <Routes>
       <Route path="login" element={<LoginPage admin />} />
+      <Route
+        path="orders/:id/print"
+        element={
+          <RequireAdmin>
+            <PrintOrderPage />
+          </RequireAdmin>
+        }
+      />
       <Route
         element={
           <RequireAdmin>
@@ -40,6 +53,10 @@ export default function AdminApp() {
         <Route path="pages/:id" element={<PageEditorPage />} />
         <Route path="site" element={<SiteContentPage />} />
         <Route path="content/:kind" element={<ContentListPage />} />
+        <Route path="orders" element={<OrdersPage />} />
+        <Route path="orders/:id" element={<OrderDetailPage />} />
+        <Route path="inventory" element={<InventoryPage />} />
+        <Route path="samples" element={<SamplesPage />} />
         <Route
           path="*"
           element={<p className="text-[13px] text-[#777777]">This admin page doesn't exist yet.</p>}

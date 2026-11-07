@@ -42,13 +42,13 @@ export function FieldInput({ field, value, onChange }: { field: FieldDef; value:
     case 'text':
       return (
         <FieldShell label={field.label} htmlFor={id} help={field.help}>
-          <TextInput id={id} value={str} placeholder={field.placeholder} onChange={(e) => onChange(e.target.value)} />
+          <TextInput id={id} value={str} placeholder={field.placeholder ?? exampleFrom(field.help)} onChange={(e) => onChange(e.target.value)} />
         </FieldShell>
       );
     case 'textarea':
       return (
         <FieldShell label={field.label} htmlFor={id} help={field.help}>
-          <TextArea id={id} rows={field.rows ?? 3} value={str} onChange={(e) => onChange(e.target.value)} />
+          <TextArea id={id} rows={field.rows ?? 3} value={str} placeholder={exampleFrom(field.help)} onChange={(e) => onChange(e.target.value)} />
         </FieldShell>
       );
     case 'richtext':
@@ -164,6 +164,12 @@ export function FieldInput({ field, value, onChange }: { field: FieldDef; value:
     default:
       return null;
   }
+}
+
+/** "e.g. Free delivery…" in a field's help doubles as its placeholder example. */
+function exampleFrom(help?: string): string | undefined {
+  const m = help?.match(/e\.g\.\s*([^.]+(?:\.\d+[^.]*)?)/i);
+  return m ? `e.g. ${m[1].trim()}` : undefined;
 }
 
 function toLocalInput(iso: string): string {

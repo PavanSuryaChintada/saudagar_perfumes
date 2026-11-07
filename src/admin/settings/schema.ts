@@ -78,6 +78,25 @@ export const SETTINGS_SCHEMA: SettingGroup[] = [
       { key: 'samples.sample_size_ml', label: 'Sample size', type: 'number', min: 1, suffix: 'ml' },
       { key: 'samples.max_per_order', label: 'Most samples per order', type: 'number', min: 0 },
       { key: 'samples.allow_duplicates', label: 'Allow the same scent twice', type: 'boolean' },
+      { key: 'samples.bag_heading', label: 'Heading in the bag', type: 'text', help: 'e.g. Your free samples' },
+      { key: 'samples.bag_text', label: 'Helper text in the bag', type: 'text', help: 'e.g. Every 50 ml of perfume earns a free 5 ml sample.' },
+    ],
+  },
+  {
+    group: 'Business (printed on invoices)',
+    description: 'Fill these in before printing invoices. Confirm the details with your CA.',
+    fields: [
+      { key: 'business.legal_name', label: 'Legal business name', type: 'text', help: 'e.g. Saudagar Perfumers Retail Private Limited' },
+      {
+        key: 'business.gstin',
+        label: 'GSTIN',
+        type: 'text',
+        pattern: '^([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z])?$',
+        patternHint: '15 characters, e.g. 37ABCDE1234F1Z5, or leave empty.',
+      },
+      { key: 'business.address', label: 'Registered address', type: 'text', help: 'Full address with pincode.' },
+      { key: 'business.state', label: 'State of registration', type: 'text', help: 'e.g. Andhra Pradesh. Same state as the customer = CGST + SGST, otherwise IGST.' },
+      { key: 'business.invoice_note', label: 'Invoice small print', type: 'text', help: 'Optional, e.g. return policy line.' },
     ],
   },
   {
