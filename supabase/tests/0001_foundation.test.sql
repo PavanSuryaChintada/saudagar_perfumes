@@ -116,3 +116,15 @@ do $$ declare n int; begin
     'admin can correct a locked DOB';
 end $$;
 reset role;
+
+-- birthday captured at signup is stored and locked
+insert into auth.users (id, email, raw_user_meta_data, aud, role) values
+  ('00000000-0000-0000-0000-0000000000a3', 'bday@test.local', '{"full_name":"Bday","date_of_birth":"1992-08-15"}', 'authenticated', 'authenticated'),
+  ('00000000-0000-0000-0000-0000000000a4', 'badbday@test.local', '{"full_name":"Bad","date_of_birth":"not-a-date"}', 'authenticated', 'authenticated');
+do $$ begin
+  assert (select date_of_birth from public.profiles where id = '00000000-0000-0000-0000-0000000000a3') = '1992-08-15',
+    'signup birthday stored';
+  assert (select dob_locked from public.profiles where id = '00000000-0000-0000-0000-0000000000a3'), 'signup birthday locked';
+  assert (select date_of_birth from public.profiles where id = '00000000-0000-0000-0000-0000000000a4') is null,
+    'invalid signup birthday ignored, signup still succeeds';
+end $$;
