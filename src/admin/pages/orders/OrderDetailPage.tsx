@@ -17,6 +17,7 @@ import { rpc, throwIf } from '../../catalog/api';
 import { useAdminOrder, useOrdersRealtime } from '../../orders/api';
 import { StatusBadge } from './OrdersPage';
 import { invokeFunction } from '../../../lib/razorpay';
+import { useCouriers } from '../../orders/shipping';
 
 const ACTION_LABEL: Partial<Record<OrderStatus, string>> = {
   PACKED: 'Mark packed',
@@ -38,6 +39,11 @@ export default function OrderDetailPage() {
   const [adminNote, setAdminNote] = useState('');
   const [savingInfo, setSavingInfo] = useState(false);
   const [refunding, setRefunding] = useState(false);
+  const [shipOpen, setShipOpen] = useState(false);
+  const [shipCourier, setShipCourier] = useState('');
+  const [shipAwb, setShipAwb] = useState('');
+  const [retrying, setRetrying] = useState(false);
+  const couriers = useCouriers();
   const [refundAmount, setRefundAmount] = useState('');
 
   useEffect(() => {
@@ -120,7 +126,21 @@ export default function OrderDetailPage() {
           <StatusBadge status={o.status} />
           {next.length === 0 && <span className="text-[12px] text-[#777777]">No further steps.</span>}
           {next.map((s) => (
-            <Button key={s} size="sm" variant={s === 'CANCELLED' || s === 'RTO' ? 'secondary' : 'primary'} onClick={() => { setMoveNote(''); setMoving(s); }}>
+            <Button
+              key={s}
+              size="sm"
+              variant={s === 'CANCELLED' || s === 'RTO' ? 'secondary' : 'primary'}
+              onClick={() => {
+                if (s === 'SHIPPED' && !o.tracking_number) {
+                  setShipCourier(o.courier || couriers[0]?.key || 'other');
+                  setShipAwb('');
+                  setShipOpen(true);
+                  return;
+                }
+                setMoveNote('');
+                setMoving(s);
+              }}
+            >
               {ACTION_LABEL[s] ?? ORDER_STATUS_LABEL[s]}
             </Button>
           ))}
@@ -132,6 +152,41 @@ export default function OrderDetailPage() {
           </p>
         )}
         {o.status === 'RTO' && <p className="mt-3 text-[12px] text-[#555555]">The parcel came back. Decide on restocking from the Returns page once it arrives.</p>}
+        {o.status === 'PACKED' && !o.tracking_number && (
+          <p className="mt-3 text-[12px] text-[#555555]">
+            {o.courier === 'delhivery' ? 'Booking with Delhivery…' : 'Awaiting booking: print the label, book the parcel, then press Mark shipped and enter the tracking number.'}
+          </p>
+        )}
+        {(o as unknown as { shipping_error: string | null }).shipping_error && (
+          <div className="mt-3 px-3 py-2 bg-rose-50 border border-rose-200 text-[12px] text-rose-700 flex flex-wrap items-center gap-3">
+            <span>Courier booking failed: {(o as unknown as { shipping_error: string }).shipping_error}</span>
+            <Button
+              size="sm"
+              variant="secondary"
+              busy={retrying}
+              onClick={async () => {
+                setRetrying(true);
+                try {
+                  await invokeFunction('shipping', { action: 'create', order_id: o.id });
+                  toast.success('Shipment booked.');
+                } catch (err) {
+                  toast.error(toFriendlyError(err));
+                } finally {
+                  setRetrying(false);
+                  await refresh();
+                }
+              }}
+            >
+              Retry shipment
+            </Button>
+          </div>
+        )}
+        {(o as unknown as { shipping_status: string | null }).shipping_status && (
+          <p className="mt-2 text-[11px] text-[#888888]">Courier says: {(o as unknown as { shipping_status: string }).shipping_status}</p>
+        )}
+        {(o as unknown as { label_url: string | null }).label_url && (
+          <a href={(o as unknown as { label_url: string }).label_url} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[12px] underline">Courier label (PDF)</a>
+        )}
         {o.payment_method === 'ONLINE' && ['PAID', 'PARTIALLY_REFUNDED'].includes(o.payment_status) && (
           <div className="mt-4 pt-4 border-t border-[#EAEAEA] flex flex-wrap items-end gap-3">
             <FieldShell label="Refund online (₹)" htmlFor="rf-amount" help={`Paid ${formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))}. Leave empty to refund in full.`}>
@@ -244,6 +299,39 @@ export default function OrderDetailPage() {
       </div>
 
       <ConfirmDialog
+        open={shipOpen}
+        onOpenChange={setShipOpen}
+        title="Mark shipped"
+        description={
+          <span className="block space-y-3 text-tk-ink">
+            <span className="block">
+              <label htmlFor="ship-courier" className="block text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1">Courier</label>
+              <select id="ship-courier" value={shipCourier} onChange={(e) => setShipCourier(e.target.value)} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+                {couriers.map((c) => (
+                  <option key={c.key} value={c.key}>{c.name}</option>
+                ))}
+              </select>
+            </span>
+            <span className="block">
+              <label htmlFor="ship-awb" className="block text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1">Tracking / article number</label>
+              <input id="ship-awb" value={shipAwb} onChange={(e) => setShipAwb(e.target.value)} placeholder="e.g. EK123456789IN" className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px]" />
+            </span>
+            <span className="block text-[12px] text-[#666666]">The customer sees the tracking link on their order.</span>
+          </span>
+        }
+        confirmLabel="Mark shipped"
+        onConfirm={async () => {
+          try {
+            await rpc('ship_order', { p_order: o.id, p_courier: shipCourier, p_tracking: shipAwb, p_note: null });
+            await refresh();
+            toast.success('Order shipped.');
+          } catch (err) {
+            toast.error(toFriendlyError(err));
+          }
+        }}
+      />
+
+      <ConfirmDialog
         open={refunding}
         onOpenChange={setRefunding}
         title="Refund this order online?"
@@ -286,6 +374,9 @@ export default function OrderDetailPage() {
           if (!moving) return;
           try {
             await rpc('set_order_status', { p_order: o.id, p_status: moving, p_note: moveNote || null });
+            if (moving === 'CANCELLED' && o.courier === 'delhivery' && o.tracking_number) {
+              await invokeFunction('shipping', { action: 'cancel', order_id: o.id }).catch((e) => toast.error(`Cancel the Delhivery shipment by hand: ${toFriendlyError(e)}`));
+            }
             await refresh();
             toast.success(`Order ${ORDER_STATUS_LABEL[moving].toLowerCase()}.`);
           } catch (err) {

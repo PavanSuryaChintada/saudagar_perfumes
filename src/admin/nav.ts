@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BookOpen, Boxes, Clapperboard, Gift, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store,
+  BookOpen, Boxes, Clapperboard, Gift, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -51,5 +51,11 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { to: '/admin/media', label: 'Media library', icon: Image },
     ],
   },
-  { heading: 'Setup', items: [{ to: '/admin/settings', label: 'Settings', icon: Settings }] },
+  {
+    heading: 'Setup',
+    items: [
+      { to: '/admin/settings', label: 'Settings', icon: Settings },
+      { to: '/admin/shipping', label: 'Shipping', icon: Truck },
+    ],
+  },
 ];
