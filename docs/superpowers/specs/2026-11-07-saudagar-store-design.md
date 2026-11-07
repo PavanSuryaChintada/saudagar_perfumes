@@ -220,8 +220,10 @@ The UI guard is a convenience; RLS is the real guard.
 - The signup trigger creates the profile and the `customer` role. It then issues the welcome coupon
   (§9.3) and queues the WhatsApp welcome message (inert until WhatsApp is on).
 - Date of birth can be set once by the customer and is then locked. Only the admin can correct it.
-- Register collects name, email, phone and password. Login, forgot and reset password use Supabase
-  Auth. The Google button only renders when `auth.google_enabled` is true.
+- **Sign-up and login ask only for email and password** (owner's decision). Name, phone and
+  birthday are filled in under Account → Personal details. The birthday feeds birthday coupons
+  (§9) and locks once set. Checkout asks for a name and phone on the delivery address. Forgot and
+  reset password use Supabase Auth. The Google button only renders when `auth.google_enabled` is true.
 - `scripts/create-admin.mjs` creates `test@gmail.com / test1234` through the Auth admin API, using the
   service-role key fetched from the Management API at run time (never written to disk), and grants
   it `admin`. The README explains how to make any user an admin.

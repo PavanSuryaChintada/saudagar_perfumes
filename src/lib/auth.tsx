@@ -6,11 +6,8 @@ import type { Database } from './database.types';
 export type Profile = Database['public']['Tables']['profiles']['Row'];
 
 export interface SignUpInput {
-  fullName: string;
   email: string;
-  phone: string;
   password: string;
-  dateOfBirth?: string | null;
 }
 
 export interface AuthState {
@@ -87,14 +84,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
         if (error) throw error;
       },
-      signUp: async ({ fullName, email, phone, password, dateOfBirth }) => {
+      signUp: async ({ email, password }) => {
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
-          options: {
-            data: { full_name: fullName.trim(), phone, date_of_birth: dateOfBirth || null },
-            emailRedirectTo: `${window.location.origin}/account`,
-          },
+          options: { emailRedirectTo: `${window.location.origin}/account` },
         });
         if (error) throw error;
         // Supabase answers an already-registered email with an empty identities list instead of an error.
