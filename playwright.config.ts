@@ -9,6 +9,7 @@ export default defineConfig({
   fullyParallel: false,
   retries: 0,
   reporter: [['list']],
+  globalTeardown: './e2e/global-teardown.ts',
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: 'retain-on-failure',

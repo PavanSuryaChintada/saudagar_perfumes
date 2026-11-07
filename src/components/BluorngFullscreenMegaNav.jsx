@@ -167,7 +167,7 @@ export const FULLSCREEN_NAV_CATEGORIES = [
       {
         id: 'bespoke-side-2',
         title: 'Midnight Noir Extrait',
-        subtitle: 'Diamond crystal engraving',
+        subtitle: 'Obsidian extrait & night florals',
         badge: 'Noir 4K',
         video: '/videos/Perfume_bottle_in_luxury_setting_e094f368_1080p.mp4',
         slug: 'bespoke-atelier'
@@ -494,7 +494,7 @@ export default function BluorngFullscreenMegaNav({
                       Monogram Atelier
                     </p>
                     <p className="text-[9.5px] text-[#777777] dark:text-white/50">
-                      Diamond crystal engraving
+                      Signature monogram flacons
                     </p>
                   </div>
                 </div>

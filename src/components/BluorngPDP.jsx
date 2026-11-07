@@ -8,7 +8,6 @@ import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
 
 export default function BluorngPDP({
   productId,
-  activeCurrency = 'INR',
   cartCount = 0,
   wishlist = [],
   onToggleWishlist,
@@ -141,7 +140,6 @@ export default function BluorngPDP({
 
   const [selectedSize, setSelectedSize] = useState(sizes[0]);
   const [quantity, setQuantity] = useState(1);
-  const [engraving, setEngraving] = useState('');
   const [openAccordion, setOpenAccordion] = useState(null);
 
   const currentPrice = selectedSize.price || product.price;
@@ -156,8 +154,7 @@ export default function BluorngPDP({
         productId: product.id,
         size: selectedSize.label,
         price: currentPrice,
-        quantity,
-        engraving
+        quantity
       });
     }
   };
@@ -366,7 +363,7 @@ export default function BluorngPDP({
           </span>
           <span className="w-[1px] h-[20px] bg-white/20 dark:bg-black/20 shrink-0" />
           <span className="px-4 sm:px-5 text-center text-[12.5px] font-medium tracking-[0.02em] whitespace-nowrap text-[#FFF7ED] dark:text-[#0B0A0D]">
-            {formatPrice(currentPrice * quantity, activeCurrency)}
+            {formatPrice(currentPrice * quantity)}
           </span>
         </button>
 
@@ -398,7 +395,7 @@ export default function BluorngPDP({
         </div>
         <div className="flex items-center gap-2">
           <span className="text-[12px] leading-none text-[#C4823F] dark:text-[#ECC86A]">•</span>
-          <span>Delivering to all destinations in the European Union & Worldwide</span>
+          <span>Delivering across India</span>
         </div>
       </motion.div>
     </motion.div>
@@ -769,41 +766,6 @@ export default function BluorngPDP({
               </AnimatePresence>
             </div>
 
-            {/* Accordion 2: Complimentary Flacon Engraving */}
-            <div className="py-4">
-              <button
-                type="button"
-                onClick={() => toggleAccordion('engraving')}
-                className="w-full flex items-center justify-between text-[#111111] dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
-              >
-                <span className="tracking-[0.02em] text-[13px]">Complimentary Flacon Engraving</span>
-                <span className="text-[16px] font-light">{openAccordion === 'engraving' ? '−' : '+'}</span>
-              </button>
-              <AnimatePresence>
-                {openAccordion === 'engraving' && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                    className="overflow-hidden pt-3 pb-1 space-y-2.5 text-[#555555] dark:text-[#A09D96] text-[12px]"
-                  >
-                    <p>
-                      Our master calligrapher can hand-engrave up to 12 characters onto the crystal flacon.
-                    </p>
-                    <input
-                      type="text"
-                      maxLength={12}
-                      value={engraving}
-                      onChange={(e) => setEngraving(e.target.value.toUpperCase())}
-                      placeholder="ENTER INITIALS (E.G. SK)"
-                      className="w-full px-3.5 py-2.5 border border-[#CCCCCC] dark:border-white/20 bg-white dark:bg-[#141318] text-[#111111] dark:text-white rounded-[2px] text-[11px] font-medium uppercase tracking-widest outline-none focus:border-[#C4823F] dark:focus:border-[#ECC86A]"
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
             {/* Accordion 3: Test-First Guarantee & Returns */}
             <div className="py-4">
               <button
@@ -865,7 +827,6 @@ export default function BluorngPDP({
               <StaggerItem key={relProd.id}>
                 <BluorngProductCard
                   product={relProd}
-                  activeCurrency={activeCurrency}
                   isWishlisted={wishlist.includes(relProd.id)}
                   onToggleWishlist={onToggleWishlist}
                   onSelectProduct={onSelectProduct}

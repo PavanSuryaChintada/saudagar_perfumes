@@ -1,134 +1,134 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getStoredUserProfile, saveStoredUserProfile } from '../data/userProfileData.js';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { useLocation, useNavigate } from 'react-router';
+import { useAccount } from '../storefront/account/useAccount';
+import { addressSchema, fieldErrors, personalDetailsSchema } from '../storefront/account/schemas';
+import { INDIAN_STATES } from '../lib/indianStates';
+import { formatIndianPhone } from '../lib/phone';
+import { toFriendlyError } from '../lib/errors';
+import { useAuth } from '../lib/auth';
 
-export default function BluorngAccountPage({
-  activeCurrency = 'INR',
-  onChangeCurrency,
-  theme = 'light',
-  onToggleTheme,
-  onNavigateHome,
-  onNavigateCollection,
-  onSelectProduct
-}) {
-  const [profile, setProfile] = useState(() => getStoredUserProfile());
-  const [activeTab, setActiveTab] = useState('orders'); // 'orders', 'addresses', 'engraving', 'settings'
-  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+const inputClass =
+  'w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white';
+const labelClass = 'block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1';
+const errorClass = 'text-[10.5px] text-rose-600 dark:text-rose-400 mt-1';
+
+const TABS = ['orders', 'addresses', 'details'];
+const EMPTY_ADDRESS = { label: 'Home', full_name: '', phone: '', line1: '', line2: '', landmark: '', city: '', state: '', pincode: '' };
+
+function formatBirthday(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+}
+
+export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onNavigateHome }) {
+  const { signOut } = useAuth();
+  const { user, profile, addresses, saveProfile, saveAddress, deleteAddress, setDefault } = useAccount();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tabFromPath = location.pathname.split('/')[2];
+  const activeTab = TABS.includes(tabFromPath) ? tabFromPath : 'orders';
+  const setActiveTab = (tab) => navigate(tab === 'orders' ? '/account' : `/account/${tab}`, { replace: true });
+
   const [toastMessage, setToastMessage] = useState('');
-
-  // Form states
-  const [firstName, setFirstName] = useState(profile.firstName || 'Aditya');
-  const [lastName, setLastName] = useState(profile.lastName || 'Verma');
-  const [email, setEmail] = useState(profile.email || '');
-  const [phone, setPhone] = useState(profile.phone || '');
-
-  // Engraving state
-  const [engravingText, setEngravingText] = useState(profile.defaultEngraving || 'A. VERMA');
-
-  // Address modal states
-  const [addrTag, setAddrTag] = useState('Residence');
-  const [addrName, setAddrName] = useState(`${profile.firstName || ''} ${profile.lastName || ''}`.trim());
-  const [addrStreet, setAddrStreet] = useState('');
-  const [addrCity, setAddrCity] = useState('');
-  const [addrState, setAddrState] = useState('');
-  const [addrPostal, setAddrPostal] = useState('');
-  const [addrCountry, setAddrCountry] = useState('India');
-  const [addrPhone, setAddrPhone] = useState(profile.phone || '');
-
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(''), 2600);
   };
 
-  const updateProfile = (nextProfile) => {
-    setProfile(nextProfile);
-    saveStoredUserProfile(nextProfile);
-  };
+  // ---------------- Personal details form ----------------
+  const [details, setDetails] = useState({ full_name: '', phone: '', date_of_birth: '', whatsapp_opt_in: false });
+  const [detailErrors, setDetailErrors] = useState({});
+  useEffect(() => {
+    if (!profile) return;
+    setDetails({
+      full_name: profile.full_name || '',
+      phone: profile.phone || '',
+      date_of_birth: profile.date_of_birth || '',
+      whatsapp_opt_in: !!profile.whatsapp_opt_in,
+    });
+  }, [profile]);
 
-  // Save Settings
-  const handleSaveSettings = (e) => {
+  const handleSaveDetails = async (e) => {
     e.preventDefault();
-    const updated = {
-      ...profile,
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      email: email.trim(),
-      phone: phone.trim()
-    };
-    updateProfile(updated);
-    showToast('Changes saved.');
+    const parsed = personalDetailsSchema.safeParse(details);
+    if (!parsed.success) {
+      setDetailErrors(fieldErrors(parsed.error));
+      return;
+    }
+    setDetailErrors({});
+    try {
+      await saveProfile.mutateAsync(parsed.data);
+      showToast('Details saved.');
+    } catch (err) {
+      showToast(toFriendlyError(err));
+    }
   };
 
-  // Save Engraving Plaque
-  const handleSaveEngraving = (e) => {
+  // ---------------- Address modal ----------------
+  const [addressModal, setAddressModal] = useState(null); // null | { id?: string }
+  const [addr, setAddr] = useState(EMPTY_ADDRESS);
+  const [addrErrors, setAddrErrors] = useState({});
+  const openNewAddress = () => {
+    setAddr({ ...EMPTY_ADDRESS, full_name: profile?.full_name || '', phone: profile?.phone || '' });
+    setAddrErrors({});
+    setAddressModal({});
+  };
+  const openEditAddress = (a) => {
+    setAddr({
+      label: a.label, full_name: a.full_name, phone: a.phone, line1: a.line1, line2: a.line2 || '',
+      landmark: a.landmark || '', city: a.city, state: a.state, pincode: a.pincode,
+    });
+    setAddrErrors({});
+    setAddressModal({ id: a.id });
+  };
+  const setAddrField = (key) => (e) => setAddr((prev) => ({ ...prev, [key]: e.target.value }));
+
+  const handleSaveAddress = async (e) => {
     e.preventDefault();
-    const updated = {
-      ...profile,
-      defaultEngraving: engravingText.trim().toUpperCase()
-    };
-    updateProfile(updated);
-    showToast('Plaque preference saved.');
+    const parsed = addressSchema.safeParse(addr);
+    if (!parsed.success) {
+      setAddrErrors(fieldErrors(parsed.error));
+      return;
+    }
+    try {
+      await saveAddress.mutateAsync({ id: addressModal?.id, values: parsed.data });
+      setAddressModal(null);
+      showToast(addressModal?.id ? 'Address updated.' : 'Address added.');
+    } catch (err) {
+      setAddrErrors({ form: toFriendlyError(err) });
+    }
   };
 
-  // Add Address
-  const handleAddAddress = (e) => {
-    e.preventDefault();
-    if (!addrStreet.trim() || !addrCity.trim()) return;
-
-    const newAddr = {
-      id: `addr-${Date.now()}`,
-      isDefault: profile.addresses.length === 0,
-      tag: addrTag.trim() || 'Residence',
-      fullName: addrName.trim() || `${firstName} ${lastName}`,
-      street: addrStreet.trim(),
-      city: addrCity.trim(),
-      state: addrState.trim(),
-      postalCode: addrPostal.trim(),
-      country: addrCountry.trim(),
-      phone: addrPhone.trim()
-    };
-
-    const updated = {
-      ...profile,
-      addresses: [...profile.addresses, newAddr]
-    };
-    updateProfile(updated);
-    setIsAddressModalOpen(false);
-    showToast('Address added.');
-
-    setAddrStreet('');
-    setAddrCity('');
-    setAddrState('');
-    setAddrPostal('');
+  const handleRemoveAddress = async (id) => {
+    try {
+      await deleteAddress.mutateAsync(id);
+      showToast('Address removed.');
+    } catch (err) {
+      showToast(toFriendlyError(err));
+    }
   };
 
-  // Set default address
-  const handleSetDefault = (id) => {
-    const updated = {
-      ...profile,
-      addresses: profile.addresses.map((a) => ({
-        ...a,
-        isDefault: a.id === id
-      }))
-    };
-    updateProfile(updated);
-    showToast('Default address updated.');
+  const handleSetDefault = async (id) => {
+    try {
+      await setDefault.mutateAsync(id);
+      showToast('Default address updated.');
+    } catch (err) {
+      showToast(toFriendlyError(err));
+    }
   };
 
-  // Remove address
-  const handleRemoveAddress = (id) => {
-    const updated = {
-      ...profile,
-      addresses: profile.addresses.filter((a) => a.id !== id)
-    };
-    updateProfile(updated);
-    showToast('Address removed.');
+  const handleSignOut = async () => {
+    await signOut();
+    onNavigateHome();
   };
+
+  const addressList = addresses.data || [];
+  const displayName = profile?.full_name || 'Your account';
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-white transition-colors duration-300 font-sans pb-28">
-      
       {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
@@ -136,19 +136,17 @@ export default function BluorngAccountPage({
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
-            className="fixed top-6 right-6 z-50 bg-[#111111] dark:bg-white text-white dark:text-[#0B0A0D] px-4 py-2.5 rounded-[2px] text-[11.5px] tracking-wide shadow-md"
+            role="status"
+            className="fixed top-6 right-6 left-6 sm:left-auto z-50 bg-[#111111] dark:bg-white text-white dark:text-[#0B0A0D] px-4 py-2.5 rounded-[2px] text-[11.5px] tracking-wide shadow-md"
           >
             {toastMessage}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ============================================================== */}
       {/* ================= 1. MINIMAL HEADER ========================== */}
-      {/* ============================================================== */}
       <header className="w-full border-b border-[#F0F0F0] dark:border-white/10 bg-white/90 dark:bg-[#0B0A0D]/90 backdrop-blur-md sticky top-0 z-30 transition-colors">
         <div className="max-w-5xl mx-auto px-6 sm:px-10 h-16 flex items-center justify-between">
-          
           <button
             onClick={onNavigateHome}
             className="text-[11px] uppercase tracking-[0.18em] text-[#777777] hover:text-[#111111] dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
@@ -158,16 +156,8 @@ export default function BluorngAccountPage({
           </button>
 
           <button onClick={onNavigateHome} className="cursor-pointer" aria-label="Saudagar Home">
-            <img
-              src="/images/saudagar_logo_black.png"
-              alt="Saudagar Perfumers"
-              className="h-6 w-auto object-contain dark:hidden block"
-            />
-            <img
-              src="/images/saudagar_logo_gold.png"
-              alt="Saudagar Perfumers"
-              className="h-6 w-auto object-contain hidden dark:block"
-            />
+            <img src="/images/saudagar_logo_black.png" alt="Saudagar Perfumers" className="h-6 w-auto object-contain dark:hidden block" />
+            <img src="/images/saudagar_logo_gold.png" alt="Saudagar Perfumers" className="h-6 w-auto object-contain hidden dark:block" />
           </button>
 
           <div className="flex items-center gap-4">
@@ -181,54 +171,31 @@ export default function BluorngAccountPage({
               </button>
             )}
           </div>
-
         </div>
       </header>
 
-      {/* ============================================================== */}
       {/* ================= 2. CLEAN EDITORIAL HERO ==================== */}
-      {/* ============================================================== */}
       <section className="max-w-5xl mx-auto px-6 sm:px-10 pt-12 sm:pt-16 pb-10">
-        
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-6 pb-10 border-b border-[#F0F0F0] dark:border-white/10">
-          <div>
-            <span className="text-[10px] uppercase tracking-[0.24em] text-[#888888] dark:text-[#777777] block mb-2 font-medium">
-              Client Account
-            </span>
-            <h1 className="text-[28px] sm:text-[36px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white leading-tight">
-              {profile.firstName} {profile.lastName}
-            </h1>
-            <p className="text-[12.5px] text-[#777777] dark:text-[#999999] mt-1 font-light">
-              {profile.email} · {profile.phone}
+          <div className="min-w-0">
+            <span className="text-[10px] uppercase tracking-[0.24em] text-[#888888] dark:text-[#777777] block mb-2 font-medium">Client Account</span>
+            <h1 className="text-[28px] sm:text-[36px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white leading-tight break-words">{displayName}</h1>
+            <p className="text-[12.5px] text-[#777777] dark:text-[#999999] mt-1 font-light break-all">
+              {[user?.email, profile?.phone ? formatIndianPhone(profile.phone) : null].filter(Boolean).join(' · ')}
             </p>
+            {!profile?.full_name && (
+              <button
+                onClick={() => setActiveTab('details')}
+                className="mt-3 text-[11px] uppercase tracking-[0.14em] text-[#C4823F] dark:text-[#ECC86A] underline underline-offset-4 cursor-pointer"
+              >
+                Add your name, phone and birthday
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-6 text-[12px] text-[#777777] dark:text-[#888888]">
-            <div>
-              <span className="text-[13px] font-mono text-[#111111] dark:text-white block">
-                {profile.points}
-              </span>
-              <span className="text-[9.5px] uppercase tracking-[0.14em]">Loyalty Points</span>
-            </div>
-
-            <div className="w-[1px] h-5 bg-[#EEEEEE] dark:bg-white/15" />
-
-            <div>
-              <span className="text-[13px] font-mono text-[#111111] dark:text-white block">
-                {profile.orders.length}
-              </span>
-              <span className="text-[9.5px] uppercase tracking-[0.14em]">Orders</span>
-            </div>
-
-            <div className="w-[1px] h-5 bg-[#EEEEEE] dark:bg-white/15" />
-
             <button
-              onClick={() => {
-                if (confirm('Sign out of your account?')) {
-                  showToast('Signed out');
-                  setTimeout(() => onNavigateHome(), 400);
-                }
-              }}
+              onClick={handleSignOut}
               className="text-[10px] uppercase tracking-[0.16em] text-[#999999] hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
             >
               Sign out
@@ -239,10 +206,9 @@ export default function BluorngAccountPage({
         {/* Minimal Underline Tabs */}
         <nav className="flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] pt-4 overflow-x-auto scrollbar-none border-b border-[#F0F0F0] dark:border-white/10">
           {[
-            { id: 'orders', label: `Orders (${profile.orders.length})` },
-            { id: 'addresses', label: `Addresses (${profile.addresses.length})` },
-            { id: 'engraving', label: 'Bespoke Plaque' },
-            { id: 'settings', label: 'Preferences' }
+            { id: 'orders', label: 'Orders' },
+            { id: 'addresses', label: `Addresses (${addressList.length})` },
+            { id: 'details', label: 'Personal Details' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -254,322 +220,179 @@ export default function BluorngAccountPage({
               }`}
             >
               {tab.label}
-              {activeTab === tab.id && (
-                <motion.span
-                  layoutId="minimalTabIndicator"
-                  className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#111111] dark:bg-[#ECC86A]"
-                />
-              )}
+              {activeTab === tab.id && <motion.span layoutId="minimalTabIndicator" className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#111111] dark:bg-[#ECC86A]" />}
             </button>
           ))}
         </nav>
-
       </section>
 
-      {/* ============================================================== */}
       {/* ================= 3. MINIMAL TAB CONTENTS ==================== */}
-      {/* ============================================================== */}
       <main className="max-w-5xl mx-auto px-6 sm:px-10">
-
-        {/* ------------------------------------------------------------ */}
-        {/* TAB 1: ORDERS (Clean, open flacon list)                       */}
-        {/* ------------------------------------------------------------ */}
+        {/* TAB 1: ORDERS */}
         {activeTab === 'orders' && (
-          <div className="space-y-12">
-            {profile.orders.length === 0 ? (
-              <div className="py-16 text-center text-[#888888] text-[13px]">
-                No orders yet.
-              </div>
-            ) : (
-              profile.orders.map((order) => (
-                <div key={order.id} className="space-y-5">
-                  
-                  {/* Order Meta Bar */}
-                  <div className="flex flex-wrap items-baseline justify-between gap-2 text-[12px] pb-3 border-b border-[#F0F0F0] dark:border-white/10">
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono font-medium text-[#111111] dark:text-white">
-                        {order.id}
-                      </span>
-                      <span className="text-[#888888] dark:text-[#777777]">·</span>
-                      <span className="text-[#666666] dark:text-[#AAAAAA]">{order.date}</span>
-                      <span className="text-[#888888] dark:text-[#777777]">·</span>
-                      <span className="text-emerald-700 dark:text-emerald-400 font-medium text-[11px] flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-                        {order.status}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-4 text-[11px]">
-                      <span className="font-mono font-medium text-[#111111] dark:text-white">
-                        {formatPrice(order.totalAmount, activeCurrency)}
-                      </span>
-                      <button
-                        onClick={() => showToast(`Tracking ${order.trackingCode}`)}
-                        className="text-[#777777] dark:text-[#999999] hover:text-[#111111] dark:hover:text-white underline cursor-pointer"
-                      >
-                        Track package →
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Items */}
-                  <div className="space-y-4">
-                    {order.items.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between gap-4 py-2"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-16 bg-[#FAFAFA] dark:bg-white/5 rounded-[2px] flex items-center justify-center p-2 shrink-0">
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="max-h-full max-w-full object-contain"
-                            />
-                          </div>
-                          <div>
-                            <h3 className="text-[13.5px] font-normal text-[#111111] dark:text-white">
-                              {item.name}
-                            </h3>
-                            <div className="text-[11.5px] text-[#777777] dark:text-[#888888] mt-0.5 flex items-center gap-2">
-                              <span>{item.size}</span>
-                              <span>·</span>
-                              <span>Qty {item.quantity}</span>
-                              {item.engraving && (
-                                <>
-                                  <span>·</span>
-                                  <span className="text-[#C4823F] dark:text-[#ECC86A]">
-                                    Plaque: &ldquo;{item.engraving}&rdquo;
-                                  </span>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => onSelectProduct && onSelectProduct(item.id)}
-                            className="text-[11px] uppercase tracking-wider text-[#666666] dark:text-[#999999] hover:text-[#111111] dark:hover:text-white cursor-pointer"
-                          >
-                            View
-                          </button>
-                          <button
-                            onClick={() => showToast(`Added ${item.name} to cart.`)}
-                            className="text-[11px] uppercase tracking-wider text-[#111111] dark:text-white hover:underline cursor-pointer font-medium"
-                          >
-                            Reorder
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                </div>
-              ))
-            )}
-          </div>
+          <div className="py-16 text-center text-[#888888] text-[13px]">No orders yet.</div>
         )}
 
-        {/* ------------------------------------------------------------ */}
-        {/* TAB 2: ADDRESSES                                             */}
-        {/* ------------------------------------------------------------ */}
+        {/* TAB 2: ADDRESSES */}
         {activeTab === 'addresses' && (
           <div className="space-y-8">
             <div className="flex items-center justify-between pb-3 border-b border-[#F0F0F0] dark:border-white/10">
-              <span className="text-[11px] uppercase tracking-[0.16em] text-[#888888] font-medium">
-                Saved Residences ({profile.addresses.length})
-              </span>
-              <button
-                onClick={() => setIsAddressModalOpen(true)}
-                className="text-[11px] uppercase tracking-[0.16em] text-[#111111] dark:text-white hover:underline cursor-pointer font-medium"
-              >
+              <span className="text-[11px] uppercase tracking-[0.16em] text-[#888888] font-medium">Saved Addresses ({addressList.length})</span>
+              <button onClick={openNewAddress} className="text-[11px] uppercase tracking-[0.16em] text-[#111111] dark:text-white hover:underline cursor-pointer font-medium">
                 + Add Address
               </button>
             </div>
 
+            {addresses.isLoading && <p className="text-[12.5px] text-[#888888]">Loading addresses…</p>}
+            {addresses.error && <p className={errorClass}>{toFriendlyError(addresses.error)}</p>}
+            {!addresses.isLoading && addressList.length === 0 && (
+              <p className="py-10 text-center text-[13px] text-[#888888]">No saved addresses yet. Add one to check out faster.</p>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {profile.addresses.map((addr) => (
+              {addressList.map((a) => (
                 <div
-                  key={addr.id}
-                  className={`p-6 rounded-[2px] border transition-colors ${
-                    addr.isDefault
-                      ? 'border-[#111111] dark:border-white/30'
-                      : 'border-[#EEEEEE] dark:border-white/10'
-                  }`}
+                  key={a.id}
+                  className={`p-6 rounded-[2px] border transition-colors ${a.is_default ? 'border-[#111111] dark:border-white/30' : 'border-[#EEEEEE] dark:border-white/10'}`}
                 >
                   <div className="flex items-center justify-between mb-3 text-[11px]">
-                    <span className="uppercase tracking-widest text-[#888888] font-medium">
-                      {addr.tag}
-                    </span>
-                    {addr.isDefault ? (
-                      <span className="text-[10px] uppercase tracking-wider text-[#C4823F] dark:text-[#ECC86A] font-semibold">
-                        Default
-                      </span>
-                    ) : (
-                      <button
-                        onClick={() => handleRemoveAddress(addr.id)}
-                        className="text-red-500 hover:text-red-700 cursor-pointer"
-                      >
-                        Remove
-                      </button>
-                    )}
+                    <span className="uppercase tracking-widest text-[#888888] font-medium">{a.label}</span>
+                    {a.is_default && <span className="text-[10px] uppercase tracking-wider text-[#C4823F] dark:text-[#ECC86A] font-semibold">Default</span>}
                   </div>
-
-                  <p className="text-[13.5px] font-medium text-[#111111] dark:text-white">
-                    {addr.fullName}
-                  </p>
+                  <p className="text-[13.5px] font-medium text-[#111111] dark:text-white">{a.full_name}</p>
                   <p className="text-[12.5px] text-[#666666] dark:text-[#AAAAAA] mt-1 leading-relaxed font-light">
-                    {addr.street}<br />
-                    {addr.city}, {addr.state} {addr.postalCode}<br />
-                    {addr.country}
+                    {a.line1}
+                    {a.line2 ? <>, {a.line2}</> : null}
+                    <br />
+                    {a.landmark ? (
+                      <>
+                        Near {a.landmark}
+                        <br />
+                      </>
+                    ) : null}
+                    {a.city}, {a.state} {a.pincode}
                   </p>
-                  <p className="text-[11.5px] text-[#888888] mt-2 font-mono">
-                    {addr.phone}
-                  </p>
+                  <p className="text-[11.5px] text-[#888888] mt-2 font-mono">{formatIndianPhone(a.phone)}</p>
 
-                  {!addr.isDefault && (
-                    <div className="mt-4 pt-3 border-t border-[#F0F0F0] dark:border-white/10">
-                      <button
-                        onClick={() => handleSetDefault(addr.id)}
-                        className="text-[11px] uppercase tracking-wider text-[#777777] hover:text-[#111111] dark:hover:text-white cursor-pointer"
-                      >
+                  <div className="mt-4 pt-3 border-t border-[#F0F0F0] dark:border-white/10 flex flex-wrap gap-4">
+                    <button onClick={() => openEditAddress(a)} className="text-[11px] uppercase tracking-wider text-[#777777] hover:text-[#111111] dark:hover:text-white cursor-pointer">
+                      Edit
+                    </button>
+                    {!a.is_default && (
+                      <button onClick={() => handleSetDefault(a.id)} className="text-[11px] uppercase tracking-wider text-[#777777] hover:text-[#111111] dark:hover:text-white cursor-pointer">
                         Make Default
                       </button>
-                    </div>
-                  )}
+                    )}
+                    <button onClick={() => handleRemoveAddress(a.id)} className="text-[11px] uppercase tracking-wider text-red-500 hover:text-red-700 cursor-pointer">
+                      Remove
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
 
-            {/* Clean Modal for Add Address */}
+            {/* Address modal */}
             <AnimatePresence>
-              {isAddressModalOpen && (
+              {addressModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
                   <motion.div
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 12 }}
-                    className="relative w-full max-w-md bg-white dark:bg-[#141318] p-7 rounded-[2px] border border-[#EAEAEA] dark:border-white/10 shadow-xl space-y-5"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="address-modal-title"
+                    className="relative w-full max-w-md max-h-[90svh] overflow-y-auto bg-white dark:bg-[#141318] p-7 rounded-[2px] border border-[#EAEAEA] dark:border-white/10 shadow-xl space-y-5"
                   >
                     <div className="flex items-center justify-between border-b border-[#F0F0F0] dark:border-white/10 pb-3">
-                      <h3 className="text-[15px] font-medium tracking-tight">
-                        New Address
+                      <h3 id="address-modal-title" className="text-[15px] font-medium tracking-tight">
+                        {addressModal.id ? 'Edit Address' : 'New Address'}
                       </h3>
-                      <button
-                        onClick={() => setIsAddressModalOpen(false)}
-                        className="text-[#888888] hover:text-[#111111] dark:hover:text-white cursor-pointer text-sm"
-                      >
+                      <button onClick={() => setAddressModal(null)} aria-label="Close" className="text-[#888888] hover:text-[#111111] dark:hover:text-white cursor-pointer text-sm">
                         ✕
                       </button>
                     </div>
 
-                    <form onSubmit={handleAddAddress} className="space-y-4 text-[12.5px]">
+                    <form onSubmit={handleSaveAddress} noValidate className="space-y-4 text-[12.5px]">
+                      {addrErrors.form && <p className={errorClass}>{addrErrors.form}</p>}
                       <div>
-                        <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                          Label
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={addrTag}
-                          onChange={(e) => setAddrTag(e.target.value)}
-                          placeholder="Residence, Penthouse, Office"
-                          className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                        />
+                        <span className={labelClass}>Label</span>
+                        <div className="flex gap-2">
+                          {['Home', 'Work', 'Other'].map((l) => (
+                            <button
+                              key={l}
+                              type="button"
+                              onClick={() => setAddr((p) => ({ ...p, label: l }))}
+                              className={`px-3 py-1.5 text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer ${
+                                addr.label === l ? 'bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D]' : 'border border-[#E0E0E0] dark:border-white/20 text-[#666666] dark:text-[#AAAAAA]'
+                              }`}
+                            >
+                              {l}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label htmlFor="addr-name" className={labelClass}>Recipient Name</label>
+                          <input id="addr-name" type="text" value={addr.full_name} onChange={setAddrField('full_name')} className={inputClass} autoComplete="name" />
+                          {addrErrors.full_name && <p className={errorClass}>{addrErrors.full_name}</p>}
+                        </div>
+                        <div>
+                          <label htmlFor="addr-phone" className={labelClass}>Mobile</label>
+                          <input id="addr-phone" type="tel" inputMode="tel" value={addr.phone} onChange={setAddrField('phone')} className={inputClass} autoComplete="tel-national" />
+                          {addrErrors.phone && <p className={errorClass}>{addrErrors.phone}</p>}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="addr-line1" className={labelClass}>House / Flat, Street</label>
+                        <input id="addr-line1" type="text" value={addr.line1} onChange={setAddrField('line1')} className={inputClass} autoComplete="address-line1" />
+                        {addrErrors.line1 && <p className={errorClass}>{addrErrors.line1}</p>}
+                      </div>
+                      <div>
+                        <label htmlFor="addr-line2" className={labelClass}>Area / Locality (optional)</label>
+                        <input id="addr-line2" type="text" value={addr.line2} onChange={setAddrField('line2')} className={inputClass} autoComplete="address-line2" />
+                      </div>
+                      <div>
+                        <label htmlFor="addr-landmark" className={labelClass}>Landmark (optional)</label>
+                        <input id="addr-landmark" type="text" value={addr.landmark} onChange={setAddrField('landmark')} className={inputClass} />
                       </div>
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                            Recipient Name
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={addrName}
-                            onChange={(e) => setAddrName(e.target.value)}
-                            className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                          />
+                          <label htmlFor="addr-city" className={labelClass}>City</label>
+                          <input id="addr-city" type="text" value={addr.city} onChange={setAddrField('city')} className={inputClass} autoComplete="address-level2" />
+                          {addrErrors.city && <p className={errorClass}>{addrErrors.city}</p>}
                         </div>
                         <div>
-                          <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                            Mobile
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={addrPhone}
-                            onChange={(e) => setAddrPhone(e.target.value)}
-                            className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                          />
+                          <label htmlFor="addr-pin" className={labelClass}>Pincode</label>
+                          <input id="addr-pin" type="text" inputMode="numeric" maxLength={6} value={addr.pincode} onChange={setAddrField('pincode')} className={inputClass} autoComplete="postal-code" />
+                          {addrErrors.pincode && <p className={errorClass}>{addrErrors.pincode}</p>}
                         </div>
                       </div>
-
                       <div>
-                        <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                          Street Address
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={addrStreet}
-                          onChange={(e) => setAddrStreet(e.target.value)}
-                          placeholder="42 Altamount Road, Malabar Hill"
-                          className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-2">
-                        <div>
-                          <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                            City
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={addrCity}
-                            onChange={(e) => setAddrCity(e.target.value)}
-                            className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                            State
-                          </label>
-                          <input
-                            type="text"
-                            value={addrState}
-                            onChange={(e) => setAddrState(e.target.value)}
-                            className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                            PIN
-                          </label>
-                          <input
-                            type="text"
-                            value={addrPostal}
-                            onChange={(e) => setAddrPostal(e.target.value)}
-                            className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                          />
-                        </div>
+                        <label htmlFor="addr-state" className={labelClass}>State</label>
+                        <select id="addr-state" value={addr.state} onChange={setAddrField('state')} className={`${inputClass} dark:bg-[#141318]`}>
+                          <option value="">Choose a state</option>
+                          {INDIAN_STATES.map((s) => (
+                            <option key={s} value={s}>{s}</option>
+                          ))}
+                        </select>
+                        {addrErrors.state && <p className={errorClass}>{addrErrors.state}</p>}
                       </div>
 
                       <div className="pt-3 border-t border-[#F0F0F0] dark:border-white/10 flex items-center justify-end gap-3">
-                        <button
-                          type="button"
-                          onClick={() => setIsAddressModalOpen(false)}
-                          className="text-[11px] uppercase tracking-wider text-[#777777]"
-                        >
+                        <button type="button" onClick={() => setAddressModal(null)} className="text-[11px] uppercase tracking-wider text-[#777777]">
                           Cancel
                         </button>
                         <button
                           type="submit"
-                          className="px-5 py-2 bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium"
+                          disabled={saveAddress.isPending}
+                          className="px-5 py-2 bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium disabled:opacity-60"
                         >
-                          Save
+                          {saveAddress.isPending ? 'Saving…' : 'Save'}
                         </button>
                       </div>
                     </form>
@@ -577,180 +400,87 @@ export default function BluorngAccountPage({
                 </div>
               )}
             </AnimatePresence>
-
           </div>
         )}
 
-        {/* ------------------------------------------------------------ */}
-        {/* TAB 3: BESPOKE ENGRAVING PLAQUE                              */}
-        {/* ------------------------------------------------------------ */}
-        {activeTab === 'engraving' && (
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center py-6">
-            
-            {/* Minimal Flacon Plaque Simulation */}
-            <div className="md:col-span-5 flex flex-col items-center justify-center p-8 bg-[#FAFAFA] dark:bg-white/5 rounded-[2px]">
-              <div className="relative w-48 h-64 flex items-center justify-center">
-                <img
-                  src="/images/saudagar_amber_gold.png"
-                  alt="Flacon Preview"
-                  className="max-h-full w-auto object-contain filter drop-shadow-sm"
-                />
-                
-                <motion.div
-                  key={engravingText}
-                  initial={{ opacity: 0.7 }}
-                  animate={{ opacity: 1 }}
-                  className="absolute bottom-10 px-3 py-1 rounded-[1px] bg-[#C4823F] text-white shadow-xs text-center max-w-[120px]"
-                >
-                  <span className="block text-[8px] font-serif font-bold uppercase tracking-[0.2em] truncate">
-                    {engravingText || 'SAUDAGAR'}
-                  </span>
-                </motion.div>
-              </div>
-              <span className="text-[10px] uppercase tracking-widest text-[#888888] mt-3 font-light">
-                Live Inscription
-              </span>
-            </div>
-
-            {/* Input & Save */}
-            <div className="md:col-span-7 space-y-5">
-              <div>
-                <h2 className="text-[16px] font-medium text-[#111111] dark:text-white">
-                  Default Flacon Plaque
-                </h2>
-                <p className="text-[12.5px] text-[#777777] dark:text-[#AAAAAA] mt-1 font-light leading-relaxed">
-                  Complimentary hand-calligraphy engraving applied to all full-size commissions.
-                </p>
-              </div>
-
-              <form onSubmit={handleSaveEngraving} className="space-y-4">
-                <div>
-                  <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                    Plaque Inscription (Up to 14 characters)
-                  </label>
-                  <input
-                    type="text"
-                    maxLength={14}
-                    value={engravingText}
-                    onChange={(e) => setEngravingText(e.target.value.toUpperCase())}
-                    placeholder="A. VERMA"
-                    className="w-full max-w-sm px-3.5 py-2.5 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent text-[13px] font-serif tracking-widest uppercase outline-none focus:border-[#111111] dark:focus:border-white"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium hover:opacity-90 transition-opacity"
-                >
-                  Save Inscription
-                </button>
-              </form>
-            </div>
-
-          </div>
-        )}
-
-        {/* ------------------------------------------------------------ */}
-        {/* TAB 4: SETTINGS / PREFERENCES                                */}
-        {/* ------------------------------------------------------------ */}
-        {activeTab === 'settings' && (
+        {/* TAB 3: PERSONAL DETAILS */}
+        {activeTab === 'details' && (
           <div className="max-w-xl space-y-8 py-4">
-            
-            <form onSubmit={handleSaveSettings} className="space-y-5 text-[12.5px]">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                  />
-                </div>
+            <form onSubmit={handleSaveDetails} noValidate className="space-y-5 text-[12.5px]">
+              <div>
+                <label htmlFor="pd-name" className={labelClass}>Full Name</label>
+                <input id="pd-name" type="text" value={details.full_name} onChange={(e) => setDetails((d) => ({ ...d, full_name: e.target.value }))} className={inputClass} autoComplete="name" />
+                {detailErrors.full_name && <p className={errorClass}>{detailErrors.full_name}</p>}
               </div>
 
               <div>
-                <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
-                />
+                <label htmlFor="pd-email" className={labelClass}>Email</label>
+                <input id="pd-email" type="email" value={user?.email || ''} readOnly className={`${inputClass} text-[#888888] cursor-not-allowed`} />
               </div>
 
               <div>
-                <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1">
-                  Mobile
-                </label>
+                <label htmlFor="pd-phone" className={labelClass}>Mobile</label>
                 <input
+                  id="pd-phone"
                   type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white"
+                  inputMode="tel"
+                  placeholder="98765 43210"
+                  value={details.phone}
+                  onChange={(e) => setDetails((d) => ({ ...d, phone: e.target.value }))}
+                  className={inputClass}
+                  autoComplete="tel-national"
                 />
+                {detailErrors.phone && <p className={errorClass}>{detailErrors.phone}</p>}
               </div>
 
-              {/* Currency */}
               <div>
-                <label className="block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1.5">
-                  Boutique Currency
-                </label>
-                <div className="flex items-center gap-2">
-                  {['INR', 'AED', 'USD', 'EUR', 'GBP', 'SAR'].map((curr) => (
-                    <button
-                      key={curr}
-                      type="button"
-                      onClick={() => {
-                        if (onChangeCurrency) onChangeCurrency(curr);
-                        showToast(`Currency: ${curr}`);
-                      }}
-                      className={`px-3 py-1.5 text-[11px] font-mono rounded-[2px] transition-colors cursor-pointer ${
-                        activeCurrency === curr
-                          ? 'bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D] font-bold'
-                          : 'border border-[#E0E0E0] dark:border-white/20 text-[#666666] dark:text-[#AAAAAA] hover:text-[#111111] dark:hover:text-white'
-                      }`}
-                    >
-                      {curr}
-                    </button>
-                  ))}
-                </div>
+                <label htmlFor="pd-dob" className={labelClass}>Birthday</label>
+                {profile?.dob_locked ? (
+                  <>
+                    <p id="pd-dob" className="px-3 py-2 border border-[#F0F0F0] dark:border-white/10 rounded-[2px] text-[#111111] dark:text-white">
+                      {formatBirthday(profile.date_of_birth)}
+                    </p>
+                    <p className="text-[10.5px] text-[#888888] mt-1">Your birthday is saved. Contact us if it needs correcting.</p>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      id="pd-dob"
+                      type="date"
+                      max={new Date().toISOString().slice(0, 10)}
+                      value={details.date_of_birth}
+                      onChange={(e) => setDetails((d) => ({ ...d, date_of_birth: e.target.value }))}
+                      className={inputClass}
+                    />
+                    <p className="text-[10.5px] text-[#888888] mt-1">We send a birthday gift every year. It can only be set once.</p>
+                  </>
+                )}
+                {detailErrors.date_of_birth && <p className={errorClass}>{detailErrors.date_of_birth}</p>}
               </div>
+
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={details.whatsapp_opt_in}
+                  onChange={(e) => setDetails((d) => ({ ...d, whatsapp_opt_in: e.target.checked }))}
+                  className="mt-0.5 accent-[#111111] dark:accent-[#D4AF37]"
+                />
+                <span className="text-[12.5px] text-[#555555] dark:text-[#AAAAAA]">Send me new launches and offers on WhatsApp. Order updates are always sent.</span>
+              </label>
 
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium hover:opacity-90 transition-opacity"
+                  disabled={saveProfile.isPending}
+                  className="px-6 py-2.5 bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium hover:opacity-90 transition-opacity disabled:opacity-60"
                 >
-                  Save Changes
+                  {saveProfile.isPending ? 'Saving…' : 'Save Changes'}
                 </button>
               </div>
             </form>
-
           </div>
         )}
-
       </main>
-
     </div>
   );
 }

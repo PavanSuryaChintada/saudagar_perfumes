@@ -5,7 +5,6 @@ import BluorngProductCard from './BluorngProductCard.jsx';
 
 export default function BluorngWishlistPage({
   wishlist = [],
-  activeCurrency = 'INR',
   onToggleWishlist,
   onSelectProduct,
   onQuickBuy,
@@ -95,7 +94,6 @@ export default function BluorngWishlistPage({
               >
                 <BluorngProductCard
                   product={product}
-                  activeCurrency={activeCurrency}
                   isWishlisted
                   onToggleWishlist={onToggleWishlist}
                   onSelectProduct={onSelectProduct}

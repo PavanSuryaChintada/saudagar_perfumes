@@ -59,7 +59,7 @@ export default function BluorngStoryPage({
     {
       num: '04',
       title: 'Heirloom Crystal & Brass',
-      desc: 'Optically pure crystal flacons crowned with a 120g solid knurled brass cap and a complimentary custom-engraved plaque calligraphed with your name or crest.'
+      desc: 'Optically pure crystal flacons crowned with a 120g solid knurled brass cap.'
     }
   ];
 

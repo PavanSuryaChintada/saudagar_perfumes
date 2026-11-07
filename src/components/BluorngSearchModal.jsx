@@ -6,7 +6,6 @@ export default function BluorngSearchModal({
   isOpen,
   onClose,
   onSelectProduct,
-  activeCurrency = 'INR',
   wishlist = [],
   onToggleWishlist
 }) {
@@ -374,7 +373,7 @@ export default function BluorngSearchModal({
                             {/* Price & View Arrow Row */}
                             <div className="mt-2.5 pt-2 border-t border-[#F0F0F0] dark:border-white/5 flex items-center justify-between">
                               <span className="text-[12px] sm:text-[12.5px] font-bold text-[#111111] dark:text-white">
-                                {formatPrice(product.price, activeCurrency)}
+                                {formatPrice(product.price)}
                               </span>
                               <span className="text-[10px] uppercase tracking-wider font-semibold text-[#C4823F] dark:text-[#ECC86A] flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-300">
                                 <span>Explore</span>

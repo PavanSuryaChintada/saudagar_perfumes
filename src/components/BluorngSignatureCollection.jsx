@@ -4,7 +4,6 @@ import { ALL_PRODUCTS } from '../data/bluorngSaudagarData.js';
 import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 
 export default function BluorngSignatureCollection({
-  activeCurrency,
   wishlist = [],
   onToggleWishlist,
   onSelectProduct,
@@ -75,7 +74,6 @@ export default function BluorngSignatureCollection({
             <StaggerItem key={product.id}>
               <BluorngProductCard
                 product={product}
-                activeCurrency={activeCurrency}
                 isWishlisted={wishlist.includes(product.id)}
                 onToggleWishlist={onToggleWishlist}
                 onSelectProduct={onSelectProduct}

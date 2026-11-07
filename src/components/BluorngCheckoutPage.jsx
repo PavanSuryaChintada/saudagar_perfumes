@@ -5,7 +5,6 @@ import { formatPrice, ALL_PRODUCTS } from '../data/bluorngSaudagarData.js';
 export default function BluorngCheckoutPage({
   cart = [],
   checkoutData,
-  activeCurrency = 'INR',
   theme = 'light',
   onToggleTheme,
   onNavigateHome,
@@ -24,7 +23,6 @@ export default function BluorngCheckoutPage({
   const [city, setCity] = useState('Mumbai');
   const [state, setState] = useState('Maharashtra');
   const [pinCode, setPinCode] = useState('400026');
-  const [shippingMethod, setShippingMethod] = useState('express'); // 'express' | 'priority'
   const [paymentMethod, setPaymentMethod] = useState('upi'); // 'upi' | 'card' | 'cod'
   const [promoCode, setPromoCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState(0);
@@ -45,7 +43,7 @@ export default function BluorngCheckoutPage({
     return sum + price * (item.quantity || 1);
   }, 0);
 
-  const shippingCost = shippingMethod === 'priority' ? 500 : 0;
+  const shippingCost = 0; // replaced by the server quote in phase 4
   const discountAmount = appliedDiscount > 0 ? Math.round(subtotal * (appliedDiscount / 100)) : (checkoutData?.discount || 0);
   const total = Math.max(0, subtotal - discountAmount + shippingCost);
 
@@ -235,7 +233,7 @@ export default function BluorngCheckoutPage({
                   <span className="text-[11px] text-[#888888] dark:text-[#88857F] font-light">Tamper-Proof Box</span>
                 </div>
                 <div className="flex flex-col gap-1 border-l-2 border-[#CCCCCC] dark:border-white/20 pl-3">
-                  <span className="text-[10px] uppercase font-medium text-[#888888] dark:text-[#88857F]">4. White-Glove Handover</span>
+                  <span className="text-[10px] uppercase font-medium text-[#888888] dark:text-[#88857F]">4. Delivered</span>
                   <span className="text-[11px] text-[#888888] dark:text-[#88857F] font-light">Malabar Hill, Mumbai</span>
                 </div>
               </div>
@@ -280,7 +278,7 @@ export default function BluorngCheckoutPage({
                       </div>
 
                       <span className="text-[13px] font-semibold text-[#111111] dark:text-white tabular-nums">
-                        {formatPrice(itemPrice * (item.quantity || 1), activeCurrency)}
+                        {formatPrice(itemPrice * (item.quantity || 1))}
                       </span>
                     </div>
                   );
@@ -306,7 +304,7 @@ export default function BluorngCheckoutPage({
                   Mobile: {phone}
                 </p>
                 <p className="text-[#777777] dark:text-[#88857F]">
-                  Courier: {shippingMethod === 'priority' ? 'Priority White-Glove (Next Day AM)' : 'Standard Insured Air Courier'}
+                  Delivery: Standard insured courier
                 </p>
               </div>
 
@@ -332,7 +330,7 @@ export default function BluorngCheckoutPage({
                 <div className="flex justify-between pt-2 border-t border-[#EAEAEA] dark:border-white/10 text-[14px]">
                   <span className="font-medium uppercase tracking-wider text-[#111111] dark:text-white">Total Amount Paid:</span>
                   <span className="font-bold text-[#111111] dark:text-[#ECC86A] tabular-nums">
-                    {formatPrice(displayTotal, activeCurrency)}
+                    {formatPrice(displayTotal)}
                   </span>
                 </div>
               </div>
@@ -529,74 +527,6 @@ export default function BluorngCheckoutPage({
                     </div>
                   </div>
 
-                  {/* Delivery Service Tier */}
-                  <div className="pt-2">
-                    <label className="block text-[10px] font-medium uppercase tracking-[0.12em] text-[#666666] dark:text-[#A09D96] mb-2.5">
-                      Select Courier Protocol
-                    </label>
-                    <div className="space-y-2.5 text-[12px]">
-                      <label
-                        onClick={() => setShippingMethod('express')}
-                        className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${
-                          shippingMethod === 'express'
-                            ? 'border-[#111111] dark:border-[#D4AF37] bg-[#F9F8F5] dark:bg-[#17161D]'
-                            : 'border-[#EAEAEA] dark:border-white/10 hover:border-[#CCCCCC]'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="radio"
-                            name="shippingMethod"
-                            checked={shippingMethod === 'express'}
-                            onChange={() => setShippingMethod('express')}
-                            className="accent-[#111111] dark:accent-[#D4AF37]"
-                          />
-                          <div>
-                            <span className="font-medium text-[#111111] dark:text-white block">
-                              Standard Insured Air Courier (2-3 Days)
-                            </span>
-                            <span className="text-[11px] text-[#777777] dark:text-[#A09D96]">
-                              Dispatched in tamper-proof signature black presentation box
-                            </span>
-                          </div>
-                        </div>
-                        <span className="font-semibold text-emerald-700 dark:text-emerald-400 text-[11px]">
-                          COMPLIMENTARY
-                        </span>
-                      </label>
-
-                      <label
-                        onClick={() => setShippingMethod('priority')}
-                        className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${
-                          shippingMethod === 'priority'
-                            ? 'border-[#111111] dark:border-[#D4AF37] bg-[#F9F8F5] dark:bg-[#17161D]'
-                            : 'border-[#EAEAEA] dark:border-white/10 hover:border-[#CCCCCC]'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="radio"
-                            name="shippingMethod"
-                            checked={shippingMethod === 'priority'}
-                            onChange={() => setShippingMethod('priority')}
-                            className="accent-[#111111] dark:accent-[#D4AF37]"
-                          />
-                          <div>
-                            <span className="font-medium text-[#111111] dark:text-white block">
-                              Priority White-Glove Concierge (Next Day AM)
-                            </span>
-                            <span className="text-[11px] text-[#777777] dark:text-[#A09D96]">
-                              Hand-carried air delivery with scheduled delivery window
-                            </span>
-                          </div>
-                        </div>
-                        <span className="font-medium text-[#111111] dark:text-white text-[11.5px]">
-                          +{formatPrice(500, activeCurrency)}
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
                   {/* Continue Button */}
                   <div className="pt-4 flex justify-end">
                     <button
@@ -648,7 +578,7 @@ export default function BluorngCheckoutPage({
                       </span>
                     </div>
                     <span className="text-[11px] text-[#888888] dark:text-[#88857F]">
-                      {shippingMethod === 'priority' ? 'Next Day AM' : '2-3 Days'}
+                      3–7 days
                     </span>
                   </div>
 
@@ -752,7 +682,7 @@ export default function BluorngCheckoutPage({
                       type="submit"
                       className="px-9 py-3.5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-colors cursor-pointer shadow-md"
                     >
-                      Authorize Order · {formatPrice(total, activeCurrency)}
+                      Authorize Order · {formatPrice(total)}
                     </button>
                   </div>
                 </motion.form>
@@ -801,7 +731,7 @@ export default function BluorngCheckoutPage({
                         </div>
 
                         <span className="text-[12px] font-medium text-[#111111] dark:text-white tabular-nums shrink-0">
-                          {formatPrice(itemPrice * (item.quantity || 1), activeCurrency)}
+                          {formatPrice(itemPrice * (item.quantity || 1))}
                         </span>
                       </div>
                     );
@@ -829,20 +759,20 @@ export default function BluorngCheckoutPage({
                 <div className="pt-3 border-t border-[#EAEAEA] dark:border-white/10 space-y-2 text-[11.5px]">
                   <div className="flex justify-between text-[#666666] dark:text-[#A09D96]">
                     <span>Subtotal</span>
-                    <span className="text-[#111111] dark:text-white font-medium">{formatPrice(subtotal, activeCurrency)}</span>
+                    <span className="text-[#111111] dark:text-white font-medium">{formatPrice(subtotal)}</span>
                   </div>
 
                   {discountAmount > 0 && (
                     <div className="flex justify-between text-emerald-700 dark:text-emerald-400">
                       <span>Privilege Discount ({appliedDiscount || 10}%)</span>
-                      <span>−{formatPrice(discountAmount, activeCurrency)}</span>
+                      <span>−{formatPrice(discountAmount)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between text-[#666666] dark:text-[#A09D96]">
                     <span>Insured Courier Delivery</span>
                     <span className={shippingCost === 0 ? 'text-emerald-700 dark:text-emerald-400 font-medium' : 'text-[#111111] dark:text-white'}>
-                      {shippingCost === 0 ? 'COMPLIMENTARY' : `+${formatPrice(shippingCost, activeCurrency)}`}
+                      {shippingCost === 0 ? 'COMPLIMENTARY' : `+${formatPrice(shippingCost)}`}
                     </span>
                   </div>
 
@@ -854,7 +784,7 @@ export default function BluorngCheckoutPage({
                   <div className="flex justify-between text-[14px] font-medium text-[#111111] dark:text-white pt-2 border-t border-[#EAEAEA] dark:border-white/10">
                     <span className="uppercase tracking-wider">Payable Total</span>
                     <span className="font-semibold text-[#111111] dark:text-[#ECC86A] tabular-nums">
-                      {formatPrice(total, activeCurrency)}
+                      {formatPrice(total)}
                     </span>
                   </div>
                 </div>

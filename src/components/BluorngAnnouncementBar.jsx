@@ -61,9 +61,9 @@ export default function BluorngAnnouncementBar() {
           </div>
         </div>
 
-        {/* Right: Quick Delivery & Currency Tag */}
+        {/* Right: Quick Delivery Tag */}
         <div className="hidden md:flex items-center gap-4 text-[10px] tracking-[0.04em] uppercase text-white/70 z-20 flex-shrink-0">
-          <span>Worldwide Express</span>
+          <span>Express Across India</span>
           <span className="text-white/30">•</span>
           <span className="text-[#C4823F] dark:text-[#ECC86A] font-semibold">100% Artisanal</span>
         </div>

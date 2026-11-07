@@ -1,13 +1,6 @@
+import { formatINR } from '../lib/money';
 // SAUDAGAR PERFUMES - Comprehensive Dynamic Data System
 // Blueprint strictly matching https://bluorng.com/ architecture and components
-
-export const CURRENCIES = {
-  INR: { code: 'INR', symbol: 'RS. ', rate: 1, label: 'INR (₹)' },
-  AED: { code: 'AED', symbol: 'AED ', rate: 0.044, label: 'AED (UAE Dirham)' },
-  USD: { code: 'USD', symbol: '$', rate: 0.012, label: 'USD ($)' },
-  EUR: { code: 'EUR', symbol: '€', rate: 0.011, label: 'EUR (€)' },
-  GBP: { code: 'GBP', symbol: '£', rate: 0.0095, label: 'GBP (£)' }
-};
 
 export const NOTIFICATIONS = [
   'BLIND BOX 26 · THE ROYAL OUD DROP IS LIVE NOW',
@@ -702,36 +695,16 @@ export const POPULAR_SEARCHES_TABS = {
 };
 
 // FORMATTING & STORAGE UTILITIES
-export function formatPrice(inrAmount, currencyCode = 'INR') {
-  const curr = CURRENCIES[currencyCode] || CURRENCIES.INR;
-  const converted = Math.round(inrAmount * curr.rate);
-  return `${curr.symbol}${converted.toLocaleString()}`;
-}
-
-export function getStoredCurrency() {
-  if (typeof window === 'undefined') return 'INR';
-  return localStorage.getItem('saudagar_currency') || 'INR';
-}
-
-export function setStoredCurrency(code) {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('saudagar_currency', code);
-  }
+// INR only (the store sells within India). The second argument is accepted for old call sites and ignored.
+export function formatPrice(inrAmount) {
+  return formatINR(inrAmount);
 }
 
 export function getStoredCart() {
   if (typeof window === 'undefined') return [];
   try {
     const data = localStorage.getItem('saudagar_cart_bluorng');
-    return data ? JSON.parse(data) : [
-      {
-        productId: 'saudagar-thunderstruck-oud',
-        size: '50ML',
-        price: 5500,
-        quantity: 1,
-        engraving: ''
-      }
-    ];
+    return data ? JSON.parse(data) : [];
   } catch (e) {
     return [];
   }

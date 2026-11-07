@@ -10,7 +10,6 @@ export default function BluorngQuickBuyModal(props) {
 
 function QuickBuyModalContent({
   product,
-  activeCurrency = 'INR',
   wishlist = [],
   onToggleWishlist,
   onClose,
@@ -183,12 +182,12 @@ function QuickBuyModalContent({
               {/* Price & Value Badge */}
               <div className="mt-2.5 flex items-baseline gap-2.5">
                 <span className="text-[20px] font-medium tracking-tight text-[#111111] dark:text-[#ECC86A] tabular-nums">
-                  {formatPrice(currentPrice, activeCurrency)}
+                  {formatPrice(currentPrice)}
                 </span>
                 {product.compareAtPrice && product.compareAtPrice > currentPrice && (
                   <>
                     <span className="text-[12.5px] text-[#999999] dark:text-[#777570] line-through tabular-nums">
-                      {formatPrice(product.compareAtPrice, activeCurrency)}
+                      {formatPrice(product.compareAtPrice)}
                     </span>
                     <span className="text-[9.5px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40">
                       Privilege
@@ -227,7 +226,7 @@ function QuickBuyModalContent({
                         {sz.label}
                       </div>
                       <div className={`text-[10px] tabular-nums mt-0.5 ${isSelected ? 'opacity-90' : 'text-[#888888] dark:text-[#88857F]'}`}>
-                        {formatPrice(sz.price, activeCurrency)}
+                        {formatPrice(sz.price)}
                       </div>
                     </button>
                   );
@@ -268,7 +267,7 @@ function QuickBuyModalContent({
               >
                 <span>{isAdded ? 'Added to Bag ✓' : 'Add to Bag'}</span>
                 <span className="font-semibold tabular-nums ml-2">
-                  {formatPrice(currentPrice * quantity, activeCurrency)}
+                  {formatPrice(currentPrice * quantity)}
                 </span>
               </motion.button>
             </div>

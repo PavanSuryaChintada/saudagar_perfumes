@@ -28,8 +28,6 @@ import { useSmoothScroll } from './components/motion/SmoothScrollProvider.jsx';
 
 import {
   ALL_PRODUCTS,
-  getStoredCurrency,
-  setStoredCurrency,
   getStoredCart,
   setStoredCart,
   getStoredWishlist,
@@ -59,7 +57,6 @@ export default function App() {
   const needsSignIn = view === 'account' || view === 'checkout';
 
   // Global State
-  const [activeCurrency, setActiveCurrency] = useState(getStoredCurrency());
   const [cart, setCart] = useState(getStoredCart());
   const [wishlist, setWishlist] = useState(getStoredWishlist());
 
@@ -241,13 +238,6 @@ export default function App() {
     triggerToast('Private Boutique Concierge: Delhi, Mumbai & Dubai salons available by appointment.');
   };
 
-  // Currency Handler
-  const handleCurrencyChange = (newCurr) => {
-    setActiveCurrency(newCurr);
-    setStoredCurrency(newCurr);
-    triggerToast(`Currency updated to ${newCurr}.`, 'currency');
-  };
-
   // Wishlist Handler
   const handleToggleWishlist = (productId) => {
     setWishlist((prevList) => {
@@ -270,8 +260,7 @@ export default function App() {
       const existing = prevCart.find(
         (i) =>
           i.productId === item.productId &&
-          i.size === item.size &&
-          i.engraving === (item.engraving || '')
+          i.size === item.size
       );
       let updated;
       if (existing) {
@@ -406,7 +395,6 @@ export default function App() {
             <BluorngCheckoutPage
               cart={cart}
               checkoutData={checkoutData}
-              activeCurrency={activeCurrency}
               theme={theme}
               onToggleTheme={toggleTheme}
               onNavigateHome={navigateToHome}
@@ -423,8 +411,6 @@ export default function App() {
             />
           ) : view === 'account' ? (
             <BluorngAccountPage
-              activeCurrency={activeCurrency}
-              onChangeCurrency={handleCurrencyChange}
               theme={theme}
               onToggleTheme={toggleTheme}
               onNavigateHome={navigateToHome}
@@ -434,7 +420,6 @@ export default function App() {
           ) : view === 'wishlist' ? (
             <BluorngWishlistPage
               wishlist={wishlist}
-              activeCurrency={activeCurrency}
               onToggleWishlist={handleToggleWishlist}
               onSelectProduct={navigateToProduct}
               onQuickBuy={(prod) => setQuickBuyProduct(prod)}
@@ -443,7 +428,6 @@ export default function App() {
           ) : view === 'product' ? (
             <BluorngPDP
               productId={selectedProductId}
-              activeCurrency={activeCurrency}
               cartCount={totalCartCount}
               wishlist={wishlist}
               onToggleWishlist={handleToggleWishlist}
@@ -464,7 +448,6 @@ export default function App() {
           ) : view === 'collection' ? (
             <BluorngCollectionPage
               initialCategory={selectedCategory}
-              activeCurrency={activeCurrency}
               wishlist={wishlist}
               onToggleWishlist={handleToggleWishlist}
               onSelectProduct={navigateToProduct}
@@ -475,7 +458,6 @@ export default function App() {
             />
           ) : (
             <BluorngHome
-              activeCurrency={activeCurrency}
               wishlist={wishlist}
               onToggleWishlist={handleToggleWishlist}
               onSelectProduct={navigateToProduct}
@@ -492,8 +474,6 @@ export default function App() {
       {/* 4. MASTER LUXURY FOOTER (Links, newsletter, currency, massive SAUDAGAR brand wordmark) */}
       {view !== 'checkout' && view !== 'account' && view !== 'story' && (
         <BluorngFooter
-          activeCurrency={activeCurrency}
-          onCurrencyChange={handleCurrencyChange}
           theme={theme}
           onToggleTheme={toggleTheme}
           onNavigateHome={navigateToHome}
@@ -534,7 +514,6 @@ export default function App() {
         cart={cart}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
-        activeCurrency={activeCurrency}
         onProceedToCheckout={(data) => {
           navigateToCheckout(data);
         }}
@@ -545,7 +524,6 @@ export default function App() {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         onSelectProduct={navigateToProduct}
-        activeCurrency={activeCurrency}
         wishlist={wishlist}
         onToggleWishlist={handleToggleWishlist}
       />
@@ -556,7 +534,6 @@ export default function App() {
           <BluorngQuickBuyModal
             key="quick-buy-modal"
             product={quickBuyProduct}
-            activeCurrency={activeCurrency}
             wishlist={wishlist}
             onToggleWishlist={handleToggleWishlist}
             onClose={() => setQuickBuyProduct(null)}
@@ -573,8 +550,6 @@ export default function App() {
       <BluorngNavDrawer
         isOpen={isNavDrawerOpen}
         onClose={() => setIsNavDrawerOpen(false)}
-        activeCurrency={activeCurrency}
-        onCurrencyChange={handleCurrencyChange}
         theme={theme}
         onToggleTheme={toggleTheme}
         onNavigateHome={navigateToHome}
