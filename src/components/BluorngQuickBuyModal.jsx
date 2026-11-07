@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../lib/money';
 
 export default function BluorngQuickBuyModal(props) {
   // Hooks must not run after an early return, so the null guard lives in this wrapper.

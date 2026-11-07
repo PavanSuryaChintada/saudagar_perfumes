@@ -31,7 +31,7 @@ import {
   setStoredCart,
   getStoredWishlist,
   setStoredWishlist
-} from './data/bluorngSaudagarData.js';
+} from './lib/localStore';
 import { resolveStorefrontView, AUTH_VIEWS } from './app/routes';
 import { useAuth } from './lib/auth';
 import { useBlock } from './cms/useSite';
@@ -381,7 +381,7 @@ export default function App() {
       )}
 
       {/* Luxury Branded Preloader (runs smoothly on initial application mount / reload) */}
-      {!isPreloaderDone && (
+      {!isPreloaderDone && brandBlock?.show_preloader !== false && (
         <LuxuryPreloader onComplete={() => setIsPreloaderDone(true)} />
       )}
 

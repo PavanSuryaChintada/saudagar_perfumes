@@ -24,7 +24,8 @@ export type FieldDef =
   | (BaseField & { type: 'media'; accept?: 'image' | 'video' })
   | (BaseField & { type: 'link' })
   | (BaseField & { type: 'product_source' })
-  | (BaseField & { type: 'product'; multiple?: boolean })
+  | (BaseField & { type: 'product'; multiple?: boolean; by?: 'slug' | 'id' })
+  | (BaseField & { type: 'datetime' })
   | (BaseField & { type: 'collection' })
   | (BaseField & { type: 'category' })
   | (BaseField & { type: 'font' })
@@ -80,6 +81,8 @@ export function emptyValueFor(field: FieldDef): unknown {
       return null;
     case 'product':
       return field.multiple ? [] : '';
+    case 'datetime':
+      return null;
     default:
       return '';
   }

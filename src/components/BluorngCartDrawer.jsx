@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../lib/money';
 import { useProductsBySlugs } from '../storefront/catalog/hooks';
 import { useSetting } from '../lib/bootstrap';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';

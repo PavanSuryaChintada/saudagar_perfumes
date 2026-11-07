@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../lib/money';
 import { useReels } from '../cms/useContent';
 import { useGo } from '../cms/useSite';
 import { useProductsBySlugs } from '../storefront/catalog/hooks';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../lib/money';
 import BluorngCollectionHero from './BluorngCollectionHero.jsx';
 import BluorngFilterSidebar from './BluorngFilterSidebar.jsx';
 import { useCategory, useCollection, useNote } from '../storefront/catalog/hooks';

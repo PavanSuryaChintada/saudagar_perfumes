@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../lib/money';
 import BluorngProductCard from './BluorngProductCard.jsx';
 import BluorngProductReviews from './BluorngProductReviews.jsx';
 import { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';

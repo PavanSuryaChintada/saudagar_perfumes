@@ -201,7 +201,7 @@ export default function BluorngFooter({
         {/* ================= 4. BOTTOM COPYRIGHT & PRIVILEGE ASSURANCE ================= */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[10.5px] text-[#777777] dark:text-white/45 tracking-wider uppercase">
           <div className="flex flex-col items-center md:items-start gap-2">
-            <p>{footer.copyright}</p>
+            <p>{String(footer.copyright || '').replace('{year}', String(new Date().getFullYear()))}</p>
             {(footer.legal_links || []).length > 0 && (
               <nav className="flex flex-wrap gap-4" aria-label="Policies">
                 {footer.legal_links.map((l, i) => (

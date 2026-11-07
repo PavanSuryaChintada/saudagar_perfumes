@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router';
 import { sanitizeHtml, hasText } from '../../lib/richText';
-import { formatPrice } from '../../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../../lib/money';
 
 const TIERS = [
   { key: 'top', label: 'Top Notes', hint: 'The first impression' },

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../lib/money';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 
 export default function BluorngCheckoutPage({

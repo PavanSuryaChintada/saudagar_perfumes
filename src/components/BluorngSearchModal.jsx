@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../lib/money';
+import { useBlock } from '../cms/useSite';
 import { useLegacyProducts, useSearchSuggest } from '../storefront/catalog/hooks';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 
@@ -52,16 +53,8 @@ export default function BluorngSearchModal({
     navigate(path);
   };
 
-  const popularSearches = [
-    'Oud Extrait',
-    'Discovery Coffret',
-    'Taif Rose',
-    'Deep Canopy',
-    'Bergamot',
-    'Sandalwood',
-    'Ambergris',
-    'Solar Citrus'
-  ];
+  const searchBlock = useBlock('search') || {};
+  const popularSearches = (searchBlock.popular || []).filter(Boolean);
 
   return (
     <AnimatePresence>
@@ -184,10 +177,11 @@ export default function BluorngSearchModal({
               </div>
 
               {/* Cascading Popular Searches Pills */}
+              {popularSearches.length > 0 && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] text-[#888888] dark:text-[#A09D96] font-semibold uppercase tracking-[0.16em]">
-                    Trending Formulations & Rare Extraits:
+                    {searchBlock.popular_heading}
                   </span>
                 </div>
                 
@@ -227,6 +221,7 @@ export default function BluorngSearchModal({
                   ))}
                 </motion.div>
               </div>
+              )}
 
               {/* Dynamic Animated Live Search Results */}
               {query.trim() !== '' && (
