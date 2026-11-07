@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { allowedNextStatuses, paymentLabel } from './orders';
+import { formatINR } from './money';
 
 describe('paymentLabel', () => {
   it('shows the amount due on an open COD order', () => {
-    expect(paymentLabel({ payment_method: 'COD', payment_status: 'PENDING', total: 2499, status: 'PENDING' })).toMatch(/^Cash on delivery · ₹2,499 due$/);
+    expect(paymentLabel({ payment_method: 'COD', payment_status: 'PENDING', total: 2499, status: 'PENDING' })).toBe(`Cash on delivery · ${formatINR(2499)} due`);
   });
   it('says nothing is due on a cancelled COD order', () => {
     expect(paymentLabel({ payment_method: 'COD', payment_status: 'PENDING', total: 2499, status: 'CANCELLED' })).toBe('Cash on delivery · nothing due');

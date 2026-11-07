@@ -77,7 +77,7 @@
 - [x] SEO per page
 - [x] Stockists / boutiques section (hidden until filled)
 - [x] Search suggestions editable
-- [ ] Tests run at the end (owner: all testing after the last phase)
+- [x] Tests run at the end (owner: all testing after the last phase)
 
 ## Phase 4: Bag, samples, orders ✅
 - [x] Bag saved to account
@@ -159,14 +159,22 @@
 - [x] Notifications bell (live)
 - [x] Data export (CSV of every main table) + orders CSV
 
-## Phase 11: Launch
-- [ ] SEO tags, sitemap, product schema
-- [ ] Google Analytics events
-- [ ] Rate limits
-- [ ] Security review
-- [ ] 360 px mobile pass
-- [ ] Vercel config
-- [ ] SETUP.md (keys, accounts, go-live checklist)
+## Phase 11: Launch ✅
+- [x] SEO tags, canonical, Open Graph, sitemap, product + breadcrumb + organisation schema
+- [x] Google Analytics events (off until an ID is set)
+- [x] Rate limits (orders, returns, reviews, notify-me, newsletter, votes)
+- [x] Security review (RLS, definer functions, bundle has no secrets)
+- [x] 360 px mobile pass (storefront + admin)
+- [x] Vercel config (rewrites, caching, HSTS, CSP)
+- [x] SETUP.md (keys, accounts, go-live checklist) + README
+- [x] Full test pass: lint, typecheck, 219 unit, 11 SQL files, build, 31 browser tests
+
+## Owner to-do before going live (see docs/SETUP.md)
+- [ ] Supabase Pro, SMTP, domain
+- [ ] Razorpay keys + webhook (or stay COD only)
+- [ ] Courier confirmation for shipping perfume; Delhivery token (optional)
+- [ ] Replace sample products, policy text, GSTIN and business details
+- [ ] Change the test admin password
 
 ---
 

@@ -45,6 +45,8 @@ import { resolveStorefrontView, AUTH_VIEWS } from './app/routes';
 import { useAuth } from './lib/auth';
 import { useBlock } from './cms/useSite';
 import { resolveLink } from './cms/links';
+import { initAnalytics, track, trackPageView } from './lib/analytics';
+import { useSetting } from './lib/bootstrap';
 import LoginPage from './storefront/auth/LoginPage';
 import RegisterPage from './storefront/auth/RegisterPage';
 import ForgotPasswordPage from './storefront/auth/ForgotPasswordPage';
@@ -90,6 +92,15 @@ export default function App() {
     setStoredCart(next);
   }, []);
   useCartSync(cart, replaceCart, samples, setSamples);
+  const ga4Id = useSetting('analytics.ga4_id', '');
+  const gtmId = useSetting('analytics.gtm_id', '');
+  useEffect(() => {
+    initAnalytics(ga4Id, gtmId);
+  }, [ga4Id, gtmId]);
+  useEffect(() => {
+    const t = setTimeout(() => trackPageView(location.pathname, document.title), 300);
+    return () => clearTimeout(t);
+  }, [location.pathname, ga4Id, gtmId]);
   const [wishlist, setWishlist] = useState(getStoredWishlist());
   useWishlistSync(wishlist, (next) => {
     setWishlist(next);
@@ -181,9 +192,8 @@ export default function App() {
       document.title = 'RESET PASSWORD | SAUDAGAR PERFUMES';
     } else if (view === 'notfound') {
       document.title = 'PAGE NOT FOUND | SAUDAGAR PERFUMES';
-    } else {
-      document.title = 'SAUDAGAR PERFUMES | Haute Parfumerie & Artisanal Fragrances';
     }
+    // Home and CMS pages set their own title and meta tags (Admin → Pages / Site content → SEO).
   }, [view, selectedProductId, selectedCategory]);
 
   const { scrollTo } = useSmoothScroll();
@@ -297,6 +307,7 @@ export default function App() {
       return updated;
     });
 
+    track('add_to_cart', { value: (Number(item.price) || 0) * (item.quantity || 1), items: [{ item_id: item.productId, item_name: item.name, item_variant: item.size, price: Number(item.price) || 0, quantity: item.quantity || 1 }] });
     const productImage = item.image || null;
 
     triggerToast(`${item.name || 'Fragrance'} added to your bag.`);
@@ -345,6 +356,7 @@ export default function App() {
   };
 
   const handleOrderPlaced = (order, query = 'placed=1') => {
+    if (query === 'placed=1') track('purchase', { transaction_id: order.order_number, value: Number(order.total) || 0 });
     replaceCart([]);
     setSamples([]);
     setBagNote('');

@@ -9,6 +9,9 @@ test('admin creates a product with two sizes and a note, it goes live, archiving
   const slug = `e2e-test-oud-${stamp}`;
 
   await adminLogin(page, '/admin/products/new');
+  // The editor starts with the category; the rest of the form opens once one is chosen.
+  await expect(page.getByText('Choose a category above to continue.')).toBeVisible();
+  await page.getByRole('radiogroup', { name: 'Main category' }).getByRole('radio').first().check();
   await page.getByLabel('Name', { exact: true }).fill(name);
   await expect(page.getByLabel('Link (slug)')).toHaveValue(slug);
   await page.getByLabel('Base price (₹, incl. GST)').fill('4200');

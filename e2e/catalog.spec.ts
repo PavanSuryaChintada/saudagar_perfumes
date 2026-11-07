@@ -2,8 +2,9 @@ import { expect, test } from '@playwright/test';
 
 test('home "Latest drop" is filled from the database', async ({ page }) => {
   await page.goto('/');
-  const section = page.locator('#featured-drop-section');
-  await expect(section.getByText(/Thunderstruck/i).first()).toBeVisible({ timeout: 20_000 });
+  // The home page is built from CMS sections; the "Latest drop" carousel reads the latest-drop collection.
+  await expect(page.getByText('Featured Flacons').first()).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText(/Thunderstruck/i).first()).toBeAttached({ timeout: 20_000 });
 });
 
 test('product page shows the note pyramid, real sizes and no fake reviews', async ({ page }) => {

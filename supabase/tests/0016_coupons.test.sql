@@ -90,7 +90,8 @@ begin
 
   res := public.create_order('00000000-0000-0000-0000-00000000ad02', bag, 'TSTATTAR20', 'COD', '[]'::jsonb, null, null);
   assert (select discount from public.orders where id = (res ->> 'id')::uuid) = 500, 'order saves the discount';
-  assert (select coupon_id from public.orders where id = (res ->> 'id')::uuid) = (select id from public.coupons where code = 'TSTATTAR20'), 'order links the coupon';
+  -- (customers can't read the coupons table, so check the link through the order itself)
+  assert (select coupon_id is not null and coupon_code = 'TSTATTAR20' from public.orders where id = (res ->> 'id')::uuid), 'order links the coupon';
   assert public.quote_order(bag, 'TSTATTAR20') -> 'coupon' ->> 'reason' = 'ALREADY_USED', 'one use per customer';
 
   perform public.cancel_order((res ->> 'id')::uuid, null);

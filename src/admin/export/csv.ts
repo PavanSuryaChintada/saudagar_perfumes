@@ -1,6 +1,8 @@
 // CSV that opens cleanly in Excel and Google Sheets (UTF-8 with BOM, quoted where needed, formula-safe).
 
 const FORMULA = /^[=+\-@\t\r]/;
+/** Byte-order mark so Excel reads the file as UTF-8 (₹, accents). */
+const BOM = String.fromCharCode(0xfeff);
 
 export function csvCell(value: unknown): string {
   if (value === null || value === undefined) return '';
@@ -13,7 +15,7 @@ export function csvCell(value: unknown): string {
 export function toCsv(rows: Record<string, unknown>[], columns?: string[]): string {
   const cols = columns ?? [...new Set(rows.flatMap((r) => Object.keys(r)))];
   const lines = [cols.map(csvCell).join(','), ...rows.map((r) => cols.map((c) => csvCell(r[c])).join(','))];
-  return `﻿${lines.join('\r\n')}\r\n`;
+  return BOM + lines.join('\r\n') + '\r\n';
 }
 
 export function downloadCsv(filename: string, csv: string) {

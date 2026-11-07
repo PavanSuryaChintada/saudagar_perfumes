@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Bell } from 'lucide-react';
@@ -20,6 +20,8 @@ export default function NotificationsBell() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
+  // Each mounted bell needs its own channel: reusing a subscribed channel name makes supabase-js throw.
+  const channelName = `admin-notifications-${useId()}`;
   const { data: notes = [] } = useQuery({
     queryKey: ['admin', 'notifications'],
     queryFn: async () => {
@@ -32,7 +34,7 @@ export default function NotificationsBell() {
 
   useEffect(() => {
     const channel = supabase
-      .channel('admin-notifications')
+      .channel(channelName)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'admin_notifications' }, () => {
         void qc.invalidateQueries({ queryKey: ['admin', 'notifications'] });
       })
@@ -40,7 +42,7 @@ export default function NotificationsBell() {
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [qc]);
+  }, [qc, channelName]);
 
   useEffect(() => {
     if (!open) return;

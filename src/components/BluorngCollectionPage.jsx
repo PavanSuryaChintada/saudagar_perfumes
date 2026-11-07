@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useSEO } from '../lib/seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router';
 import { formatINR as formatPrice } from '../lib/money';
@@ -60,9 +61,11 @@ export default function BluorngCollectionPage({
     : listing.kind === 'note' ? noteQuery.data?.name || ''
     : listing.kind === 'search' ? (filters.q ? `“${filters.q}”` : 'Search') : 'All Fragrances';
 
-  useEffect(() => {
-    if (scopeName) document.title = `${scopeName.replace(/[“”]/g, '').toUpperCase()} | SAUDAGAR PERFUMES`;
-  }, [scopeName]);
+  useSEO({
+    title: scopeName ? scopeName.replace(/[“”]/g, '') : null,
+    description: (isCollection ? collection?.tagline || collection?.headline : listing.kind === 'category' ? categoryQuery.data?.description : listing.kind === 'note' ? noteQuery.data?.short_description : null) || null,
+    noindex: listing?.kind === 'search',
+  });
 
   const [hoveredCardId, setHoveredCardId] = useState(null);
 
