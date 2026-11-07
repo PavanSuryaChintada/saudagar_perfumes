@@ -119,12 +119,12 @@ export default function CategoriesPage() {
               <p className={`text-[13px] ${row.is_active ? '' : 'text-[#999999] line-through'}`}>{row.name}</p>
               <p className="text-[11px] text-[#888888]">/categories/{row.slug}</p>
             </div>
-            <button type="button" aria-label="Move up" className="p-1.5 text-[#777777] hover:text-[#111111]" onClick={() => move(row, -1)}><ArrowUp size={14} /></button>
-            <button type="button" aria-label="Move down" className="p-1.5 text-[#777777] hover:text-[#111111]" onClick={() => move(row, 1)}><ArrowDown size={14} /></button>
+            <button type="button" aria-label="Move up" className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => move(row, -1)}><ArrowUp size={14} /></button>
+            <button type="button" aria-label="Move down" className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => move(row, 1)}><ArrowDown size={14} /></button>
             <button
               type="button"
               aria-label={`Edit ${row.name}`}
-              className="p-1.5 text-[#777777] hover:text-[#111111]"
+              className="p-1.5 text-[#777777] hover:text-tk-ink"
               onClick={() => {
                 setError('');
                 setDraft({

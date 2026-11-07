@@ -80,7 +80,7 @@ function NotePicker({
             {!exact && (
               <button
                 type="button"
-                className="block w-full text-left px-3 py-1.5 text-[12.5px] text-[#C4823F] hover:bg-[#F4F3EE]"
+                className="block w-full text-left px-3 py-1.5 text-[12.5px] text-tk-accent hover:bg-[#F4F3EE]"
                 onClick={async () => {
                   const created = await onCreate(term.trim());
                   if (created) add(created.id);
@@ -122,7 +122,7 @@ function OptionChips({
               key={o.id}
               type="button"
               onClick={() => toggle(o)}
-              className={`px-2.5 py-1 text-[12px] border ${on ? 'bg-[#111111] text-white border-[#111111]' : 'bg-white text-[#555555] border-[#D5D3CC] hover:border-[#111111]'} ${o.is_active ? '' : 'opacity-50'}`}
+              className={`px-2.5 py-1 text-[12px] border ${on ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white text-[#555555] border-[#D5D3CC] hover:border-tk-ink'} ${o.is_active ? '' : 'opacity-50'}`}
             >
               {o.label}
             </button>
@@ -140,7 +140,7 @@ function OptionChips({
               value={a.strength ?? 70}
               aria-label="Accord strength"
               onChange={(e) => onChange(attributes.map((x) => (x.option_id === a.option_id ? { ...x, strength: Number(e.target.value) } : x)))}
-              className="flex-1 accent-[#C4823F]"
+              className="flex-1 accent-tk-accent"
             />
             <span className="w-8 text-right tabular-nums">{a.strength}</span>
           </div>
@@ -272,7 +272,7 @@ export default function ProductEditorPage() {
         description={isNew ? 'Fill in the details, add at least one bottle size, then save.' : `/product/${form.slug}`}
         actions={
           !isNew && (
-            <a href={`/product/${form.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#D5D3CC] text-[12px] hover:border-[#111111]">
+            <a href={`/product/${form.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#D5D3CC] text-[12px] hover:border-tk-ink">
               <ExternalLink size={13} /> View on site
             </a>
           )
@@ -368,7 +368,7 @@ export default function ProductEditorPage() {
               {form.variants.map((v, i) => (
                 <div key={v.id ?? `new-${i}`} className={`border p-3 ${v.is_hidden ? 'border-dashed border-[#D5D3CC] opacity-70' : 'border-[#EAEAEA]'}`}>
                   <div className="flex flex-wrap items-center gap-2 mb-3">
-                    <span className={`px-2 py-0.5 text-[11px] ${v.kind === 'sample' ? 'bg-[#FFF7ED] text-[#C4823F]' : 'bg-[#F4F3EE] text-[#555555]'}`}>
+                    <span className={`px-2 py-0.5 text-[11px] ${v.kind === 'sample' ? 'bg-[#FFF7ED] text-tk-accent' : 'bg-[#F4F3EE] text-[#555555]'}`}>
                       {v.kind === 'sample' ? 'Free sample vial' : 'Bottle size'}
                     </span>
                     {v.is_hidden && <span className="text-[11px] text-[#777777]">Hidden</span>}

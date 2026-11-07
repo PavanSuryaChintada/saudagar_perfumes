@@ -27,7 +27,7 @@ function FieldInput({ field, value, onChange, error }: { field: SettingField; va
     return (
       <div className="flex items-start justify-between gap-4 py-1">
         <div>
-          <label htmlFor={id} className="text-[13px] text-[#111111]">
+          <label htmlFor={id} className="text-[13px] text-tk-ink">
             {field.label}
           </label>
           {field.help && <p className="text-[11px] text-[#888888] mt-0.5 max-w-[520px]">{field.help}</p>}

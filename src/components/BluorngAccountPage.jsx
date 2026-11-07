@@ -9,7 +9,7 @@ import { toFriendlyError } from '../lib/errors';
 import { useAuth } from '../lib/auth';
 
 const inputClass =
-  'w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-[#111111] dark:focus:border-white';
+  'w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-tk-ink dark:focus:border-white';
 const labelClass = 'block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1';
 const errorClass = 'text-[10.5px] text-rose-600 dark:text-rose-400 mt-1';
 
@@ -128,7 +128,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
   const displayName = profile?.full_name || 'Your account';
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-white transition-colors duration-300 font-sans pb-28">
+    <div className="min-h-screen bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300 font-sans pb-28">
       {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
@@ -137,7 +137,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             role="status"
-            className="fixed top-6 right-6 left-6 sm:left-auto z-50 bg-[#111111] dark:bg-white text-white dark:text-[#0B0A0D] px-4 py-2.5 rounded-[2px] text-[11.5px] tracking-wide shadow-md"
+            className="fixed top-6 right-6 left-6 sm:left-auto z-50 bg-tk-ink dark:bg-white text-white dark:text-tk-night px-4 py-2.5 rounded-[2px] text-[11.5px] tracking-wide shadow-md"
           >
             {toastMessage}
           </motion.div>
@@ -145,11 +145,11 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
       </AnimatePresence>
 
       {/* ================= 1. MINIMAL HEADER ========================== */}
-      <header className="w-full border-b border-[#F0F0F0] dark:border-white/10 bg-white/90 dark:bg-[#0B0A0D]/90 backdrop-blur-md sticky top-0 z-30 transition-colors">
+      <header className="w-full border-b border-[#F0F0F0] dark:border-white/10 bg-white/90 dark:bg-tk-night/90 backdrop-blur-md sticky top-0 z-30 transition-colors">
         <div className="max-w-5xl mx-auto px-6 sm:px-10 h-16 flex items-center justify-between">
           <button
             onClick={onNavigateHome}
-            className="text-[11px] uppercase tracking-[0.18em] text-[#777777] hover:text-[#111111] dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
+            className="text-[11px] uppercase tracking-[0.18em] text-[#777777] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
           >
             <span>←</span>
             <span>Boutique</span>
@@ -164,7 +164,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
             {onToggleTheme && (
               <button
                 onClick={onToggleTheme}
-                className="text-[11px] uppercase tracking-wider text-[#777777] dark:text-[#999999] hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
+                className="text-[11px] uppercase tracking-wider text-[#777777] dark:text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
                 title="Toggle Theme"
               >
                 {theme === 'dark' ? 'Light' : 'Dark'}
@@ -179,14 +179,14 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-6 pb-10 border-b border-[#F0F0F0] dark:border-white/10">
           <div className="min-w-0">
             <span className="text-[10px] uppercase tracking-[0.24em] text-[#888888] dark:text-[#777777] block mb-2 font-medium">Client Account</span>
-            <h1 className="text-[28px] sm:text-[36px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white leading-tight break-words">{displayName}</h1>
+            <h1 className="text-[28px] sm:text-[36px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white leading-tight break-words">{displayName}</h1>
             <p className="text-[12.5px] text-[#777777] dark:text-[#999999] mt-1 font-light break-all">
               {[user?.email, profile?.phone ? formatIndianPhone(profile.phone) : null].filter(Boolean).join(' · ')}
             </p>
             {!profile?.full_name && (
               <button
                 onClick={() => setActiveTab('details')}
-                className="mt-3 text-[11px] uppercase tracking-[0.14em] text-[#C4823F] dark:text-[#ECC86A] underline underline-offset-4 cursor-pointer"
+                className="mt-3 text-[11px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night underline underline-offset-4 cursor-pointer"
               >
                 Add your name, phone and birthday
               </button>
@@ -196,7 +196,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
           <div className="flex items-center gap-6 text-[12px] text-[#777777] dark:text-[#888888]">
             <button
               onClick={handleSignOut}
-              className="text-[10px] uppercase tracking-[0.16em] text-[#999999] hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
+              className="text-[10px] uppercase tracking-[0.16em] text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
             >
               Sign out
             </button>
@@ -215,12 +215,12 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
               onClick={() => setActiveTab(tab.id)}
               className={`pb-4 relative transition-colors cursor-pointer whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'text-[#111111] dark:text-white font-medium'
-                  : 'text-[#888888] hover:text-[#111111] dark:text-[#777777] dark:hover:text-white font-normal'
+                  ? 'text-tk-ink dark:text-white font-medium'
+                  : 'text-[#888888] hover:text-tk-ink dark:text-[#777777] dark:hover:text-white font-normal'
               }`}
             >
               {tab.label}
-              {activeTab === tab.id && <motion.span layoutId="minimalTabIndicator" className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-[#111111] dark:bg-[#ECC86A]" />}
+              {activeTab === tab.id && <motion.span layoutId="minimalTabIndicator" className="absolute bottom-0 left-0 right-0 h-[1.5px] bg-tk-ink dark:bg-tk-accent-night" />}
             </button>
           ))}
         </nav>
@@ -238,7 +238,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
           <div className="space-y-8">
             <div className="flex items-center justify-between pb-3 border-b border-[#F0F0F0] dark:border-white/10">
               <span className="text-[11px] uppercase tracking-[0.16em] text-[#888888] font-medium">Saved Addresses ({addressList.length})</span>
-              <button onClick={openNewAddress} className="text-[11px] uppercase tracking-[0.16em] text-[#111111] dark:text-white hover:underline cursor-pointer font-medium">
+              <button onClick={openNewAddress} className="text-[11px] uppercase tracking-[0.16em] text-tk-ink dark:text-white hover:underline cursor-pointer font-medium">
                 + Add Address
               </button>
             </div>
@@ -253,13 +253,13 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
               {addressList.map((a) => (
                 <div
                   key={a.id}
-                  className={`p-6 rounded-[2px] border transition-colors ${a.is_default ? 'border-[#111111] dark:border-white/30' : 'border-[#EEEEEE] dark:border-white/10'}`}
+                  className={`p-6 rounded-[2px] border transition-colors ${a.is_default ? 'border-tk-ink dark:border-white/30' : 'border-[#EEEEEE] dark:border-white/10'}`}
                 >
                   <div className="flex items-center justify-between mb-3 text-[11px]">
                     <span className="uppercase tracking-widest text-[#888888] font-medium">{a.label}</span>
-                    {a.is_default && <span className="text-[10px] uppercase tracking-wider text-[#C4823F] dark:text-[#ECC86A] font-semibold">Default</span>}
+                    {a.is_default && <span className="text-[10px] uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-semibold">Default</span>}
                   </div>
-                  <p className="text-[13.5px] font-medium text-[#111111] dark:text-white">{a.full_name}</p>
+                  <p className="text-[13.5px] font-medium text-tk-ink dark:text-white">{a.full_name}</p>
                   <p className="text-[12.5px] text-[#666666] dark:text-[#AAAAAA] mt-1 leading-relaxed font-light">
                     {a.line1}
                     {a.line2 ? <>, {a.line2}</> : null}
@@ -275,11 +275,11 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                   <p className="text-[11.5px] text-[#888888] mt-2 font-mono">{formatIndianPhone(a.phone)}</p>
 
                   <div className="mt-4 pt-3 border-t border-[#F0F0F0] dark:border-white/10 flex flex-wrap gap-4">
-                    <button onClick={() => openEditAddress(a)} className="text-[11px] uppercase tracking-wider text-[#777777] hover:text-[#111111] dark:hover:text-white cursor-pointer">
+                    <button onClick={() => openEditAddress(a)} className="text-[11px] uppercase tracking-wider text-[#777777] hover:text-tk-ink dark:hover:text-white cursor-pointer">
                       Edit
                     </button>
                     {!a.is_default && (
-                      <button onClick={() => handleSetDefault(a.id)} className="text-[11px] uppercase tracking-wider text-[#777777] hover:text-[#111111] dark:hover:text-white cursor-pointer">
+                      <button onClick={() => handleSetDefault(a.id)} className="text-[11px] uppercase tracking-wider text-[#777777] hover:text-tk-ink dark:hover:text-white cursor-pointer">
                         Make Default
                       </button>
                     )}
@@ -308,7 +308,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                       <h3 id="address-modal-title" className="text-[15px] font-medium tracking-tight">
                         {addressModal.id ? 'Edit Address' : 'New Address'}
                       </h3>
-                      <button onClick={() => setAddressModal(null)} aria-label="Close" className="text-[#888888] hover:text-[#111111] dark:hover:text-white cursor-pointer text-sm">
+                      <button onClick={() => setAddressModal(null)} aria-label="Close" className="text-[#888888] hover:text-tk-ink dark:hover:text-white cursor-pointer text-sm">
                         ✕
                       </button>
                     </div>
@@ -324,7 +324,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                               type="button"
                               onClick={() => setAddr((p) => ({ ...p, label: l }))}
                               className={`px-3 py-1.5 text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer ${
-                                addr.label === l ? 'bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D]' : 'border border-[#E0E0E0] dark:border-white/20 text-[#666666] dark:text-[#AAAAAA]'
+                                addr.label === l ? 'bg-tk-ink text-white dark:bg-white dark:text-tk-night' : 'border border-[#E0E0E0] dark:border-white/20 text-[#666666] dark:text-[#AAAAAA]'
                               }`}
                             >
                               {l}
@@ -390,7 +390,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                         <button
                           type="submit"
                           disabled={saveAddress.isPending}
-                          className="px-5 py-2 bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium disabled:opacity-60"
+                          className="px-5 py-2 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium disabled:opacity-60"
                         >
                           {saveAddress.isPending ? 'Saving…' : 'Save'}
                         </button>
@@ -437,7 +437,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                 <label htmlFor="pd-dob" className={labelClass}>Birthday</label>
                 {profile?.dob_locked ? (
                   <>
-                    <p id="pd-dob" className="px-3 py-2 border border-[#F0F0F0] dark:border-white/10 rounded-[2px] text-[#111111] dark:text-white">
+                    <p id="pd-dob" className="px-3 py-2 border border-[#F0F0F0] dark:border-white/10 rounded-[2px] text-tk-ink dark:text-white">
                       {formatBirthday(profile.date_of_birth)}
                     </p>
                     <p className="text-[10.5px] text-[#888888] mt-1">Your birthday is saved. Contact us if it needs correcting.</p>
@@ -463,7 +463,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                   type="checkbox"
                   checked={details.whatsapp_opt_in}
                   onChange={(e) => setDetails((d) => ({ ...d, whatsapp_opt_in: e.target.checked }))}
-                  className="mt-0.5 accent-[#111111] dark:accent-[#D4AF37]"
+                  className="mt-0.5 accent-tk-ink dark:accent-tk-gold"
                 />
                 <span className="text-[12.5px] text-[#555555] dark:text-[#AAAAAA]">Send me new launches and offers on WhatsApp. Order updates are always sent.</span>
               </label>
@@ -472,7 +472,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                 <button
                   type="submit"
                   disabled={saveProfile.isPending}
-                  className="px-6 py-2.5 bg-[#111111] text-white dark:bg-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium hover:opacity-90 transition-opacity disabled:opacity-60"
+                  className="px-6 py-2.5 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium hover:opacity-90 transition-opacity disabled:opacity-60"
                 >
                   {saveProfile.isPending ? 'Saving…' : 'Save Changes'}
                 </button>

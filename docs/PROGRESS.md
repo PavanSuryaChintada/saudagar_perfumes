@@ -59,23 +59,25 @@
 - [x] Admin: notes
 - [x] Admin: scent profile options
 
-## Phase 3: CMS (everything editable) ◐
-- [ ] Page builder (add / reorder / hide / duplicate / delete sections)
-- [ ] Every home section editable
-- [ ] Story page editable
-- [ ] New pages (landing pages, text pages)
-- [ ] Policy pages (shipping, returns, privacy, terms)
-- [ ] Header, mega menu, mobile menu
-- [ ] Footer
-- [ ] Announcement bars (with dates)
-- [ ] Stories viewer content
-- [ ] Instagram reels content
-- [ ] Testimonials, FAQs
-- [ ] Theme colours + fonts
-- [ ] Brand: logo, socials, contact
-- [ ] Preloader settings
-- [ ] SEO per page
-- [ ] Stockists / boutiques section (hidden until filled)
+## Phase 3: CMS (everything editable) ✅
+- [x] Page builder (add / reorder / hide / duplicate / delete sections)
+- [x] Every home section editable
+- [x] Story page editable
+- [x] New pages (landing pages, text pages)
+- [x] Policy pages (shipping, returns, privacy, terms) — placeholder text to replace
+- [x] Header, mega menu, mobile menu
+- [x] Footer
+- [x] Announcement bars (with dates)
+- [x] Stories viewer content
+- [x] Instagram reels content
+- [x] Testimonials, FAQs
+- [x] Theme colours + fonts
+- [x] Brand: logo, socials, contact
+- [x] Preloader on/off
+- [x] SEO per page
+- [x] Stockists / boutiques section (hidden until filled)
+- [x] Search suggestions editable
+- [ ] Tests run at the end (owner: all testing after the last phase)
 
 ## Phase 4: Bag, samples, orders
 - [ ] Bag saved to account

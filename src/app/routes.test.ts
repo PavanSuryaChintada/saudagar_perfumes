@@ -33,5 +33,6 @@ describe('resolveStorefrontView', () => {
     expect(r('/forgot-password').view).toBe('forgot-password');
     expect(r('/reset-password').view).toBe('reset-password');
   });
+  it('CMS pages', () => expect(r('/pages/shipping-policy')).toEqual({ view: 'page', pageSlug: 'shipping-policy' }));
   it('anything else is a 404', () => expect(r('/nope')).toEqual({ view: 'notfound' }));
 });

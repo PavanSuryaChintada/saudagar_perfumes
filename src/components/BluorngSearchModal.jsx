@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../lib/money';
+import { useBlock } from '../cms/useSite';
 import { useLegacyProducts, useSearchSuggest } from '../storefront/catalog/hooks';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 
@@ -52,16 +53,8 @@ export default function BluorngSearchModal({
     navigate(path);
   };
 
-  const popularSearches = [
-    'Oud Extrait',
-    'Discovery Coffret',
-    'Taif Rose',
-    'Deep Canopy',
-    'Bergamot',
-    'Sandalwood',
-    'Ambergris',
-    'Solar Citrus'
-  ];
+  const searchBlock = useBlock('search') || {};
+  const popularSearches = (searchBlock.popular || []).filter(Boolean);
 
   return (
     <AnimatePresence>
@@ -92,11 +85,11 @@ export default function BluorngSearchModal({
                   <motion.span
                     animate={{ rotate: [0, 90, 0] }}
                     transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                    className="text-[#C4823F] dark:text-[#ECC86A] text-[10px]"
+                    className="text-tk-accent dark:text-tk-accent-night text-[10px]"
                   >
                     ✦
                   </motion.span>
-                  <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-[#C4823F] dark:text-[#ECC86A]">
+                  <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-tk-accent dark:text-tk-accent-night">
                     Search Saudagar Haute Parfumerie
                   </span>
                 </div>
@@ -110,7 +103,7 @@ export default function BluorngSearchModal({
                     whileTap={{ scale: 0.92 }}
                     transition={{ duration: 0.2 }}
                     onClick={onClose}
-                    className="p-2 text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors cursor-pointer rounded-full hover:bg-black/5 dark:hover:bg-white/10"
+                    className="p-2 text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer rounded-full hover:bg-black/5 dark:hover:bg-white/10"
                     aria-label="Close search"
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -125,7 +118,7 @@ export default function BluorngSearchModal({
               <div
                 className={`relative rounded-xl px-5 py-3.5 sm:py-4 flex items-center transition-all duration-300 border ${
                   isFocused
-                    ? 'border-[#C4823F] dark:border-[#D4AF37] shadow-[0_0_30px_rgba(196,130,63,0.18)] dark:shadow-[0_0_35px_rgba(212,175,55,0.22)] bg-[#FFFFFF] dark:bg-[#16141C]'
+                    ? 'border-tk-accent dark:border-tk-gold shadow-[0_0_30px_rgba(196,130,63,0.18)] dark:shadow-[0_0_35px_rgba(212,175,55,0.22)] bg-[#FFFFFF] dark:bg-[#16141C]'
                     : 'border-transparent bg-black/[0.04] dark:bg-white/[0.07]'
                 }`}
               >
@@ -137,7 +130,7 @@ export default function BluorngSearchModal({
                   }}
                   transition={{ duration: 0.45 }}
                   className={`mr-3.5 transition-colors shrink-0 ${
-                    isFocused ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'text-[#888888] dark:text-[#777777]'
+                    isFocused ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#888888] dark:text-[#777777]'
                   }`}
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -155,7 +148,7 @@ export default function BluorngSearchModal({
                   onBlur={() => setIsFocused(false)}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="SEARCH BY FRAGRANCE, NOTE, EXTRACT OR INGREDIENT..."
-                  className="w-full bg-transparent text-[14px] sm:text-[17px] font-medium uppercase tracking-wider text-[#111111] dark:text-white outline-none placeholder:text-[#AAAAAA] dark:placeholder:text-[#666666] pr-20"
+                  className="w-full bg-transparent text-[14px] sm:text-[17px] font-medium uppercase tracking-wider text-tk-ink dark:text-white outline-none placeholder:text-[#AAAAAA] dark:placeholder:text-[#666666] pr-20"
                 />
 
                 {/* Clear Button with Smooth Pop & Rotate */}
@@ -171,7 +164,7 @@ export default function BluorngSearchModal({
                         setQuery('');
                         inputRef.current?.focus();
                       }}
-                      className="absolute right-4 px-3 py-1 text-[10.5px] bg-black/[0.08] dark:bg-white/10 hover:bg-black/[0.14] dark:hover:bg-white/20 text-[#444444] dark:text-[#CCCCCC] hover:text-[#111111] dark:hover:text-white uppercase tracking-wider font-bold rounded-full transition-colors cursor-pointer flex items-center gap-1.5"
+                      className="absolute right-4 px-3 py-1 text-[10.5px] bg-black/[0.08] dark:bg-white/10 hover:bg-black/[0.14] dark:hover:bg-white/20 text-[#444444] dark:text-[#CCCCCC] hover:text-tk-ink dark:hover:text-white uppercase tracking-wider font-bold rounded-full transition-colors cursor-pointer flex items-center gap-1.5"
                     >
                       <span>Clear</span>
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -184,10 +177,11 @@ export default function BluorngSearchModal({
               </div>
 
               {/* Cascading Popular Searches Pills */}
+              {popularSearches.length > 0 && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] text-[#888888] dark:text-[#A09D96] font-semibold uppercase tracking-[0.16em]">
-                    Trending Formulations & Rare Extraits:
+                    {searchBlock.popular_heading}
                   </span>
                 </div>
                 
@@ -218,8 +212,8 @@ export default function BluorngSearchModal({
                       }}
                       className={`px-3.5 py-1.5 rounded-full border transition-all duration-300 font-medium tracking-wide uppercase cursor-pointer ${
                         query.toLowerCase() === term.toLowerCase()
-                          ? 'bg-[#111111] text-white border-[#111111] dark:bg-[#D4AF37] dark:text-[#0B0A0D] dark:border-[#D4AF37] shadow-sm'
-                          : 'bg-[#F5F5F3] dark:bg-[#18161E] border-transparent text-[#222222] dark:text-[#D4D2CD] hover:border-[#C4823F]/30 dark:hover:border-[#D4AF37]/30 hover:bg-[#FFFFFF] dark:hover:bg-[#201D28]'
+                          ? 'bg-tk-ink text-white border-tk-ink dark:bg-tk-gold dark:text-tk-night dark:border-tk-gold shadow-sm'
+                          : 'bg-[#F5F5F3] dark:bg-[#18161E] border-transparent text-[#222222] dark:text-[#D4D2CD] hover:border-tk-accent/30 dark:hover:border-tk-gold/30 hover:bg-[#FFFFFF] dark:hover:bg-[#201D28]'
                       }`}
                     >
                       {term}
@@ -227,6 +221,7 @@ export default function BluorngSearchModal({
                   ))}
                 </motion.div>
               </div>
+              )}
 
               {/* Dynamic Animated Live Search Results */}
               {query.trim() !== '' && (
@@ -239,9 +234,9 @@ export default function BluorngSearchModal({
                 >
                   <div className="flex items-center justify-between mb-4 text-[11.5px] text-[#777777] dark:text-[#A09D96] font-semibold uppercase tracking-wider">
                     <span className="flex items-center gap-2">
-                      Results for <span className="text-[#111111] dark:text-white font-bold">"{query}"</span>
+                      Results for <span className="text-tk-ink dark:text-white font-bold">"{query}"</span>
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-bold text-[#C4823F] dark:text-[#ECC86A]">
+                    <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-bold text-tk-accent dark:text-tk-accent-night">
                       {resultCount} {resultCount === 1 ? 'Creation' : 'Creations'} Found
                     </span>
                   </div>
@@ -253,7 +248,7 @@ export default function BluorngSearchModal({
                           key={n.slug}
                           type="button"
                           onClick={() => goTo(`/notes/${n.slug}`)}
-                          className="px-3 py-1 rounded-full border border-[#E0DDD5] dark:border-white/15 hover:border-[#C4823F] dark:hover:border-[#ECC86A] text-[#444444] dark:text-[#CCCCCC]"
+                          className="px-3 py-1 rounded-full border border-[#E0DDD5] dark:border-white/15 hover:border-tk-accent dark:hover:border-tk-accent-night text-[#444444] dark:text-[#CCCCCC]"
                         >
                           Note: {n.name}
                         </button>
@@ -261,7 +256,7 @@ export default function BluorngSearchModal({
                       <button
                         type="button"
                         onClick={() => goTo(`/search?q=${encodeURIComponent(term)}`)}
-                        className="ml-auto text-[#C4823F] dark:text-[#ECC86A] hover:underline"
+                        className="ml-auto text-tk-accent dark:text-tk-accent-night hover:underline"
                       >
                         See all results →
                       </button>
@@ -279,37 +274,37 @@ export default function BluorngSearchModal({
                       <motion.div
                         animate={{ y: [0, -6, 0] }}
                         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                        className="w-14 h-14 rounded-full bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center text-[#C4823F] dark:text-[#ECC86A] mb-1"
+                        className="w-14 h-14 rounded-full bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center text-tk-accent dark:text-tk-accent-night mb-1"
                       >
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                           <circle cx="11" cy="11" r="8" />
                           <line x1="21" y1="21" x2="16.65" y2="16.65" />
                         </svg>
                       </motion.div>
-                      <p className="text-[14px] font-bold text-[#111111] dark:text-white uppercase tracking-wider">
+                      <p className="text-[14px] font-bold text-tk-ink dark:text-white uppercase tracking-wider">
                         No matching fragrances found
                       </p>
                       <p className="text-[12px] max-w-md font-light leading-relaxed">
-                        We could not find an exact match for <span className="font-medium text-[#111111] dark:text-white">"{query}"</span>. Explore our signature agarwood compositions or hydro-distilled floral extraits.
+                        We could not find an exact match for <span className="font-medium text-tk-ink dark:text-white">"{query}"</span>. Explore our signature agarwood compositions or hydro-distilled floral extraits.
                       </p>
                       <div className="pt-2 flex items-center gap-2">
                         <button
                           onClick={() => setQuery('Oud')}
-                          className="text-[11px] underline uppercase tracking-wider text-[#C4823F] dark:text-[#ECC86A] font-medium hover:opacity-80 cursor-pointer"
+                          className="text-[11px] underline uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-medium hover:opacity-80 cursor-pointer"
                         >
                           Try "Oud"
                         </button>
                         <span>·</span>
                         <button
                           onClick={() => setQuery('Rose')}
-                          className="text-[11px] underline uppercase tracking-wider text-[#C4823F] dark:text-[#ECC86A] font-medium hover:opacity-80 cursor-pointer"
+                          className="text-[11px] underline uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-medium hover:opacity-80 cursor-pointer"
                         >
                           Try "Rose"
                         </button>
                         <span>·</span>
                         <button
                           onClick={() => setQuery('Extrait')}
-                          className="text-[11px] underline uppercase tracking-wider text-[#C4823F] dark:text-[#ECC86A] font-medium hover:opacity-80 cursor-pointer"
+                          className="text-[11px] underline uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-medium hover:opacity-80 cursor-pointer"
                         >
                           Try "Extrait"
                         </button>
@@ -341,7 +336,7 @@ export default function BluorngSearchModal({
                               onClose();
                               onSelectProduct(product.id);
                             }}
-                            className="group cursor-pointer border border-[#EEEEEE] dark:border-white/10 p-3 rounded-lg hover:border-[#C4823F] dark:hover:border-[#D4AF37] transition-all duration-300 bg-[#FFFFFF] dark:bg-[#141318] hover:shadow-[0_12px_28px_rgba(0,0,0,0.07)] dark:hover:shadow-[0_12px_30px_rgba(212,175,55,0.12)] flex flex-col justify-between"
+                            className="group cursor-pointer border border-[#EEEEEE] dark:border-white/10 p-3 rounded-lg hover:border-tk-accent dark:hover:border-tk-gold transition-all duration-300 bg-[#FFFFFF] dark:bg-[#141318] hover:shadow-[0_12px_28px_rgba(0,0,0,0.07)] dark:hover:shadow-[0_12px_30px_rgba(212,175,55,0.12)] flex flex-col justify-between"
                           >
                             <div>
                               {/* Flacon Pedestal with Image Zoom */}
@@ -353,7 +348,7 @@ export default function BluorngSearchModal({
                                 />
 
                                 {product.badge && (
-                                  <span className="absolute top-2 left-2 text-[8px] font-bold tracking-widest uppercase bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] px-2 py-0.5 rounded-full shadow-xs">
+                                  <span className="absolute top-2 left-2 text-[8px] font-bold tracking-widest uppercase bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night px-2 py-0.5 rounded-full shadow-xs">
                                     {product.badge}
                                   </span>
                                 )}
@@ -365,7 +360,7 @@ export default function BluorngSearchModal({
                                     e.stopPropagation();
                                     onToggleWishlist && onToggleWishlist(product.id);
                                   }}
-                                  className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/85 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-[#111111] dark:text-white shadow-xs"
+                                  className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/85 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-tk-ink dark:text-white shadow-xs"
                                   title={wishlist.includes(product.id) ? 'Remove from wishlist' : 'Save to wishlist'}
                                   aria-label="Wishlist"
                                 >
@@ -373,7 +368,7 @@ export default function BluorngSearchModal({
                                     width="11"
                                     height="11"
                                     viewBox="0 0 24 24"
-                                    className={wishlist.includes(product.id) ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'text-[#888888] dark:text-white/60'}
+                                    className={wishlist.includes(product.id) ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#888888] dark:text-white/60'}
                                     fill={wishlist.includes(product.id) ? 'currentColor' : 'none'}
                                     stroke="currentColor"
                                     strokeWidth="1.8"
@@ -384,7 +379,7 @@ export default function BluorngSearchModal({
                               </div>
 
                               {/* Title with Gold Hover Transition */}
-                              <h4 className="text-[11.5px] sm:text-[12px] font-bold uppercase tracking-wider text-[#111111] dark:text-white line-clamp-1 group-hover:text-[#C4823F] dark:group-hover:text-[#ECC86A] transition-colors">
+                              <h4 className="text-[11.5px] sm:text-[12px] font-bold uppercase tracking-wider text-tk-ink dark:text-white line-clamp-1 group-hover:text-tk-accent dark:group-hover:text-tk-accent-night transition-colors">
                                 {product.name}
                               </h4>
 
@@ -396,10 +391,10 @@ export default function BluorngSearchModal({
 
                             {/* Price & View Arrow Row */}
                             <div className="mt-2.5 pt-2 border-t border-[#F0F0F0] dark:border-white/5 flex items-center justify-between">
-                              <span className="text-[12px] sm:text-[12.5px] font-bold text-[#111111] dark:text-white">
+                              <span className="text-[12px] sm:text-[12.5px] font-bold text-tk-ink dark:text-white">
                                 {formatPrice(product.price)}
                               </span>
-                              <span className="text-[10px] uppercase tracking-wider font-semibold text-[#C4823F] dark:text-[#ECC86A] flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-300">
+                              <span className="text-[10px] uppercase tracking-wider font-semibold text-tk-accent dark:text-tk-accent-night flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-300">
                                 <span>Explore</span>
                                 <span>→</span>
                               </span>

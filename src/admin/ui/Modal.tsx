@@ -30,14 +30,14 @@ export function Modal({
         >
           <div className="flex items-start justify-between gap-4 px-5 py-4 border-b border-[#EAEAEA]">
             <div className="min-w-0">
-              <Dialog.Title className="text-[15px] font-medium text-[#111111]">{title}</Dialog.Title>
+              <Dialog.Title className="text-[15px] font-medium text-tk-ink">{title}</Dialog.Title>
               {description ? (
                 <Dialog.Description className="mt-0.5 text-[12px] text-[#777777]">{description}</Dialog.Description>
               ) : (
                 <Dialog.Description className="sr-only">{title}</Dialog.Description>
               )}
             </div>
-            <Dialog.Close className="p-1 text-[#777777] hover:text-[#111111]" aria-label="Close">
+            <Dialog.Close className="p-1 text-[#777777] hover:text-tk-ink" aria-label="Close">
               <X size={16} />
             </Dialog.Close>
           </div>

@@ -32,12 +32,12 @@ export default function BluorngFilterSidebar({
   );
 
   return (
-    <div className={`flex flex-col select-none ${isMobileDrawer ? 'h-full bg-white dark:bg-[#0B0A0D]' : 'w-full'}`}>
+    <div className={`flex flex-col select-none ${isMobileDrawer ? 'h-full bg-white dark:bg-tk-night' : 'w-full'}`}>
       
       {/* ================= SIDEBAR HEADER ================= */}
       <div className={`flex items-center justify-between pb-4 border-b border-[#EAEAEA] dark:border-white/10 ${isMobileDrawer ? 'p-5' : 'mb-3'}`}>
         <div className="flex items-center gap-2.5">
-          <span className="font-sans font-semibold text-[11.5px] uppercase tracking-[0.14em] text-[#111111] dark:text-white">
+          <span className="font-sans font-semibold text-[11.5px] uppercase tracking-[0.14em] text-tk-ink dark:text-white">
             Filter & Refine
           </span>
           <AnimatePresence>
@@ -48,7 +48,7 @@ export default function BluorngFilterSidebar({
                 animate={{ scale: [1.25, 1], opacity: 1 }}
                 exit={{ scale: 0.5, opacity: 0 }}
                 transition={{ duration: 0.22, ease: 'easeOut' }}
-                className="w-5 h-5 rounded-full bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[10px] font-bold flex items-center justify-center shadow-xs"
+                className="w-5 h-5 rounded-full bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[10px] font-bold flex items-center justify-center shadow-xs"
               >
                 {activeFilterCount}
               </motion.span>
@@ -66,7 +66,7 @@ export default function BluorngFilterSidebar({
                 transition={{ duration: 0.2 }}
                 type="button"
                 onClick={onClearFilters}
-                className="text-[11px] font-medium tracking-wider uppercase text-[#C4823F] dark:text-[#ECC86A] hover:underline cursor-pointer transition-opacity"
+                className="text-[11px] font-medium tracking-wider uppercase text-tk-accent dark:text-tk-accent-night hover:underline cursor-pointer transition-opacity"
               >
                 Reset All
               </motion.button>
@@ -77,7 +77,7 @@ export default function BluorngFilterSidebar({
             <button
               type="button"
               onClick={onCloseMobileDrawer}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[#111111] dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-tk-ink dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
               aria-label="Close Filters"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -107,7 +107,7 @@ export default function BluorngFilterSidebar({
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-sans text-[11px] font-semibold tracking-[0.14em] uppercase text-[#111111] dark:text-white group-hover:text-[#C4823F] dark:group-hover:text-[#ECC86A] transition-colors">
+                    <span className="font-sans text-[11px] font-semibold tracking-[0.14em] uppercase text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night transition-colors">
                       {section.title}
                     </span>
                     <AnimatePresence>
@@ -118,7 +118,7 @@ export default function BluorngFilterSidebar({
                           animate={{ scale: [1.2, 1], opacity: 1 }}
                           exit={{ scale: 0.6, opacity: 0 }}
                           transition={{ duration: 0.2 }}
-                          className="text-[10px] font-semibold px-1.5 py-0.2 rounded-full bg-[#C4823F]/15 dark:bg-[#ECC86A]/20 text-[#C4823F] dark:text-[#ECC86A]"
+                          className="text-[10px] font-semibold px-1.5 py-0.2 rounded-full bg-tk-accent/15 dark:bg-tk-accent-night/20 text-tk-accent dark:text-tk-accent-night"
                         >
                           {sectionActiveCount}
                         </motion.span>
@@ -135,7 +135,7 @@ export default function BluorngFilterSidebar({
                 <motion.span
                   animate={{ rotate: isOpen ? 180 : 0 }}
                   transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                  className="text-[13px] font-light text-[#888888] dark:text-[#88857F] group-hover:text-[#111111] dark:group-hover:text-white transition-colors"
+                  className="text-[13px] font-light text-[#888888] dark:text-[#88857F] group-hover:text-tk-ink dark:group-hover:text-white transition-colors"
                 >
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6 9 12 15 18 9" />
@@ -184,7 +184,7 @@ export default function BluorngFilterSidebar({
                               transition={{ duration: 0.22, ease: 'easeOut' }}
                               className={`w-3.5 h-3.5 rounded-[2px] transition-colors flex items-center justify-center border ${
                                 isSelected
-                                  ? 'bg-[#111111] dark:bg-[#D4AF37] border-[#111111] dark:border-[#D4AF37] text-white dark:text-[#0B0A0D] shadow-[0_0_8px_rgba(212,175,55,0.35)]'
+                                  ? 'bg-tk-ink dark:bg-tk-gold border-tk-ink dark:border-tk-gold text-white dark:text-tk-night shadow-[0_0_8px_rgba(212,175,55,0.35)]'
                                   : 'border-[#BBBBBB] dark:border-white/25 bg-transparent group-hover:border-[#777777] dark:group-hover:border-white/50'
                               }`}
                             >
@@ -220,8 +220,8 @@ export default function BluorngFilterSidebar({
                               <span
                                 className={`text-[12px] font-normal tracking-[0.01em] transition-colors leading-tight ${
                                   isSelected
-                                    ? 'text-[#111111] dark:text-[#ECC86A] font-medium'
-                                    : 'text-[#444444] dark:text-[#CCCCCC] group-hover:text-[#111111] dark:group-hover:text-white'
+                                    ? 'text-tk-ink dark:text-tk-accent-night font-medium'
+                                    : 'text-[#444444] dark:text-[#CCCCCC] group-hover:text-tk-ink dark:group-hover:text-white'
                                 }`}
                               >
                                 {option.label}
@@ -260,12 +260,12 @@ export default function BluorngFilterSidebar({
 
       {/* ================= MOBILE STICKY BOTTOM ACTIONS ================= */}
       {isMobileDrawer && (
-        <div className="p-4 border-t border-[#EAEAEA] dark:border-white/10 bg-white dark:bg-[#0B0A0D] sticky bottom-0">
+        <div className="p-4 border-t border-[#EAEAEA] dark:border-white/10 bg-white dark:bg-tk-night sticky bottom-0">
           <motion.button
             whileTap={{ scale: 0.98 }}
             type="button"
             onClick={onCloseMobileDrawer}
-            className="w-full py-3 bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-[0.16em] font-semibold rounded-sm shadow-md cursor-pointer hover:bg-[#C4823F] dark:hover:bg-[#ECC86A] transition-colors flex items-center justify-center gap-1.5"
+            className="w-full py-3 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] uppercase tracking-[0.16em] font-semibold rounded-sm shadow-md cursor-pointer hover:bg-tk-accent dark:hover:bg-tk-accent-night transition-colors flex items-center justify-center gap-1.5"
           >
             <span>Show</span>
             <AnimatePresence mode="wait">

@@ -4,17 +4,28 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Theme token defaults; overridden at runtime by the Theme block */
+    --c-accent: 196 130 63;
+    --c-accent-night: 236 200 106;
+    --c-gold: 212 175 55;
+    --c-ink: 17 17 17;
+    --c-night: 11 10 13;
+    --font-body: "Poppins";
+    --font-display: "Cormorant Garamond";
+  }
+
   html {
     scroll-behavior: smooth;
     background-color: var(--theme-brand-bg);
     color: var(--theme-brand-text);
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-body), 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   body {
     background-color: var(--theme-brand-bg);
     color: var(--theme-brand-text);
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-body), 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
   }
 
@@ -23,13 +34,13 @@
   }
 
   ::selection {
-    background-color: #C4823F;
+    background-color: rgb(var(--c-accent));
     color: #FFFFFF;
   }
 
   html.dark ::selection, [data-theme="dark"] ::selection {
-    background-color: #D4AF37;
-    color: #0B0A0D;
+    background-color: rgb(var(--c-gold));
+    color: rgb(var(--c-night));
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -57,7 +68,7 @@
   /* Solid Black Button (BUY IT NOW) */
   .btn-black {
     @apply inline-flex items-center justify-center px-7 py-3.5 text-xs font-medium uppercase tracking-[0.04em] transition-all duration-200;
-    background-color: #111111;
+    background-color: rgb(var(--c-ink));
     color: #FFFFFF;
   }
   .btn-black:hover {
@@ -68,8 +79,8 @@
   .btn-cream {
     @apply inline-flex items-center justify-center px-7 py-3.5 text-xs font-medium uppercase tracking-[0.04em] transition-all duration-200;
     background-color: #EFECE6;
-    color: #111111;
-    border: 1px solid #111111;
+    color: rgb(var(--c-ink));
+    border: 1px solid rgb(var(--c-ink));
   }
   .btn-cream:hover {
     background-color: #E2DDD3;
@@ -78,47 +89,47 @@
   /* Button (OUR STORY / EXPLORE / TABS): Orange in light theme, Maroon in dark theme */
   .btn-amber {
     @apply inline-flex items-center justify-center px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.04em] transition-all duration-200;
-    background-color: #C4823F;
+    background-color: rgb(var(--c-accent));
     color: #FFFFFF;
   }
   .btn-amber:hover {
     background-color: #B57432;
   }
   html.dark .btn-amber, [data-theme="dark"] .btn-amber {
-    background-color: #D4AF37;
-    color: #0B0A0D;
+    background-color: rgb(var(--c-gold));
+    color: rgb(var(--c-night));
   }
   html.dark .btn-amber:hover, [data-theme="dark"] .btn-amber:hover {
-    background-color: #ECC86A;
-    color: #0B0A0D;
+    background-color: rgb(var(--c-accent-night));
+    color: rgb(var(--c-night));
   }
 
   /* Primary Action */
   .btn-primary {
     @apply inline-flex items-center justify-center px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.04em] transition-all duration-300;
-    background-color: #111111;
+    background-color: rgb(var(--c-ink));
     color: #FFFFFF;
-    border: 1px solid #111111;
+    border: 1px solid rgb(var(--c-ink));
   }
   .btn-primary:hover {
-    background-color: #C4823F;
-    border-color: #C4823F;
+    background-color: rgb(var(--c-accent));
+    border-color: rgb(var(--c-accent));
     color: #FFFFFF;
   }
   html.dark .btn-primary:hover, [data-theme="dark"] .btn-primary:hover {
-    background-color: #D4AF37;
-    border-color: #D4AF37;
-    color: #0B0A0D;
+    background-color: rgb(var(--c-gold));
+    border-color: rgb(var(--c-gold));
+    color: rgb(var(--c-night));
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.04em] transition-all duration-300;
     background-color: transparent;
-    color: #111111;
-    border: 1px solid #111111;
+    color: rgb(var(--c-ink));
+    border: 1px solid rgb(var(--c-ink));
   }
   .btn-secondary:hover {
-    background-color: #111111;
+    background-color: rgb(var(--c-ink));
     color: #FFFFFF;
   }
 }
@@ -226,13 +237,13 @@ html.lenis, html.lenis body {
 }
 
 .gold-shimmer {
-  background: linear-gradient(90deg, #111111 0%, #C4823F 50%, #111111 100%);
+  background: linear-gradient(90deg, rgb(var(--c-ink)) 0%, rgb(var(--c-accent)) 50%, rgb(var(--c-ink)) 100%);
   background-size: 200% 100%;
   animation: goldShimmer 3s infinite linear;
 }
 
 html.dark .gold-shimmer, [data-theme="dark"] .gold-shimmer {
-  background: linear-gradient(90deg, #111111 0%, #D4AF37 50%, #111111 100%);
+  background: linear-gradient(90deg, rgb(var(--c-ink)) 0%, rgb(var(--c-gold)) 50%, rgb(var(--c-ink)) 100%);
 }
 
 /* ================= HARDWARE ACCELERATED CONTINUOUS MARQUEE KEYFRAMES ================= */
@@ -301,4 +312,4 @@ html.dark .gold-shimmer, [data-theme="dark"] .gold-shimmer {
 .prose-admin h2 { font-size: 15px; font-weight: 500; margin: 0.6em 0 0.3em; }
 .prose-admin ul { list-style: disc; padding-left: 1.25em; }
 .prose-admin ol { list-style: decimal; padding-left: 1.25em; }
-.prose-admin a { color: #C4823F; text-decoration: underline; }
+.prose-admin a { color: rgb(var(--c-accent)); text-decoration: underline; }

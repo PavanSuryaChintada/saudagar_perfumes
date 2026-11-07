@@ -10,7 +10,7 @@ export function RichText({ value, onChange, placeholder, minHeight = 120 }: { va
     content: value || '',
     editorProps: {
       attributes: {
-        class: 'prose-admin outline-none px-3 py-2 text-[13px] text-[#111111] leading-relaxed',
+        class: 'prose-admin outline-none px-3 py-2 text-[13px] text-tk-ink leading-relaxed',
         style: `min-height:${minHeight}px`,
         'aria-label': placeholder ?? 'Rich text',
       },
@@ -26,9 +26,9 @@ export function RichText({ value, onChange, placeholder, minHeight = 120 }: { va
   }, [value, editor]);
 
   if (!editor) return null;
-  const btn = (active: boolean) => `p-1.5 ${active ? 'bg-[#111111] text-white' : 'text-[#555555] hover:bg-[#F4F3EE]'}`;
+  const btn = (active: boolean) => `p-1.5 ${active ? 'bg-tk-ink text-white' : 'text-[#555555] hover:bg-[#F4F3EE]'}`;
   return (
-    <div className="border border-[#D5D3CC] bg-white focus-within:border-[#111111]">
+    <div className="border border-[#D5D3CC] bg-white focus-within:border-tk-ink">
       <div className="flex flex-wrap gap-0.5 border-b border-[#EAEAEA] px-1 py-1">
         <button type="button" className={btn(editor.isActive('bold'))} onClick={() => editor.chain().focus().toggleBold().run()} aria-label="Bold"><Bold size={13} /></button>
         <button type="button" className={btn(editor.isActive('italic'))} onClick={() => editor.chain().focus().toggleItalic().run()} aria-label="Italic"><Italic size={13} /></button>

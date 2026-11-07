@@ -178,10 +178,10 @@ export default function CollectionsPage() {
                 {c.aliases.length > 0 && ` · old links: ${c.aliases.join(', ')}`}
               </p>
             </div>
-            <a href={`/collections/${c.slug}`} target="_blank" rel="noreferrer" className="p-1.5 text-[#777777] hover:text-[#111111]" aria-label="View on site">
+            <a href={`/collections/${c.slug}`} target="_blank" rel="noreferrer" className="p-1.5 text-[#777777] hover:text-tk-ink" aria-label="View on site">
               <ExternalLink size={14} />
             </a>
-            <button type="button" aria-label={`Edit ${c.name}`} className="p-1.5 text-[#777777] hover:text-[#111111]" onClick={() => { setError(''); setDraft(toDraft(c)); }}>
+            <button type="button" aria-label={`Edit ${c.name}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => { setError(''); setDraft(toDraft(c)); }}>
               <Pencil size={14} />
             </button>
             <button type="button" aria-label={`Delete ${c.name}`} className="p-1.5 text-[#777777] hover:text-rose-600" onClick={() => setDeleting(c)}>

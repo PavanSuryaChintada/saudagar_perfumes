@@ -21,9 +21,9 @@ export default function DashboardPage() {
             <ul className="divide-y divide-[#F0F0F0]">
               {SETUP.map((s) => (
                 <li key={s.label} className="py-3 flex gap-3">
-                  <span className="mt-1.5 h-2 w-2 shrink-0 bg-[#C4823F]" aria-hidden />
+                  <span className="mt-1.5 h-2 w-2 shrink-0 bg-tk-accent" aria-hidden />
                   <div>
-                    <p className="text-[13px] text-[#111111]">{s.label}</p>
+                    <p className="text-[13px] text-tk-ink">{s.label}</p>
                     <p className="text-[12px] text-[#777777]">{s.detail}</p>
                   </div>
                 </li>
@@ -34,17 +34,17 @@ export default function DashboardPage() {
         <Panel title="Quick links">
           <ul className="space-y-2 text-[13px]">
             <li>
-              <Link to="/admin/settings" className="underline underline-offset-4 hover:text-[#C4823F]">
+              <Link to="/admin/settings" className="underline underline-offset-4 hover:text-tk-accent">
                 Store settings
               </Link>
             </li>
             <li>
-              <Link to="/admin/media" className="underline underline-offset-4 hover:text-[#C4823F]">
+              <Link to="/admin/media" className="underline underline-offset-4 hover:text-tk-accent">
                 Media library
               </Link>
             </li>
             <li>
-              <a href="/" target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-[#C4823F]">
+              <a href="/" target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-tk-accent">
                 Open the store
               </a>
             </li>

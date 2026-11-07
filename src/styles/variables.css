@@ -10,46 +10,46 @@
   --theme-brand-alabaster: #FFFFFF;      /* Clean White Surface */
   
   /* Typography Colors */
-  --theme-brand-text: #111111;           /* Deep Obsidian Charcoal */
+  --theme-brand-text: rgb(var(--c-ink));           /* Deep Obsidian Charcoal */
   --theme-brand-text-dark: #000000;      /* Pure Black */
   --theme-brand-text-muted: #555555;     /* Medium Charcoal Grey */
   --theme-brand-text-light: #777777;     /* Soft Studio Grey */
   
   /* Brand Amber Orange & Accents (Light Theme Iconic Palette) */
-  --theme-brand-amber: #C4823F;          /* Warm Amber Caramel */
+  --theme-brand-amber: rgb(var(--c-accent));          /* Warm Amber Caramel */
   --theme-brand-amber-dark: #B57432;     /* Deepened Amber Tone */
-  --theme-brand-gold: #D4AF37;           /* Pure 24K Royal Gold */
-  --theme-brand-gold-light: #ECC86A;     /* Bright Champagne Gold */
+  --theme-brand-gold: rgb(var(--c-gold));           /* Pure 24K Royal Gold */
+  --theme-brand-gold-light: rgb(var(--c-accent-night));     /* Bright Champagne Gold */
   --theme-brand-gold-dark: #9E7D23;      /* Bronzed Antique Gold */
 
   /* Brand Royal Gold Palette */
-  --theme-brand-maroon: #D4AF37;
+  --theme-brand-maroon: rgb(var(--c-gold));
   --theme-brand-maroon-dark: #9E7D23;
-  --theme-brand-maroon-vivid: #D4AF37;
-  --theme-brand-maroon-light: #ECC86A;
+  --theme-brand-maroon-vivid: rgb(var(--c-gold));
+  --theme-brand-maroon-light: rgb(var(--c-accent-night));
   --theme-brand-maroon-soft: rgba(212, 175, 55, 0.12);
   
   /* Architectural Hairline Borders */
-  --theme-brand-border: #111111;                      /* Crisp 1px Black Border */
+  --theme-brand-border: rgb(var(--c-ink));                      /* Crisp 1px Black Border */
   --theme-brand-border-fine: rgba(17, 17, 17, 0.20);  /* Soft Grid Divider Line */
   --theme-brand-border-muted: #888888;                /* Inactive Pill/Stepper Border */
   
   /* Action Button Palette */
-  --theme-btn-black-bg: #111111;         /* Solid Black Button (BUY IT NOW) */
+  --theme-btn-black-bg: rgb(var(--c-ink));         /* Solid Black Button (BUY IT NOW) */
   --theme-btn-black-text: #FFFFFF;       /* White Label */
   --theme-btn-light-bg: #EFECE6;         /* Cream Linen Button (ADD TO CART) */
-  --theme-btn-light-border: #111111;     /* Black Border */
-  --theme-btn-light-text: #111111;       /* Black Label */
-  --theme-btn-amber-bg: #C4823F;         /* Amber Button (OUR STORY / EXPLORE) */
+  --theme-btn-light-border: rgb(var(--c-ink));     /* Black Border */
+  --theme-btn-light-text: rgb(var(--c-ink));       /* Black Label */
+  --theme-btn-amber-bg: rgb(var(--c-accent));         /* Amber Button (OUR STORY / EXPLORE) */
   --theme-btn-amber-text: #FFFFFF;
 
   /* Secondary Section Theme */
   --theme-sand-bg: #FFFFFF;              /* Clean White */
-  --theme-sand-text: #111111;
-  --theme-sand-border: #111111;
+  --theme-sand-text: rgb(var(--c-ink));
+  --theme-sand-border: rgb(var(--c-ink));
 
   /* Dark Theme Reference Elements */
-  --theme-dark-bg: #111111;
+  --theme-dark-bg: rgb(var(--c-ink));
   --theme-dark-surface: #1A1A1E;
   --theme-dark-text: #FFFFFF;
   --theme-dark-border: rgba(255, 255, 255, 0.15);
@@ -74,7 +74,7 @@
    SAUDAGAR PERFUMES - LUXURY DARK THEME PALETTE (NOIR OBSIDIAN & WARM GOLD)
    ========================================================================== */
 html.dark, [data-theme="dark"] {
-  --theme-brand-bg: #0B0A0D;             /* Deep Midnight Obsidian */
+  --theme-brand-bg: rgb(var(--c-night));             /* Deep Midnight Obsidian */
   --theme-brand-surface: #141318;        /* Dark Atmospheric Pedestal */
   --theme-brand-surface-card: #18171E;   /* Elevated Velvet Card Surface */
   --theme-brand-alabaster: #1E1D25;      /* Subtle Charcoal Alabaster */
@@ -84,32 +84,32 @@ html.dark, [data-theme="dark"] {
   --theme-brand-text-muted: #A39E96;     /* Champagne Warm Grey */
   --theme-brand-text-light: #7E7870;     /* Soft Smoked Grey */
   
-  --theme-brand-amber: #ECC86A;          /* Radiant Champagne Gold */
-  --theme-brand-amber-dark: #D4AF37;     /* 24K Royal Gold */
-  --theme-brand-gold: #D4AF37;           /* 24K Royal Gold */
-  --theme-brand-gold-light: #ECC86A;     /* Bright Champagne Gold */
+  --theme-brand-amber: rgb(var(--c-accent-night));          /* Radiant Champagne Gold */
+  --theme-brand-amber-dark: rgb(var(--c-gold));     /* 24K Royal Gold */
+  --theme-brand-gold: rgb(var(--c-gold));           /* 24K Royal Gold */
+  --theme-brand-gold-light: rgb(var(--c-accent-night));     /* Bright Champagne Gold */
   --theme-brand-gold-dark: #B8860B;      /* Matured Antique Gold */
   
   --theme-brand-border: rgba(255, 255, 255, 0.10);
   --theme-brand-border-fine: rgba(255, 255, 255, 0.06);
   --theme-brand-border-muted: rgba(255, 255, 255, 0.20);
   
-  --theme-btn-black-bg: #D4AF37;         /* Gold Accent Buy Button in Dark Mode */
-  --theme-btn-black-text: #0B0A0D;
+  --theme-btn-black-bg: rgb(var(--c-gold));         /* Gold Accent Buy Button in Dark Mode */
+  --theme-btn-black-text: rgb(var(--c-night));
   --theme-btn-light-bg: #18171E;
   --theme-btn-light-border: rgba(212, 175, 55, 0.35);
-  --theme-btn-light-text: #ECC86A;
-  --theme-btn-amber-bg: #D4AF37;
-  --theme-btn-amber-text: #0B0A0D;
+  --theme-btn-light-text: rgb(var(--c-accent-night));
+  --theme-btn-amber-bg: rgb(var(--c-gold));
+  --theme-btn-amber-text: rgb(var(--c-night));
 
   --theme-sand-bg: #141318;
   --theme-sand-text: #FFFFFF;
   --theme-sand-border: rgba(255, 255, 255, 0.10);
 
   /* Gold Theme Overrides for any legacy Maroon variable */
-  --theme-brand-maroon: #D4AF37;
+  --theme-brand-maroon: rgb(var(--c-gold));
   --theme-brand-maroon-dark: #9E7D23;
-  --theme-brand-maroon-vivid: #D4AF37;
-  --theme-brand-maroon-light: #ECC86A;
+  --theme-brand-maroon-vivid: rgb(var(--c-gold));
+  --theme-brand-maroon-light: rgb(var(--c-accent-night));
   --theme-brand-maroon-soft: rgba(212, 175, 55, 0.12);
 }

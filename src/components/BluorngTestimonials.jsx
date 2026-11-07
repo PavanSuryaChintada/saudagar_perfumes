@@ -1,39 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// PLACEHOLDER TESTIMONIALS: replace every entry with real, approved customer reviews before launch.
-export const TESTIMONIALS = [
-  {
-    id: 't1',
-    quote: 'Replace this with a real customer quote about the fragrance and the experience.',
-    name: 'Customer Name',
-    location: 'City, Country',
-    product: 'Product Name',
-    rating: 5
-  },
-  {
-    id: 't2',
-    quote: 'Replace this with a second real customer quote, ideally mentioning a specific note or moment.',
-    name: 'Customer Name',
-    location: 'City, Country',
-    product: 'Product Name',
-    rating: 5
-  },
-  {
-    id: 't3',
-    quote: 'Replace this with a third real customer quote about packaging, delivery or longevity.',
-    name: 'Customer Name',
-    location: 'City, Country',
-    product: 'Product Name',
-    rating: 5
-  }
-];
+import { useTestimonials } from '../cms/useContent';
 
 const AUTOPLAY_MS = 7000;
 
 function Stars({ count }) {
   return (
-    <div className="flex items-center justify-center gap-1 text-[#C4823F] dark:text-[#ECC86A]" aria-label={`${count} out of 5 stars`}>
+    <div className="flex items-center justify-center gap-1 text-tk-accent dark:text-tk-accent-night" aria-label={`${count} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill={i < count ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.6">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -43,7 +16,10 @@ function Stars({ count }) {
   );
 }
 
-export default function BluorngTestimonials({ items = TESTIMONIALS }) {
+/** Section "testimonials": quotes come from Admin → Testimonials (only active ones show). */
+export default function BluorngTestimonials() {
+  const { data = [] } = useTestimonials();
+  const items = data.map((t) => ({ id: t.id, quote: t.quote, name: t.name, location: t.location, product: t.product_name, rating: t.rating }));
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const count = items.length;
@@ -65,7 +41,7 @@ export default function BluorngTestimonials({ items = TESTIMONIALS }) {
       onMouseLeave={() => setPaused(false)}
     >
       <div className="max-w-[880px] mx-auto text-center">
-        <span className="block text-[10.5px] uppercase tracking-[0.22em] font-medium text-[#C4823F] dark:text-[#ECC86A] mb-8">
+        <span className="block text-[10.5px] uppercase tracking-[0.22em] font-medium text-tk-accent dark:text-tk-accent-night mb-8">
           Words from the Atelier
         </span>
 
@@ -78,14 +54,14 @@ export default function BluorngTestimonials({ items = TESTIMONIALS }) {
               exit={{ opacity: 0, y: -12, filter: 'blur(4px)', transition: { duration: 0.3, ease: [0.76, 0, 0.24, 1] } }}
               className="w-full"
             >
-              <Stars count={current.rating} />
+              {current.rating ? <Stars count={current.rating} /> : null}
 
-              <blockquote className="mt-6 font-serif italic text-[22px] sm:text-[30px] leading-[1.35] text-[#111111] dark:text-white">
+              <blockquote className="mt-6 font-serif italic text-[22px] sm:text-[30px] leading-[1.35] text-tk-ink dark:text-white">
                 &ldquo;{current.quote}&rdquo;
               </blockquote>
 
               <figcaption className="mt-8 flex flex-col items-center gap-1">
-                <span className="text-[12px] uppercase tracking-[0.16em] font-semibold text-[#111111] dark:text-white">
+                <span className="text-[12px] uppercase tracking-[0.16em] font-semibold text-tk-ink dark:text-white">
                   {current.name}
                 </span>
                 <span className="text-[11px] uppercase tracking-[0.12em] text-[#888888] dark:text-[#A09D96]">
@@ -108,8 +84,8 @@ export default function BluorngTestimonials({ items = TESTIMONIALS }) {
                 aria-current={i === index}
                 className={`h-[3px] rounded-full transition-all duration-500 cursor-pointer ${
                   i === index
-                    ? 'w-8 bg-[#C4823F] dark:bg-[#ECC86A]'
-                    : 'w-3 bg-[#111111]/20 dark:bg-white/25 hover:bg-[#111111]/40 dark:hover:bg-white/50'
+                    ? 'w-8 bg-tk-accent dark:bg-tk-accent-night'
+                    : 'w-3 bg-tk-ink/20 dark:bg-white/25 hover:bg-tk-ink/40 dark:hover:bg-white/50'
                 }`}
               />
             ))}

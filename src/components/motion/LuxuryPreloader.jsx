@@ -181,7 +181,7 @@ export default function LuxuryPreloader({ onComplete }) {
                 width: mote.size,
                 height: mote.size,
               }}
-              className="absolute rounded-full bg-[#ECC86A] shadow-[0_0_10px_#ECC86A]"
+              className="absolute rounded-full bg-tk-accent-night shadow-[0_0_10px_rgb(var(--c-accent-night))]"
             />
           ))}
         </div>
@@ -219,19 +219,19 @@ export default function LuxuryPreloader({ onComplete }) {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-            className="flex-1 h-[1px] origin-right bg-gradient-to-l from-[#ECC86A] to-transparent shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+            className="flex-1 h-[1px] origin-right bg-gradient-to-l from-tk-accent-night to-transparent shadow-[0_0_8px_rgba(212,175,55,0.6)]"
           />
           <motion.span
             initial={{ scale: 0, rotate: 0 }}
             animate={{ scale: 1, rotate: 45 }}
             transition={{ duration: 0.4, delay: 0.15 }}
-            className="w-1.5 h-1.5 bg-[#ECC86A] shadow-[0_0_8px_#ECC86A]"
+            className="w-1.5 h-1.5 bg-tk-accent-night shadow-[0_0_8px_rgb(var(--c-accent-night))]"
           />
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-            className="flex-1 h-[1px] origin-left bg-gradient-to-r from-[#ECC86A] to-transparent shadow-[0_0_8px_rgba(212,175,55,0.6)]"
+            className="flex-1 h-[1px] origin-left bg-gradient-to-r from-tk-accent-night to-transparent shadow-[0_0_8px_rgba(212,175,55,0.6)]"
           />
         </div>
 
@@ -241,7 +241,7 @@ export default function LuxuryPreloader({ onComplete }) {
           transition={{ duration: 0.4, delay: 0.15, ease: 'easeOut' }}
           className="flex flex-col items-center gap-1"
         >
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.36em] text-[#ECC86A]/90 font-light">
+          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.36em] text-tk-accent-night/90 font-light">
             Haute Parfumerie · Dubai · Paris
           </span>
           <span className="text-[8px] sm:text-[8.5px] uppercase tracking-[0.26em] text-white/40 font-extralight">
@@ -260,12 +260,12 @@ export default function LuxuryPreloader({ onComplete }) {
           <div className="w-32 sm:w-40 h-[1.5px] bg-white/10 rounded-full overflow-hidden relative">
             <motion.div
               style={{ width: `${progress}%` }}
-              className="h-full bg-gradient-to-r from-[#C4823F] via-[#ECC86A] to-[#FFF2B0] shadow-[0_0_10px_rgba(236,200,106,0.9)]"
+              className="h-full bg-gradient-to-r from-tk-accent via-tk-accent-night to-[#FFF2B0] shadow-[0_0_10px_rgba(236,200,106,0.9)]"
             />
           </div>
 
           {/* Clean Monospace Progress Readout */}
-          <div className="font-mono text-[10px] tracking-[0.24em] text-[#ECC86A]/80 flex items-center gap-1">
+          <div className="font-mono text-[10px] tracking-[0.24em] text-tk-accent-night/80 flex items-center gap-1">
             <span className="text-white/25 text-[9px]">[</span>
             <span>{progress.toString().padStart(2, '0')}%</span>
             <span className="text-white/25 text-[9px]">]</span>

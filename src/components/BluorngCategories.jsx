@@ -1,105 +1,37 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useGo } from '../cms/useSite';
 
 // 6 Curated Categories - Pure, Minimal Haute Luxury Olfactory Families
-export const CATEGORY_ITEMS = [
-  {
-    id: 'cat-oud-royale',
-    numeral: 'I',
-    title: 'Oud Royale',
-    subtitle: 'Wild Agarwood Extraits',
-    count: '8 Formulations',
-    description: '40-year wild Assam agarwood distilled in copper alembics. Smoked, flinty, and deeply resinous.',
-    notes: ['Wild Assam Oud', 'Smoked Birch', 'Dark Ambergris'],
-    concentration: 'Extrait · 38% Pure Oil',
-    image: '/images/saudagar_imperial_ruby.png',
-    slug: 'royal'
-  },
-  {
-    id: 'cat-royal-attars',
-    numeral: 'II',
-    title: 'Pure Royal Attars',
-    subtitle: 'Sacred Hydro-Distilled Oils',
-    count: '9 Formulations',
-    description: 'Ancestral botanical attars compounded without alcohol. High-altitude Taif damask rose aged over sandalwood.',
-    notes: ['Taif Damask Rose', 'Mysore Sandalwood', 'Kashmiri Saffron'],
-    concentration: '100% Pure Botanical Attar',
-    image: '/images/flacon_rooh_mysore.png',
-    slug: 'royal'
-  },
-  {
-    id: 'cat-solar-aquatic',
-    numeral: 'III',
-    title: 'Solar & Aquatic',
-    subtitle: 'Riviera Citrus & Saline Blues',
-    count: '7 Formulations',
-    description: 'Sunlit Calabrian bergamot infused with Mediterranean sea spray and sun-bleached coastal cedar.',
-    notes: ['Calabrian Bergamot', 'Oceanic Saline', 'Riviera Blue Amber'],
-    concentration: 'Extrait · 32% Pure Oil',
-    image: '/images/saudagar_royal_sapphire.png',
-    slug: 'fresh'
-  },
-  {
-    id: 'cat-exotic-noir',
-    numeral: 'IV',
-    title: 'Exotic Noir',
-    subtitle: 'Nocturnal Cypress & Flint',
-    count: '8 Formulations',
-    description: 'Volcanic earth, crushed pine needles, and obsidian minerals captured in dense nighttime extraits.',
-    notes: ['Mountain Cypress', 'Obsidian Flint', 'Smoked Vetiver'],
-    concentration: 'Extrait · 42% Pure Oil',
-    image: '/images/saudagar_noir_matte.png',
-    slug: 'exotic'
-  },
-  {
-    id: 'cat-amber-oriental',
-    numeral: 'V',
-    title: 'Amber & Resins',
-    subtitle: 'Smoked Balsams & Frankincense',
-    count: '12 Formulations',
-    description: 'Tears of Somalian frankincense melded with Siam benzoin, warm golden labdanum, and bourbon vanilla.',
-    notes: ['Golden Labdanum', 'Frankincense Tears', 'Bourbon Vanilla'],
-    concentration: 'Extrait · 36% Pure Oil',
-    image: '/images/saudagar_amber_gold.png',
-    slug: 'signature'
-  },
-  {
-    id: 'cat-discovery-sets',
-    numeral: 'VI',
-    title: 'Discovery Sets',
-    subtitle: 'Curated 10ml Vault Coffrets',
-    count: '6 Coffrets',
-    description: 'Six signature extraits in travel flacons housed in a presentation case with a full flacon voucher.',
-    notes: ['6 Travel Flacons', 'Full Bottle Voucher', 'Coffret Box'],
-    concentration: 'Discovery Coffrets · 6 × 10ml',
-    image: '/images/saudagar_crystal_diamond.png',
-    slug: 'signature'
-  }
-];
 
-export default function BluorngCategories({ onSelectCategory }) {
+
+/** Section "category_tiles": every label, tile, image and link comes from the CMS. */
+export default function BluorngCategories({ config = {} }) {
   const [activeIdx, setActiveIdx] = useState(0);
+  const go = useGo();
+  const CATEGORY_ITEMS = (config.items || []).map((it, i) => ({ ...it, id: `cat-${i}` }));
+  const onSelectCategory = (link) => go(link);
 
   return (
-    <section id="shop-by-category" className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-8 sm:py-14 overflow-hidden select-none transition-colors duration-300 scroll-mt-20">
+    <section id="shop-by-category" className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-8 sm:py-14 overflow-hidden select-none transition-colors duration-300 scroll-mt-20">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL HEADER ================= */}
         <div className="flex items-end justify-between mb-5">
           <div>
             <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#88857F] font-medium block mb-0.5">
-              01 / Olfactory Families
+              {config.eyebrow}
             </span>
-            <h2 className="text-[19px] sm:text-[24px] font-normal uppercase tracking-[0.03em] text-[#111111] dark:text-white">
-              Shop by Category
+            <h2 className="text-[19px] sm:text-[24px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
+              {config.heading}
             </h2>
           </div>
 
           <button
-            onClick={() => onSelectCategory && onSelectCategory('all')}
-            className="text-[11px] uppercase tracking-[0.12em] text-[#888888] hover:text-[#111111] dark:text-[#88857F] dark:hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer font-normal"
+            onClick={() => onSelectCategory(config.view_all_link)}
+            className="text-[11px] uppercase tracking-[0.12em] text-[#888888] hover:text-tk-ink dark:text-[#88857F] dark:hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer font-normal"
           >
-            <span>View All</span>
+            <span>{config.view_all_label}</span>
             <span className="text-[13px]">→</span>
           </button>
         </div>
@@ -115,7 +47,7 @@ export default function BluorngCategories({ onSelectCategory }) {
                 layout
                 onClick={() => {
                   if (isExpanded) {
-                    onSelectCategory && onSelectCategory(item.slug);
+                    onSelectCategory(item.link);
                   } else {
                     setActiveIdx(idx);
                   }
@@ -130,11 +62,11 @@ export default function BluorngCategories({ onSelectCategory }) {
               >
                 {/* Numeral and count top row */}
                 <div className="px-4 py-3 flex items-center justify-between text-[#888888] dark:text-white/50">
-                  <span className={`text-[11px] font-mono tracking-wider transition-colors ${isExpanded ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'text-[#AAAAAA] dark:text-white/40'}`}>
+                  <span className={`text-[11px] font-mono tracking-wider transition-colors ${isExpanded ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#AAAAAA] dark:text-white/40'}`}>
                     {item.numeral}
                   </span>
                   <span className="text-[9.5px] uppercase tracking-wider text-[#999999] dark:text-white/40">
-                    {item.count.split(' ')[0]}
+                    {(item.count_label || '').split(' ')[0]}
                   </span>
                 </div>
 
@@ -150,10 +82,10 @@ export default function BluorngCategories({ onSelectCategory }) {
                     {/* Left: Details */}
                     <div className="flex-1 flex flex-col justify-between h-full py-1">
                       <div>
-                        <span className="text-[9.5px] uppercase tracking-[0.14em] text-[#C4823F] dark:text-[#ECC86A] font-medium block mb-0.5">
+                        <span className="text-[9.5px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night font-medium block mb-0.5">
                           {item.concentration}
                         </span>
-                        <h3 className="text-[22px] sm:text-[25px] font-normal uppercase tracking-tight text-[#111111] dark:text-white leading-tight">
+                        <h3 className="text-[22px] sm:text-[25px] font-normal uppercase tracking-tight text-tk-ink dark:text-white leading-tight">
                           {item.title}
                         </h3>
                         <p className="text-[11px] text-[#777777] dark:text-white/60 mt-0.5">
@@ -164,7 +96,7 @@ export default function BluorngCategories({ onSelectCategory }) {
                         </p>
 
                         <p className="text-[10px] uppercase tracking-wider text-[#888888] dark:text-white/50 mt-2.5">
-                          Notes: <span className="text-[#333333] dark:text-white/90 font-medium">{item.notes.join(' · ')}</span>
+                          {config.notes_label} <span className="text-[#333333] dark:text-white/90 font-medium">{item.notes}</span>
                         </p>
                       </div>
 
@@ -173,15 +105,15 @@ export default function BluorngCategories({ onSelectCategory }) {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            onSelectCategory && onSelectCategory(item.slug);
+                            onSelectCategory(item.link);
                           }}
-                          className="text-[10.5px] uppercase tracking-[0.12em] text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
+                          className="text-[10.5px] uppercase tracking-[0.12em] text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
                         >
-                          <span>Explore Collection</span>
+                          <span>{config.cta_label}</span>
                           <span className="text-[12px]">→</span>
                         </button>
                         <span className="text-[9.5px] uppercase tracking-wider text-[#999999] dark:text-white/40">
-                          ({item.count})
+                          ({item.count_label})
                         </span>
                       </div>
                     </div>
@@ -212,7 +144,7 @@ export default function BluorngCategories({ onSelectCategory }) {
 
                     {/* Vertical Category Title */}
                     <div className="py-4 flex flex-col items-center justify-center gap-1">
-                      <span className="text-[10.5px] font-normal uppercase tracking-[0.16em] text-[#555555] dark:text-white/60 group-hover:text-[#111111] dark:group-hover:text-white whitespace-nowrap rotate-[-90deg] block transition-colors">
+                      <span className="text-[10.5px] font-normal uppercase tracking-[0.16em] text-[#555555] dark:text-white/60 group-hover:text-tk-ink dark:group-hover:text-white whitespace-nowrap rotate-[-90deg] block transition-colors">
                         {item.title}
                       </span>
                     </div>
@@ -231,7 +163,7 @@ export default function BluorngCategories({ onSelectCategory }) {
           {CATEGORY_ITEMS.map((item) => (
             <div
               key={item.id}
-              onClick={() => onSelectCategory && onSelectCategory(item.slug)}
+              onClick={() => onSelectCategory(item.link)}
               className="flex flex-col group cursor-pointer select-none active:opacity-75 transition-opacity"
             >
               {/* Clean Soft Pedestal Stage (No heavy borders, no box-in-box, pure flacon) */}
@@ -246,11 +178,11 @@ export default function BluorngCategories({ onSelectCategory }) {
 
               {/* Minimal Clean Typography: Title & Count */}
               <div className="pt-2 text-center flex flex-col items-center">
-                <h3 className="text-[12px] font-medium uppercase tracking-[0.1em] text-[#111111] dark:text-white line-clamp-1">
+                <h3 className="text-[12px] font-medium uppercase tracking-[0.1em] text-tk-ink dark:text-white line-clamp-1">
                   {item.title}
                 </h3>
                 <span className="text-[10px] tracking-wider uppercase text-[#888888] dark:text-[#88857F] mt-0.5">
-                  {item.count}
+                  {item.count_label}
                 </span>
               </div>
             </div>

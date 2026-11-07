@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
       eyebrow="Account help"
       title="Reset your password"
       footer={
-        <Link to="/login" className="text-[#111111] dark:text-white underline underline-offset-4 hover:text-[#C4823F]">
+        <Link to="/login" className="text-tk-ink dark:text-white underline underline-offset-4 hover:text-tk-accent">
           Back to sign in
         </Link>
       }

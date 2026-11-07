@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import BluorngProductCard from './BluorngProductCard.jsx';
-import { useLegacyProducts } from '../storefront/catalog/hooks';
+import { useSourceProducts } from '../cms/useSourceProducts';
 import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 
 export default function BluorngSignatureCollection({
@@ -8,36 +8,30 @@ export default function BluorngSignatureCollection({
   onToggleWishlist,
   onSelectProduct,
   onQuickBuy,
-  onDiscoverMore
+  config = {}
 }) {
-  const [selectedFilter, setSelectedFilter] = useState('All');
+  const [selectedFilter, setSelectedFilter] = useState('0');
 
-  // Tabs map onto scent-profile filters in the database (made editable in the CMS in phase 3).
-  const filters = [
-    { label: 'All Formulations', value: 'All', attrs: {} },
-    { label: 'Oud & Woods', value: 'Oud & Woods', attrs: { family: ['oud', 'woody'] } },
-    { label: 'Oriental Amber', value: 'Oriental Amber', attrs: { family: ['amber'] } },
-    { label: 'Solar Citrus', value: 'Solar Citrus', attrs: { family: ['citrus', 'aquatic'] } },
-    { label: 'Royal Attars', value: 'Royal Attars', attrs: { concentration: ['attar'] } }
-  ];
+  // Section "product_grid_tabs": each tab is a label plus a product source, all edited in the CMS.
+  const filters = (config.tabs || []).map((t, i) => ({ label: t.label, value: String(i), source: t.source }));
   const activeTab = filters.find((f) => f.value === selectedFilter) || filters[0];
-  const { products: signatureProducts } = useLegacyProducts({ attrs: activeTab.attrs, page_size: 8 });
+  const { products: signatureProducts } = useSourceProducts(activeTab?.source);
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">
+    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
         <ScrollReveal variant="fade-up" className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
             <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#A09D96] font-medium block mb-1">
-              Curated Formulations
+              {config.eyebrow}
             </span>
-            <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-[#111111] dark:text-white">
-              Fragrances & Pure Attars
+            <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
+              {config.heading}
             </h2>
             <p className="text-[12px] text-[#777777] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
-              High-concentration extraits and hydro-distilled floral oils formulated for exceptional skin chemistry evolution.
+              {config.text}
             </p>
           </div>
 
@@ -51,8 +45,8 @@ export default function BluorngSignatureCollection({
                   onClick={() => setSelectedFilter(f.value)}
                   className={`px-4 py-1.5 text-[10.5px] font-normal uppercase tracking-wider transition-all duration-300 rounded-full whitespace-nowrap cursor-pointer ${
                     isActive
-                      ? 'bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] shadow-sm font-medium'
-                      : 'text-[#666666] dark:text-[#A09D96] hover:text-[#111111] dark:hover:text-[#ECC86A]'
+                      ? 'bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night shadow-sm font-medium'
+                      : 'text-[#666666] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-tk-accent-night'
                   }`}
                 >
                   {f.label}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useBlock } from '../cms/useSite';
 
 export default function BluorngMobileBottomNav({
   cartCount = 0,
@@ -11,6 +12,7 @@ export default function BluorngMobileBottomNav({
   onOpenCart,
   onOpenAccount
 }) {
+  const showBoutiques = !!useBlock('brand')?.show_boutiques;
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0E0C10]/95 backdrop-blur-xl px-4 py-2 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transition-colors duration-300">
       <ul className="flex items-center justify-around text-[#777777] dark:text-[#A09D96]">
@@ -19,7 +21,7 @@ export default function BluorngMobileBottomNav({
         <li>
           <button
             onClick={() => onNavigateCollection('all')}
-            className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 cursor-pointer"
+            className="flex flex-col items-center justify-center gap-1 hover:text-tk-ink dark:hover:text-white transition-colors p-1 cursor-pointer"
             aria-label="Explore Collections"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -35,7 +37,7 @@ export default function BluorngMobileBottomNav({
           <li>
             <button
               onClick={onToggleTheme}
-              className="flex flex-col items-center justify-center gap-1 text-[#C4823F] dark:text-[#ECC86A] hover:opacity-80 transition-colors p-1 cursor-pointer"
+              className="flex flex-col items-center justify-center gap-1 text-tk-accent dark:text-tk-accent-night hover:opacity-80 transition-colors p-1 cursor-pointer"
               aria-label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Theme`}
             >
               {theme === 'dark' ? (
@@ -60,11 +62,12 @@ export default function BluorngMobileBottomNav({
           </li>
         )}
 
-        {/* Boutiques Location */}
+        {/* Boutiques Location (shown when Brand → "Show boutiques" is on) */}
+        {showBoutiques && (
         <li>
           <button
             onClick={onScrollToStores}
-            className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 cursor-pointer"
+            className="flex flex-col items-center justify-center gap-1 hover:text-tk-ink dark:hover:text-white transition-colors p-1 cursor-pointer"
             aria-label="Walk-in Stores"
           >
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -74,12 +77,13 @@ export default function BluorngMobileBottomNav({
             <span className="text-[9px] font-bold tracking-wider uppercase">Boutiques</span>
           </button>
         </li>
+        )}
 
         {/* Patron Account */}
         <li>
           <button
             onClick={onOpenAccount}
-            className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 cursor-pointer"
+            className="flex flex-col items-center justify-center gap-1 hover:text-tk-ink dark:hover:text-white transition-colors p-1 cursor-pointer"
             aria-label="Connoisseur Account"
           >
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -95,11 +99,11 @@ export default function BluorngMobileBottomNav({
           <button
             data-cart-target
             onClick={onOpenCart}
-            className="flex flex-col items-center justify-center gap-1 hover:text-[#111111] dark:hover:text-white transition-colors p-1 relative cursor-pointer"
+            className="flex flex-col items-center justify-center gap-1 hover:text-tk-ink dark:hover:text-white transition-colors p-1 relative cursor-pointer"
             aria-label={`Cart (${cartCount})`}
           >
             {cartCount > 0 && (
-              <span className="absolute top-0 right-1 w-4 h-4 rounded-xs bg-[#C4823F] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[9px] font-bold flex items-center justify-center">
+              <span className="absolute top-0 right-1 w-4 h-4 rounded-xs bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[9px] font-bold flex items-center justify-center">
                 {cartCount}
               </span>
             )}

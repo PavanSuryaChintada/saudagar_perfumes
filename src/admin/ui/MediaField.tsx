@@ -88,7 +88,7 @@ export function MediaPicker({
               type="button"
               key={a.id}
               onClick={() => toggle(a)}
-              className={`aspect-square bg-[#F4F3EE] border-2 overflow-hidden ${on ? 'border-[#C4823F]' : 'border-transparent'}`}
+              className={`aspect-square bg-[#F4F3EE] border-2 overflow-hidden ${on ? 'border-tk-accent' : 'border-transparent'}`}
               title={a.original_name ?? a.path}
             >
               <MediaPreview url={a.url} className="w-full h-full object-contain" />
@@ -181,7 +181,7 @@ export function MediaField({
       )}
       {progress && busy && (
         <div className="h-1 bg-[#EEEEEE]">
-          <div className="h-1 bg-[#C4823F] transition-all" style={{ width: `${Math.round(progress.progress * 100)}%` }} />
+          <div className="h-1 bg-tk-accent transition-all" style={{ width: `${Math.round(progress.progress * 100)}%` }} />
         </div>
       )}
       {progress?.error && <p className="text-[11px] text-rose-600">{progress.error}</p>}

@@ -31,9 +31,10 @@ import {
   setStoredCart,
   getStoredWishlist,
   setStoredWishlist
-} from './data/bluorngSaudagarData.js';
+} from './lib/localStore';
 import { resolveStorefrontView, AUTH_VIEWS } from './app/routes';
 import { useAuth } from './lib/auth';
+import { useBlock } from './cms/useSite';
 import LoginPage from './storefront/auth/LoginPage';
 import RegisterPage from './storefront/auth/RegisterPage';
 import ForgotPasswordPage from './storefront/auth/ForgotPasswordPage';
@@ -41,12 +42,15 @@ import ResetPasswordPage from './storefront/auth/ResetPasswordPage';
 import NotFoundPage from './storefront/NotFoundPage';
 import ListingPage from './storefront/ListingPage.jsx';
 import NotesIndexPage from './storefront/NotesIndexPage.jsx';
+import CmsPage from './storefront/CmsPage.jsx';
+import { StorefrontProvider } from './cms/StorefrontContext';
 
 export default function App() {
   // The URL is the source of truth for which page is showing (src/app/routes.ts).
   const location = useLocation();
   const routerNavigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const brandBlock = useBlock('brand');
   const resolved = resolveStorefrontView(location.pathname, location.search);
   const view = resolved.view;
   const selectedProductId = resolved.productId || 'saudagar-deep-canopy';
@@ -199,8 +203,12 @@ export default function App() {
       navigateToWishlist();
       return;
     }
-    let target = categorySlug;
-    if (categorySlug === 'all') target = 'signature';
+    if (categorySlug === 'all' || categorySlug === 'shop') {
+      routerNavigate('/shop');
+      resetScrollToTop();
+      return;
+    }
+    const target = categorySlug;
     const wasInCollection = view === 'collection';
     routerNavigate(`/collections/${target}`);
     if (!wasInCollection) {
@@ -208,8 +216,15 @@ export default function App() {
     }
   };
 
+  // Boutiques live on the "boutiques" page (Admin → Pages). Until Brand → "Show boutiques" is on,
+  // the concierge message from the Brand block is shown instead.
   const scrollToStores = () => {
-    triggerToast('Private Boutique Concierge: Delhi, Mumbai & Dubai salons available by appointment.');
+    if (brandBlock?.show_boutiques) {
+      routerNavigate('/pages/boutiques');
+      resetScrollToTop();
+    } else if (brandBlock?.boutiques_message) {
+      triggerToast(brandBlock.boutiques_message);
+    }
   };
 
   // Wishlist Handler
@@ -309,6 +324,17 @@ export default function App() {
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Shop actions every CMS section can use (product cards, reels, stories, boutiques).
+  const storefrontActions = {
+    wishlist,
+    onToggleWishlist: handleToggleWishlist,
+    onSelectProduct: navigateToProduct,
+    onQuickBuy: (prod) => setQuickBuyProduct(prod),
+    onOpenStory: () => setIsStoryOpen(true),
+    onScrollToStores: scrollToStores,
+    onNavigateCollection: navigateToCollection,
+  };
+
   if (resolved.redirectTo) {
     return <Navigate to={resolved.redirectTo} replace />;
   }
@@ -316,7 +342,7 @@ export default function App() {
     return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   }
   if (needsSignIn && authLoading) {
-    return <div className="min-h-screen bg-white dark:bg-[#0B0A0D]" aria-busy="true" />;
+    return <div className="min-h-screen bg-white dark:bg-tk-night" aria-busy="true" />;
   }
   if (isAuthView) {
     return (
@@ -330,7 +356,8 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-[#FFFFFF] flex flex-col font-sans selection:bg-[#C4823F] dark:selection:bg-[#D4AF37] dark:selection:text-[#0B0A0D] selection:text-white transition-colors duration-300">
+    <StorefrontProvider value={storefrontActions}>
+    <div className="min-h-screen bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-[#FFFFFF] flex flex-col font-sans selection:bg-tk-accent dark:selection:bg-tk-gold dark:selection:text-tk-night selection:text-white transition-colors duration-300">
       {/* Toast Notification */}
       <Toast message={toastMessage} />
 
@@ -354,7 +381,7 @@ export default function App() {
       )}
 
       {/* Luxury Branded Preloader (runs smoothly on initial application mount / reload) */}
-      {!isPreloaderDone && (
+      {!isPreloaderDone && brandBlock?.show_preloader !== false && (
         <LuxuryPreloader onComplete={() => setIsPreloaderDone(true)} />
       )}
 
@@ -424,6 +451,8 @@ export default function App() {
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
             />
+          ) : view === 'page' ? (
+            <CmsPage slug={resolved.pageSlug} onNavigateHome={navigateToHome} onNavigateCollection={navigateToCollection} />
           ) : view === 'notes' ? (
             <NotesIndexPage />
           ) : view === 'notfound' ? (
@@ -440,16 +469,7 @@ export default function App() {
               onOpenStory={navigateToStory}
             />
           ) : (
-            <BluorngHome
-              wishlist={wishlist}
-              onToggleWishlist={handleToggleWishlist}
-              onSelectProduct={navigateToProduct}
-              onQuickBuy={(prod) => setQuickBuyProduct(prod)}
-              onNavigateCollection={navigateToCollection}
-              onSelectCategory={(cat) => navigateToCollection(cat)}
-              onScrollToStores={scrollToStores}
-              onOpenStory={navigateToStory}
-            />
+            <BluorngHome />
           )}
         </PageTransition>
       </main>
@@ -548,5 +568,6 @@ export default function App() {
         }}
       />
     </div>
+    </StorefrontProvider>
   );
 }

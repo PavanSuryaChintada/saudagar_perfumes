@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { formatINR as formatPrice } from '../lib/money';
 
 export default function BluorngQuickBuyModal(props) {
   // Hooks must not run after an early return, so the null guard lives in this wrapper.
@@ -72,13 +72,13 @@ function QuickBuyModalContent({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.94, y: 16 }}
         transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.32 }}
-        className="relative w-full max-w-[420px] sm:max-w-[680px] lg:max-w-[720px] bg-[#FFFFFF] dark:bg-[#121117] rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.32)] dark:shadow-[0_0_80px_rgba(212,175,55,0.06)] border border-[#ECEAE5] dark:border-white/10 overflow-hidden text-[#111111] dark:text-white"
+        className="relative w-full max-w-[420px] sm:max-w-[680px] lg:max-w-[720px] bg-[#FFFFFF] dark:bg-[#121117] rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.32)] dark:shadow-[0_0_80px_rgba(212,175,55,0.06)] border border-[#ECEAE5] dark:border-white/10 overflow-hidden text-tk-ink dark:text-white"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Minimal Circle Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-[#777777] hover:text-[#111111] dark:text-[#A09D96] dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-[#777777] hover:text-tk-ink dark:text-[#A09D96] dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           aria-label="Close Quick Add"
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -93,11 +93,11 @@ function QuickBuyModalContent({
           {/* ================= LEFT: FLACON ATELIER VITRINE (5 COLS) ================= */}
           <div className="sm:col-span-5 relative w-full h-[210px] sm:h-[320px] rounded-2xl bg-gradient-to-b from-[#F7F6F2] to-[#ECEAE3] dark:from-[#18171E] dark:to-[#121116] flex items-center justify-center p-4 overflow-hidden border border-[#ECEAE4] dark:border-white/5">
             {/* Ambient Warm Studio Light Aura */}
-            <div className="absolute w-44 h-44 rounded-full bg-amber-400/15 dark:bg-[#ECC86A]/10 blur-2xl pointer-events-none" />
+            <div className="absolute w-44 h-44 rounded-full bg-amber-400/15 dark:bg-tk-accent-night/10 blur-2xl pointer-events-none" />
 
             {/* Optional Badge */}
             {product.badge && (
-              <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-[0.16em] font-semibold bg-white/95 dark:bg-[#0B0A0D]/95 text-[#111111] dark:text-[#ECC86A] shadow-xs border border-black/5 dark:border-white/10 z-10">
+              <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-[0.16em] font-semibold bg-white/95 dark:bg-tk-night/95 text-tk-ink dark:text-tk-accent-night shadow-xs border border-black/5 dark:border-white/10 z-10">
                 {product.badge}
               </span>
             )}
@@ -109,7 +109,7 @@ function QuickBuyModalContent({
                 e.stopPropagation();
                 onToggleWishlist && onToggleWishlist(product.id);
               }}
-              className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/85 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 text-[#111111] dark:text-white shadow-xs backdrop-blur-xs"
+              className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/85 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 text-tk-ink dark:text-white shadow-xs backdrop-blur-xs"
               title={wishlist.includes(product.id) ? 'Remove from wishlist' : 'Save to wishlist'}
               aria-label="Wishlist"
             >
@@ -117,7 +117,7 @@ function QuickBuyModalContent({
                 width="13"
                 height="13"
                 viewBox="0 0 24 24"
-                className={wishlist.includes(product.id) ? 'text-[#C4823F] dark:text-[#ECC86A]' : 'text-[#888888] dark:text-white/60'}
+                className={wishlist.includes(product.id) ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#888888] dark:text-white/60'}
                 fill={wishlist.includes(product.id) ? 'currentColor' : 'none'}
                 stroke="currentColor"
                 strokeWidth="1.8"
@@ -151,7 +151,7 @@ function QuickBuyModalContent({
             {/* Monograph Header */}
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[9.5px] uppercase tracking-[0.22em] text-[#C4823F] dark:text-[#ECC86A] font-semibold">
+                <span className="text-[9.5px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night font-semibold">
                   {concentrationText}
                 </span>
                 <span className="text-[#CCCCCC] dark:text-white/20">·</span>
@@ -160,7 +160,7 @@ function QuickBuyModalContent({
                 </span>
               </div>
 
-              <h3 className="text-[18px] sm:text-[21px] font-normal uppercase tracking-tight text-[#111111] dark:text-white mt-1 leading-snug">
+              <h3 className="text-[18px] sm:text-[21px] font-normal uppercase tracking-tight text-tk-ink dark:text-white mt-1 leading-snug">
                 {product.name}
               </h3>
 
@@ -171,7 +171,7 @@ function QuickBuyModalContent({
 
               {/* Price & Value Badge */}
               <div className="mt-2.5 flex items-baseline gap-2.5">
-                <span className="text-[20px] font-medium tracking-tight text-[#111111] dark:text-[#ECC86A] tabular-nums">
+                <span className="text-[20px] font-medium tracking-tight text-tk-ink dark:text-tk-accent-night tabular-nums">
                   {formatPrice(currentPrice)}
                 </span>
                 {product.compareAtPrice && product.compareAtPrice > currentPrice && (
@@ -193,7 +193,7 @@ function QuickBuyModalContent({
                 <span className="text-[9.5px] uppercase tracking-[0.16em] font-medium text-[#888888] dark:text-[#88857F]">
                   Select Volume
                 </span>
-                <span className="text-[10px] text-[#C4823F] dark:text-[#ECC86A] font-mono">
+                <span className="text-[10px] text-tk-accent dark:text-tk-accent-night font-mono">
                   {selectedSize ? (selectedSize.stock > 0 ? selectedSize.label : `${selectedSize.label} · sold out`) : 'Unavailable'}
                 </span>
               </div>
@@ -211,7 +211,7 @@ function QuickBuyModalContent({
                       }}
                       className={`py-2 px-2.5 rounded-xl border text-center transition-all duration-200 cursor-pointer ${sz.stock <= 0 ? 'opacity-50 line-through ' : ''}${
                         isSelected
-                          ? 'border-[#111111] bg-[#111111] text-white dark:border-[#ECC86A] dark:bg-[#D4AF37] dark:text-[#0B0A0D] shadow-sm font-medium'
+                          ? 'border-tk-ink bg-tk-ink text-white dark:border-tk-accent-night dark:bg-tk-gold dark:text-tk-night shadow-sm font-medium'
                           : 'border-[#EAEAEA] dark:border-white/10 bg-[#FAF9F6] dark:bg-[#18171E] text-[#666666] dark:text-[#A09D96] hover:border-[#CCCCCC] dark:hover:border-white/20'
                       }`}
                     >
@@ -230,11 +230,11 @@ function QuickBuyModalContent({
             {/* Action Row: Stepper & Add to Bag CTA */}
             <div className="pt-1 flex items-center gap-3">
               {/* Refined Rounded Stepper */}
-              <div className="flex items-center gap-1.5 bg-[#F4F3F0] dark:bg-[#18171E] border border-[#EAE8E0] dark:border-white/10 px-2.5 py-1.5 rounded-full text-[#111111] dark:text-white shrink-0">
+              <div className="flex items-center gap-1.5 bg-[#F4F3F0] dark:bg-[#18171E] border border-[#EAE8E0] dark:border-white/10 px-2.5 py-1.5 rounded-full text-tk-ink dark:text-white shrink-0">
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#777777] hover:text-[#111111] dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#777777] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                   aria-label="Decrease quantity"
                 >
                   −
@@ -245,7 +245,7 @@ function QuickBuyModalContent({
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.min(maxQty, q + 1))}
-                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#777777] hover:text-[#111111] dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#777777] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                   aria-label="Increase quantity"
                 >
                   +
@@ -257,7 +257,7 @@ function QuickBuyModalContent({
                 whileTap={{ scale: 0.98 }}
                 onClick={handleAdd}
                 disabled={!canBuy}
-                className="disabled:opacity-50 disabled:cursor-not-allowed flex-1 py-3 px-5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center justify-between"
+                className="disabled:opacity-50 disabled:cursor-not-allowed flex-1 py-3 px-5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center justify-between"
               >
                 <span>{isAdded ? 'Added to Bag ✓' : canBuy ? 'Add to Bag' : 'Sold out'}</span>
                 <span className="font-semibold tabular-nums ml-2">
@@ -269,7 +269,7 @@ function QuickBuyModalContent({
             {/* Atelier Privilege & Monograph Navigation Footer */}
             <div className="pt-2 border-t border-[#EAEAEA] dark:border-white/10 flex items-center justify-between text-[10.5px]">
               <span className="text-[#888888] dark:text-[#88857F] flex items-center gap-1 font-light">
-                <span className="text-[#C4823F] dark:text-[#ECC86A]">✦</span>
+                <span className="text-tk-accent dark:text-tk-accent-night">✦</span>
                 <span>Free samples with every 50 ml</span>
               </span>
 
@@ -277,7 +277,7 @@ function QuickBuyModalContent({
                 <button
                   type="button"
                   onClick={() => onViewDetails(product.id)}
-                  className="uppercase tracking-wider text-[#C4823F] dark:text-[#ECC86A] hover:underline cursor-pointer font-medium"
+                  className="uppercase tracking-wider text-tk-accent dark:text-tk-accent-night hover:underline cursor-pointer font-medium"
                 >
                   View Details →
                 </button>

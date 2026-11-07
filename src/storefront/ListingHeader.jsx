@@ -11,8 +11,8 @@ export default function ListingHeader({ eyebrow, title, description, image, sear
           <img src={image} alt="" className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full bg-white dark:bg-white/5 shrink-0" loading="lazy" />
         )}
         <div className="min-w-0 flex-1">
-          {eyebrow && <p className="text-[10.5px] uppercase tracking-[0.2em] text-[#C4823F] dark:text-[#ECC86A] mb-2">{eyebrow}</p>}
-          <h1 className="text-[28px] sm:text-[38px] font-normal tracking-[-0.015em] text-[#111111] dark:text-white leading-tight break-words">{title || ' '}</h1>
+          {eyebrow && <p className="text-[10.5px] uppercase tracking-[0.2em] text-tk-accent dark:text-tk-accent-night mb-2">{eyebrow}</p>}
+          <h1 className="text-[28px] sm:text-[38px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white leading-tight break-words">{title || ' '}</h1>
           {description && <p className="mt-2 text-[13px] text-[#666666] dark:text-[#A09D96] max-w-2xl leading-relaxed">{description}</p>}
           {onSearch && (
             <form
@@ -29,9 +29,9 @@ export default function ListingHeader({ eyebrow, title, description, image, sear
                 onChange={(e) => setTerm(e.target.value)}
                 placeholder="Search by name, note or collection"
                 aria-label="Search fragrances"
-                className="flex-1 min-w-0 px-4 py-2.5 border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[13px] outline-none focus:border-[#111111] dark:focus:border-[#ECC86A]"
+                className="flex-1 min-w-0 px-4 py-2.5 border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[13px] outline-none focus:border-tk-ink dark:focus:border-tk-accent-night"
               />
-              <button type="submit" className="px-5 bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] text-[11px] uppercase tracking-[0.16em]">
+              <button type="submit" className="px-5 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] uppercase tracking-[0.16em]">
                 Search
               </button>
             </form>

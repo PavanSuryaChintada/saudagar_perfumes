@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MEGA_MENU_COLLECTIONS } from '../data/bluorngSaudagarData.js';
+import { useBlock, useGo } from '../cms/useSite';
 
 export default function BluorngNavDrawer({
   isOpen,
@@ -13,6 +13,24 @@ export default function BluorngNavDrawer({
   onOpenStory,
   onOpenAccount
 }) {
+  // Edited in Admin → Site content → Menus (mobile drawer) and Brand.
+  const drawer = useBlock('mobile_drawer') || {};
+  const brand = useBlock('brand') || {};
+  const go = useGo();
+  const follow = (link) => {
+    onClose();
+    go(link);
+  };
+  const runAction = (item) => {
+    onClose();
+    if (item.action === 'wishlist') onNavigateCollection('wishlist');
+    else if (item.action === 'stores') onScrollToStores();
+    else if (item.action === 'stories') onOpenStory();
+    else if (item.action === 'account') onOpenAccount();
+    else go(item.link);
+  };
+  const logo = theme === 'dark' ? brand.logo_dark_bg : brand.logo_light_bg;
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -65,25 +83,29 @@ export default function BluorngNavDrawer({
               exit={{ x: '-100%' }}
               transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.4 }}
               data-lenis-prevent="true"
-              className="w-screen max-w-sm sm:max-w-md h-full max-h-screen overflow-y-auto overscroll-contain bg-[#FFFFFF] dark:bg-[#0E0C10] text-[#111111] dark:text-white flex flex-col justify-between shadow-2xl p-6 sm:p-8"
+              className="w-screen max-w-sm sm:max-w-md h-full max-h-screen overflow-y-auto overscroll-contain bg-[#FFFFFF] dark:bg-[#0E0C10] text-tk-ink dark:text-white flex flex-col justify-between shadow-2xl p-6 sm:p-8"
             >
           
           {/* Top Bar: Brand Logo & Close */}
           <div>
             <div className="flex items-center justify-between pb-4">
-              <img
-                src={theme === 'dark' ? '/images/saudagar_logo_gold.png' : '/images/saudagar_logo_black.png'}
-                alt="Saudagar Perfumers"
-                onClick={() => {
-                  onClose();
-                  onNavigateHome();
-                }}
-                className="h-7 sm:h-8 w-auto object-contain cursor-pointer hover:opacity-80 transition-opacity"
-              />
+              {logo ? (
+                <img
+                  src={logo}
+                  alt={brand.name || ''}
+                  onClick={() => {
+                    onClose();
+                    onNavigateHome();
+                  }}
+                  className="h-7 sm:h-8 w-auto object-contain cursor-pointer hover:opacity-80 transition-opacity"
+                />
+              ) : (
+                <span />
+              )}
 
               <button
                 onClick={onClose}
-                className="p-1.5 text-[#111111] dark:text-white hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors"
+                className="p-1.5 text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors"
                 aria-label="Close menu"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -95,104 +117,70 @@ export default function BluorngNavDrawer({
 
             {/* Navigation Links Hierarchy */}
             <nav className="mt-6 space-y-4 text-[13px] font-bold tracking-[0.04em] uppercase">
-              <div>
-                <button
-                  onClick={() => {
-                    onClose();
-                    onNavigateCollection('new-in');
-                  }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center justify-between group"
-                >
-                  <span className="text-emerald-700 dark:text-emerald-400">New Arrivals 2026</span>
-                  <span className="text-[10px] text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 rounded-xs font-bold tracking-wider">
-                    LATEST
-                  </span>
-                </button>
-              </div>
-
-              <div>
-                <button
-                  onClick={() => {
-                    onClose();
-                    onNavigateCollection('all');
-                  }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center justify-between"
-                >
-                  <span>All Fragrances</span>
-                  <span>→</span>
-                </button>
-              </div>
-
-              {/* Sub-Collections Accordion / List */}
-              <div className="pl-2 pt-2 pb-2 border-l-2 border-[#EEEEEE] dark:border-white/10 space-y-2.5 text-[11.5px] font-medium text-[#555555] dark:text-white/70">
-                {MEGA_MENU_COLLECTIONS.map((c) => (
+              {drawer.highlight?.label && (
+                <div>
                   <button
-                    key={c.id}
-                    onClick={() => {
-                      onClose();
-                      onNavigateCollection(c.slug);
-                    }}
-                    className="w-full text-left hover:text-[#C4823F] dark:hover:text-[#ECC86A] hover:translate-x-1 transition-all flex items-center justify-between"
+                    onClick={() => follow(drawer.highlight.link)}
+                    className="w-full text-left py-1 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center justify-between group"
                   >
-                    <span>{c.title}</span>
-                    <span className="text-[10px] text-[#999999] dark:text-white/40">({c.count})</span>
+                    <span className="text-emerald-700 dark:text-emerald-400">{drawer.highlight.label}</span>
+                    {drawer.highlight.badge && (
+                      <span className="text-[10px] text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 rounded-xs font-bold tracking-wider">
+                        {drawer.highlight.badge}
+                      </span>
+                    )}
                   </button>
-                ))}
-              </div>
+                </div>
+              )}
+
+              {drawer.all_link?.label && (
+                <div>
+                  <button
+                    onClick={() => follow(drawer.all_link.link)}
+                    className="w-full text-left py-1 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center justify-between"
+                  >
+                    <span>{drawer.all_link.label}</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Sub-Collections List */}
+              {(drawer.collections || []).length > 0 && (
+                <div className="pl-2 pt-2 pb-2 border-l-2 border-[#EEEEEE] dark:border-white/10 space-y-2.5 text-[11.5px] font-medium text-[#555555] dark:text-white/70">
+                  {drawer.collections.map((c, i) => (
+                    <button
+                      key={`${c.label}-${i}`}
+                      onClick={() => follow(c.link)}
+                      className="w-full text-left hover:text-tk-accent dark:hover:text-tk-accent-night hover:translate-x-1 transition-all flex items-center justify-between"
+                    >
+                      <span>{c.label}</span>
+                      {c.count_label && <span className="text-[10px] text-[#999999] dark:text-white/40">({c.count_label})</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               <div className="pt-2 border-t border-[#F0F0F0] dark:border-white/10 space-y-3">
-                <button
-                  onClick={() => {
-                    onClose();
-                    onNavigateCollection('wishlist');
-                  }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-[#C4823F] dark:text-[#ECC86A]">🔖</span>
-                    <span>Saved Fragrances / Wishlist</span>
-                  </div>
-                  <span>→</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    onClose();
-                    onScrollToStores();
-                  }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-2"
-                >
-                  <span className="text-[#C4823F] dark:text-[#ECC86A]">📍</span>
-                  <span>Walk-in Boutiques & Stores</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    onClose();
-                    onOpenStory();
-                  }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-2"
-                >
-                  <span className="text-[#C4823F] dark:text-[#ECC86A]">🎬</span>
-                  <span>Behind the Bottle Stories</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    onClose();
-                    onOpenAccount();
-                  }}
-                  className="w-full text-left py-1 hover:text-[#C4823F] dark:hover:text-[#ECC86A] transition-colors flex items-center gap-2"
-                >
-                  <span className="text-[#C4823F] dark:text-[#ECC86A]">👤</span>
-                  <span>Customer Account & Orders</span>
-                </button>
+                {(drawer.utility_links || []).map((item, i) => (
+                  <button
+                    key={`${item.label}-${i}`}
+                    onClick={() => runAction(item)}
+                    className="w-full text-left py-1 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2">
+                      {item.icon && <span className="text-tk-accent dark:text-tk-accent-night">{item.icon}</span>}
+                      <span>{item.label}</span>
+                    </div>
+                    {item.action === 'wishlist' && <span>→</span>}
+                  </button>
+                ))}
 
                 {/* Luxury Theme Toggle in Drawer */}
                 {onToggleTheme && (
                   <div className="pt-3 flex items-center justify-between">
                     <span className="text-[11px] font-medium text-[#777777] dark:text-white/60">
-                      Display Theme
+                      {drawer.theme_label}
                     </span>
                     <div className="inline-flex items-center p-0.5 rounded-full bg-black/[0.06] dark:bg-white/10 transition-colors">
                       <button
@@ -202,8 +190,8 @@ export default function BluorngNavDrawer({
                         }}
                         className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                           theme === 'light'
-                            ? 'bg-[#C4823F] text-white shadow-xs font-semibold'
-                            : 'text-[#111111]/70 dark:text-white/70 hover:text-[#111111] dark:hover:text-white'
+                            ? 'bg-tk-accent text-white shadow-xs font-semibold'
+                            : 'text-tk-ink/70 dark:text-white/70 hover:text-tk-ink dark:hover:text-white'
                         }`}
                       >
                         <span>☀</span>
@@ -216,8 +204,8 @@ export default function BluorngNavDrawer({
                         }}
                         className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                           theme === 'dark'
-                            ? 'bg-[#D4AF37] text-[#0B0A0D] shadow-xs font-semibold'
-                            : 'text-[#111111]/70 dark:text-white/70 hover:text-[#111111] dark:hover:text-white'
+                            ? 'bg-tk-gold text-tk-night shadow-xs font-semibold'
+                            : 'text-tk-ink/70 dark:text-white/70 hover:text-tk-ink dark:hover:text-white'
                         }`}
                       >
                         <span>☾</span>
@@ -233,8 +221,9 @@ export default function BluorngNavDrawer({
           {/* Bottom Drawer Actions: Support */}
           <div className="pt-6 space-y-4">
             <div className="text-[10.5px] text-[#777777] dark:text-white/50 leading-relaxed">
-              <p>House Concierge: +91 84484 41388</p>
-              <p>Insured Delivery Across India • Complimentary Samples</p>
+              {(drawer.footer_lines || []).map((line, i) => (
+                <p key={i}>{line}</p>
+              ))}
             </div>
           </div>
 

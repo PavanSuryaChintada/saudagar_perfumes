@@ -184,14 +184,14 @@ export default function NotesPage() {
 function NoteRowView({ n, family, onEdit, onDelete }: { n: NoteRow; family?: string; onEdit: () => void; onDelete: () => void }) {
   return (
     <div className="flex items-center gap-3 pr-2 py-2">
-      <div className="w-8 h-8 rounded-full bg-[#F4F3EE] overflow-hidden shrink-0 flex items-center justify-center text-[11px] text-[#C4823F]">
+      <div className="w-8 h-8 rounded-full bg-[#F4F3EE] overflow-hidden shrink-0 flex items-center justify-center text-[11px] text-tk-accent">
         {n.image_url ? <img src={n.image_url} alt="" className="w-full h-full object-cover" /> : n.name.charAt(0)}
       </div>
       <div className="min-w-0 flex-1">
         <p className={`text-[13px] truncate ${n.is_active ? '' : 'text-[#999999] line-through'}`}>{n.name}</p>
         <p className="text-[11px] text-[#888888]">{family ?? 'No family'}</p>
       </div>
-      <button type="button" aria-label={`Edit ${n.name}`} className="p-1.5 text-[#777777] hover:text-[#111111]" onClick={onEdit}>
+      <button type="button" aria-label={`Edit ${n.name}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={onEdit}>
         <Pencil size={14} />
       </button>
       <button type="button" aria-label={`Delete ${n.name}`} className="p-1.5 text-[#777777] hover:text-rose-600" onClick={onDelete}>

@@ -18,7 +18,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
               onClick={onNavigate}
               className={({ isActive }) =>
                 `flex items-center gap-2.5 px-5 py-2 text-[13px] border-l-2 transition-colors ${
-                  isActive ? 'border-[#C4823F] text-[#111111] bg-[#F8F7F5] font-medium' : 'border-transparent text-[#555555] hover:text-[#111111] hover:bg-[#FAFAF8]'
+                  isActive ? 'border-tk-accent text-tk-ink bg-[#F8F7F5] font-medium' : 'border-transparent text-[#555555] hover:text-tk-ink hover:bg-[#FAFAF8]'
                 }`
               }
             >
@@ -41,8 +41,8 @@ export default function AdminLayout() {
 
   const brand = (
     <Link to="/admin" className="block px-5 py-5 border-b border-[#EAEAEA]">
-      <span className="block text-[14px] tracking-[0.3em] uppercase text-[#111111]">Saudagar</span>
-      <span className="block text-[10px] uppercase tracking-[0.18em] text-[#C4823F] mt-0.5">Store admin</span>
+      <span className="block text-[14px] tracking-[0.3em] uppercase text-tk-ink">Saudagar</span>
+      <span className="block text-[10px] uppercase tracking-[0.18em] text-tk-accent mt-0.5">Store admin</span>
     </Link>
   );
 
@@ -52,10 +52,10 @@ export default function AdminLayout() {
         {user?.email}
       </p>
       <div className="flex gap-2">
-        <a href="/" target="_blank" rel="noreferrer" className="flex-1 inline-flex items-center justify-center gap-1.5 border border-[#D5D3CC] px-2 py-1.5 text-[11px] text-[#555555] hover:border-[#111111]">
+        <a href="/" target="_blank" rel="noreferrer" className="flex-1 inline-flex items-center justify-center gap-1.5 border border-[#D5D3CC] px-2 py-1.5 text-[11px] text-[#555555] hover:border-tk-ink">
           <ExternalLink size={13} /> View store
         </a>
-        <button type="button" onClick={() => signOut()} className="inline-flex items-center justify-center gap-1.5 border border-[#D5D3CC] px-2 py-1.5 text-[11px] text-[#555555] hover:border-[#111111]">
+        <button type="button" onClick={() => signOut()} className="inline-flex items-center justify-center gap-1.5 border border-[#D5D3CC] px-2 py-1.5 text-[11px] text-[#555555] hover:border-tk-ink">
           <LogOut size={13} /> Sign out
         </button>
       </div>
@@ -63,7 +63,7 @@ export default function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8F7F5] text-[#111111] font-sans">
+    <div className="min-h-screen bg-[#F8F7F5] text-tk-ink font-sans">
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex fixed inset-y-0 left-0 w-[240px] flex-col bg-white border-r border-[#EAEAEA]">
         {brand}

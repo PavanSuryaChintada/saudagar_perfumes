@@ -4,6 +4,7 @@ export type StorefrontView =
   | 'collection'
   | 'listing'
   | 'notes'
+  | 'page'
   | 'wishlist'
   | 'story'
   | 'account'
@@ -24,6 +25,7 @@ export interface ResolvedView {
   productId?: string;
   collectionSlug?: string;
   listing?: ListingRoute;
+  pageSlug?: string;
   redirectTo?: string;
 }
 
@@ -61,6 +63,7 @@ export function resolveStorefrontView(pathname: string, search: string): Resolve
   if (path === '/shop') return { view: 'listing', listing: { kind: 'shop' } };
   if (path === '/search') return { view: 'listing', listing: { kind: 'search' } };
   if (path.startsWith('/categories/')) return { view: 'listing', listing: { kind: 'category', slug: tail(path, '/categories/') } };
+  if (path.startsWith('/pages/')) return { view: 'page', pageSlug: tail(path, '/pages/') };
   if (path.startsWith('/notes/')) return { view: 'listing', listing: { kind: 'note', slug: tail(path, '/notes/') } };
   if (path === '/account' || path.startsWith('/account/') || path === '/profile') return { view: 'account' };
 
