@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useSEO } from '../lib/seo';
 import { usePageContent } from '../cms/useSite';
 import { SectionList } from '../cms/SectionRenderer';
 import { sanitizeHtml } from '../lib/richText';
@@ -8,9 +9,7 @@ import NotFoundPage from './NotFoundPage';
 export default function CmsPage({ slug, onNavigateHome, onNavigateCollection }) {
   const { data: page, isLoading } = usePageContent(slug);
 
-  useEffect(() => {
-    if (page) document.title = `${(page.seo_title || page.title).toUpperCase()} | SAUDAGAR PERFUMES`;
-  }, [page]);
+  useSEO(page ? { title: page.seo_title || page.title, description: page.seo_description, image: page.og_image, noindex: !page.is_published } : { title: null });
 
   if (isLoading) return <div className="min-h-[60vh]" aria-busy="true" />;
   if (!page) return <NotFoundPage onNavigateHome={onNavigateHome} onNavigateCollection={onNavigateCollection} />;

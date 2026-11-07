@@ -12,13 +12,44 @@ import { recordView } from '../storefront/catalog/recentlyViewed';
 import { useSetting } from '../lib/bootstrap';
 import { NotePyramid, AccordBars, ProductAccordions } from '../storefront/product/ProductSections.jsx';
 import NotFoundPage from '../storefront/NotFoundPage';
+import { useSEO, productJsonLd, breadcrumbJsonLd } from '../lib/seo';
+import { track } from '../lib/analytics';
+import { useBlock } from '../cms/useSite';
 
 export default function BluorngPDP(props) {
   const { data: detail, isLoading, error } = useProductDetail(props.productId);
   const product = useMemo(() => (detail ? toLegacyProduct(detail) : null), [detail]);
 
+  const brand = useBlock('brand') || {};
+  useSEO(
+    detail && product
+      ? {
+          title: detail.seo_title || product.name,
+          description: detail.seo_description || detail.short_description || product.description,
+          image: product.images?.[0],
+          path: `/product/${detail.slug}`,
+          type: 'product',
+          jsonLd: [
+            productJsonLd({
+              name: product.name,
+              slug: detail.slug,
+              description: detail.description || detail.short_description,
+              images: product.images ?? [],
+              brand: brand.name || 'Saudagar Perfumers',
+              rating: product.reviewsCount > 0 ? { average: Number(product.rating), count: product.reviewsCount } : null,
+              offers: (product.sizes ?? []).map((s) => ({ sku: s.variantId, price: Number(s.price), inStock: s.stock > 0, label: s.label })),
+            }),
+            breadcrumbJsonLd([
+              { name: 'Home', path: '/' },
+              ...(detail.categories?.[0] ? [{ name: detail.categories[0].name, path: `/categories/${detail.categories[0].slug}` }] : []),
+              { name: product.name, path: `/product/${detail.slug}` },
+            ]),
+          ],
+        }
+      : { title: null },
+  );
   useEffect(() => {
-    if (product) document.title = `${product.name} | SAUDAGAR PERFUMES · Haute Parfumerie`;
+    if (product) track('view_item', { value: Number(product.price) || 0, items: [{ item_id: product.id, item_name: product.name, price: Number(product.price) || 0 }] });
   }, [product]);
 
   if (isLoading) {

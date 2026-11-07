@@ -13,6 +13,7 @@ import { useQuote, useSamplePool } from '../bag/useQuote';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
 import { payOrder } from '../../lib/razorpay';
 import { usePincode } from '../delivery/PincodeCheck';
+import { track } from '../../lib/analytics';
 
 const STEPS = [
   { id: 'address', label: '1. Delivery' },
@@ -112,6 +113,13 @@ export default function CheckoutPage({
     }
   };
 
+  const beganCheckout = useRef(false);
+  useEffect(() => {
+    if (quote && !beganCheckout.current) {
+      beganCheckout.current = true;
+      track('begin_checkout', { value: quote.total, items: quote.lines.map((l) => ({ item_id: l.slug, item_name: l.name, item_variant: l.label, price: l.unit_price, quantity: l.qty })) });
+    }
+  }, [quote]);
   const items = quote?.lines ?? [];
 
   return (
