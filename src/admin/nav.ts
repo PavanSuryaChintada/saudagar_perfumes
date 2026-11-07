@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BellRing, BookOpen, Boxes, Clapperboard, Star, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
+  BellRing, BookOpen, Boxes, Clapperboard, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -24,6 +24,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
       { to: '/admin/returns', label: 'Returns', icon: RotateCcw },
       { to: '/admin/refunds', label: 'Refunds', icon: IndianRupee },
+      { to: '/admin/customers', label: 'Customers', icon: Users },
       { to: '/admin/inventory', label: 'Inventory', icon: Boxes },
       { to: '/admin/samples', label: 'Free samples', icon: Gift },
       { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
@@ -60,6 +61,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     items: [
       { to: '/admin/settings', label: 'Settings', icon: Settings },
       { to: '/admin/shipping', label: 'Shipping', icon: Truck },
+      { to: '/admin/export', label: 'Data export', icon: DatabaseBackup },
     ],
   },
 ];

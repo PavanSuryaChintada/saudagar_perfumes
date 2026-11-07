@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { ExternalLink, LogOut, Menu, X } from 'lucide-react';
+import NotificationsBell from './NotificationsBell';
 import { useAuth } from '../lib/auth';
 import { ADMIN_NAV } from './nav';
 
@@ -77,7 +78,7 @@ export default function AdminLayout() {
           <Menu size={20} />
         </button>
         <span className="text-[13px] tracking-[0.3em] uppercase">Saudagar</span>
-        <span className="w-8" />
+        <NotificationsBell />
       </header>
       {drawerOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
@@ -94,6 +95,9 @@ export default function AdminLayout() {
       )}
 
       <main className="lg:pl-[240px]">
+        <div className="hidden lg:flex justify-end mx-auto max-w-[1200px] px-8 pt-4 -mb-4">
+          <NotificationsBell />
+        </div>
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <Outlet />
         </div>
