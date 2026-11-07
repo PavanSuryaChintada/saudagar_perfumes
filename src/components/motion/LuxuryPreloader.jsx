@@ -24,7 +24,7 @@ export default function LuxuryPreloader({ onComplete }) {
     setTimeout(() => {
       setIsDone(true);
       if (onComplete) onComplete();
-    }, 600);
+    }, 980);
   };
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function LuxuryPreloader({ onComplete }) {
             setIsOpening(true);
             document.body.style.overflow = '';
           }
-        }, 100);
+        }, 120);
 
         setTimeout(() => {
           if (!hasFinishedRef.current) {
@@ -74,7 +74,7 @@ export default function LuxuryPreloader({ onComplete }) {
             document.body.style.overflow = '';
             if (onComplete) onComplete();
           }
-        }, 800);
+        }, 1100);
       }
     };
 
@@ -113,37 +113,26 @@ export default function LuxuryPreloader({ onComplete }) {
       }`}
       title="Tap anywhere to enter"
     >
-      {/* ================= TOP OBSIDIAN SHUTTER PANEL WITH GOLD DEPTH ================= */}
+      {/* ================= TOP OBSIDIAN SHUTTER PANEL ================= */}
       <motion.div
         initial={{ y: '0%' }}
-        animate={{ y: isOpening ? '-101%' : '0%' }}
-        transition={{ duration: 0.8, ease: revealEase }}
-        className="absolute top-0 left-0 right-0 h-1/2 z-20 bg-[#070608] border-b border-[#D4AF37]/35 shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(212,175,55,0.18)_0%,transparent_75%)] pointer-events-none" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.85),transparent)] pointer-events-none" />
-      </motion.div>
-
-      {/* ================= BOTTOM OBSIDIAN SHUTTER PANEL WITH GOLD DEPTH ================= */}
-      <motion.div
-        initial={{ y: '0%' }}
-        animate={{ y: isOpening ? '101%' : '0%' }}
-        transition={{ duration: 0.8, ease: revealEase }}
-        className="absolute bottom-0 left-0 right-0 h-1/2 z-20 bg-[#070608] border-t border-[#D4AF37]/35 shadow-[0_-25px_60px_rgba(0,0,0,0.95)] overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(212,175,55,0.18)_0%,transparent_75%)] pointer-events-none" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.85),transparent)] pointer-events-none" />
-      </motion.div>
-
-      {/* ================= HORIZONTAL GOLD HAIRLINE SEAM ================= */}
-      <motion.div
-        initial={{ opacity: 0.85, scaleX: 1 }}
         animate={{
-          opacity: isOpening ? 0 : 0.85,
-          scaleX: isOpening ? 1.4 : 1,
+          y: isOpening ? '-101%' : '0%',
+          boxShadow: isOpening ? '0 30px 70px rgba(0,0,0,0.98)' : '0 0 0 rgba(0,0,0,0)',
         }}
-        transition={{ duration: 0.35 }}
-        className="absolute top-1/2 left-0 right-0 h-[1.5px] -translate-y-1/2 z-30 pointer-events-none bg-gradient-to-r from-transparent via-[#ECC86A] to-transparent shadow-[0_0_14px_rgba(212,175,55,0.8)]"
+        transition={{ duration: 0.75, delay: isOpening ? 0.22 : 0, ease: revealEase }}
+        className="absolute top-0 left-0 right-0 h-1/2 z-20 bg-[#070608] overflow-hidden"
+      />
+
+      {/* ================= BOTTOM OBSIDIAN SHUTTER PANEL ================= */}
+      <motion.div
+        initial={{ y: '0%' }}
+        animate={{
+          y: isOpening ? '101%' : '0%',
+          boxShadow: isOpening ? '0 -30px 70px rgba(0,0,0,0.98)' : '0 0 0 rgba(0,0,0,0)',
+        }}
+        transition={{ duration: 0.75, delay: isOpening ? 0.22 : 0, ease: revealEase }}
+        className="absolute bottom-0 left-0 right-0 h-1/2 z-20 bg-[#070608] overflow-hidden"
       />
 
       {/* ================= CENTER LOGO HERO PRESENTATION ================= */}
@@ -151,17 +140,18 @@ export default function LuxuryPreloader({ onComplete }) {
         initial={{ opacity: 0 }}
         animate={{
           opacity: isOpening ? 0 : 1,
-          scale: isOpening ? 1.05 : 1,
-          y: isOpening ? -14 : 0,
+          scale: isOpening ? 1.03 : 1,
+          y: isOpening ? -10 : 0,
+          filter: isOpening ? 'blur(6px)' : 'blur(0px)',
         }}
         transition={{
-          duration: isOpening ? 0.45 : 0.35,
-          ease: 'easeOut',
+          duration: isOpening ? 0.22 : 0.35,
+          ease: isOpening ? 'easeIn' : 'easeOut',
         }}
         className="absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none px-6"
       >
-        {/* Soft Ambient Royal Gold Bloom */}
-        <div className="absolute w-[400px] sm:w-[580px] h-[400px] sm:h-[580px] rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.20)_0%,transparent_75%)] blur-2xl pointer-events-none" />
+        {/* Soft Ambient Royal Gold Bloom (Feathered radial halo for natural immersion) */}
+        <div className="absolute w-[500px] sm:w-[680px] h-[360px] sm:h-[460px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.20)_0%,rgba(196,130,63,0.08)_40%,transparent_72%)] blur-3xl pointer-events-none" />
 
         {/* Floating Amber Motes (Incense & Distillation Essence) */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -196,36 +186,31 @@ export default function LuxuryPreloader({ onComplete }) {
           ))}
         </div>
 
-        {/* SAUDAGAR TYPOGRAPHIC LOGO WITH METALLIC LIGHT SWEEP */}
+        {/* SAUDAGAR TYPOGRAPHIC MASTER LOGO (SEAMLESS ORGANIC GOLD RADIANCE) */}
         <motion.div
-          initial={{ opacity: 0, y: 8, scale: 0.96 }}
+          initial={{ opacity: 0, y: 8, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.45, ease: 'easeOut' }}
-          className="relative w-80 sm:w-[420px] md:w-[500px] max-w-[90vw] flex items-center justify-center p-2 mb-1"
+          className="relative w-80 sm:w-[420px] md:w-[490px] max-w-[90vw] flex items-center justify-center p-0 mb-1"
         >
-          {/* Clean Caption-Free Master Gold Logo */}
-          <img
+          {/* Luminous Gold Master Logo with Breathing Gold Radiance - Zero Boxes, Zero Rectangular Crops */}
+          <motion.img
             src="/images/saudagar_logo_gold.png"
             alt="Saudagar Perfumers"
-            className="w-full h-auto object-contain filter drop-shadow-[0_10px_35px_rgba(212,175,55,0.55)]"
+            animate={{
+              filter: [
+                'drop-shadow(0 0 16px rgba(212,175,55,0.45)) drop-shadow(0 4px 18px rgba(0,0,0,0.85))',
+                'drop-shadow(0 0 32px rgba(236,200,106,0.75)) drop-shadow(0 0 55px rgba(212,175,55,0.35)) drop-shadow(0 4px 18px rgba(0,0,0,0.85))',
+                'drop-shadow(0 0 16px rgba(212,175,55,0.45)) drop-shadow(0 4px 18px rgba(0,0,0,0.85))',
+              ],
+            }}
+            transition={{
+              duration: 3.2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+            className="w-full h-auto object-contain select-none pointer-events-none"
           />
-
-          {/* Liquid Gold Shimmer Beam */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-sm">
-            <motion.div
-              initial={{ x: '-140%', opacity: 0 }}
-              animate={{
-                x: ['-140%', '160%'],
-                opacity: [0, 0.85, 0.85, 0],
-              }}
-              transition={{
-                duration: 1.45,
-                delay: 0.2,
-                ease: [0.25, 0.1, 0.25, 1],
-              }}
-              className="w-1/2 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-[-24deg] mix-blend-overlay"
-            />
-          </div>
         </motion.div>
 
         {/* 3. SYMMETRICAL GOLD HAIRLINE ACCENT & ATELIER SIGNATURE */}
