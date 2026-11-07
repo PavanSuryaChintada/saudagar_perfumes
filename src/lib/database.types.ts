@@ -65,6 +65,42 @@ export type Database = {
         }
         Relationships: []
       }
+      announcements: {
+        Row: {
+          created_at: string
+          ends_at: string | null
+          id: string
+          is_active: boolean
+          link: Json | null
+          position: number
+          starts_at: string | null
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          link?: Json | null
+          position?: number
+          starts_at?: string | null
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          link?: Json | null
+          position?: number
+          starts_at?: string | null
+          text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       attribute_options: {
         Row: {
           badge: string | null
@@ -238,6 +274,39 @@ export type Database = {
         }
         Relationships: []
       }
+      faqs: {
+        Row: {
+          answer: string
+          created_at: string
+          group_name: string | null
+          id: string
+          is_active: boolean
+          position: number
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          group_name?: string | null
+          id?: string
+          is_active?: boolean
+          position?: number
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          group_name?: string | null
+          id?: string
+          is_active?: boolean
+          position?: number
+          question?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       inventory_movements: {
         Row: {
           actor: string | null
@@ -376,6 +445,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pages: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          is_published: boolean
+          is_system: boolean
+          layout: string
+          og_image: string | null
+          position: number
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          is_system?: boolean
+          layout?: string
+          og_image?: string | null
+          position?: number
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          is_system?: boolean
+          layout?: string
+          og_image?: string | null
+          position?: number
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       product_attributes: {
         Row: {
@@ -841,6 +958,78 @@ export type Database = {
         }
         Relationships: []
       }
+      reel_products: {
+        Row: {
+          position: number
+          product_id: string
+          reel_id: string
+        }
+        Insert: {
+          position?: number
+          product_id: string
+          reel_id: string
+        }
+        Update: {
+          position?: number
+          product_id?: string
+          reel_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reel_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reel_products_reel_id_fkey"
+            columns: ["reel_id"]
+            isOneToOne: false
+            referencedRelation: "reels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reels: {
+        Row: {
+          caption: string | null
+          created_at: string
+          external_url: string | null
+          id: string
+          is_active: boolean
+          position: number
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          external_url?: string | null
+          id?: string
+          is_active?: boolean
+          position?: number
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          external_url?: string | null
+          id?: string
+          is_active?: boolean
+          position?: number
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           description: string | null
@@ -868,6 +1057,172 @@ export type Database = {
         }
         Relationships: []
       }
+      site_blocks: {
+        Row: {
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
+      stockists: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          hours: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          map_url: string | null
+          name: string
+          phone: string | null
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          hours?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          map_url?: string | null
+          name: string
+          phone?: string | null
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          hours?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          map_url?: string | null
+          name?: string
+          phone?: string | null
+          position?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      stories: {
+        Row: {
+          created_at: string
+          duration_ms: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          position: number
+          product_id: string | null
+          subtitle: string | null
+          tag: string | null
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          position?: number
+          product_id?: string | null
+          subtitle?: string | null
+          tag?: string | null
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          position?: number
+          product_id?: string | null
+          subtitle?: string | null
+          tag?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stories_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      testimonials: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          location: string | null
+          name: string
+          position: number
+          product_id: string | null
+          quote: string
+          rating: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          name: string
+          position?: number
+          product_id?: string | null
+          quote: string
+          rating?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          name?: string
+          position?: number
+          product_id?: string | null
+          quote?: string
+          rating?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "testimonials_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -885,6 +1240,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      website_sections: {
+        Row: {
+          config: Json
+          created_at: string
+          id: string
+          is_visible: boolean
+          label: string | null
+          page_id: string
+          position: number
+          section_type: string
+          updated_at: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          label?: string | null
+          page_id: string
+          position?: number
+          section_type: string
+          updated_at?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          id?: string
+          is_visible?: boolean
+          label?: string | null
+          page_id?: string
+          position?: number
+          section_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "website_sections_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -908,6 +1307,7 @@ export type Database = {
       category_with_children: { Args: { p_slug: string }; Returns: string[] }
       delete_product: { Args: { p_id: string }; Returns: undefined }
       duplicate_product: { Args: { p_id: string }; Returns: string }
+      duplicate_section: { Args: { p_id: string }; Returns: string }
       has_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"]; _uid: string }
         Returns: boolean
@@ -915,6 +1315,8 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean }
       jsonb_text_array: { Args: { j: Json }; Returns: string[] }
       normalize_indian_phone: { Args: { input: string }; Returns: string }
+      page_content: { Args: { p_slug: string }; Returns: Json }
+      page_is_published: { Args: { pid: string }; Returns: boolean }
       product_card: { Args: { pid: string }; Returns: Json }
       product_detail: { Args: { p_slug: string }; Returns: Json }
       product_is_visible: { Args: { pid: string }; Returns: boolean }
