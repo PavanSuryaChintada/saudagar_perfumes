@@ -846,6 +846,7 @@ export type Database = {
           pickup_scheduled_at: string | null
           razorpay_order_id: string | null
           razorpay_payment_id: string | null
+          replacement_for: string | null
           rto_at: string | null
           sample_picks: Json
           samples_entitled: number
@@ -900,6 +901,7 @@ export type Database = {
           pickup_scheduled_at?: string | null
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
+          replacement_for?: string | null
           rto_at?: string | null
           sample_picks?: Json
           samples_entitled?: number
@@ -954,6 +956,7 @@ export type Database = {
           pickup_scheduled_at?: string | null
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
+          replacement_for?: string | null
           rto_at?: string | null
           sample_picks?: Json
           samples_entitled?: number
@@ -977,7 +980,15 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_replacement_for_fkey"
+            columns: ["replacement_for"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pages: {
         Row: {
@@ -1619,6 +1630,99 @@ export type Database = {
           },
         ]
       }
+      returns: {
+        Row: {
+          approved_at: string | null
+          created_at: string
+          customer_note: string | null
+          details: string | null
+          id: string
+          internal_note: string | null
+          items: Json
+          media: Json
+          order_id: string
+          reason: string
+          received_at: string | null
+          refund_amount: number | null
+          rejected_at: string | null
+          replacement_order_id: string | null
+          resolution: string | null
+          resolved_at: string | null
+          return_courier: string | null
+          return_method: string | null
+          return_tracking: string | null
+          status: string
+          stock_decision: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          created_at?: string
+          customer_note?: string | null
+          details?: string | null
+          id?: string
+          internal_note?: string | null
+          items?: Json
+          media?: Json
+          order_id: string
+          reason: string
+          received_at?: string | null
+          refund_amount?: number | null
+          rejected_at?: string | null
+          replacement_order_id?: string | null
+          resolution?: string | null
+          resolved_at?: string | null
+          return_courier?: string | null
+          return_method?: string | null
+          return_tracking?: string | null
+          status?: string
+          stock_decision?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          created_at?: string
+          customer_note?: string | null
+          details?: string | null
+          id?: string
+          internal_note?: string | null
+          items?: Json
+          media?: Json
+          order_id?: string
+          reason?: string
+          received_at?: string | null
+          refund_amount?: number | null
+          rejected_at?: string | null
+          replacement_order_id?: string | null
+          resolution?: string | null
+          resolved_at?: string | null
+          return_courier?: string | null
+          return_method?: string | null
+          return_tracking?: string | null
+          status?: string
+          stock_decision?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "returns_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "returns_replacement_order_id_fkey"
+            columns: ["replacement_order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       settings: {
         Row: {
           description: string | null
@@ -1975,6 +2079,7 @@ export type Database = {
         }
         Returns: Json
       }
+      create_replacement_order: { Args: { p_return: string }; Returns: string }
       create_sample_variant: {
         Args: { p_product: string; p_size_ml?: number; p_stock?: number }
         Returns: string
@@ -1992,6 +2097,7 @@ export type Database = {
         Args: { p_order: string; p_reason: string }
         Returns: undefined
       }
+      mark_return_refunded: { Args: { p_return: string }; Returns: undefined }
       normalize_indian_phone: { Args: { input: string }; Returns: string }
       order_transition_allowed: {
         Args: {
@@ -2016,6 +2122,10 @@ export type Database = {
         }
         Returns: Json
       }
+      receive_return: {
+        Args: { p_decision: string; p_return: string }
+        Returns: undefined
+      }
       record_refund: {
         Args: {
           p_actor: string
@@ -2029,6 +2139,15 @@ export type Database = {
         }
         Returns: string
       }
+      refund_return_manually: {
+        Args: {
+          p_amount: number
+          p_note: string
+          p_reference: string
+          p_return: string
+        }
+        Returns: undefined
+      }
       release_birthday_coupons: {
         Args: { p_day: number; p_month: number; p_year: number; payload: Json }
         Returns: number
@@ -2041,9 +2160,28 @@ export type Database = {
         Args: { p_ids: string[]; p_table: string }
         Returns: undefined
       }
+      request_return: {
+        Args: {
+          p_details: string
+          p_items: Json
+          p_media?: Json
+          p_order: string
+          p_reason: string
+        }
+        Returns: string
+      }
       resolve_category: { Args: { p_slug: string }; Returns: Json }
       resolve_collection: { Args: { p_slug: string }; Returns: Json }
       resolve_note: { Args: { p_slug: string }; Returns: Json }
+      review_return: {
+        Args: {
+          p_approve: boolean
+          p_method?: string
+          p_note: string
+          p_return: string
+        }
+        Returns: undefined
+      }
       safe_birthday: { Args: { input: string }; Returns: string }
       sample_pool: {
         Args: never
@@ -2080,6 +2218,10 @@ export type Database = {
         Args: { p_order: string; p_razorpay_order_id: string }
         Returns: undefined
       }
+      set_return_tracking: {
+        Args: { p_courier: string; p_return: string; p_tracking: string }
+        Returns: undefined
+      }
       ship_order: {
         Args: {
           p_courier: string
@@ -2098,8 +2240,21 @@ export type Database = {
         Args: { p_email: string; p_source?: string }
         Returns: undefined
       }
+      update_refund: {
+        Args: { p_note: string; p_refund: string; p_status: string }
+        Returns: undefined
+      }
       update_refund_status: {
         Args: { p_razorpay_refund_id: string; p_status: string }
+        Returns: undefined
+      }
+      update_return: {
+        Args: {
+          p_courier?: string
+          p_return: string
+          p_status: string
+          p_tracking?: string
+        }
         Returns: undefined
       }
     }
