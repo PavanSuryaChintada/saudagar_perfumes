@@ -47,3 +47,22 @@ export function setStoredNote(note) {
     // ignore
   }
 }
+
+const COUPON_KEY = 'saudagar_coupon';
+export function getStoredCoupon() {
+  if (typeof window === 'undefined') return '';
+  try {
+    return localStorage.getItem(COUPON_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+export function setStoredCoupon(code) {
+  if (typeof window === 'undefined') return;
+  try {
+    if (code) localStorage.setItem(COUPON_KEY, code);
+    else localStorage.removeItem(COUPON_KEY);
+  } catch {
+    // ignore
+  }
+}

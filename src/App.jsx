@@ -36,7 +36,9 @@ import {
   getStoredSamples,
   setStoredSamples,
   getStoredNote,
-  setStoredNote
+  setStoredNote,
+  getStoredCoupon,
+  setStoredCoupon
 } from './lib/localStore';
 import { resolveStorefrontView, AUTH_VIEWS } from './app/routes';
 import { useAuth } from './lib/auth';
@@ -76,6 +78,11 @@ export default function App() {
   const setBagNote = useCallback((next) => {
     setBagNoteState(next);
     setStoredNote(next);
+  }, []);
+  const [couponCode, setCouponCodeState] = useState(getStoredCoupon);
+  const setCouponCode = useCallback((next) => {
+    setCouponCodeState(next || '');
+    setStoredCoupon(next || '');
   }, []);
   const replaceCart = useCallback((next) => {
     setCart(next);
@@ -336,6 +343,7 @@ export default function App() {
     replaceCart([]);
     setSamples([]);
     setBagNote('');
+    setCouponCode('');
     routerNavigate(`/orders/${order.id}?placed=1`, { replace: true });
     resetScrollToTop();
   };
@@ -413,6 +421,8 @@ export default function App() {
               onSamplesChange={setSamples}
               note={bagNote}
               onNoteChange={setBagNote}
+              couponCode={couponCode}
+              onCouponChange={setCouponCode}
               theme={theme}
               onToggleTheme={toggleTheme}
               onNavigateHome={navigateToHome}
@@ -544,6 +554,8 @@ export default function App() {
         onSamplesChange={setSamples}
         note={bagNote}
         onNoteChange={setBagNote}
+        couponCode={couponCode}
+        onCouponChange={setCouponCode}
         onProceedToCheckout={() => navigateToCheckout()}
       />
 

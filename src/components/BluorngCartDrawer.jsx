@@ -4,6 +4,7 @@ import { formatINR as formatPrice } from '../lib/money';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 import { useQuote, trimSamples } from '../storefront/bag/useQuote';
 import SamplePicker from '../storefront/bag/SamplePicker';
+import { CouponRow } from '../storefront/bag/CouponSheet';
 
 export default function BluorngCartDrawer({
   isOpen,
@@ -13,6 +14,8 @@ export default function BluorngCartDrawer({
   onSamplesChange,
   note = '',
   onNoteChange,
+  couponCode = '',
+  onCouponChange,
   onUpdateQuantity,
   onRemoveItem,
   onProceedToCheckout
@@ -47,7 +50,7 @@ export default function BluorngCartDrawer({
   }, [isOpen, onClose]);
 
   // Every price, total and sample count shown here comes from the server's quote.
-  const { data: quote, isFetching, error: quoteError } = useQuote(cart, samples, null, isOpen && cart.length > 0);
+  const { data: quote, isFetching, error: quoteError } = useQuote(cart, samples, couponCode, isOpen && cart.length > 0);
   const lineFor = (item) => quote?.lines.find((l) => l.variant_id === item.variantId);
   const problemFor = (item) => quote?.problems.find((p) => p.variant_id === item.variantId);
   const threshold = quote?.free_shipping?.threshold ?? null;
@@ -276,6 +279,8 @@ export default function BluorngCartDrawer({
                 )}
               </div>
 
+              <CouponRow quote={quote} couponCode={couponCode} cart={cart} onApply={(c) => onCouponChange && onCouponChange(c)} onRemove={() => onCouponChange && onCouponChange('')} />
+
               {/* Totals Summary (from the server) */}
               <div className={`space-y-1.5 text-[11.5px] pt-1 transition-opacity ${isFetching ? 'opacity-60' : ''}`} aria-busy={isFetching}>
                 {quoteError && <p className="text-[10.5px] text-rose-600">We couldn't update the prices. Check your connection.</p>}
@@ -286,7 +291,7 @@ export default function BluorngCartDrawer({
 
                 {quote?.discount > 0 && (
                   <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
-                    <span>Discount</span>
+                    <span>Discount{quote.coupon?.ok ? ` (${quote.coupon.code})` : ''}</span>
                     <span>-{formatPrice(quote.discount)}</span>
                   </div>
                 )}

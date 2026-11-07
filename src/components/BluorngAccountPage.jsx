@@ -5,6 +5,7 @@ import { useAccount } from '../storefront/account/useAccount';
 import { fieldErrors, personalDetailsSchema } from '../storefront/account/schemas';
 import AddressModal from '../storefront/account/AddressModal';
 import OrdersList from '../storefront/orders/OrdersList';
+import OffersList from '../storefront/account/OffersList';
 import { formatIndianPhone } from '../lib/phone';
 import { toFriendlyError } from '../lib/errors';
 import { useAuth } from '../lib/auth';
@@ -14,7 +15,7 @@ const inputClass =
 const labelClass = 'block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1';
 const errorClass = 'text-[10.5px] text-rose-600 dark:text-rose-400 mt-1';
 
-const TABS = ['orders', 'addresses', 'details'];
+const TABS = ['orders', 'offers', 'addresses', 'details'];
 
 function formatBirthday(iso) {
   if (!iso) return '';
@@ -177,6 +178,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
         <nav className="flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] pt-4 overflow-x-auto scrollbar-none border-b border-[#F0F0F0] dark:border-white/10">
           {[
             { id: 'orders', label: 'Orders' },
+            { id: 'offers', label: 'Offers' },
             { id: 'addresses', label: `Addresses (${addressList.length})` },
             { id: 'details', label: 'Personal Details' },
           ].map((tab) => (
@@ -202,6 +204,8 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
         {activeTab === 'orders' && (
           <OrdersList />
         )}
+
+        {activeTab === 'offers' && <OffersList />}
 
         {/* TAB 2: ADDRESSES */}
         {activeTab === 'addresses' && (
