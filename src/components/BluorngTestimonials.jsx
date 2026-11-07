@@ -1,33 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// PLACEHOLDER TESTIMONIALS: replace every entry with real, approved customer reviews before launch.
-export const TESTIMONIALS = [
-  {
-    id: 't1',
-    quote: 'Replace this with a real customer quote about the fragrance and the experience.',
-    name: 'Customer Name',
-    location: 'City, Country',
-    product: 'Product Name',
-    rating: 5
-  },
-  {
-    id: 't2',
-    quote: 'Replace this with a second real customer quote, ideally mentioning a specific note or moment.',
-    name: 'Customer Name',
-    location: 'City, Country',
-    product: 'Product Name',
-    rating: 5
-  },
-  {
-    id: 't3',
-    quote: 'Replace this with a third real customer quote about packaging, delivery or longevity.',
-    name: 'Customer Name',
-    location: 'City, Country',
-    product: 'Product Name',
-    rating: 5
-  }
-];
+import { useTestimonials } from '../cms/useContent';
 
 const AUTOPLAY_MS = 7000;
 
@@ -43,7 +16,10 @@ function Stars({ count }) {
   );
 }
 
-export default function BluorngTestimonials({ items = TESTIMONIALS }) {
+/** Section "testimonials": quotes come from Admin → Testimonials (only active ones show). */
+export default function BluorngTestimonials() {
+  const { data = [] } = useTestimonials();
+  const items = data.map((t) => ({ id: t.id, quote: t.quote, name: t.name, location: t.location, product: t.product_name, rating: t.rating }));
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const count = items.length;
@@ -78,7 +54,7 @@ export default function BluorngTestimonials({ items = TESTIMONIALS }) {
               exit={{ opacity: 0, y: -12, filter: 'blur(4px)', transition: { duration: 0.3, ease: [0.76, 0, 0.24, 1] } }}
               className="w-full"
             >
-              <Stars count={current.rating} />
+              {current.rating ? <Stars count={current.rating} /> : null}
 
               <blockquote className="mt-6 font-serif italic text-[22px] sm:text-[30px] leading-[1.35] text-tk-ink dark:text-white">
                 &ldquo;{current.quote}&rdquo;

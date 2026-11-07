@@ -28,6 +28,7 @@ export type FieldDef =
   | (BaseField & { type: 'collection' })
   | (BaseField & { type: 'category' })
   | (BaseField & { type: 'font' })
+  | (BaseField & { type: 'strings'; placeholder?: string })
   | (BaseField & { type: 'list'; fields: FieldDef[]; itemLabel?: string; max?: number })
   | (BaseField & { type: 'group'; fields: FieldDef[] });
 
@@ -66,6 +67,7 @@ export function visibleFields(fields: FieldDef[], value: Record<string, unknown>
 export function emptyValueFor(field: FieldDef): unknown {
   switch (field.type) {
     case 'list':
+    case 'strings':
       return [];
     case 'boolean':
       return false;

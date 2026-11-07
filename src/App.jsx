@@ -42,6 +42,8 @@ import ResetPasswordPage from './storefront/auth/ResetPasswordPage';
 import NotFoundPage from './storefront/NotFoundPage';
 import ListingPage from './storefront/ListingPage.jsx';
 import NotesIndexPage from './storefront/NotesIndexPage.jsx';
+import CmsPage from './storefront/CmsPage.jsx';
+import { StorefrontProvider } from './cms/StorefrontContext';
 
 export default function App() {
   // The URL is the source of truth for which page is showing (src/app/routes.ts).
@@ -322,6 +324,17 @@ export default function App() {
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Shop actions every CMS section can use (product cards, reels, stories, boutiques).
+  const storefrontActions = {
+    wishlist,
+    onToggleWishlist: handleToggleWishlist,
+    onSelectProduct: navigateToProduct,
+    onQuickBuy: (prod) => setQuickBuyProduct(prod),
+    onOpenStory: () => setIsStoryOpen(true),
+    onScrollToStores: scrollToStores,
+    onNavigateCollection: navigateToCollection,
+  };
+
   if (resolved.redirectTo) {
     return <Navigate to={resolved.redirectTo} replace />;
   }
@@ -343,6 +356,7 @@ export default function App() {
   }
 
   return (
+    <StorefrontProvider value={storefrontActions}>
     <div className="min-h-screen bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-[#FFFFFF] flex flex-col font-sans selection:bg-tk-accent dark:selection:bg-tk-gold dark:selection:text-tk-night selection:text-white transition-colors duration-300">
       {/* Toast Notification */}
       <Toast message={toastMessage} />
@@ -437,6 +451,8 @@ export default function App() {
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
             />
+          ) : view === 'page' ? (
+            <CmsPage slug={resolved.pageSlug} onNavigateHome={navigateToHome} onNavigateCollection={navigateToCollection} />
           ) : view === 'notes' ? (
             <NotesIndexPage />
           ) : view === 'notfound' ? (
@@ -453,16 +469,7 @@ export default function App() {
               onOpenStory={navigateToStory}
             />
           ) : (
-            <BluorngHome
-              wishlist={wishlist}
-              onToggleWishlist={handleToggleWishlist}
-              onSelectProduct={navigateToProduct}
-              onQuickBuy={(prod) => setQuickBuyProduct(prod)}
-              onNavigateCollection={navigateToCollection}
-              onSelectCategory={(cat) => navigateToCollection(cat)}
-              onScrollToStores={scrollToStores}
-              onOpenStory={navigateToStory}
-            />
+            <BluorngHome />
           )}
         </PageTransition>
       </main>
@@ -561,5 +568,6 @@ export default function App() {
         }}
       />
     </div>
+    </StorefrontProvider>
   );
 }

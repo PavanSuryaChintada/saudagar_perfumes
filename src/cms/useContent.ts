@@ -5,7 +5,7 @@ import type { Database } from '../lib/database.types';
 type T = Database['public']['Tables'];
 export type Story = T['stories']['Row'] & { product_slug: string | null };
 export type Stockist = T['stockists']['Row'];
-export type Testimonial = T['testimonials']['Row'];
+export type Testimonial = T['testimonials']['Row'] & { product_name: string | null };
 export type Faq = T['faqs']['Row'];
 export type Reel = T['reels']['Row'] & { product_slugs: string[] };
 
@@ -41,9 +41,9 @@ export function useTestimonials() {
     queryKey: ['cms', 'testimonials'],
     staleTime: FIVE_MIN,
     queryFn: async () => {
-      const { data, error } = await supabase.from('testimonials').select('*').eq('is_active', true).order('position');
+      const { data, error } = await supabase.from('testimonials').select('*, products(name)').eq('is_active', true).order('position');
       if (error) throw error;
-      return (data ?? []) as Testimonial[];
+      return (data ?? []).map((t: any) => ({ ...t, product_name: t.products?.name ?? null })) as Testimonial[];
     },
   });
 }

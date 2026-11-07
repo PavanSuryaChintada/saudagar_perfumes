@@ -1,11 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
-import dynamicHeroVideos from '../data/heroVideos.json';
+import { useGo } from '../cms/useSite';
+import { resolveLink } from '../cms/links';
 
-export default function BluorngHero({ onExploreClick, onShopDropClick }) {
-  // Dynamic videos list (automatically synced by vite hero-videos plugin)
-  const videos = dynamicHeroVideos && dynamicHeroVideos.length > 0
-    ? dynamicHeroVideos
-    : [];
+/** Section "hero_video_carousel": films, fallback images and the call to action all come from the CMS. */
+export default function BluorngHero({ config = {} }) {
+  const go = useGo();
+  const sectionRef = useRef(null);
+  const videos = (config.slides || [])
+    .filter((s) => s && s.video)
+    .map((s, i) => ({ id: `hero-${i}`, src: s.video, label: s.label || '', title: s.title || s.label || `Film ${i + 1}` }));
+
+  const onShopDropClick = () => {
+    if (resolveLink(config.cta_link)) {
+      go(config.cta_link);
+      return;
+    }
+    const next = sectionRef.current?.nextElementSibling;
+    if (!next) return;
+    if (window.__lenis) window.__lenis.scrollTo(next, { offset: -60 });
+    else next.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const [activeVideoIdx, setActiveVideoIdx] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
@@ -88,18 +102,21 @@ export default function BluorngHero({ onExploreClick, onShopDropClick }) {
 
   return (
     <section
+      ref={sectionRef}
       id="hero-section"
       className="relative w-full h-screen min-h-[100dvh] overflow-hidden bg-[#0A0A0C] -mt-[60px] sm:-mt-[68px] select-none"
     >
       {/* Fallback Static Backdrop during initial load */}
-      <picture className="absolute inset-0 w-full h-full pointer-events-none">
-        <source media="(max-width: 768px)" srcSet="/images/hero_model.jpg" />
-        <img
-          src="/images/hero_alcove.jpg"
-          alt="Saudagar Haute Parfumerie Campaign"
-          className="w-full h-full object-cover object-center filter brightness-[0.70]"
-        />
-      </picture>
+      {(config.fallback_image || config.fallback_image_mobile) && (
+        <picture className="absolute inset-0 w-full h-full pointer-events-none">
+          {config.fallback_image_mobile && <source media="(max-width: 768px)" srcSet={config.fallback_image_mobile} />}
+          <img
+            src={config.fallback_image || config.fallback_image_mobile}
+            alt={config.fallback_alt || ''}
+            className="w-full h-full object-cover object-center filter brightness-[0.70]"
+          />
+        </picture>
+      )}
 
       {/* Dynamic Fullscreen Background Cinematic Campaign Videos */}
       <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
@@ -180,12 +197,14 @@ export default function BluorngHero({ onExploreClick, onShopDropClick }) {
 
           {/* Center: Minimalist "Shop now" Link */}
           <div className="flex justify-center pb-1">
-            <button
-              onClick={onShopDropClick}
-              className="text-white text-[13px] sm:text-[14px] font-semibold tracking-[0.2em] uppercase hover:text-white/70 transition-colors pb-1 border-b border-white hover:border-white/70 cursor-pointer"
-            >
-              Shop now
-            </button>
+            {config.cta_label && (
+              <button
+                onClick={onShopDropClick}
+                className="text-white text-[13px] sm:text-[14px] font-semibold tracking-[0.2em] uppercase hover:text-white/70 transition-colors pb-1 border-b border-white hover:border-white/70 cursor-pointer"
+              >
+                {config.cta_label}
+              </button>
+            )}
           </div>
 
           {/* Right: Sound Toggle - glass pill with animated equalizer bars */}

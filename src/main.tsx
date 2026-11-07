@@ -6,6 +6,7 @@ import { Toaster } from 'sonner';
 import { SmoothScrollProvider } from './components/motion/SmoothScrollProvider.jsx';
 import { AuthProvider } from './lib/auth';
 import AppRouter from './app/AppRouter';
+import ThemeRuntime from './cms/ThemeRuntime';
 import './index.css';
 
 const queryClient = new QueryClient({
@@ -17,6 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <ThemeRuntime />
           <SmoothScrollProvider>
             <AppRouter />
           </SmoothScrollProvider>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import BluorngProductCard from './BluorngProductCard.jsx';
-import { useLegacyProducts } from '../storefront/catalog/hooks';
+import { useSourceProducts } from '../cms/useSourceProducts';
 import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 
 export default function BluorngSignatureCollection({
@@ -8,20 +8,14 @@ export default function BluorngSignatureCollection({
   onToggleWishlist,
   onSelectProduct,
   onQuickBuy,
-  onDiscoverMore
+  config = {}
 }) {
-  const [selectedFilter, setSelectedFilter] = useState('All');
+  const [selectedFilter, setSelectedFilter] = useState('0');
 
-  // Tabs map onto scent-profile filters in the database (made editable in the CMS in phase 3).
-  const filters = [
-    { label: 'All Formulations', value: 'All', attrs: {} },
-    { label: 'Oud & Woods', value: 'Oud & Woods', attrs: { family: ['oud', 'woody'] } },
-    { label: 'Oriental Amber', value: 'Oriental Amber', attrs: { family: ['amber'] } },
-    { label: 'Solar Citrus', value: 'Solar Citrus', attrs: { family: ['citrus', 'aquatic'] } },
-    { label: 'Royal Attars', value: 'Royal Attars', attrs: { concentration: ['attar'] } }
-  ];
+  // Section "product_grid_tabs": each tab is a label plus a product source, all edited in the CMS.
+  const filters = (config.tabs || []).map((t, i) => ({ label: t.label, value: String(i), source: t.source }));
   const activeTab = filters.find((f) => f.value === selectedFilter) || filters[0];
-  const { products: signatureProducts } = useLegacyProducts({ attrs: activeTab.attrs, page_size: 8 });
+  const { products: signatureProducts } = useSourceProducts(activeTab?.source);
 
   return (
     <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">
@@ -31,13 +25,13 @@ export default function BluorngSignatureCollection({
         <ScrollReveal variant="fade-up" className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
             <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#A09D96] font-medium block mb-1">
-              Curated Formulations
+              {config.eyebrow}
             </span>
             <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
-              Fragrances & Pure Attars
+              {config.heading}
             </h2>
             <p className="text-[12px] text-[#777777] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
-              High-concentration extraits and hydro-distilled floral oils formulated for exceptional skin chemistry evolution.
+              {config.text}
             </p>
           </div>
 

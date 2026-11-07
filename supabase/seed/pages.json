@@ -1,0 +1,741 @@
+[
+ {
+  "slug": "home",
+  "title": "Home",
+  "layout": "sections",
+  "is_system": true,
+  "is_published": true,
+  "position": 0,
+  "sections": [
+   {
+    "type": "hero_video_carousel",
+    "label": "Hero films",
+    "config": {
+     "slides": [
+      {
+       "label": "01",
+       "title": "Perfume bottles in a royal palace",
+       "video": "/videos/Perfume_bottles_in_royal_palace_e1347222_1080p.mp4"
+      },
+      {
+       "label": "02",
+       "title": "Perfume bottle in the desert",
+       "video": "/videos/Perfume_bottle_in_desert_92b81cd7_1080p_gwr_video_mvp.mp4"
+      },
+      {
+       "label": "03",
+       "title": "Perfume bottle in a luxury setting",
+       "video": "/videos/Perfume_bottle_in_luxury_setting_e094f368_1080p.mp4"
+      },
+      {
+       "label": "04",
+       "title": "Perfume bottle on a coastal landscape",
+       "video": "/videos/Perfume_bottle_on_coastal_landscape_76c07432_1080p.mp4"
+      },
+      {
+       "label": "05",
+       "title": "Ruby red perfume bottle on display",
+       "video": "/videos/Ruby_red_perfume_bottle_displayed_4a5d2be2_1080p.mp4"
+      }
+     ],
+     "fallback_image": "/images/hero_alcove.jpg",
+     "fallback_image_mobile": "/images/hero_model.jpg",
+     "fallback_alt": "Saudagar Haute Parfumerie Campaign",
+     "cta_label": "Shop now",
+     "cta_link": {
+      "type": "collection",
+      "value": "latest-drop"
+     }
+    }
+   },
+   {
+    "type": "kinetic_marquee",
+    "label": "Ribbon",
+    "config": {
+     "items": [
+      "HAUTE PARFUMERIE EXTRAITS",
+      "HARVESTED AT DAWN IN GRASSE & ASSAM",
+      "PURE HYDRO-DISTILLED BOTANICAL ATTARS",
+      "40-YEAR WILD CAMBODI OUD",
+      "HAND-CUT MONOGRAMMED FLACONS",
+      "ARTISANAL ALCHEMY ON HUMAN SKIN CHEMISTRY"
+     ],
+     "speed": 42,
+     "reverse": false
+    }
+   },
+   {
+    "type": "category_tiles",
+    "label": "Shop by category",
+    "config": {
+     "eyebrow": "01 / Olfactory Families",
+     "heading": "Shop by Category",
+     "view_all_label": "View All",
+     "view_all_link": {
+      "type": "path",
+      "value": "/shop"
+     },
+     "cta_label": "Explore Collection",
+     "notes_label": "Notes:",
+     "items": [
+      {
+       "numeral": "I",
+       "title": "Oud Royale",
+       "subtitle": "Wild Agarwood Extraits",
+       "count_label": "8 Formulations",
+       "description": "40-year wild Assam agarwood distilled in copper alembics. Smoked, flinty, and deeply resinous.",
+       "notes": "Wild Assam Oud · Smoked Birch · Dark Ambergris",
+       "concentration": "Extrait · 38% Pure Oil",
+       "image": "/images/saudagar_imperial_ruby.png",
+       "link": {
+        "type": "collection",
+        "value": "royal"
+       }
+      },
+      {
+       "numeral": "II",
+       "title": "Pure Royal Attars",
+       "subtitle": "Sacred Hydro-Distilled Oils",
+       "count_label": "9 Formulations",
+       "description": "Ancestral botanical attars compounded without alcohol. High-altitude Taif damask rose aged over sandalwood.",
+       "notes": "Taif Damask Rose · Mysore Sandalwood · Kashmiri Saffron",
+       "concentration": "100% Pure Botanical Attar",
+       "image": "/images/flacon_rooh_mysore.png",
+       "link": {
+        "type": "category",
+        "value": "royal-attars"
+       }
+      },
+      {
+       "numeral": "III",
+       "title": "Solar & Aquatic",
+       "subtitle": "Riviera Citrus & Saline Blues",
+       "count_label": "7 Formulations",
+       "description": "Sunlit Calabrian bergamot infused with Mediterranean sea spray and sun-bleached coastal cedar.",
+       "notes": "Calabrian Bergamot · Oceanic Saline · Riviera Blue Amber",
+       "concentration": "Extrait · 32% Pure Oil",
+       "image": "/images/saudagar_royal_sapphire.png",
+       "link": {
+        "type": "collection",
+        "value": "fresh"
+       }
+      },
+      {
+       "numeral": "IV",
+       "title": "Exotic Noir",
+       "subtitle": "Nocturnal Cypress & Flint",
+       "count_label": "8 Formulations",
+       "description": "Volcanic earth, crushed pine needles, and obsidian minerals captured in dense nighttime extraits.",
+       "notes": "Mountain Cypress · Obsidian Flint · Smoked Vetiver",
+       "concentration": "Extrait · 42% Pure Oil",
+       "image": "/images/saudagar_noir_matte.png",
+       "link": {
+        "type": "collection",
+        "value": "exotic"
+       }
+      },
+      {
+       "numeral": "V",
+       "title": "Amber & Resins",
+       "subtitle": "Smoked Balsams & Frankincense",
+       "count_label": "12 Formulations",
+       "description": "Tears of Somalian frankincense melded with Siam benzoin, warm golden labdanum, and bourbon vanilla.",
+       "notes": "Golden Labdanum · Frankincense Tears · Bourbon Vanilla",
+       "concentration": "Extrait · 36% Pure Oil",
+       "image": "/images/saudagar_amber_gold.png",
+       "link": {
+        "type": "collection",
+        "value": "signature"
+       }
+      },
+      {
+       "numeral": "VI",
+       "title": "Discovery Sets",
+       "subtitle": "Curated 10ml Vault Coffrets",
+       "count_label": "6 Coffrets",
+       "description": "Six signature extraits in travel flacons housed in a presentation case with a full flacon voucher.",
+       "notes": "6 Travel Flacons · Full Bottle Voucher · Coffret Box",
+       "concentration": "Discovery Coffrets · 6 × 10ml",
+       "image": "/images/saudagar_crystal_diamond.png",
+       "link": {
+        "type": "collection",
+        "value": "exclusive-coffrets"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "type": "product_carousel",
+    "label": "Latest drop",
+    "config": {
+     "eyebrow": "Edition 2026 · Latest Drop",
+     "heading": "Featured Flacons",
+     "text": "Freshly compounded artisanal extraits with rare distillations from Assam, Taif, and Grasse.",
+     "side_label": "08 Formulations",
+     "cta_label": "Discover all drops",
+     "cta_link": {
+      "type": "collection",
+      "value": "latest-drop"
+     },
+     "source": {
+      "mode": "collection",
+      "collection": "latest-drop",
+      "limit": 8
+     }
+    }
+   },
+   {
+    "type": "campaign_banner_animated",
+    "label": "Campaign banner",
+    "config": {
+     "kicker": "Saudagar Perfumes",
+     "headline": "The Signature Collection",
+     "italic_word": "Signature",
+     "subheading": "A curated range of exceptional fragrances.",
+     "text": "Compounded in sacred copper alembics with rare wild Assam agarwoods, high-altitude Taif damask roses, and aged Mysore santal. Formulated for profound skin chemistry evolution.",
+     "notes": [
+      "Top: Bergamot & Pepper",
+      "Heart: Cambodi Oud & Taif Rose",
+      "Base: Mysore Santal"
+     ],
+     "video": "/videos/Perfume_bottles_in_royal_palace_e1347222_1080p.mp4",
+     "image": "",
+     "primary_cta": {
+      "label": "Explore Collection →",
+      "link": {
+       "type": "path",
+       "value": "/shop"
+      }
+     },
+     "secondary_cta": {
+      "label": "Discover Attars",
+      "link": {
+       "type": "collection",
+       "value": "royal"
+      }
+     },
+     "badge": "Royal Palace Atelier · 35% Pure Extrait"
+    }
+   },
+   {
+    "type": "product_showcase",
+    "label": "Discovery coffrets",
+    "config": {
+     "eyebrow": "Collector Series · Private Vault",
+     "heading": "Discovery Coffrets",
+     "text": "Hand-assembled presentation cases lined in crushed obsidian velvet. Houses 6 travel flacons with a full flacon voucher.",
+     "side_label": "Private Allocation",
+     "cta_label": "Explore All Coffrets",
+     "cta_link": {
+      "type": "collection",
+      "value": "exclusive-coffrets"
+     },
+     "source": {
+      "mode": "collection",
+      "collection": "exclusive-coffrets",
+      "limit": 12
+     }
+    }
+   },
+   {
+    "type": "gallery_tiles",
+    "label": "Gallery tiles",
+    "config": {
+     "eyebrow": "The Olfactory Vault · Curations",
+     "heading": "Discover Collections",
+     "text": "Three curated pathways into the Saudagar olfactory universe. Immerse in single-flacon masterworks or private member privileges.",
+     "side_label": "Exhibition Trilogy",
+     "tiles": [
+      {
+       "kicker": "SALON N° 01",
+       "title": "Extrait de Parfum",
+       "subtitle": "Pure Botanical Extraits",
+       "image": "/images/saudagar_more_than_fragrance.jpg",
+       "link": {
+        "type": "category",
+        "value": "extrait-de-parfum"
+       }
+      },
+      {
+       "kicker": "SALON N° 02",
+       "title": "Discovery Coffrets",
+       "subtitle": "The 6-Flacon Collection",
+       "image": "/images/saudagar_flacon_box.jpg",
+       "link": {
+        "type": "collection",
+        "value": "exclusive-coffrets"
+       }
+      },
+      {
+       "kicker": "SALON N° 03",
+       "title": "Saudagar Royal Club",
+       "subtitle": "Private VIP Olfactory Salon",
+       "image": "/images/hero_alcove.jpg",
+       "link": {
+        "type": "collection",
+        "value": "signature"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "type": "product_grid_tabs",
+    "label": "Curated tabs",
+    "config": {
+     "eyebrow": "Curated Formulations",
+     "heading": "Fragrances & Pure Attars",
+     "text": "High-concentration extraits and hydro-distilled floral oils formulated for exceptional skin chemistry evolution.",
+     "tabs": [
+      {
+       "label": "All Formulations",
+       "source": {
+        "mode": "filter",
+        "attrs": {},
+        "limit": 8
+       }
+      },
+      {
+       "label": "Oud & Woods",
+       "source": {
+        "mode": "filter",
+        "attrs": {
+         "family": [
+          "oud",
+          "woody"
+         ]
+        },
+        "limit": 8
+       }
+      },
+      {
+       "label": "Oriental Amber",
+       "source": {
+        "mode": "filter",
+        "attrs": {
+         "family": [
+          "amber"
+         ]
+        },
+        "limit": 8
+       }
+      },
+      {
+       "label": "Solar Citrus",
+       "source": {
+        "mode": "filter",
+        "attrs": {
+         "family": [
+          "citrus",
+          "aquatic"
+         ]
+        },
+        "limit": 8
+       }
+      },
+      {
+       "label": "Royal Attars",
+       "source": {
+        "mode": "filter",
+        "attrs": {
+         "concentration": [
+          "attar"
+         ]
+        },
+        "limit": 8
+       }
+      }
+     ]
+    }
+   },
+   {
+    "type": "kinetic_marquee",
+    "label": "Ribbon (reverse)",
+    "config": {
+     "items": [
+      "TIMELESS SIGNATURE",
+      "ROYAL OUD & TAIF ROSES",
+      "UNTAMED EXOTIC OBSIDIAN",
+      "RIVIERA AZURE & CITRUS BLUES",
+      "SUR-MESURE PERFUME ATELIER"
+     ],
+     "speed": 36,
+     "reverse": true
+    }
+   },
+   {
+    "type": "editorial_story",
+    "label": "Editorial story",
+    "config": {
+     "eyebrow": "The House of Saudagar",
+     "statement": "Fragrance is *patience*, poured one flacon at a time.",
+     "intro": "We source our oils from the places that shape them: Assam at dawn, Grasse in the early harvest, and forty-year wild Cambodi oud. Each bottle is hand-cut, monogrammed and blended for the person who will wear it.",
+     "atelier": {
+      "kicker": "Made to order",
+      "title": "The Saudagar Atelier",
+      "image": "/images/bespoke_atelier.jpg",
+      "link": null
+     },
+     "stat": {
+      "kicker": "The heart",
+      "number": "40",
+      "caption": "Years of wild Cambodi oud"
+     },
+     "sourcing": {
+      "kicker": "Sourced at dawn",
+      "title": "Assam & Grasse",
+      "image": "/images/saudagar_amber_gold.png"
+     },
+     "craft": {
+      "kicker": "The craft",
+      "text": "Every flacon is *hand-cut* and monogrammed before it leaves the atelier."
+     },
+     "entries_heading": "Choose your world",
+     "view_all_label": "View all",
+     "view_all_link": {
+      "type": "path",
+      "value": "/shop"
+     },
+     "entries": [
+      {
+       "title": "Signature",
+       "note": "Warm champagne & amber",
+       "image": "/images/saudagar_amber_gold.png",
+       "link": {
+        "type": "collection",
+        "value": "signature"
+       }
+      },
+      {
+       "title": "Royal",
+       "note": "Taif rose & royal oud",
+       "image": "/images/saudagar_imperial_ruby.png",
+       "link": {
+        "type": "collection",
+        "value": "royal"
+       }
+      },
+      {
+       "title": "Exotic",
+       "note": "Nocturnal forest & obsidian",
+       "image": "/images/saudagar_noir_matte.png",
+       "link": {
+        "type": "collection",
+        "value": "exotic"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "type": "testimonials",
+    "label": "Testimonials",
+    "config": {}
+   },
+   {
+    "type": "instagram_reels",
+    "label": "Instagram reels",
+    "config": {
+     "handle": "@SAUDAGARPERFUMES",
+     "handle_note": "Continuous Atelier Chronicles",
+     "heading": "Community & Atelier Reels",
+     "text": "Rare harvest distillations, crystal flacon unboxings, and bespoke layering rituals.",
+     "follow_label": "Follow",
+     "follow_url": "https://www.instagram.com",
+     "tags_label": "Trending Tags:",
+     "tags": [
+      "#SaudagarOud",
+      "#HauteParfumerie",
+      "#ExtraitDeParfum"
+     ],
+     "episodes_label": "Watch All Story Episodes"
+    }
+   },
+   {
+    "type": "seo_accordion",
+    "label": "About & popular searches",
+    "config": {
+     "eyebrow": "House Manifesto · Heritage",
+     "heading": "Experience Artisanal Haute Parfumerie with SAUDAGAR",
+     "intro": "<p>In an era dominated by mass synthetic perfumery, <strong>SAUDAGAR</strong> resurrects the ancient lineage of the royal master perfumers. From wild 40-year-old agarwood forests in Assam and Koh Kong to high-altitude dawn harvests of Taif damask rose, our creations celebrate unadulterated botanical grandeur.</p>",
+     "more": "<h3>What Defines Gender-Neutral Haute Parfumerie?</h3><p>Pure aromatics know no gender. Scent is an intimate aura of personal presence and spiritual resonance. Whether indulging in dark volcanic smoke with <em>003 Obsidian Root</em> or sunlit Mediterranean citrus in <em>Pacific Coast</em>, our artisanal extraits are conceived for connoisseurs who demand longevity and singular character.</p><h3>Why Saudagar Stands Unrivaled in Modern Perfumery</h3><p>Each Saudagar creation boasts an extravagant oil concentration ranging between 30% and 46% (Extrait de Parfum), compounded in small batches and aged for twelve months in dark temperature-regulated cellars before being poured into sculptural, heavy-weight crystal flacons.</p><h3>Frequently Asked Questions (FAQs)</h3><p><strong>How long does an Extrait de Parfum last on skin?</strong><br>Due to our 35%+ pure botanical oil formulation, Saudagar extraits exhibit remarkable longevity, projecting with sillage for 14 to 24+ hours on skin and multiple days on textiles.</p><p><strong>Are your products unisex?</strong><br>Every Saudagar perfume is created to be genderless, adapting to the unique chemistry and warmth of the wearer’s pulse points.</p><p><strong>Can I experience fragrances before buying full bottles?</strong><br>Yes. Our <em>Masterpiece Discovery Coffret</em> contains six 10ml travel flacons, accompanied by a redemption voucher for a full 100ml flacon.</p>",
+     "read_more_label": "Read more about Saudagar...",
+     "read_less_label": "Read less",
+     "searches_heading": "Popular Searches & Notes",
+     "search_tabs": [
+      {
+       "label": "By category",
+       "terms": [
+        {
+         "label": "Extrait de Parfum",
+         "query": "Extrait"
+        },
+        {
+         "label": "Pure Dehn Al Oud",
+         "query": "Oud"
+        },
+        {
+         "label": "Discovery Sets & Coffrets",
+         "query": "Discovery"
+        },
+        {
+         "label": "Royal Concentrated Attars",
+         "query": "Attar"
+        },
+        {
+         "label": "Solar & Aquatic Essences",
+         "query": "Aquatic"
+        },
+        {
+         "label": "Travel Flacon Leather Cases",
+         "query": "Leather"
+        },
+        {
+         "label": "Bespoke Atelier Commissions",
+         "query": "Bespoke"
+        }
+       ]
+      },
+      {
+       "label": "By family",
+       "terms": [
+        {
+         "label": "Smoky Dark Oud & Leather",
+         "query": "Smoky"
+        },
+        {
+         "label": "Sun-Drenched Citrus & Bergamot",
+         "query": "Citrus"
+        },
+        {
+         "label": "Opulent Damask Rose & Saffron",
+         "query": "Rose"
+        },
+        {
+         "label": "Mineral Earth & Pine Cypress",
+         "query": "Mineral"
+        },
+        {
+         "label": "Gourmand Honey & Vanilla Pods",
+         "query": "Gourmand"
+        },
+        {
+         "label": "Warm Ambergris & Sandalwood",
+         "query": "Amber"
+        },
+        {
+         "label": "Powdery Barber Lavender Fougere",
+         "query": "Fougere"
+        }
+       ]
+      },
+      {
+       "label": "By flacon",
+       "terms": [
+        {
+         "label": "Deep Obsidian Black Flacons",
+         "query": "Obsidian"
+        },
+        {
+         "label": "Pure 24K Gilded Golden Crystal",
+         "query": "Gold"
+        },
+        {
+         "label": "Warm Cognac Amber Glass",
+         "query": "Amber"
+        },
+        {
+         "label": "Crystalline Azure Aquatic",
+         "query": "Azure"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "slug": "story",
+  "title": "Our story",
+  "layout": "sections",
+  "is_system": true,
+  "is_published": true,
+  "position": 1,
+  "sections": [
+   {
+    "type": "story_hero",
+    "label": null,
+    "config": {
+     "eyebrow": "Maison Saudagar · Established in Dubai",
+     "heading": "Born in the Alleys of Al Fahidi, Destined for the World.",
+     "text": "The complete chronicle of an artisanal sanctuary dedicated to pure botanical extraits, ancient Cambodian agarwood reserves, and generational perfumery craft.",
+     "image": "/images/brand_story.jpg",
+     "image_kicker": "The Maceration Chambers · Dubai Atelier",
+     "image_caption": "Where raw resins rest for up to 365 days in darkness."
+    }
+   },
+   {
+    "type": "story_tenets",
+    "label": null,
+    "config": {
+     "eyebrow": "Our Creed",
+     "heading": "The Pillars of Saudagar Haute Parfumerie",
+     "items": [
+      {
+       "num": "01",
+       "title": "Pure Extrait Standard",
+       "text": "Formulated at 38% to 46% pure oil concentration. We reject industrial eau de toilette dilutions. A single application radiates with room-filling presence for 14+ hours."
+      },
+      {
+       "num": "02",
+       "title": "Single-Source Wild Botanicals",
+       "text": "Wild-harvested Cambodian agarwood, dawn-picked Taif Damask roses from high Saudi plateaus, and vintage Mysore sandalwood heartwood aged for over a decade."
+      },
+      {
+       "num": "03",
+       "title": "365-Day Slow Maceration",
+       "text": "Time is our primary solvent. Oils rest undisturbed in dark temperature-controlled chambers until the complex botanical esters harmonize into a seamless symphony."
+      },
+      {
+       "num": "04",
+       "title": "Heirloom Crystal & Brass",
+       "text": "Optically pure crystal flacons crowned with a 120g solid knurled brass cap."
+      }
+     ]
+    }
+   },
+   {
+    "type": "story_timeline",
+    "label": null,
+    "config": {
+     "eyebrow": "Chronology",
+     "heading": "How The House Started & Established",
+     "text": "A continuous arc of uncompromising patience, artisanal extraction, and international recognition.",
+     "chapters": [
+      {
+       "year": "1988",
+       "subtitle": "Genesis in Al Fahidi",
+       "title": "The Whisper of Old Dubai",
+       "body": "In the wind-tower alcoves along Dubai Creek, the first Saudagar alembics were stoked with fragrant hardwood embers. The founder blended attars not for commercial shelves, but for Gulf dignitaries seeking private olfactory signatures. The name \"Saudagar\"—the ancient Persian-Arabian word for the noble merchant-connoisseur—honored those who braved distant silk and maritime routes to trade the Earth’s most precious resins."
+      },
+      {
+       "year": "2004",
+       "subtitle": "Uncompromising Botanical Sourcing",
+       "title": "The Aged Cambodi Barrel",
+       "body": "While commercial perfumery turned toward synthetic shortcuts and fast production, Saudagar committed to generational patience. We acquired a legendary reserve of 1986 harvest wild Cambodian agarwood (*Aquilaria crassna*)—dense, resinous wood aged in glass demijohns. This single barrel established our non-negotiable benchmark: zero synthetic fillers, zero water dilution, and minimum 38% to 46% pure oil concentration."
+      },
+      {
+       "year": "2016",
+       "subtitle": "From Private Salon to Architectural Maison",
+       "title": "The Flagship Atelier",
+       "body": "Saudagar opened its private tasting salon in Dubai, welcoming heads of state, artists, and discerning collectors. Every flacon was conceived as liquid architecture: heavyweight lead-free crystal with hand-knurled brass caps and personalized plaques engraved by master calligraphers. A bespoke commission became an enduring personal heirloom."
+      },
+      {
+       "year": "2022",
+       "subtitle": "Worldwide Cold-Chain Logistics",
+       "title": "Global Connoisseur Dispatches",
+       "body": "Recognizing that delicate high-concentration botanicals degrade under prolonged heat and airport transit, Saudagar instituted insured, temperature-regulated air courier shipping directly from our Dubai laboratory to collectors in London, Paris, Tokyo, Mumbai, and New York within 48 to 72 hours."
+      },
+      {
+       "year": "Today",
+       "subtitle": "Over 50,000 Flacons Hand-Crafted",
+       "title": "The Modern Extraits",
+       "body": "Today, our creations—from the smoky depths of Thunderstruck Pure Oud to the mineral petrichor of Deep Canopy and the solar warmth of Amber Bark—stand as benchmarks of artisanal niche perfumery. Each flacon rests for up to 365 days of slow maceration, engineered to become your personal legend."
+      }
+     ]
+    }
+   },
+   {
+    "type": "story_split",
+    "label": null,
+    "config": {
+     "image": "/images/ingredients.jpg",
+     "image_caption": "Raw Agarwood & Natural Resins",
+     "eyebrow": "The Botanical Terroir",
+     "heading": "Sourced directly from the harvest origin.",
+     "text": "Every drop of oil is tracked to its geographical terroir. We work exclusively with certified family distillers in Assam, Cambodia, and Taif who harvest botanicals according to moon cycles and seasonal rain patterns, preserving the micro-molecular vitality of the plants.",
+     "quote": "A fragrance is only as honest as the soil from which its resins were drawn."
+    }
+   },
+   {
+    "type": "story_closing",
+    "label": null,
+    "config": {
+     "quote": "A Saudagar creation is never worn to be noticed; it is worn to be remembered.",
+     "attribution": "The Master Perfumer · Dubai Atelier",
+     "cta": {
+      "label": "Explore The Extraits",
+      "link": {
+       "type": "path",
+       "value": "/shop"
+      }
+     }
+    }
+   }
+  ]
+ },
+ {
+  "slug": "contact",
+  "title": "Contact us",
+  "layout": "rich_text",
+  "position": 2,
+  "body": "<p>We are happy to help with orders, deliveries, samples and fragrance advice.</p><h2>Customer care</h2><ul><li>Phone and WhatsApp: +91 84484 41388</li><li>Email: care@saudagarperfumes.example</li><li>Hours: Mon–Sat, 10 am – 7 pm IST</li></ul><p><em>Placeholder — replace in Admin → Pages before launch: the registered business address and a working support email.</em></p>",
+  "sections": []
+ },
+ {
+  "slug": "shipping-policy",
+  "title": "Shipping policy",
+  "layout": "rich_text",
+  "position": 3,
+  "body": "<p>We deliver to addresses in India only.</p><h2>Payment</h2><p>Orders are paid in cash on delivery.</p><h2>Dispatch and delivery times</h2><p><em>Placeholder — replace in Admin → Pages before launch: dispatch times, delivery estimates and any shipping charges.</em></p>",
+  "sections": []
+ },
+ {
+  "slug": "returns-policy",
+  "title": "Returns & refunds",
+  "layout": "rich_text",
+  "position": 4,
+  "body": "<p><em>Placeholder — replace in Admin → Pages before launch: which items can be returned, the return window, and how refunds are paid.</em></p>",
+  "sections": []
+ },
+ {
+  "slug": "privacy-policy",
+  "title": "Privacy policy",
+  "layout": "rich_text",
+  "position": 5,
+  "body": "<p><em>Placeholder — replace in Admin → Pages before launch: what personal data is collected, why, how long it is kept, and how customers can ask for it to be deleted.</em></p>",
+  "sections": []
+ },
+ {
+  "slug": "terms",
+  "title": "Terms & conditions",
+  "layout": "rich_text",
+  "position": 6,
+  "body": "<p><em>Placeholder — replace in Admin → Pages before launch: terms of sale, pricing and GST details, and the governing law.</em></p>",
+  "sections": []
+ },
+ {
+  "slug": "boutiques",
+  "title": "Boutiques",
+  "layout": "sections",
+  "is_published": false,
+  "position": 7,
+  "sections": [
+   {
+    "type": "stockists",
+    "label": "Boutiques",
+    "config": {
+     "watermark": "LES BOUTIQUES & ATELIERS",
+     "badge": "Walk-in Ateliers",
+     "script_line": "private tasting salons",
+     "heading": "Boutiques across India & Middle East",
+     "text": "Experience our private olfactory tasting salons. Master perfumers on site for bespoke consultations.",
+     "side_label": "VIP Concierge Available",
+     "directions_label": "Get Directions"
+    }
+   }
+  ]
+ }
+]

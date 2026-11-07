@@ -1,14 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { DISCOVER_GALLERY_TILES } from '../data/bluorngSaudagarData.js';
+import { useGo } from '../cms/useSite';
 import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 
-export default function BluorngGalleryHero({ onSelectCategory }) {
-  const tileCurations = [
-    { ...DISCOVER_GALLERY_TILES[0], exhibitionNo: 'SALON N° 01', subtitle: 'Pure Botanical Extraits' },
-    { ...DISCOVER_GALLERY_TILES[1], exhibitionNo: 'SALON N° 02', subtitle: 'The 6-Flacon Collection' },
-    { ...DISCOVER_GALLERY_TILES[2], exhibitionNo: 'SALON N° 03', subtitle: 'Private VIP Olfactory Salon' }
-  ];
+/** Section "gallery_tiles": the three large editorial tiles, edited in the CMS. */
+export default function BluorngGalleryHero({ config = {} }) {
+  const go = useGo();
+  const tileCurations = (config.tiles || []).map((t, i) => ({ ...t, id: `tile-${i}` }));
 
   return (
     <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-14 sm:py-20 overflow-hidden transition-colors duration-300">
@@ -18,19 +16,19 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
         <ScrollReveal variant="fade-up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
             <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#A09D96] font-medium block mb-1">
-              The Olfactory Vault · Curations
+              {config.eyebrow}
             </span>
             <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
-              Discover Collections
+              {config.heading}
             </h2>
             <p className="text-[12px] text-[#777777] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
-              Three curated pathways into the Saudagar olfactory universe. Immerse in single-flacon masterworks or private member privileges.
+              {config.text}
             </p>
           </div>
 
           <div className="text-[11px] font-normal text-[#888888] dark:text-[#A09D96] tracking-wider uppercase hidden md:flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night" />
-            <span>Exhibition Trilogy</span>
+            <span>{config.side_label}</span>
           </div>
         </ScrollReveal>
 
@@ -41,14 +39,14 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
               <motion.div
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                onClick={() => onSelectCategory(tile.linkCategory)}
+                onClick={() => go(tile.link)}
                 className="group relative cursor-pointer flex flex-col overflow-hidden rounded-lg bg-[#F8F7F4] dark:bg-[#141318] transition-all duration-300"
               >
                 {/* Curator Placard Above Image */}
                 <div className="px-5 py-3.5 bg-transparent flex items-center justify-between">
                   <div>
                     <span className="text-[9.5px] font-normal tracking-[0.1em] text-tk-accent dark:text-tk-accent-night uppercase block">
-                      {tile.exhibitionNo}
+                      {tile.kicker}
                     </span>
                     <h3 className="text-[13px] sm:text-[14px] font-medium tracking-[0.03em] uppercase text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night transition-colors duration-200 mt-0.5">
                       {tile.title}
@@ -63,7 +61,7 @@ export default function BluorngGalleryHero({ onSelectCategory }) {
                 {/* Tile Image with Responsive Picture */}
                 <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-tk-ink m-2 mb-2 rounded-md">
                   <img
-                    src={tile.imageDesktop}
+                    src={tile.image}
                     alt={tile.title}
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out filter brightness-[0.94] group-hover:brightness-100"
                     loading="lazy"

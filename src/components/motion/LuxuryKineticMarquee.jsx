@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
 
 export default function LuxuryKineticMarquee({
-  items = [
-    'HAUTE PARFUMERIE EXTRAITS',
-    'HARVESTED AT DAWN IN GRASSE & ASSAM',
-    'PURE HYDRO-DISTILLED BOTANICAL ATTARS',
-    '40-YEAR WILD AGED AGARWOOD',
-    'HAND-CUT MONOGRAMMED FLACONS',
-    'ARTISANAL ALCHEMY ON SKIN CHEMISTRY'
-  ],
+  items = [],
   speed = 40,
   reverse = false
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const clean = (items || []).filter(Boolean);
 
   // Repeat sequence 3 times in Set A, and identically in Set B for a 100% seamless 50% infinite loop
-  const unitList = [...items, ...items, ...items];
+  const unitList = [...clean, ...clean, ...clean];
 
   // Unique keyframe animation name per instance or shared
   const animName = reverse ? 'luxuryMarqueeReverse' : 'luxuryMarqueeForward';
