@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BookOpen, Boxes, Clapperboard, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
+  BellRing, BookOpen, Boxes, Clapperboard, Star, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -37,6 +37,8 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { to: '/admin/collections', label: 'Collections', icon: Layers },
       { to: '/admin/notes', label: 'Notes', icon: Leaf },
       { to: '/admin/scent-profile', label: 'Scent profile', icon: Sparkles },
+      { to: '/admin/reviews', label: 'Reviews', icon: Star },
+      { to: '/admin/back-in-stock', label: 'Back in stock', icon: BellRing },
     ],
   },
   {

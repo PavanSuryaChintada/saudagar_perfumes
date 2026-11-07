@@ -140,6 +140,47 @@ export type Database = {
         }
         Relationships: []
       }
+      back_in_stock_requests: {
+        Row: {
+          back_in_stock_at: string | null
+          created_at: string
+          email: string | null
+          id: string
+          notified_at: string | null
+          phone: string | null
+          user_id: string | null
+          variant_id: string
+        }
+        Insert: {
+          back_in_stock_at?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          notified_at?: string | null
+          phone?: string | null
+          user_id?: string | null
+          variant_id: string
+        }
+        Update: {
+          back_in_stock_at?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          notified_at?: string | null
+          phone?: string | null
+          user_id?: string | null
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "back_in_stock_requests_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       carts: {
         Row: {
           coupon_code: string | null
@@ -1723,6 +1764,150 @@ export type Database = {
           },
         ]
       }
+      review_media: {
+        Row: {
+          id: string
+          path: string
+          position: number
+          review_id: string
+        }
+        Insert: {
+          id?: string
+          path: string
+          position?: number
+          review_id: string
+        }
+        Update: {
+          id?: string
+          path?: string
+          position?: number
+          review_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_media_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_votes: {
+        Row: {
+          created_at: string
+          review_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          review_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          review_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_votes_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          admin_note: string | null
+          approved_at: string | null
+          body: string | null
+          city: string | null
+          created_at: string
+          display_name: string
+          helpful_count: number
+          id: string
+          longevity_option_id: string | null
+          order_item_id: string | null
+          product_id: string
+          rating: number
+          sillage_option_id: string | null
+          status: string
+          title: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_note?: string | null
+          approved_at?: string | null
+          body?: string | null
+          city?: string | null
+          created_at?: string
+          display_name: string
+          helpful_count?: number
+          id?: string
+          longevity_option_id?: string | null
+          order_item_id?: string | null
+          product_id: string
+          rating: number
+          sillage_option_id?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_note?: string | null
+          approved_at?: string | null
+          body?: string | null
+          city?: string | null
+          created_at?: string
+          display_name?: string
+          helpful_count?: number
+          id?: string
+          longevity_option_id?: string | null
+          order_item_id?: string | null
+          product_id?: string
+          rating?: number
+          sillage_option_id?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_longevity_option_id_fkey"
+            columns: ["longevity_option_id"]
+            isOneToOne: false
+            referencedRelation: "attribute_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: true
+            referencedRelation: "order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_sillage_option_id_fkey"
+            columns: ["sillage_option_id"]
+            isOneToOne: false
+            referencedRelation: "attribute_options"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       settings: {
         Row: {
           description: string | null
@@ -2014,6 +2199,32 @@ export type Database = {
         }
         Relationships: []
       }
+      wishlists: {
+        Row: {
+          created_at: string
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          product_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlists_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -2098,6 +2309,11 @@ export type Database = {
         Returns: undefined
       }
       mark_return_refunded: { Args: { p_return: string }; Returns: undefined }
+      moderate_review: {
+        Args: { p_note?: string; p_review: string; p_status: string }
+        Returns: undefined
+      }
+      my_wishlist: { Args: never; Returns: string[] }
       normalize_indian_phone: { Args: { input: string }; Returns: string }
       order_transition_allowed: {
         Args: {
@@ -2113,6 +2329,15 @@ export type Database = {
       product_card: { Args: { pid: string }; Returns: Json }
       product_detail: { Args: { p_slug: string }; Returns: Json }
       product_is_visible: { Args: { pid: string }; Returns: boolean }
+      product_reviews: {
+        Args: {
+          p_page?: number
+          p_page_size?: number
+          p_slug: string
+          p_sort?: string
+        }
+        Returns: Json
+      }
       quote_order: {
         Args: {
           p_coupon_code?: string
@@ -2160,6 +2385,10 @@ export type Database = {
         Args: { p_ids: string[]; p_table: string }
         Returns: undefined
       }
+      request_back_in_stock: {
+        Args: { p_email?: string; p_variant: string }
+        Returns: undefined
+      }
       request_return: {
         Args: {
           p_details: string
@@ -2181,6 +2410,18 @@ export type Database = {
           p_return: string
         }
         Returns: undefined
+      }
+      reviewable_items: {
+        Args: never
+        Returns: {
+          delivered_at: string
+          image_url: string
+          order_item_id: string
+          order_number: string
+          product_id: string
+          product_name: string
+          product_slug: string
+        }[]
       }
       safe_birthday: { Args: { input: string }; Returns: string }
       sample_pool: {
@@ -2222,6 +2463,7 @@ export type Database = {
         Args: { p_courier: string; p_return: string; p_tracking: string }
         Returns: undefined
       }
+      set_wishlist: { Args: { p_slugs: string[] }; Returns: string[] }
       ship_order: {
         Args: {
           p_courier: string
@@ -2236,6 +2478,20 @@ export type Database = {
         Returns: Json
       }
       site_bootstrap: { Args: never; Returns: Json }
+      submit_review: {
+        Args: {
+          p_body: string
+          p_city: string
+          p_display_name: string
+          p_longevity: string
+          p_media?: Json
+          p_order_item: string
+          p_rating: number
+          p_sillage: string
+          p_title: string
+        }
+        Returns: string
+      }
       subscribe_newsletter: {
         Args: { p_email: string; p_source?: string }
         Returns: undefined
@@ -2257,6 +2513,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      vote_review: { Args: { p_review: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "customer"

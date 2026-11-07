@@ -15,6 +15,7 @@ import BluorngQuickBuyModal from './components/BluorngQuickBuyModal.jsx';
 import CheckoutPage from './storefront/checkout/CheckoutPage.jsx';
 import OrderPage from './storefront/orders/OrderPage.jsx';
 import { useCartSync } from './storefront/bag/useQuote';
+import { useWishlistSync } from './storefront/wishlistSync';
 import BluorngNavDrawer from './components/BluorngNavDrawer.jsx';
 import BluorngWishlistPage from './components/BluorngWishlistPage.jsx';
 import BluorngAccountPage from './components/BluorngAccountPage.jsx';
@@ -90,6 +91,10 @@ export default function App() {
   }, []);
   useCartSync(cart, replaceCart, samples, setSamples);
   const [wishlist, setWishlist] = useState(getStoredWishlist());
+  useWishlistSync(wishlist, (next) => {
+    setWishlist(next);
+    setStoredWishlist(next);
+  });
 
   // Theme State: 'light' (Editorial Clean Canvas) | 'dark' (Noir Obsidian Luxury)
   const [theme, setTheme] = useState(() => {

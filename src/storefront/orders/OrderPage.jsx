@@ -10,6 +10,7 @@ import MinimalHeader from '../MinimalHeader';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
 import { payOrder } from '../../lib/razorpay';
 import ReturnSection from './ReturnSection';
+import ReviewPrompt from './ReviewPrompt';
 import { useQueryClient } from '@tanstack/react-query';
 
 const STEP_TIME = { PENDING: 'created_at', PACKED: 'packed_at', SHIPPED: 'shipped_at', OUT_FOR_DELIVERY: 'out_for_delivery_at', DELIVERED: 'delivered_at' };
@@ -160,6 +161,7 @@ export default function OrderPage({ orderId, theme, onToggleTheme, onNavigateHom
           </ol>
         )}
 
+        <ReviewPrompt order={order} />
         <ReturnSection order={order} />
 
         {order.tracking_number && (
