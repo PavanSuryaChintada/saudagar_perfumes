@@ -122,14 +122,17 @@
 - [x] "Pay now" on unpaid orders
 - [ ] Owner: add Razorpay keys + webhook secret, then switch on in Settings
 
-## Phase 7: Shipping
-- [ ] Manual courier mode (enter tracking number)
-- [ ] India Post flow
-- [ ] Delhivery (off until token)
-- [ ] Pincode check (product page + checkout)
-- [ ] Auto status updates
-- [ ] Tracking link for customers
-- [ ] Admin: shipping settings
+## Phase 7: Shipping ✅
+- [x] Manual courier mode (enter tracking number)
+- [x] India Post flow (prepaid until its COD is confirmed)
+- [x] Delhivery (off until token; marked unverified)
+- [x] Pincode check (product page + checkout)
+- [x] Blocked and no-COD pincode lists
+- [x] Auto status updates (webhook or 30-min poll)
+- [x] Tracking link for customers
+- [x] Admin: shipping settings + pincode test
+- [x] Retry shipment on courier errors
+- [ ] Owner: Delhivery token, pickup location, written OK for shipping perfume
 
 ## Phase 8: Returns and refunds
 - [ ] Return request with photos

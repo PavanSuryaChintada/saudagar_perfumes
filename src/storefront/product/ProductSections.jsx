@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { sanitizeHtml, hasText } from '../../lib/richText';
 import { formatINR as formatPrice } from '../../lib/money';
 import { useBlock } from '../../cms/useSite';
+import PincodeCheck from '../delivery/PincodeCheck';
 
 const TIERS = [
   { key: 'top', label: 'Top Notes', hint: 'The first impression' },
@@ -190,7 +191,8 @@ export function ProductAccordions({ detail, selectedSize, openAccordion, onToggl
         {c.caution_text && <p className="pt-2 text-[11px]">{c.caution_text}</p>}
       </Accordion>
       <Accordion id="shipping" title={page.delivery_title || 'Delivery & Free Samples'} open={openAccordion === 'shipping'} onToggle={onToggle}>
-        <p>{etaText}</p>
+        <PincodeCheck surface={!!detail.ships_surface_only} />
+        <p className="pt-2">{etaText}</p>
         {sampleCopy && <p>{sampleCopy}</p>}
         {detail.ships_surface_only && page.surface_note && <p>{page.surface_note}</p>}
       </Accordion>

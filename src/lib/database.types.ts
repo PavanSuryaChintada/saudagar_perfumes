@@ -824,7 +824,9 @@ export type Database = {
           client_ref: string | null
           coupon_code: string | null
           coupon_id: string | null
+          courier: string | null
           courier_name: string | null
+          courier_order_id: string | null
           created_at: string
           customer_email: string | null
           customer_name: string | null
@@ -832,6 +834,7 @@ export type Database = {
           delivered_at: string | null
           discount: number
           id: string
+          label_url: string | null
           note: string | null
           order_number: string
           out_for_delivery_at: string | null
@@ -840,6 +843,7 @@ export type Database = {
           payment_failure_reason: string | null
           payment_method: string
           payment_status: string
+          pickup_scheduled_at: string | null
           razorpay_order_id: string | null
           razorpay_payment_id: string | null
           rto_at: string | null
@@ -851,7 +855,10 @@ export type Database = {
           ship_state: string
           shipped_at: string | null
           shipping_address: Json
+          shipping_error: string | null
           shipping_fee: number
+          shipping_status: string | null
+          shipping_synced_at: string | null
           status: string
           stock_reserved_at: string | null
           stock_restored_at: string | null
@@ -871,7 +878,9 @@ export type Database = {
           client_ref?: string | null
           coupon_code?: string | null
           coupon_id?: string | null
+          courier?: string | null
           courier_name?: string | null
+          courier_order_id?: string | null
           created_at?: string
           customer_email?: string | null
           customer_name?: string | null
@@ -879,6 +888,7 @@ export type Database = {
           delivered_at?: string | null
           discount?: number
           id?: string
+          label_url?: string | null
           note?: string | null
           order_number: string
           out_for_delivery_at?: string | null
@@ -887,6 +897,7 @@ export type Database = {
           payment_failure_reason?: string | null
           payment_method: string
           payment_status?: string
+          pickup_scheduled_at?: string | null
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
           rto_at?: string | null
@@ -898,7 +909,10 @@ export type Database = {
           ship_state: string
           shipped_at?: string | null
           shipping_address: Json
+          shipping_error?: string | null
           shipping_fee?: number
+          shipping_status?: string | null
+          shipping_synced_at?: string | null
           status?: string
           stock_reserved_at?: string | null
           stock_restored_at?: string | null
@@ -918,7 +932,9 @@ export type Database = {
           client_ref?: string | null
           coupon_code?: string | null
           coupon_id?: string | null
+          courier?: string | null
           courier_name?: string | null
+          courier_order_id?: string | null
           created_at?: string
           customer_email?: string | null
           customer_name?: string | null
@@ -926,6 +942,7 @@ export type Database = {
           delivered_at?: string | null
           discount?: number
           id?: string
+          label_url?: string | null
           note?: string | null
           order_number?: string
           out_for_delivery_at?: string | null
@@ -934,6 +951,7 @@ export type Database = {
           payment_failure_reason?: string | null
           payment_method?: string
           payment_status?: string
+          pickup_scheduled_at?: string | null
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
           rto_at?: string | null
@@ -945,7 +963,10 @@ export type Database = {
           ship_state?: string
           shipped_at?: string | null
           shipping_address?: Json
+          shipping_error?: string | null
           shipping_fee?: number
+          shipping_status?: string | null
+          shipping_synced_at?: string | null
           status?: string
           stock_reserved_at?: string | null
           stock_restored_at?: string | null
@@ -1903,6 +1924,10 @@ export type Database = {
         }
         Returns: number
       }
+      apply_shipment_status: {
+        Args: { p_awb: string; p_raw: string; p_status: string }
+        Returns: Json
+      }
       archive_product: {
         Args: { p_archived?: boolean; p_id: string }
         Returns: undefined
@@ -1925,6 +1950,10 @@ export type Database = {
       }
       catalog_filters: { Args: never; Returns: Json }
       category_with_children: { Args: { p_slug: string }; Returns: string[] }
+      check_pincode: {
+        Args: { p_pincode: string; p_surface?: boolean }
+        Returns: Json
+      }
       confirm_order_payment: {
         Args: {
           p_amount_paise: number
@@ -2030,6 +2059,17 @@ export type Database = {
       }
       save_coupon: { Args: { payload: Json }; Returns: string }
       save_product: { Args: { payload: Json }; Returns: string }
+      save_shipment_booking: {
+        Args: {
+          p_awb: string
+          p_courier_order_id: string
+          p_error: string
+          p_label_url: string
+          p_order: string
+          p_pickup: string
+        }
+        Returns: undefined
+      }
       search_products: { Args: { p?: Json }; Returns: Json }
       search_suggest: { Args: { q: string }; Returns: Json }
       set_order_status: {
@@ -2038,6 +2078,15 @@ export type Database = {
       }
       set_razorpay_order: {
         Args: { p_order: string; p_razorpay_order_id: string }
+        Returns: undefined
+      }
+      ship_order: {
+        Args: {
+          p_courier: string
+          p_note?: string
+          p_order: string
+          p_tracking: string
+        }
         Returns: undefined
       }
       similar_products: {

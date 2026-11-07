@@ -10,8 +10,8 @@ if (!ref || !process.env.SUPABASE_ACCESS_TOKEN) {
   console.error('Set SUPABASE_PROJECT_REF and SUPABASE_ACCESS_TOKEN (see .env.local).');
   process.exit(1);
 }
-// Webhooks are called by Razorpay, not by a signed-in user.
-const NO_JWT = new Set(['razorpay-webhook']);
+// Webhooks and the shipping hook are called by Razorpay, couriers or the database, not a signed-in user; they check their own secrets.
+const NO_JWT = new Set(['razorpay-webhook', 'shipment-status-webhook', 'shipping']);
 const dir = path.resolve('supabase/functions');
 const all = fs.readdirSync(dir).filter((d) => !d.startsWith('_') && fs.existsSync(path.join(dir, d, 'index.ts')));
 const wanted = process.argv.slice(2).length ? process.argv.slice(2) : all;

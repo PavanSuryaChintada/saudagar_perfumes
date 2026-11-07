@@ -12,6 +12,7 @@ import { CouponRow } from '../bag/CouponSheet';
 import { useQuote, useSamplePool } from '../bag/useQuote';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
 import { payOrder } from '../../lib/razorpay';
+import { usePincode } from '../delivery/PincodeCheck';
 
 const STEPS = [
   { id: 'address', label: '1. Delivery' },
@@ -70,7 +71,9 @@ export default function CheckoutPage({
 
   const address = addressList.find((a) => a.id === addressId);
   const hasProblems = (quote?.problems?.length ?? 0) > 0;
-  const codAllowed = !!quote?.cod?.allowed;
+  const { data: pinInfo } = usePincode(address?.pincode);
+  const unserviceable = pinInfo && !pinInfo.serviceable;
+  const codAllowed = !!quote?.cod?.allowed && (!pinInfo || !!pinInfo.cod);
   const onlineAllowed = !!quote?.online?.allowed;
   const noPayment = quote && !codAllowed && !onlineAllowed;
 
@@ -193,7 +196,10 @@ export default function CheckoutPage({
                       + Add a new address
                     </button>
                   </div>
-                  <button type="button" className={primaryBtn} disabled={!address} onClick={() => setStep('payment')}>
+                  {address && pinInfo && (
+                    <p role="status" className={`text-[12px] ${pinInfo.serviceable ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600'}`}>{pinInfo.message}</p>
+                  )}
+                  <button type="button" className={primaryBtn} disabled={!address || unserviceable} onClick={() => setStep('payment')}>
                     Continue to payment →
                   </button>
                 </motion.div>
@@ -221,7 +227,7 @@ export default function CheckoutPage({
                       >
                         <span className="block text-[13px] font-medium">Cash on delivery</span>
                         <span className="block text-[11.5px] text-[#777777] dark:text-[#A09D96] mt-0.5">
-                          {codAllowed ? 'Pay in cash when your order arrives.' : quote?.cod?.message}
+                          {codAllowed ? 'Pay in cash when your order arrives.' : pinInfo && !pinInfo.cod && quote?.cod?.allowed ? `Not available for pincode ${address?.pincode}.` : quote?.cod?.message}
                         </span>
                       </button>
                       {onlineAllowed && (
@@ -294,7 +300,7 @@ export default function CheckoutPage({
                   <button
                     type="button"
                     className={primaryBtn}
-                    disabled={placing || !quote || isFetching || hasProblems || couponBlocked || !address || (payment === 'COD' && !codAllowed)}
+                    disabled={placing || !quote || isFetching || hasProblems || couponBlocked || !address || unserviceable || (payment === 'COD' && !codAllowed)}
                     onClick={placeOrder}
                   >
                     {placing ? (payment === 'ONLINE' ? 'Opening payment…' : 'Placing your order…') : `${payment === 'ONLINE' ? 'Pay' : 'Place order'} · ${quote ? formatPrice(quote.total) : ''}`}

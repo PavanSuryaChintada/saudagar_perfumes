@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { throwIf } from '../catalog/api';
 import type { OrderRow } from '../../storefront/orders/useOrders';
 
-export type AdminOrder = OrderRow & { user_id: string | null; ship_city: string | null; ship_state: string | null; admin_note: string | null; stock_restored_at: string | null; rto_at: string | null; paid_at: string | null };
+export type AdminOrder = OrderRow & { user_id: string | null; courier: string | null; shipping_error: string | null; shipping_status: string | null; label_url: string | null; ship_city: string | null; ship_state: string | null; admin_note: string | null; stock_restored_at: string | null; rto_at: string | null; paid_at: string | null };
 
 export interface OrderFilters {
   status: string;
