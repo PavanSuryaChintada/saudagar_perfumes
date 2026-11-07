@@ -16,6 +16,7 @@ import {
   COMPLIANCE_FIELDS, emptyProductForm, emptyVariant, fromAdminProduct, slugify, toSavePayload, validateProductForm,
   type AttributeLink, type NoteLink, type ProductForm, type VariantForm,
 } from '../../catalog/productForm';
+import { useSetting } from '../../../lib/bootstrap';
 import { loadAdminProduct, OPTION_KINDS, rpc, throwIf, useCategories, useCollectionsAdmin, useInvalidateCatalog, useNotes, useOptions, type NoteRow, type OptionRow } from '../../catalog/api';
 
 const TIERS: { tier: NoteLink['tier']; label: string }[] = [
@@ -174,6 +175,23 @@ export default function ProductEditorPage() {
   const { data: notes = [], refetch: refetchNotes } = useNotes();
   const { data: categories = [] } = useCategories();
   const { data: collections = [] } = useCollectionsAdmin();
+  const sampleSize = Number(useSetting('samples.sample_size_ml', 5)) || 5;
+  const categoryTree = useMemo(() => {
+    const byParent = new Map<string | null, typeof categories>();
+    for (const c of categories) {
+      const k = c.parent_id && categories.some((x) => x.id === c.parent_id) ? c.parent_id : null;
+      byParent.set(k, [...(byParent.get(k) ?? []), c]);
+    }
+    const out: { c: (typeof categories)[number]; depth: number }[] = [];
+    const walk = (parent: string | null, depth: number) => {
+      for (const c of byParent.get(parent) ?? []) {
+        out.push({ c, depth });
+        if (depth < 6) walk(c.id, depth + 1);
+      }
+    };
+    walk(null, 0);
+    return out;
+  }, [categories]);
 
   const bundle = useQuery({
     queryKey: ['admin', 'catalog', 'product', id],
@@ -263,13 +281,31 @@ export default function ProductEditorPage() {
   };
 
   const err = (k: string) => errors[k];
+  const sampleIdx = form.variants.findIndex((v) => v.kind === 'sample' && !v.is_hidden);
+  const offersSample = sampleIdx >= 0 && form.variants[sampleIdx].in_sample_pool && form.variants[sampleIdx].is_active;
+  const toggleSample = (on: boolean) => {
+    if (on) {
+      if (sampleIdx >= 0) setVariant(sampleIdx, { in_sample_pool: true, is_active: true });
+      else {
+        const base = form.slug ? form.slug.toUpperCase().replace(/[^A-Z0-9]+/g, '').slice(0, 14) : 'SAMPLE';
+        set('variants', [
+          ...form.variants,
+          { ...emptyVariant(), kind: 'sample', label: `${sampleSize} ml sample`, size_ml: String(sampleSize), sku: `${base}-S${sampleSize}`, in_sample_pool: true },
+        ]);
+      }
+    } else if (sampleIdx >= 0) {
+      // A saved vial keeps its stock history; an unsaved one is simply removed.
+      if (form.variants[sampleIdx].id) setVariant(sampleIdx, { in_sample_pool: false });
+      else set('variants', form.variants.filter((_, j) => j !== sampleIdx));
+    }
+  };
   const isSample = form.admin_note.startsWith('SAMPLE');
 
   return (
     <div className="pb-24">
       <PageHeader
         title={isNew ? 'New product' : form.name || 'Product'}
-        description={isNew ? 'Fill in the details, add at least one bottle size, then save.' : `/product/${form.slug}`}
+        description={isNew ? 'Choose the category, then the scent type and notes, then the details, sizes and photos. Save when done.' : `/product/${form.slug}`}
         actions={
           !isNew && (
             <a href={`/product/${form.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#D5D3CC] text-[12px] hover:border-tk-ink">
@@ -282,7 +318,95 @@ export default function ProductEditorPage() {
 
       <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
         <div className="space-y-5 min-w-0">
-          <Panel title="Basics">
+          <Panel title="1 · Category" description="Start here. The category decides where the product is listed; the scent type and notes come next.">
+            {err('primary_category_id') && <p className="text-[12px] text-rose-600 mb-2">{err('primary_category_id')}</p>}
+            {categories.length === 0 ? (
+              <p className="text-[12px] text-[#777777]">No categories yet. Add them under Catalog → Categories first.</p>
+            ) : (
+              <div role="radiogroup" aria-label="Main category" className="border border-[#EAEAEA] divide-y divide-[#F0F0F0] max-h-72 overflow-y-auto">
+                {categoryTree.map(({ c, depth }) => (
+                  <label key={c.id} className={`flex items-center gap-2 py-2 pr-3 text-[13px] cursor-pointer hover:bg-[#FAFAF7] ${form.primary_category_id === c.id ? 'bg-[#F4F3EE]' : ''}`} style={{ paddingLeft: 12 + depth * 18 }}>
+                    <input
+                      type="radio"
+                      name="p-primary-category"
+                      checked={form.primary_category_id === c.id}
+                      onChange={() => {
+                        set('primary_category_id', c.id);
+                        set('category_ids', form.category_ids.filter((x) => x !== c.id));
+                      }}
+                    />
+                    <span className={depth === 0 ? 'font-medium' : ''}>{c.name}</span>
+                    {!c.is_active && <span className="text-[10px] uppercase tracking-wider text-[#999999]">hidden</span>}
+                  </label>
+                ))}
+              </div>
+            )}
+            {form.primary_category_id && (
+              <div className="grid gap-4 sm:grid-cols-2 mt-4">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">Also list it in</p>
+                  <div className="space-y-1 max-h-40 overflow-y-auto">
+                    {categoryTree.filter(({ c }) => c.id !== form.primary_category_id).map(({ c, depth }) => (
+                      <label key={c.id} className="flex items-center gap-2 text-[12.5px]" style={{ paddingLeft: depth * 14 }}>
+                        <input
+                          type="checkbox"
+                          checked={form.category_ids.includes(c.id)}
+                          onChange={(e) => set('category_ids', e.target.checked ? [...form.category_ids, c.id] : form.category_ids.filter((x) => x !== c.id))}
+                        />
+                        {c.name}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">Collections</p>
+                  <div className="space-y-1 max-h-40 overflow-y-auto">
+                    {collections.map((c) => (
+                      <label key={c.id} className="flex items-center gap-2 text-[12.5px]">
+                        <input
+                          type="checkbox"
+                          checked={form.collection_ids.includes(c.id)}
+                          onChange={(e) => set('collection_ids', e.target.checked ? [...form.collection_ids, c.id] : form.collection_ids.filter((x) => x !== c.id))}
+                        />
+                        {c.name}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </Panel>
+
+{form.primary_category_id ? (
+<>
+          <Panel title="2 · Scent type" description="Every option here is also a filter on the shop pages. Manage the options under Catalog → Scent profile.">
+            {errors.attributes && <p className="text-[12px] text-rose-600 mb-2">{errors.attributes}</p>}
+            <div className="space-y-5">
+              {OPTION_KINDS.filter((k) => k.kind !== 'note_family').map((k) => (
+                <div key={k.kind}>
+                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">{k.label}</p>
+                  {optionsOf(k.kind).length ? (
+                    <OptionChips kind={k.kind} options={optionsOf(k.kind)} attributes={form.attributes} onChange={(next) => set('attributes', next)} />
+                  ) : (
+                    <p className="text-[12px] text-[#999999]">No options yet.</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Panel>
+
+          <Panel title="3 · Notes pyramid" description="Search the notes library, or type a new note to add it. Drag to reorder within a tier.">
+            <div className="grid gap-4 md:grid-cols-3">
+              {TIERS.map((t) => (
+                <div key={t.tier}>
+                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">{t.label}</p>
+                  <NotePicker tier={t.tier} links={form.notes} notes={notes} onChange={(next) => set('notes', next)} onCreate={createNote} />
+                </div>
+              ))}
+            </div>
+          </Panel>
+
+          <Panel title="4 · Name and description">
             <div className="grid gap-4 sm:grid-cols-2">
               <FieldShell label="Name" htmlFor="p-name" error={err('name')}>
                 <TextInput
@@ -315,46 +439,16 @@ export default function ProductEditorPage() {
             </div>
           </Panel>
 
-          <Panel title="Photos and videos" description="Drag to reorder. The first image is the main photo. Tie a photo to a size to show it when that size is picked.">
-            <SortableList
-              items={form.media.map((m, i) => ({ id: `${i}:${m.url}`, m, i }))}
-              onReorder={(ids) => {
-                const order = ids.map((x) => Number(x.split(':')[0]));
-                set('media', order.map((i) => form.media[i]));
-              }}
-              className="divide-y divide-[#F0F0F0] border border-[#EAEAEA] mb-3"
-              renderItem={({ m, i }) => (
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 p-2">
-                  <div className="w-14 h-14 bg-[#F4F3EE] shrink-0 overflow-hidden">
-                    <MediaPreview url={m.url} className="w-full h-full object-contain" />
-                  </div>
-                  <TextInput
-                    placeholder="Description (alt text)"
-                    value={m.alt}
-                    onChange={(e) => set('media', form.media.map((x, j) => (j === i ? { ...x, alt: e.target.value } : x)))}
-                    aria-label="Alt text"
-                  />
-                  <select
-                    value={m.variant_sku}
-                    onChange={(e) => set('media', form.media.map((x, j) => (j === i ? { ...x, variant_sku: e.target.value } : x)))}
-                    className="border border-[#D5D3CC] px-2 py-2 text-[12px] bg-white"
-                    aria-label="Show for size"
-                  >
-                    <option value="">All sizes</option>
-                    {form.variants.filter((v) => v.sku).map((v) => (
-                      <option key={v.sku} value={v.sku.toUpperCase()}>{v.label || v.sku}</option>
-                    ))}
-                  </select>
-                  <button type="button" className="p-2 text-[#999999] hover:text-rose-600" aria-label="Remove media" onClick={() => set('media', form.media.filter((_, j) => j !== i))}>
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              )}
-            />
-            <MediaGalleryInput onAdd={(added) => set('media', [...form.media, ...added.map((a) => ({ kind: a.kind, url: a.url, alt: '', variant_sku: '' }))])} />
-          </Panel>
-
-          <Panel title="Bottle sizes, prices and stock" description="Leave a size's price empty to use the base price. Stock changes are logged; use Adjust for existing sizes.">
+          <Panel title="5 · Sizes, prices and stock" description="Leave a size's price empty to use the base price. Stock changes are logged; use Adjust for existing sizes.">
+            <div className="flex items-start justify-between gap-3 p-3 mb-4 bg-[#FFF7ED] border border-[#F5E3CC]">
+              <div>
+                <p className="text-[13px] text-tk-ink">Offer as a free sample</p>
+                <p className="text-[11px] text-[#777777]">
+                  Adds a {sampleSize} ml vial of this scent to the list customers choose free samples from. The vial has its own stock below; at zero it disappears from the list.
+                </p>
+              </div>
+              <Toggle checked={offersSample} onChange={toggleSample} label="Offer as a free sample" />
+            </div>
             <div className="grid gap-4 sm:grid-cols-2 mb-4">
               <FieldShell label="Base price (₹, incl. GST)" htmlFor="p-price" error={err('base_price')}>
                 <TextInput id="p-price" inputMode="decimal" value={form.base_price} invalid={!!err('base_price')} onChange={(e) => set('base_price', e.target.value)} />
@@ -442,11 +536,6 @@ export default function ProductEditorPage() {
                     <label className="flex items-center gap-2">
                       <Toggle checked={v.is_hidden} onChange={(on) => setVariant(i, { is_hidden: on })} label="Hidden" /> Hidden
                     </label>
-                    {v.kind === 'sample' && (
-                      <label className="flex items-center gap-2">
-                        <Toggle checked={v.in_sample_pool} onChange={(on) => setVariant(i, { in_sample_pool: on })} label="In free-sample list" /> In the free-sample list
-                      </label>
-                    )}
                   </div>
                 </div>
               ))}
@@ -455,49 +544,49 @@ export default function ProductEditorPage() {
               <Button size="sm" variant="secondary" onClick={() => set('variants', [...form.variants, emptyVariant()])}>
                 <Plus size={12} /> Add bottle size
               </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() =>
-                  set('variants', [
-                    ...form.variants,
-                    { ...emptyVariant(), kind: 'sample', label: '5 ml sample', size_ml: '5', sku: form.slug ? `${form.slug.toUpperCase().replace(/-/g, '').slice(0, 14)}-S5` : '', in_sample_pool: true },
-                  ])
-                }
-              >
-                <Plus size={12} /> Add free-sample vial
-              </Button>
             </div>
           </Panel>
 
-          <Panel title="Notes pyramid" description="Search the notes library, or type a new note to add it. Drag to reorder within a tier.">
-            <div className="grid gap-4 md:grid-cols-3">
-              {TIERS.map((t) => (
-                <div key={t.tier}>
-                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">{t.label}</p>
-                  <NotePicker tier={t.tier} links={form.notes} notes={notes} onChange={(next) => set('notes', next)} onCreate={createNote} />
+          <Panel title="6 · Photos and videos" description="Drag to reorder. The first image is the main photo. Tie a photo to a size to show it when that size is picked.">
+            <SortableList
+              items={form.media.map((m, i) => ({ id: `${i}:${m.url}`, m, i }))}
+              onReorder={(ids) => {
+                const order = ids.map((x) => Number(x.split(':')[0]));
+                set('media', order.map((i) => form.media[i]));
+              }}
+              className="divide-y divide-[#F0F0F0] border border-[#EAEAEA] mb-3"
+              renderItem={({ m, i }) => (
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 p-2">
+                  <div className="w-14 h-14 bg-[#F4F3EE] shrink-0 overflow-hidden">
+                    <MediaPreview url={m.url} className="w-full h-full object-contain" />
+                  </div>
+                  <TextInput
+                    placeholder="Description (alt text)"
+                    value={m.alt}
+                    onChange={(e) => set('media', form.media.map((x, j) => (j === i ? { ...x, alt: e.target.value } : x)))}
+                    aria-label="Alt text"
+                  />
+                  <select
+                    value={m.variant_sku}
+                    onChange={(e) => set('media', form.media.map((x, j) => (j === i ? { ...x, variant_sku: e.target.value } : x)))}
+                    className="border border-[#D5D3CC] px-2 py-2 text-[12px] bg-white"
+                    aria-label="Show for size"
+                  >
+                    <option value="">All sizes</option>
+                    {form.variants.filter((v) => v.sku).map((v) => (
+                      <option key={v.sku} value={v.sku.toUpperCase()}>{v.label || v.sku}</option>
+                    ))}
+                  </select>
+                  <button type="button" className="p-2 text-[#999999] hover:text-rose-600" aria-label="Remove media" onClick={() => set('media', form.media.filter((_, j) => j !== i))}>
+                    <Trash2 size={14} />
+                  </button>
                 </div>
-              ))}
-            </div>
+              )}
+            />
+            <MediaGalleryInput onAdd={(added) => set('media', [...form.media, ...added.map((a) => ({ kind: a.kind, url: a.url, alt: '', variant_sku: '' }))])} />
           </Panel>
 
-          <Panel title="Scent profile" description="Every option here is also a filter on the shop pages. Manage the options under Catalog → Scent profile.">
-            {errors.attributes && <p className="text-[12px] text-rose-600 mb-2">{errors.attributes}</p>}
-            <div className="space-y-5">
-              {OPTION_KINDS.filter((k) => k.kind !== 'note_family').map((k) => (
-                <div key={k.kind}>
-                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">{k.label}</p>
-                  {optionsOf(k.kind).length ? (
-                    <OptionChips kind={k.kind} options={optionsOf(k.kind)} attributes={form.attributes} onChange={(next) => set('attributes', next)} />
-                  ) : (
-                    <p className="text-[12px] text-[#999999]">No options yet.</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Panel>
-
-          <Panel title="The story">
+          <Panel title="7 · The story">
             <div className="grid gap-4 sm:grid-cols-2">
               <FieldShell label="Perfumer / nose" htmlFor="p-nose">
                 <TextInput id="p-nose" value={form.perfumer} onChange={(e) => set('perfumer', e.target.value)} />
@@ -516,7 +605,7 @@ export default function ProductEditorPage() {
             </div>
           </Panel>
 
-          <Panel title="Details & compliance" description="Shown in the product page's compliance section. Confirm HSN and GST with your CA.">
+          <Panel title="8 · Details & compliance" description="Shown in the product page's compliance section. Confirm HSN and GST with your CA.">
             <div className="grid gap-4 sm:grid-cols-2">
               {COMPLIANCE_FIELDS.map(([key, label]) => (
                 <FieldShell key={key} label={label} htmlFor={`c-${key}`} error={err(key)}>
@@ -529,6 +618,16 @@ export default function ProductEditorPage() {
               ))}
             </div>
           </Panel>
+</>
+) : (
+          <p className="px-4 py-6 border border-dashed border-[#D5D3CC] text-[13px] text-[#777777] bg-white">Choose a category above to continue. Then pick the scent type and notes, and add the details, sizes and photos.</p>
+)}
+
+
+
+
+
+
         </div>
 
         <aside className="space-y-5">
@@ -551,42 +650,6 @@ export default function ProductEditorPage() {
             </div>
           </Panel>
 
-          <Panel title="Organisation">
-            <FieldShell label="Main category" htmlFor="p-cat">
-              <select id="p-cat" value={form.primary_category_id} onChange={(e) => set('primary_category_id', e.target.value)} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
-                <option value="">None</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </FieldShell>
-            <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mt-4 mb-1.5">Also in categories</p>
-            <div className="space-y-1 max-h-40 overflow-y-auto">
-              {categories.filter((c) => c.id !== form.primary_category_id).map((c) => (
-                <label key={c.id} className="flex items-center gap-2 text-[12.5px]">
-                  <input
-                    type="checkbox"
-                    checked={form.category_ids.includes(c.id)}
-                    onChange={(e) => set('category_ids', e.target.checked ? [...form.category_ids, c.id] : form.category_ids.filter((x) => x !== c.id))}
-                  />
-                  {c.name}
-                </label>
-              ))}
-            </div>
-            <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mt-4 mb-1.5">Collections</p>
-            <div className="space-y-1 max-h-48 overflow-y-auto">
-              {collections.map((c) => (
-                <label key={c.id} className="flex items-center gap-2 text-[12.5px]">
-                  <input
-                    type="checkbox"
-                    checked={form.collection_ids.includes(c.id)}
-                    onChange={(e) => set('collection_ids', e.target.checked ? [...form.collection_ids, c.id] : form.collection_ids.filter((x) => x !== c.id))}
-                  />
-                  {c.name}
-                </label>
-              ))}
-            </div>
-          </Panel>
 
           <Panel title="Search engines">
             <div className="space-y-3">

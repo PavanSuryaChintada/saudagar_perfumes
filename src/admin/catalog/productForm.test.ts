@@ -18,6 +18,9 @@ describe('slugify', () => {
 
 describe('validateProductForm', () => {
   it('accepts a complete product', () => expect(validateProductForm(valid())).toEqual({}));
+  it('needs a category first', () => {
+    expect(validateProductForm({ ...valid(), primary_category_id: '' }).primary_category_id).toBe('Choose a category first.');
+  });
   it('requires a name and a valid slug', () => {
     const e = validateProductForm({ ...valid(), name: ' ', slug: 'Bad Slug' });
     expect(e.name).toBeTruthy();

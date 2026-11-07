@@ -138,6 +138,7 @@ const blankToNull = (v: string) => (v.trim() === '' ? null : v.trim());
 
 export function validateProductForm(f: ProductForm): Record<string, string> {
   const e: Record<string, string> = {};
+  if (!f.primary_category_id) e.primary_category_id = 'Choose a category first.';
   if (!f.name.trim()) e.name = 'Enter the product name.';
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(f.slug)) e.slug = 'Use lowercase letters, numbers and dashes only.';
   if (!isMoney(f.base_price)) e.base_price = 'Enter the price in rupees.';
