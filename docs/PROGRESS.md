@@ -142,14 +142,14 @@
 - [x] Refund (Razorpay or UPI / bank) or ₹0 replacement order
 - [x] Admin: returns, refunds pages
 
-## Phase 9: Reviews and back-in-stock
-- [ ] Verified-buyer reviews with photos
-- [ ] Longevity / sillage feedback
-- [ ] Admin approval
-- [ ] Ratings on products
-- [ ] Helpful votes
-- [ ] Wishlist saved to account
-- [ ] "Notify me when back" (request saved; shown in admin)
+## Phase 9: Reviews and back-in-stock ✅
+- [x] Verified-buyer reviews with photos
+- [x] Longevity / sillage feedback
+- [x] Admin approval (approve / hide / reject)
+- [x] Ratings on products (approved only)
+- [x] Helpful votes
+- [x] Wishlist saved to account (merges on sign-in)
+- [x] "Notify me when back" (request saved; shown in admin)
 
 ## Phase 10: Admin extras
 - [ ] Dashboard charts + KPIs

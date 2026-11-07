@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { formatINR as formatPrice } from '../lib/money';
 import BluorngProductCard from './BluorngProductCard.jsx';
 import BluorngProductReviews from './BluorngProductReviews.jsx';
+import NotifyMe from '../storefront/product/NotifyMe.jsx';
 import { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
 import { useProductDetail, useProductsBySlugs, useSimilarProducts } from '../storefront/catalog/hooks';
@@ -394,6 +395,12 @@ function PDPView({
           </button>
         </div>
       </motion.div>
+
+      {selectedSize && selectedSize.stock <= 0 && (
+        <motion.div variants={monographItemVariants}>
+          <NotifyMe variantId={selectedSize.variantId} label={selectedSize.label} />
+        </motion.div>
+      )}
 
       {/* 6. Add To Cart Button + Wishlist Save Bookmark Button */}
       <motion.div ref={isMobile ? mobileBuyRef : undefined} variants={monographItemVariants} className="flex items-center gap-2.5">
@@ -795,11 +802,7 @@ function PDPView({
       {/* ============================================================== */}
       {/* ================= 3b. REVIEWS & FEEDBACK SECTION ============= */}
       {/* ============================================================== */}
-      <BluorngProductReviews
-        productName={product.name}
-        ratingAvg={product.rating}
-        ratingCount={product.reviewsCount}
-      />
+      <BluorngProductReviews productSlug={detail.slug} productName={product.name} />
 
       {/* ================= 4. SIMILAR SCENTS & RECENTLY VIEWED ========== */}
       {[
