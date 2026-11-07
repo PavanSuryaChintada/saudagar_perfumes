@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
+import { useBlock, useGo } from '../cms/useSite';
+import { supabase } from '../lib/supabase';
 
 export default function BluorngFooter({
   theme = 'dark',
@@ -11,16 +13,37 @@ export default function BluorngFooter({
   onOpenStory
 }) {
   const { scrollTo } = useSmoothScroll();
+  // Everything below is edited in Admin → Site content → Footer and Brand.
+  const footer = useBlock('footer') || {};
+  const brand = useBlock('brand') || {};
+  const go = useGo();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [subscribeError, setSubscribeError] = useState('');
+
+  const runLink = (item) => {
+    if (item.action === 'stores') onScrollToStores && onScrollToStores();
+    else if (item.action === 'stories') onOpenStory && onOpenStory();
+    else go(item.link);
+  };
 
   const handleBackToTop = () => {
     scrollTo(0, { duration: 1.2 });
   };
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (!email) return;
+    setSubscribeError('');
+    const value = email.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setSubscribeError('Enter a valid email address.');
+      return;
+    }
+    const { error } = await supabase.rpc('subscribe_newsletter', { p_email: value, p_source: 'footer' });
+    if (error) {
+      setSubscribeError('Please try again in a moment.');
+      return;
+    }
     setSubscribed(true);
     setTimeout(() => {
       setSubscribed(false);
@@ -41,14 +64,14 @@ export default function BluorngFooter({
               <div className="inline-flex items-center gap-2 mb-3">
                 <span className="text-tk-accent dark:text-tk-accent-night text-[10px]">✦</span>
                 <span className="text-[10.5px] uppercase tracking-[0.24em] text-tk-accent dark:text-tk-accent-night font-medium">
-                  Atelier Private Client Concierge
+                  {footer.newsletter_eyebrow}
                 </span>
               </div>
               <h3 className="font-serif text-[26px] sm:text-[34px] lg:text-[40px] font-normal leading-tight text-tk-ink dark:text-white mb-3">
-                Join the Saudagar Inner Circle
+                {footer.newsletter_heading}
               </h3>
               <p className="text-[13px] sm:text-[14px] text-[#666666] dark:text-white/65 font-light leading-relaxed max-w-xl">
-                Receive confidential extrait allocation notices, rare wild vintage oud releases, and private invitations to boutique olfactory tastings.
+                {footer.newsletter_text}
               </p>
             </div>
 
@@ -59,7 +82,8 @@ export default function BluorngFooter({
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={subscribed ? "WELCOME TO THE INNER CIRCLE" : "ENTER YOUR EMAIL ADDRESS"}
+                  placeholder={subscribed ? (footer.newsletter_success || '').toUpperCase() : footer.newsletter_placeholder}
+                  aria-label="Email address"
                   disabled={subscribed}
                   required
                   className="w-full bg-black/[0.05] hover:bg-black/[0.08] focus:bg-black/[0.1] dark:bg-white/[0.07] dark:hover:bg-white/[0.10] dark:focus:bg-white/[0.12] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11.5px] tracking-[0.14em] uppercase px-5 py-4 rounded-full outline-none transition-all duration-300 pr-32"
@@ -69,9 +93,10 @@ export default function BluorngFooter({
                   disabled={subscribed}
                   className="absolute right-1.5 top-1.5 bottom-1.5 px-6 bg-tk-accent hover:bg-[#B57432] dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[10.5px] font-semibold uppercase tracking-[0.18em] rounded-full transition-all duration-300 cursor-pointer shadow-md shrink-0 flex items-center justify-center"
                 >
-                  {subscribed ? 'Confirmed ✓' : 'Subscribe'}
+                  {subscribed ? '✓' : footer.newsletter_button}
                 </button>
               </form>
+              {subscribeError && <p className="-mt-3 text-[11px] text-rose-600 dark:text-rose-400" role="alert">{subscribeError}</p>}
 
               {/* Atelier Theme Switcher Pills */}
               {onToggleTheme && (
@@ -90,7 +115,7 @@ export default function BluorngFooter({
                       }`}
                     >
                       <span>☀</span>
-                      <span>Editorial Light</span>
+                      <span>{footer.theme_light_label}</span>
                     </button>
                     <button
                       type="button"
@@ -104,7 +129,7 @@ export default function BluorngFooter({
                       }`}
                     >
                       <span>☾</span>
-                      <span>Noir Obsidian</span>
+                      <span>{footer.theme_dark_label}</span>
                     </button>
                   </div>
                 </div>
@@ -114,141 +139,27 @@ export default function BluorngFooter({
           </div>
         </div>
 
-        {/* ================= 2. FOUR LUXURY EDITORIAL PILLARS (Borderless) ================= */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12 mb-16 sm:mb-20 text-left">
-          
-          {/* Pillar 1: Olfactive Collections */}
-          <div className="flex flex-col space-y-3">
-            <h4 className="text-[11px] font-semibold tracking-[0.22em] uppercase text-tk-accent dark:text-tk-accent-night mb-2">
-              Collections
-            </h4>
-            <ul className="space-y-2.5 text-[12.5px] text-[#555555] dark:text-white/65 font-light">
-              <li>
-                <button onClick={() => onNavigateCollection('signature')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Signature Extraits (35%)
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigateCollection('royal')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Royal Oud & Taif Rose
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigateCollection('exotic')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Untamed Exotic Obsidian
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigateCollection('fresh')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Riviera Citrus & Azure Blues
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigateCollection('discovery-sets')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Discovery Coffrets (6 × 10ml)
-                </button>
-              </li>
-            </ul>
+        {/* ================= 2. LINK COLUMNS ================= */}
+        {(footer.columns || []).length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12 mb-16 sm:mb-20 text-left">
+            {footer.columns.map((col, ci) => (
+              <div key={`${col.heading}-${ci}`} className="flex flex-col space-y-3">
+                <h4 className="text-[11px] font-semibold tracking-[0.22em] uppercase text-tk-accent dark:text-tk-accent-night mb-2">
+                  {col.heading}
+                </h4>
+                <ul className="space-y-2.5 text-[12.5px] text-[#555555] dark:text-white/65 font-light">
+                  {(col.links || []).map((item, li) => (
+                    <li key={`${item.label}-${li}`}>
+                      <button onClick={() => runLink(item)} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
+                        {item.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-
-          {/* Pillar 2: Sur-Mesure Atelier */}
-          <div className="flex flex-col space-y-3">
-            <h4 className="text-[11px] font-semibold tracking-[0.22em] uppercase text-tk-accent dark:text-tk-accent-night mb-2">
-              Bespoke Atelier
-            </h4>
-            <ul className="space-y-2.5 text-[12.5px] text-[#555555] dark:text-white/65 font-light">
-              <li>
-                <button onClick={() => onNavigateCollection('bespoke')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Private Perfume Commissions
-                </button>
-              </li>
-              <li>
-                <button onClick={onScrollToStores} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Flagship Boutiques & Salons
-                </button>
-              </li>
-              <li>
-                <button onClick={onOpenStory} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  The Scent Screening Lounge
-                </button>
-              </li>
-              <li>
-                <a href="https://wa.me/918448441388" target="_blank" rel="noopener noreferrer" className="hover:text-tk-ink dark:hover:text-white transition-colors">
-                  VIP Wedding & Corporate Coffrets
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Pillar 3: Maison Heritage */}
-          <div className="flex flex-col space-y-3">
-            <h4 className="text-[11px] font-semibold tracking-[0.22em] uppercase text-tk-accent dark:text-tk-accent-night mb-2">
-              Maison Heritage
-            </h4>
-            <ul className="space-y-2.5 text-[12.5px] text-[#555555] dark:text-white/65 font-light">
-              <li>
-                <button onClick={() => onNavigateCollection('all')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Sacred Copper Alembic Distillation
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigateCollection('royal')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Wild 40-Year Assam Agarwood
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigateCollection('signature')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Mysore Aged Sandalwood Terroir
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigateCollection('royal')} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  High-Altitude Taif Damask Roses
-                </button>
-              </li>
-              <li>
-                <button onClick={onNavigateHome} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
-                  The Royal Perfumer's Lineage
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Pillar 4: Client Privileges & Concierge */}
-          <div className="flex flex-col space-y-3">
-            <h4 className="text-[11px] font-semibold tracking-[0.22em] uppercase text-tk-accent dark:text-tk-accent-night mb-2">
-              Concierge
-            </h4>
-            <ul className="space-y-2.5 text-[12.5px] text-[#555555] dark:text-white/65 font-light">
-              <li>
-                <a href="tel:+918448441388" className="hover:text-tk-ink dark:hover:text-white transition-colors">
-                  Concierge: +91 84484 41388
-                </a>
-              </li>
-              <li>
-                <a href="https://wa.me/918448441388" target="_blank" rel="noopener noreferrer" className="hover:text-tk-ink dark:hover:text-white transition-colors">
-                  WhatsApp Private Client
-                </a>
-              </li>
-              <li>
-                <button onClick={() => alert('Complimentary insured white-glove express shipping across 120+ countries.')} className="hover:text-tk-ink dark:hover:text-white transition-colors text-left cursor-pointer">
-                  Complimentary Express Shipping
-                </button>
-              </li>
-              <li>
-                <button onClick={() => alert('Sample-First Guarantee: Every full flacon comes with a 2ml matching sample. Test first on skin before breaking the royal seal.')} className="hover:text-tk-ink dark:hover:text-white transition-colors text-left cursor-pointer">
-                  Sample-First Exchange Privilege
-                </button>
-              </li>
-              <li>
-                <button onClick={() => alert('Authenticity Guarantee: Poured and sealed in our private atelier with holographic certificate.')} className="hover:text-tk-ink dark:hover:text-white transition-colors text-left cursor-pointer">
-                  Authenticity Verification
-                </button>
-              </li>
-            </ul>
-          </div>
-
-        </div>
+        )}
 
         {/* ================= 3. CENTERPIECE OFFICIAL BRAND IDENTITY ================= */}
         <div className="flex flex-col items-center justify-center text-center py-8 sm:py-12">
@@ -258,21 +169,23 @@ export default function BluorngFooter({
             onClick={onNavigateHome}
             className="cursor-pointer group flex flex-col items-center max-w-lg px-4 mb-4"
           >
-            <img
-              src="/images/saudagar_logo_black.png"
-              alt="Saudagar Perfumers"
-              className="w-full max-w-[420px] sm:max-w-[480px] h-auto object-contain opacity-90 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700 ease-out dark:hidden block"
-            />
-            <img
-              src="/images/saudagar_logo_gold.png"
-              alt="Saudagar Perfumers"
+            {brand.logo_light_bg && (
+              <img
+                src={brand.logo_light_bg}
+                alt={brand.name || ''}
+                className="w-full max-w-[420px] sm:max-w-[480px] h-auto object-contain opacity-90 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700 ease-out dark:hidden block"
+              />
+            )}
+            {brand.logo_dark_bg && <img
+              src={brand.logo_dark_bg}
+              alt={brand.name || ''}
               className="w-full max-w-[420px] sm:max-w-[480px] h-auto object-contain opacity-95 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700 ease-out filter drop-shadow-[0_10px_35px_rgba(212,175,55,0.45)] hidden dark:block"
-            />
+            />}
           </div>
 
           {/* Atelier Creed */}
           <p className="text-[11px] sm:text-[11.5px] uppercase tracking-[0.22em] text-[#777777] dark:text-white/40 font-light mt-1 mb-6">
-            Compounded in Sacred Copper Alembics · Poured into Hand-Cut Flacons
+            {footer.creed}
           </p>
 
           {/* Floating Minimal Back to Top Pill */}
@@ -280,24 +193,34 @@ export default function BluorngFooter({
             onClick={handleBackToTop}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/[0.05] hover:bg-black/[0.1] text-[#555555] hover:text-tk-ink dark:bg-white/[0.05] dark:hover:bg-white/[0.12] dark:text-white/70 dark:hover:text-white text-[10.5px] uppercase tracking-[0.18em] transition-all duration-300 cursor-pointer"
           >
-            <span>Back to top</span>
+            <span>{footer.back_to_top}</span>
             <span className="text-[10px] text-tk-accent dark:text-tk-accent-night">↑</span>
           </button>
         </div>
 
         {/* ================= 4. BOTTOM COPYRIGHT & PRIVILEGE ASSURANCE ================= */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[10.5px] text-[#777777] dark:text-white/45 tracking-wider uppercase">
-          <p>© 2026 SAUDAGAR PERFUMERS RETAIL PRIVATE LIMITED. ALL RIGHTS RESERVED.</p>
+          <div className="flex flex-col items-center md:items-start gap-2">
+            <p>{footer.copyright}</p>
+            {(footer.legal_links || []).length > 0 && (
+              <nav className="flex flex-wrap gap-4" aria-label="Policies">
+                {footer.legal_links.map((l, i) => (
+                  <button key={`${l.label}-${i}`} onClick={() => go(l.link)} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer">
+                    {l.label}
+                  </button>
+                ))}
+              </nav>
+            )}
+          </div>
 
-          {/* Luxury Reassurance Badges */}
+          {/* Reassurance Badges */}
           <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-center text-[#888888] dark:text-white/40">
-            <span>35% Pure Extrait</span>
-            <span>✦</span>
-            <span>Insured Dispatch Across India</span>
-            <span>✦</span>
-            <span>Secured Checkout</span>
-            <span>✦</span>
-            <span>Cruelty Free</span>
+            {(footer.badges || []).map((badge, i) => (
+              <React.Fragment key={`${badge}-${i}`}>
+                {i > 0 && <span>✦</span>}
+                <span>{badge}</span>
+              </React.Fragment>
+            ))}
           </div>
         </div>
 

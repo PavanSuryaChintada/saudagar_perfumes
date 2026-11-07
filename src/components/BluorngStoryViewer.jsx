@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { STORY_REELS } from '../data/bluorngSaudagarData.js';
+import { useStories } from '../cms/useContent';
+import { useBlock } from '../cms/useSite';
 
 export default function BluorngStoryViewer({
   isOpen,
   onClose,
   onSelectProduct
 }) {
+  // Stories are edited in Admin → Stories; button text in Site content → Stories.
+  const { data: stories = [] } = useStories();
+  const copy = useBlock('stories_viewer') || {};
+  const STORY_REELS = stories.map((st) => ({
+    id: st.id,
+    title: st.title,
+    subtitle: st.subtitle,
+    tag: st.tag,
+    image: st.image_url,
+    video: st.video_url,
+    duration: st.duration_ms,
+    productId: st.product_slug
+  }));
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -17,7 +31,7 @@ export default function BluorngStoryViewer({
     if (!isOpen || isPaused) return;
 
     const intervalTime = 50; // ms
-    const totalDuration = 5000; // 5s per story
+    const totalDuration = currentStory?.duration || 5000;
     const step = (intervalTime / totalDuration) * 100;
 
     const timer = setInterval(() => {
@@ -31,7 +45,7 @@ export default function BluorngStoryViewer({
     }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [isOpen, isPaused, activeStoryIdx]);
+  }, [isOpen, isPaused, activeStoryIdx, currentStory?.duration]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNextStory = () => {
     setProgress(0);
@@ -63,7 +77,7 @@ export default function BluorngStoryViewer({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !currentStory) return null;
 
   return (
     <div
@@ -80,11 +94,23 @@ export default function BluorngStoryViewer({
         onTouchEnd={() => setIsPaused(false)}
       >
         {/* Full-bleed media visual */}
-        <img
-          src={currentStory.image}
-          alt={currentStory.title}
-          className="absolute inset-0 w-full h-full object-cover select-none"
-        />
+        {currentStory.video ? (
+          <video
+            key={currentStory.id}
+            src={currentStory.video}
+            poster={currentStory.image || undefined}
+            autoPlay
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover select-none"
+          />
+        ) : currentStory.image ? (
+          <img
+            src={currentStory.image}
+            alt={currentStory.title}
+            className="absolute inset-0 w-full h-full object-cover select-none"
+          />
+        ) : null}
 
         {/* Gradient overlays for readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80 pointer-events-none" />
@@ -178,6 +204,7 @@ export default function BluorngStoryViewer({
           </div>
 
           {/* Action button */}
+          {currentStory.productId && (
           <button
             onClick={() => {
               onClose();
@@ -187,9 +214,10 @@ export default function BluorngStoryViewer({
             }}
             className="w-full py-3 bg-[#FFFFFF] hover:bg-tk-accent dark:hover:bg-tk-gold dark:hover:text-tk-night hover:text-white text-tk-ink text-[11.5px] font-bold uppercase tracking-[0.04em] rounded-sm transition-all duration-300 shadow-xl flex items-center justify-center gap-2"
           >
-            <span>Shop This Fragrance</span>
+            <span>{copy.cta_label || 'Shop This Fragrance'}</span>
             <span>→</span>
           </button>
+          )}
         </div>
       </div>
     </div>

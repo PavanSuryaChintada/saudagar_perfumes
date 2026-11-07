@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BluorngFullscreenMegaNav from './BluorngFullscreenMegaNav.jsx';
 import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
-import { MEGA_MENU_COLLECTIONS } from '../data/bluorngSaudagarData.js';
+import BluorngAnnouncementBar from './BluorngAnnouncementBar.jsx';
+import { useBlock } from '../cms/useSite';
 
 export default function BluorngHeader({
   cartCount = 0,
@@ -19,6 +20,7 @@ export default function BluorngHeader({
   onOpenAccount,
   isHomePage = true
 }) {
+  const brand = useBlock('brand') || {};
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMegaNavOpen, setIsMegaNavOpen] = useState(false);
   const { lenis } = useSmoothScroll();
@@ -64,6 +66,7 @@ export default function BluorngHeader({
           : 'bg-white/95 dark:bg-tk-night/95 backdrop-blur-md shadow-xs text-tk-ink dark:text-white'
       }`}
     >
+      <BluorngAnnouncementBar />
       <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 h-[60px] sm:h-[68px] relative flex items-stretch justify-between">
         
         {/* ================= LEFT ZONE (Menu Button -> Fullscreen Mega Nav) ================= */}
@@ -92,23 +95,29 @@ export default function BluorngHeader({
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-center cursor-pointer select-none py-1 flex items-center justify-center max-w-[42%] sm:max-w-none pointer-events-auto"
         >
           {isTransparent ? (
-            <img
-              src="/images/saudagar_logo_white.png"
-              alt="Saudagar Perfumers"
-              className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85"
-            />
+            brand.logo_on_image ? (
+              <img
+                src={brand.logo_on_image}
+                alt={brand.name || ''}
+                className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85"
+              />
+            ) : null
           ) : (
             <>
-              <img
-                src="/images/saudagar_logo_black.png"
-                alt="Saudagar Perfumers"
-                className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 block dark:hidden"
-              />
-              <img
-                src="/images/saudagar_logo_gold.png"
-                alt="Saudagar Perfumers"
-                className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 hidden dark:block"
-              />
+              {brand.logo_light_bg && (
+                <img
+                  src={brand.logo_light_bg}
+                  alt={brand.name || ''}
+                  className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 block dark:hidden"
+                />
+              )}
+              {brand.logo_dark_bg && (
+                <img
+                  src={brand.logo_dark_bg}
+                  alt={brand.name || ''}
+                  className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 hidden dark:block"
+                />
+              )}
             </>
           )}
         </div>

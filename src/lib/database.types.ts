@@ -399,6 +399,30 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_signups: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          source: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          source?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          source?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       notes: {
         Row: {
           created_at: string
@@ -1340,6 +1364,10 @@ export type Database = {
         Returns: Json
       }
       site_bootstrap: { Args: never; Returns: Json }
+      subscribe_newsletter: {
+        Args: { p_email: string; p_source?: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "customer"

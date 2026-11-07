@@ -1,4 +1,5 @@
 import React from 'react';
+import { useBlock } from '../cms/useSite';
 
 export default function BluorngMobileBottomNav({
   cartCount = 0,
@@ -11,6 +12,7 @@ export default function BluorngMobileBottomNav({
   onOpenCart,
   onOpenAccount
 }) {
+  const showBoutiques = !!useBlock('brand')?.show_boutiques;
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0E0C10]/95 backdrop-blur-xl px-4 py-2 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transition-colors duration-300">
       <ul className="flex items-center justify-around text-[#777777] dark:text-[#A09D96]">
@@ -60,7 +62,8 @@ export default function BluorngMobileBottomNav({
           </li>
         )}
 
-        {/* Boutiques Location */}
+        {/* Boutiques Location (shown when Brand → "Show boutiques" is on) */}
+        {showBoutiques && (
         <li>
           <button
             onClick={onScrollToStores}
@@ -74,6 +77,7 @@ export default function BluorngMobileBottomNav({
             <span className="text-[9px] font-bold tracking-wider uppercase">Boutiques</span>
           </button>
         </li>
+        )}
 
         {/* Patron Account */}
         <li>

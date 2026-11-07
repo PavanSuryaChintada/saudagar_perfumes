@@ -34,6 +34,7 @@ import {
 } from './data/bluorngSaudagarData.js';
 import { resolveStorefrontView, AUTH_VIEWS } from './app/routes';
 import { useAuth } from './lib/auth';
+import { useBlock } from './cms/useSite';
 import LoginPage from './storefront/auth/LoginPage';
 import RegisterPage from './storefront/auth/RegisterPage';
 import ForgotPasswordPage from './storefront/auth/ForgotPasswordPage';
@@ -47,6 +48,7 @@ export default function App() {
   const location = useLocation();
   const routerNavigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const brandBlock = useBlock('brand');
   const resolved = resolveStorefrontView(location.pathname, location.search);
   const view = resolved.view;
   const selectedProductId = resolved.productId || 'saudagar-deep-canopy';
@@ -199,8 +201,12 @@ export default function App() {
       navigateToWishlist();
       return;
     }
-    let target = categorySlug;
-    if (categorySlug === 'all') target = 'signature';
+    if (categorySlug === 'all' || categorySlug === 'shop') {
+      routerNavigate('/shop');
+      resetScrollToTop();
+      return;
+    }
+    const target = categorySlug;
     const wasInCollection = view === 'collection';
     routerNavigate(`/collections/${target}`);
     if (!wasInCollection) {
@@ -208,8 +214,15 @@ export default function App() {
     }
   };
 
+  // Boutiques live on the "boutiques" page (Admin → Pages). Until Brand → "Show boutiques" is on,
+  // the concierge message from the Brand block is shown instead.
   const scrollToStores = () => {
-    triggerToast('Private Boutique Concierge: Delhi, Mumbai & Dubai salons available by appointment.');
+    if (brandBlock?.show_boutiques) {
+      routerNavigate('/pages/boutiques');
+      resetScrollToTop();
+    } else if (brandBlock?.boutiques_message) {
+      triggerToast(brandBlock.boutiques_message);
+    }
   };
 
   // Wishlist Handler

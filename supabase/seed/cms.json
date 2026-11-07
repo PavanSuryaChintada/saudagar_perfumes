@@ -1,0 +1,672 @@
+{
+  "blocks": {
+    "mega_nav": {
+      "items": [
+        {
+          "numeral": "01",
+          "title": "The Signature Collection",
+          "subtitle": "Timeless luxury · Warm champagne & amber",
+          "link": {
+            "type": "collection",
+            "value": "signature"
+          },
+          "count_label": "16 Flacons",
+          "concentration": "Extraits de Parfum · 38%",
+          "image": "/images/saudagar_amber_gold.png",
+          "video": "/videos/meganavbar/Perfume_bottle_on_marble_pedestal_cc9e5900_1080p_gwr_video_mvp.mp4"
+        },
+        {
+          "numeral": "02",
+          "title": "The Royal Collection",
+          "subtitle": "Heritage & majesty · Taif rose & royal oud",
+          "link": {
+            "type": "collection",
+            "value": "royal"
+          },
+          "count_label": "12 Flacons",
+          "concentration": "Imperial Extraits & Pure Attars",
+          "image": "/images/saudagar_imperial_ruby.png",
+          "video": "/videos/Perfume_bottles_in_royal_palace_e1347222_1080p.mp4"
+        },
+        {
+          "numeral": "03",
+          "title": "The Exotic Collection",
+          "subtitle": "Untamed nature · Nocturnal forest & obsidian",
+          "link": {
+            "type": "collection",
+            "value": "exotic"
+          },
+          "count_label": "10 Flacons",
+          "concentration": "Obsidian & Mineral Extraits",
+          "image": "/images/saudagar_noir_matte.png",
+          "video": "/videos/Perfume_bottle_in_desert_92b81cd7_1080p_gwr_video_mvp.mp4"
+        },
+        {
+          "numeral": "04",
+          "title": "The Fresh Collection",
+          "subtitle": "Oceanic & citrus · Riviera azure & saline mist",
+          "link": {
+            "type": "collection",
+            "value": "fresh"
+          },
+          "count_label": "8 Flacons",
+          "concentration": "Solar & Saline Extraits",
+          "image": "/images/saudagar_royal_sapphire.png",
+          "video": "/videos/Perfume_bottle_on_coastal_landscape_76c07432_1080p.mp4"
+        },
+        {
+          "numeral": "05",
+          "title": "Discovery Sets & Vault",
+          "subtitle": "Curated 10ml vault coffrets with redeemable voucher",
+          "link": {
+            "type": "collection",
+            "value": "exclusive-coffrets"
+          },
+          "count_label": "6 Coffrets",
+          "concentration": "Discovery Coffrets · 6 × 10ml",
+          "image": "/images/saudagar_crystal_diamond.png",
+          "video": ""
+        },
+        {
+          "numeral": "06",
+          "title": "Bespoke Atelier",
+          "subtitle": "Private flacon commissions & monogramming",
+          "link": {
+            "type": "collection",
+            "value": "signature"
+          },
+          "count_label": "Made to Order",
+          "concentration": "Sur-Mesure Formulation",
+          "image": "/images/bespoke_atelier.jpg",
+          "video": ""
+        }
+      ],
+      "accords_heading": "Direct Olfactory Accords",
+      "accords": [
+        {
+          "label": "Rare Oud & Agarwood",
+          "link": {
+            "type": "path",
+            "value": "/shop?families=oud"
+          }
+        },
+        {
+          "label": "Taif Rose & Florals",
+          "link": {
+            "type": "path",
+            "value": "/shop?families=rose"
+          }
+        },
+        {
+          "label": "Warm Amber & Resins",
+          "link": {
+            "type": "path",
+            "value": "/shop?families=amber"
+          }
+        },
+        {
+          "label": "Riviera Marine Citrus",
+          "link": {
+            "type": "path",
+            "value": "/shop?families=citrus,aquatic"
+          }
+        },
+        {
+          "label": "Smoked Incense & Woods",
+          "link": {
+            "type": "path",
+            "value": "/shop?families=spices,woody"
+          }
+        }
+      ],
+      "quick_cards": [
+        {
+          "kicker": "01 Discovery",
+          "title": "Discovery Coffrets",
+          "subtitle": "6 × 10 ml tasting flight",
+          "link": {
+            "type": "collection",
+            "value": "exclusive-coffrets"
+          }
+        },
+        {
+          "kicker": "02 Sur-mesure",
+          "title": "Monogram Atelier",
+          "subtitle": "Signature monogram flacons",
+          "link": {
+            "type": "collection",
+            "value": "signature"
+          }
+        }
+      ],
+      "secondary_links": [
+        {
+          "label": "The Stories",
+          "action": "stories",
+          "link": null
+        },
+        {
+          "label": "All Fragrances",
+          "action": "link",
+          "link": {
+            "type": "path",
+            "value": "/shop"
+          }
+        },
+        {
+          "label": "Free shipping over ₹4,999",
+          "action": "link",
+          "link": {
+            "type": "page",
+            "value": "shipping-policy"
+          }
+        }
+      ],
+      "feature_badge_video": "4K Atelier",
+      "feature_badge_image": "Editorial",
+      "feature_cta_prefix": "Shop",
+      "feature_secondary_cta": {
+        "label": "Discovery Sets",
+        "link": {
+          "type": "collection",
+          "value": "exclusive-coffrets"
+        }
+      },
+      "side_cells": [
+        {
+          "badge": "Palace 4K",
+          "title": "The Royal Court",
+          "subtitle": "Taif rose & palace agarwood",
+          "video": "/videos/Perfume_bottles_in_royal_palace_e1347222_1080p.mp4",
+          "image": "",
+          "link": {
+            "type": "collection",
+            "value": "royal"
+          },
+          "cta_label": "Explore →"
+        },
+        {
+          "badge": "Oasis 4K",
+          "title": "The Desert Dunes",
+          "subtitle": "Nocturnal sands & solar resins",
+          "video": "/videos/Perfume_bottle_in_desert_92b81cd7_1080p_gwr_video_mvp.mp4",
+          "image": "",
+          "link": {
+            "type": "collection",
+            "value": "exotic"
+          },
+          "cta_label": "Explore →"
+        }
+      ],
+      "footer_text": "Saudagar Haute Parfumerie"
+    },
+    "mobile_drawer": {
+      "highlight": {
+        "label": "New Arrivals 2026",
+        "badge": "LATEST",
+        "link": {
+          "type": "collection",
+          "value": "latest-drop"
+        }
+      },
+      "all_link": {
+        "label": "All Fragrances",
+        "link": {
+          "type": "path",
+          "value": "/shop"
+        }
+      },
+      "collections": [
+        {
+          "label": "New Arrivals 2026",
+          "count_label": "12",
+          "link": {
+            "type": "collection",
+            "value": "latest-drop"
+          }
+        },
+        {
+          "label": "Oud Royale Extrait",
+          "count_label": "8",
+          "link": {
+            "type": "collection",
+            "value": "royal"
+          }
+        },
+        {
+          "label": "Discovery Sets & Coffrets",
+          "count_label": "6",
+          "link": {
+            "type": "collection",
+            "value": "exclusive-coffrets"
+          }
+        },
+        {
+          "label": "Pure Royal Attars",
+          "count_label": "9",
+          "link": {
+            "type": "category",
+            "value": "royal-attars"
+          }
+        },
+        {
+          "label": "Solar & Aquatic Essences",
+          "count_label": "7",
+          "link": {
+            "type": "collection",
+            "value": "fresh"
+          }
+        },
+        {
+          "label": "Saudagar Atelier Flacons",
+          "count_label": "5",
+          "link": {
+            "type": "collection",
+            "value": "signature"
+          }
+        }
+      ],
+      "utility_links": [
+        {
+          "icon": "🔖",
+          "label": "Saved Fragrances / Wishlist",
+          "action": "wishlist"
+        },
+        {
+          "icon": "🎬",
+          "label": "Behind the Bottle Stories",
+          "action": "stories"
+        },
+        {
+          "icon": "👤",
+          "label": "Customer Account & Orders",
+          "action": "account"
+        }
+      ],
+      "theme_label": "Display Theme",
+      "footer_lines": [
+        "House Concierge: +91 84484 41388",
+        "Insured Delivery Across India • Complimentary Samples"
+      ]
+    },
+    "footer": {
+      "newsletter_eyebrow": "Atelier Private Client Concierge",
+      "newsletter_heading": "Join the Saudagar Inner Circle",
+      "newsletter_text": "Receive confidential extrait allocation notices, rare wild vintage oud releases, and private invitations to boutique olfactory tastings.",
+      "newsletter_placeholder": "ENTER YOUR EMAIL ADDRESS",
+      "newsletter_button": "Subscribe",
+      "newsletter_success": "Welcome to the inner circle",
+      "theme_light_label": "Editorial Light",
+      "theme_dark_label": "Noir Obsidian",
+      "columns": [
+        {
+          "heading": "Collections",
+          "links": [
+            {
+              "label": "Signature Extraits (35%)",
+              "action": "link",
+              "link": {
+                "type": "collection",
+                "value": "signature"
+              }
+            },
+            {
+              "label": "Royal Oud & Taif Rose",
+              "action": "link",
+              "link": {
+                "type": "collection",
+                "value": "royal"
+              }
+            },
+            {
+              "label": "Untamed Exotic Obsidian",
+              "action": "link",
+              "link": {
+                "type": "collection",
+                "value": "exotic"
+              }
+            },
+            {
+              "label": "Riviera Citrus & Azure Blues",
+              "action": "link",
+              "link": {
+                "type": "collection",
+                "value": "fresh"
+              }
+            },
+            {
+              "label": "Discovery Coffrets (6 × 10ml)",
+              "action": "link",
+              "link": {
+                "type": "collection",
+                "value": "exclusive-coffrets"
+              }
+            }
+          ]
+        },
+        {
+          "heading": "Bespoke Atelier",
+          "links": [
+            {
+              "label": "Private Perfume Commissions",
+              "action": "link",
+              "link": {
+                "type": "page",
+                "value": "contact"
+              }
+            },
+            {
+              "label": "The Scent Screening Lounge",
+              "action": "stories",
+              "link": null
+            },
+            {
+              "label": "VIP Wedding & Corporate Coffrets",
+              "action": "link",
+              "link": {
+                "type": "url",
+                "value": "https://wa.me/918448441388"
+              }
+            }
+          ]
+        },
+        {
+          "heading": "Maison Heritage",
+          "links": [
+            {
+              "label": "Sacred Copper Alembic Distillation",
+              "action": "link",
+              "link": {
+                "type": "page",
+                "value": "story"
+              }
+            },
+            {
+              "label": "Wild 40-Year Assam Agarwood",
+              "action": "link",
+              "link": {
+                "type": "collection",
+                "value": "royal"
+              }
+            },
+            {
+              "label": "Mysore Aged Sandalwood Terroir",
+              "action": "link",
+              "link": {
+                "type": "collection",
+                "value": "signature"
+              }
+            },
+            {
+              "label": "High-Altitude Taif Damask Roses",
+              "action": "link",
+              "link": {
+                "type": "collection",
+                "value": "royal"
+              }
+            },
+            {
+              "label": "The Royal Perfumer's Lineage",
+              "action": "link",
+              "link": {
+                "type": "page",
+                "value": "story"
+              }
+            }
+          ]
+        },
+        {
+          "heading": "Concierge",
+          "links": [
+            {
+              "label": "Concierge: +91 84484 41388",
+              "action": "link",
+              "link": {
+                "type": "url",
+                "value": "tel:+918448441388"
+              }
+            },
+            {
+              "label": "WhatsApp Private Client",
+              "action": "link",
+              "link": {
+                "type": "url",
+                "value": "https://wa.me/918448441388"
+              }
+            },
+            {
+              "label": "Shipping & Delivery",
+              "action": "link",
+              "link": {
+                "type": "page",
+                "value": "shipping-policy"
+              }
+            },
+            {
+              "label": "Returns & Exchanges",
+              "action": "link",
+              "link": {
+                "type": "page",
+                "value": "returns-policy"
+              }
+            },
+            {
+              "label": "Contact Us",
+              "action": "link",
+              "link": {
+                "type": "page",
+                "value": "contact"
+              }
+            }
+          ]
+        }
+      ],
+      "creed": "Compounded in Sacred Copper Alembics · Poured into Hand-Cut Flacons",
+      "back_to_top": "Back to top",
+      "copyright": "© 2026 SAUDAGAR PERFUMERS RETAIL PRIVATE LIMITED. ALL RIGHTS RESERVED.",
+      "legal_links": [
+        {
+          "label": "Privacy",
+          "link": {
+            "type": "page",
+            "value": "privacy-policy"
+          }
+        },
+        {
+          "label": "Terms",
+          "link": {
+            "type": "page",
+            "value": "terms"
+          }
+        },
+        {
+          "label": "Shipping",
+          "link": {
+            "type": "page",
+            "value": "shipping-policy"
+          }
+        },
+        {
+          "label": "Returns",
+          "link": {
+            "type": "page",
+            "value": "returns-policy"
+          }
+        }
+      ],
+      "badges": [
+        "35% Pure Extrait",
+        "Insured Dispatch Across India",
+        "Secured Checkout",
+        "Cruelty Free"
+      ]
+    },
+    "brand": {
+      "name": "Saudagar Perfumers",
+      "legal_name": "Saudagar Perfumers Retail Private Limited",
+      "logo_light_bg": "/images/saudagar_logo_black.png",
+      "logo_dark_bg": "/images/saudagar_logo_gold.png",
+      "logo_on_image": "/images/saudagar_logo_white.png",
+      "favicon": "",
+      "support_email": "care@saudagarperfumes.example",
+      "support_phone": "+91 84484 41388",
+      "support_hours": "Mon–Sat, 10 am – 7 pm IST",
+      "address": "PLACEHOLDER — registered business address",
+      "instagram": "https://instagram.com/",
+      "youtube": "",
+      "whatsapp": "918448441388",
+      "show_boutiques": false,
+      "boutiques_message": "Private boutique appointments are available on request. Contact our concierge."
+    },
+    "announcement_bar": {
+      "bulletins_heading": "House Bulletins",
+      "bulletins": [
+        {
+          "text": "✨ Blind Box 26: The Royal Oud Drop is now live across boutiques and online.",
+          "link": {
+            "type": "collection",
+            "value": "royal"
+          }
+        },
+        {
+          "text": "🎁 Free 5 ml samples with every 50 ml of perfume.",
+          "link": null
+        }
+      ],
+      "tags": [
+        "Express Across India",
+        "100% Artisanal"
+      ]
+    },
+    "stories_viewer": {
+      "cta_label": "Shop This Fragrance"
+    }
+  },
+  "announcements": [
+    {
+      "text": "BLIND BOX 26 · THE ROYAL OUD DROP IS LIVE NOW",
+      "link": {
+        "type": "collection",
+        "value": "royal"
+      },
+      "is_active": false
+    },
+    {
+      "text": "FREE 5 ML SAMPLES WITH EVERY 50 ML OF PERFUME",
+      "link": null,
+      "is_active": false
+    },
+    {
+      "text": "FREE INSURED DELIVERY ACROSS INDIA ON ORDERS OVER RS. 4,999",
+      "link": {
+        "type": "page",
+        "value": "shipping-policy"
+      },
+      "is_active": false
+    }
+  ],
+  "stories": [
+    {
+      "title": "Oud Royale Drop",
+      "subtitle": "Harvested in Assam · Aged for 18 Years",
+      "tag": "NEW DROP",
+      "image_url": "/images/saudagar_amber_gold.png",
+      "video_url": null,
+      "duration_ms": 5000,
+      "product_slug": "saudagar-thunderstruck-oud",
+      "is_active": true
+    },
+    {
+      "title": "Taif Rose Alchemy",
+      "subtitle": "Picked at Dawn in the Mountains of Saudi Arabia",
+      "tag": "BOTANICAL",
+      "image_url": "/images/saudagar_imperial_ruby.png",
+      "video_url": null,
+      "duration_ms": 5000,
+      "product_slug": "saudagar-oud-roses",
+      "is_active": true
+    },
+    {
+      "title": "001 Deep Canopy",
+      "subtitle": "Volcanic Flint & Crushed Cypress Needles",
+      "tag": "SIGNATURE",
+      "image_url": "/images/saudagar_noir_matte.png",
+      "video_url": null,
+      "duration_ms": 5000,
+      "product_slug": "saudagar-deep-canopy",
+      "is_active": true
+    },
+    {
+      "title": "The Atelier Flacon",
+      "subtitle": "Heavy Crystal Hand-Cut in Val-de-Sambre",
+      "tag": "CRAFTSMANSHIP",
+      "image_url": "/images/saudagar_crystal_diamond.png",
+      "video_url": null,
+      "duration_ms": 5000,
+      "product_slug": "saudagar-masterpiece-coffret",
+      "is_active": true
+    },
+    {
+      "title": "Sapphire Sol Marine",
+      "subtitle": "Crisp Sea Salt & Sun-Drenched Bergamot",
+      "tag": "AQUATIC",
+      "image_url": "/images/saudagar_royal_sapphire.png",
+      "video_url": null,
+      "duration_ms": 5000,
+      "product_slug": "saudagar-pacific-chill",
+      "is_active": true
+    }
+  ],
+  "stockists": [
+    {
+      "name": "Ambience Mall",
+      "city": "Delhi (Vasant Kunj)",
+      "address": "Retail Space UG-19, Upper Ground Floor, Ambience Mall, Vasant Kunj, New Delhi 110070",
+      "phone": "+91 99589 58313",
+      "hours": "Open now",
+      "map_url": "https://maps.google.com/?q=Ambience+Mall+Vasant+Kunj+Delhi",
+      "image_url": "/images/hero_alcove.jpg",
+      "is_active": false
+    },
+    {
+      "name": "DLF Summit Plaza",
+      "city": "Gurugram (DLF Summit Plaza)",
+      "address": "GC11, Ground Floor, DLF Summit Plaza, DLF Phase 5, Sector 54, Gurugram, Haryana 122009",
+      "phone": "+91 99589 52988",
+      "hours": "Open now",
+      "map_url": "https://maps.google.com/?q=DLF+Summit+Plaza+Gurugram",
+      "image_url": "/images/bottom_black_podium.jpg",
+      "is_active": false
+    },
+    {
+      "name": "Waterfield Atelier",
+      "city": "Mumbai (Bandra West Atelier)",
+      "address": "Plot 42, Ground Floor, Waterfield Road, Bandra West, Mumbai, Maharashtra 400050",
+      "phone": "+91 98200 44211",
+      "hours": "Open now",
+      "map_url": "https://maps.google.com/?q=Waterfield+Road+Bandra+West+Mumbai",
+      "image_url": "/images/bespoke_atelier.jpg",
+      "is_active": false
+    },
+    {
+      "name": "100ft Luxury Flagship",
+      "city": "Bengaluru (Indiranagar)",
+      "address": "Ground Floor, 100 Feet Road, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038",
+      "phone": "+91 80412 88900",
+      "hours": "Open now",
+      "map_url": "https://maps.google.com/?q=Indiranagar+100+Feet+Road+Bengaluru",
+      "image_url": "/images/brand_story.jpg",
+      "is_active": false
+    },
+    {
+      "name": "The Dubai Mall",
+      "city": "Dubai (Fashion Avenue)",
+      "address": "Fashion Avenue Level 1, Unit FA-210, The Dubai Mall, Downtown Dubai, United Arab Emirates",
+      "phone": "+971 4 362 7500",
+      "hours": "Open now",
+      "map_url": "https://maps.google.com/?q=The+Dubai+Mall+Fashion+Avenue",
+      "image_url": "/images/hero_gold_flacons.jpg",
+      "is_active": false
+    }
+  ]
+}

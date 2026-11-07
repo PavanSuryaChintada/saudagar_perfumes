@@ -3,6 +3,8 @@ import { supabase } from './supabase';
 
 export interface Bootstrap {
   settings: Record<string, unknown>;
+  blocks?: Record<string, unknown>;
+  announcements?: unknown[];
   [key: string]: unknown;
 }
 
