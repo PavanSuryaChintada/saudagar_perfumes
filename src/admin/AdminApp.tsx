@@ -20,6 +20,7 @@ import OrderDetailPage from './pages/orders/OrderDetailPage';
 import PrintOrderPage from './pages/orders/PrintOrderPage';
 import InventoryPage from './pages/orders/InventoryPage';
 import SamplesPage from './pages/orders/SamplesPage';
+import CouponsPage from './pages/coupons/CouponsPage';
 
 export default function AdminApp() {
   return (
@@ -57,6 +58,7 @@ export default function AdminApp() {
         <Route path="orders/:id" element={<OrderDetailPage />} />
         <Route path="inventory" element={<InventoryPage />} />
         <Route path="samples" element={<SamplesPage />} />
+        <Route path="coupons" element={<CouponsPage />} />
         <Route
           path="*"
           element={<p className="text-[13px] text-[#777777]">This admin page doesn't exist yet.</p>}

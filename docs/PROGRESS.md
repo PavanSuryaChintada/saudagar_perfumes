@@ -102,15 +102,15 @@
 - [x] "Shop all" buttons go where the admin chooses
 - [x] New CMS sections start with sample content
 
-## Phase 5: Coupons
-- [ ] Coupon codes (percent / flat)
-- [ ] Limits, dates, min order, first order
-- [ ] Category scope + excluded products
-- [ ] Personal codes
-- [ ] "Apply coupon" sheet with best offers
-- [ ] Welcome offer on signup (code shown in account)
-- [ ] Birthday coupons (code shown in account)
-- [ ] Admin: coupons pages
+## Phase 5: Coupons ✅
+- [x] Coupon codes (percent / flat)
+- [x] Limits, dates, min order, first order
+- [x] Category scope + excluded products
+- [x] Personal codes
+- [x] "Apply coupon" sheet with best offers
+- [x] Welcome offer on signup (code shown in account)
+- [x] Birthday coupons (code shown in account)
+- [x] Admin: coupons pages
 
 ## Phase 6: Online payments (Razorpay, off until keys)
 - [ ] UPI / cards / netbanking / wallets
