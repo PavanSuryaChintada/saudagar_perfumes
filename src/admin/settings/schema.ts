@@ -95,8 +95,7 @@ export const SETTINGS_SCHEMA: SettingGroup[] = [
   {
     group: 'WhatsApp',
     fields: [
-      { key: 'whatsapp.enabled', label: 'Send WhatsApp messages', type: 'boolean', help: 'Needs Meta WhatsApp keys and approved templates.' },
-      { key: 'whatsapp.floating_number', label: 'Number for the chat button', type: 'phone', help: 'Leave empty to hide the floating button.' },
+      { key: 'whatsapp.floating_number', label: 'Number for the chat button', type: 'phone', help: 'Leave empty to hide the floating chat button.' },
     ],
   },
   {

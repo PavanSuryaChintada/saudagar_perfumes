@@ -2,7 +2,7 @@
 
 `[x]` done · `[ ]` not yet · ◐ = phase in progress
 
-**Overall: phase 1 done, phase 2 in progress, 10 phases left**
+**Overall: phase 1 done, phase 2 in progress, 9 phases left (11 total; WhatsApp automation removed by owner)**
 
 ---
 
@@ -47,11 +47,11 @@
 - [x] Filters: AND across types, OR within a type
 - [x] Similar scents ranking
 - [x] Sample catalog: current 16 products moved into the database
-- [ ] Storefront reads products from the database
-- [ ] Shop / category / note / search pages
-- [ ] Filters saved in the URL
-- [ ] Product page: note pyramid, accords, profile, compliance, similar, recently viewed
-- [ ] Fake reviews removed ("No reviews yet")
+- [x] Storefront reads products from the database
+- [x] Shop / category / note / search pages
+- [x] Filters saved in the URL
+- [x] Product page: note pyramid, accords, profile, compliance, similar, recently viewed
+- [x] Fake reviews removed ("No reviews yet")
 - [ ] Admin: products list
 - [ ] Admin: product editor
 - [ ] Admin: categories
@@ -99,8 +99,8 @@
 - [ ] Category scope + excluded products
 - [ ] Personal codes
 - [ ] "Apply coupon" sheet with best offers
-- [ ] Welcome offer on signup
-- [ ] Birthday coupons
+- [ ] Welcome offer on signup (code shown in account)
+- [ ] Birthday coupons (code shown in account)
 - [ ] Admin: coupons pages
 
 ## Phase 6: Online payments (Razorpay, off until keys)
@@ -132,23 +132,15 @@
 - [ ] Ratings on products
 - [ ] Helpful votes
 - [ ] Wishlist saved to account
-- [ ] "Notify me when back"
+- [ ] "Notify me when back" (request saved; shown in admin)
 
-## Phase 10: WhatsApp (off until keys)
-- [ ] Message templates
-- [ ] Order / shipping / delivery messages
-- [ ] Abandoned bag reminders
-- [ ] Campaigns
-- [ ] STOP = opt out
-- [ ] Admin: WhatsApp pages
-
-## Phase 11: Admin extras
+## Phase 10: Admin extras
 - [ ] Dashboard charts + KPIs
 - [ ] Customers list + birthdays
 - [ ] Notifications bell
 - [ ] Data export (CSV)
 
-## Phase 12: Launch
+## Phase 11: Launch
 - [ ] SEO tags, sitemap, product schema
 - [ ] Google Analytics events
 - [ ] Rate limits
@@ -156,3 +148,9 @@
 - [ ] 360 px mobile pass
 - [ ] Vercel config
 - [ ] SETUP.md (keys, accounts, go-live checklist)
+
+---
+
+## Removed by owner
+- ~~WhatsApp automation (templates, order messages, abandoned bag, campaigns)~~, removed 2026-11-07
+- Kept: floating "chat on WhatsApp" button (plain link)
