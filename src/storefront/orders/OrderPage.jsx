@@ -8,6 +8,8 @@ import { toFriendlyError } from '../../lib/errors';
 import { formatIndianPhone } from '../../lib/phone';
 import MinimalHeader from '../MinimalHeader';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
+import { payOrder } from '../../lib/razorpay';
+import { useQueryClient } from '@tanstack/react-query';
 
 const STEP_TIME = { PENDING: 'created_at', PACKED: 'packed_at', SHIPPED: 'shipped_at', OUT_FOR_DELIVERY: 'out_for_delivery_at', DELIVERED: 'delivered_at' };
 
@@ -16,6 +18,24 @@ export default function OrderPage({ orderId, theme, onToggleTheme, onNavigateHom
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const justPlaced = params.get('placed') === '1';
+  const paymentNotice = params.get('payment');
+  const qc = useQueryClient();
+  const [paying, setPaying] = useState(false);
+  const [payError, setPayError] = useState(paymentNotice === 'failed' ? params.get('reason') || 'The payment failed.' : '');
+  const pay = async (id) => {
+    setPaying(true);
+    setPayError('');
+    try {
+      const r = await payOrder(id);
+      if (r.status === 'failed') setPayError(r.message);
+      if (r.status === 'dismissed') setPayError('Payment cancelled. Your order is saved — pay whenever you are ready.');
+      await qc.invalidateQueries({ queryKey: ['orders'] });
+    } catch (err) {
+      setPayError(toFriendlyError(err));
+    } finally {
+      setPaying(false);
+    }
+  };
   const { data: order, isLoading, error } = useOrder(orderId);
   const cancel = useCancelOrder();
   const [confirming, setConfirming] = useState(false);
@@ -63,6 +83,24 @@ export default function OrderPage({ orderId, theme, onToggleTheme, onNavigateHom
             </button>
           )}
         </div>
+
+        {order.payment_method === 'ONLINE' && order.status === 'PENDING' && order.payment_status !== 'PAID' && (
+          <div className="p-5 border border-amber-200 dark:border-amber-900/50 bg-amber-50/60 dark:bg-amber-950/20 space-y-3 text-[12.5px]">
+            <p className="font-medium">
+              {paymentNotice === 'cancelled' && !payError ? 'Payment cancelled. Your order is saved.' : 'This order is waiting for payment.'}
+            </p>
+            {payError && <p className="text-rose-600">{payError}</p>}
+            <p className="text-[#666666] dark:text-[#AAAAAA]">Unpaid online orders are cancelled after 24 hours.</p>
+            <button
+              type="button"
+              disabled={paying}
+              onClick={() => pay(order.id)}
+              className="px-5 py-2 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[11px] uppercase tracking-wider rounded-[2px] disabled:opacity-60"
+            >
+              {paying ? 'Opening payment…' : `Pay ${formatINR(Number(order.total))} now`}
+            </button>
+          </div>
+        )}
 
         {confirming && (
           <div className="p-5 border border-rose-200 dark:border-rose-900/50 bg-rose-50/60 dark:bg-rose-950/20 space-y-3 text-[12.5px]">

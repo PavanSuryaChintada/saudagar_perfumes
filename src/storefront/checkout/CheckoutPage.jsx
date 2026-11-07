@@ -11,6 +11,7 @@ import SamplePicker from '../bag/SamplePicker';
 import { CouponRow } from '../bag/CouponSheet';
 import { useQuote, useSamplePool } from '../bag/useQuote';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
+import { payOrder } from '../../lib/razorpay';
 
 const STEPS = [
   { id: 'address', label: '1. Delivery' },
@@ -92,6 +93,13 @@ export default function CheckoutPage({
         p_client_ref: clientRef.current,
       });
       if (rpcError) throw rpcError;
+      if (payment === 'ONLINE') {
+        const result = await payOrder(data.id);
+        if (result.status === 'paid') onOrderPlaced && onOrderPlaced(data, 'placed=1');
+        else if (result.status === 'dismissed') onOrderPlaced && onOrderPlaced(data, 'payment=cancelled');
+        else onOrderPlaced && onOrderPlaced(data, `payment=failed&reason=${encodeURIComponent(result.message)}`);
+        return;
+      }
       onOrderPlaced && onOrderPlaced(data);
     } catch (err) {
       setError(toFriendlyError(err));
@@ -289,7 +297,7 @@ export default function CheckoutPage({
                     disabled={placing || !quote || isFetching || hasProblems || couponBlocked || !address || (payment === 'COD' && !codAllowed)}
                     onClick={placeOrder}
                   >
-                    {placing ? 'Placing your order…' : `Place order · ${quote ? formatPrice(quote.total) : ''}`}
+                    {placing ? (payment === 'ONLINE' ? 'Opening payment…' : 'Placing your order…') : `${payment === 'ONLINE' ? 'Pay' : 'Place order'} · ${quote ? formatPrice(quote.total) : ''}`}
                   </button>
                   <p className="text-[10.5px] text-[#888888] dark:text-[#A09D96]">
                     By placing the order you agree to our terms and policies.

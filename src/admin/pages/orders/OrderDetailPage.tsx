@@ -16,6 +16,7 @@ import { ConfirmDialog } from '../../ui/ConfirmDialog';
 import { rpc, throwIf } from '../../catalog/api';
 import { useAdminOrder, useOrdersRealtime } from '../../orders/api';
 import { StatusBadge } from './OrdersPage';
+import { invokeFunction } from '../../../lib/razorpay';
 
 const ACTION_LABEL: Partial<Record<OrderStatus, string>> = {
   PACKED: 'Mark packed',
@@ -36,6 +37,8 @@ export default function OrderDetailPage() {
   const [tracking, setTracking] = useState({ courier_name: '', tracking_number: '', tracking_url: '' });
   const [adminNote, setAdminNote] = useState('');
   const [savingInfo, setSavingInfo] = useState(false);
+  const [refunding, setRefunding] = useState(false);
+  const [refundAmount, setRefundAmount] = useState('');
 
   useEffect(() => {
     if (!o) return;
@@ -129,6 +132,14 @@ export default function OrderDetailPage() {
           </p>
         )}
         {o.status === 'RTO' && <p className="mt-3 text-[12px] text-[#555555]">The parcel came back. Decide on restocking from the Returns page once it arrives.</p>}
+        {o.payment_method === 'ONLINE' && ['PAID', 'PARTIALLY_REFUNDED'].includes(o.payment_status) && (
+          <div className="mt-4 pt-4 border-t border-[#EAEAEA] flex flex-wrap items-end gap-3">
+            <FieldShell label="Refund online (₹)" htmlFor="rf-amount" help={`Paid ${formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))}. Leave empty to refund in full.`}>
+              <TextInput id="rf-amount" inputMode="decimal" placeholder="Full amount" value={refundAmount} onChange={(e) => setRefundAmount(e.target.value)} className="max-w-[160px]" />
+            </FieldShell>
+            <Button variant="secondary" onClick={() => setRefunding(true)}>Refund to customer</Button>
+          </div>
+        )}
       </Panel>
 
       <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
@@ -231,6 +242,25 @@ export default function OrderDetailPage() {
           </Panel>
         </aside>
       </div>
+
+      <ConfirmDialog
+        open={refunding}
+        onOpenChange={setRefunding}
+        title="Refund this order online?"
+        description={`Razorpay sends ${refundAmount ? formatINR(Number(refundAmount)) : 'the full amount'} back to the customer's payment method. One online refund per order.`}
+        confirmLabel="Refund"
+        danger
+        onConfirm={async () => {
+          try {
+            await invokeFunction('razorpay-refund', { action: 'refund', order_id: o.id, amount: refundAmount.trim() || undefined });
+            setRefundAmount('');
+            await refresh();
+            toast.success('Refund started.');
+          } catch (err) {
+            toast.error(toFriendlyError(err));
+          }
+        }}
+      />
 
       <ConfirmDialog
         open={!!moving}

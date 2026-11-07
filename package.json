@@ -13,7 +13,8 @@
     "db:apply": "node --env-file=.env.local scripts/db-apply.mjs",
     "db:test": "node --env-file=.env.local scripts/db-test.mjs",
     "e2e": "playwright test",
-    "db:types": "node --env-file=.env.local scripts/gen-types.mjs"
+    "db:types": "node --env-file=.env.local scripts/gen-types.mjs",
+    "functions:deploy": "node --env-file=.env.local scripts/deploy-functions.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

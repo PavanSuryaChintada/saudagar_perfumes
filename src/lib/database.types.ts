@@ -837,9 +837,13 @@ export type Database = {
           out_for_delivery_at: string | null
           packed_at: string | null
           paid_at: string | null
+          payment_failure_reason: string | null
           payment_method: string
           payment_status: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
           rto_at: string | null
+          sample_picks: Json
           samples_entitled: number
           samples_short: number
           ship_city: string | null
@@ -849,6 +853,7 @@ export type Database = {
           shipping_address: Json
           shipping_fee: number
           status: string
+          stock_reserved_at: string | null
           stock_restored_at: string | null
           subtotal: number
           total: number
@@ -879,9 +884,13 @@ export type Database = {
           out_for_delivery_at?: string | null
           packed_at?: string | null
           paid_at?: string | null
+          payment_failure_reason?: string | null
           payment_method: string
           payment_status?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           rto_at?: string | null
+          sample_picks?: Json
           samples_entitled?: number
           samples_short?: number
           ship_city?: string | null
@@ -891,6 +900,7 @@ export type Database = {
           shipping_address: Json
           shipping_fee?: number
           status?: string
+          stock_reserved_at?: string | null
           stock_restored_at?: string | null
           subtotal: number
           total: number
@@ -921,9 +931,13 @@ export type Database = {
           out_for_delivery_at?: string | null
           packed_at?: string | null
           paid_at?: string | null
+          payment_failure_reason?: string | null
           payment_method?: string
           payment_status?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
           rto_at?: string | null
+          sample_picks?: Json
           samples_entitled?: number
           samples_short?: number
           ship_city?: string | null
@@ -933,6 +947,7 @@ export type Database = {
           shipping_address?: Json
           shipping_fee?: number
           status?: string
+          stock_reserved_at?: string | null
           stock_restored_at?: string | null
           subtotal?: number
           total?: number
@@ -1533,6 +1548,56 @@ export type Database = {
         }
         Relationships: []
       }
+      refunds: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          id: string
+          method: string
+          note: string | null
+          order_id: string
+          razorpay_refund_id: string | null
+          reference: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          method: string
+          note?: string | null
+          order_id: string
+          razorpay_refund_id?: string | null
+          reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          method?: string
+          note?: string | null
+          order_id?: string
+          razorpay_refund_id?: string | null
+          reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       settings: {
         Row: {
           description: string | null
@@ -1860,6 +1925,15 @@ export type Database = {
       }
       catalog_filters: { Args: never; Returns: Json }
       category_with_children: { Args: { p_slug: string }; Returns: string[] }
+      confirm_order_payment: {
+        Args: {
+          p_amount_paise: number
+          p_order: string
+          p_payment_id: string
+          p_razorpay_order_id: string
+        }
+        Returns: Json
+      }
       create_order: {
         Args: {
           p_address_id: string
@@ -1885,6 +1959,10 @@ export type Database = {
       }
       is_admin: { Args: never; Returns: boolean }
       jsonb_text_array: { Args: { j: Json }; Returns: string[] }
+      mark_payment_failed: {
+        Args: { p_order: string; p_reason: string }
+        Returns: undefined
+      }
       normalize_indian_phone: { Args: { input: string }; Returns: string }
       order_transition_allowed: {
         Args: {
@@ -1908,6 +1986,19 @@ export type Database = {
           p_samples?: Json
         }
         Returns: Json
+      }
+      record_refund: {
+        Args: {
+          p_actor: string
+          p_amount: number
+          p_method: string
+          p_note: string
+          p_order: string
+          p_razorpay_refund_id: string
+          p_reference: string
+          p_status: string
+        }
+        Returns: string
       }
       release_birthday_coupons: {
         Args: { p_day: number; p_month: number; p_year: number; payload: Json }
@@ -1945,6 +2036,10 @@ export type Database = {
         Args: { p_note?: string; p_order: string; p_status: string }
         Returns: undefined
       }
+      set_razorpay_order: {
+        Args: { p_order: string; p_razorpay_order_id: string }
+        Returns: undefined
+      }
       similar_products: {
         Args: { p_limit?: number; p_slug: string }
         Returns: Json
@@ -1952,6 +2047,10 @@ export type Database = {
       site_bootstrap: { Args: never; Returns: Json }
       subscribe_newsletter: {
         Args: { p_email: string; p_source?: string }
+        Returns: undefined
+      }
+      update_refund_status: {
+        Args: { p_razorpay_refund_id: string; p_status: string }
         Returns: undefined
       }
     }
