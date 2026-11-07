@@ -134,12 +134,13 @@
 - [x] Retry shipment on courier errors
 - [ ] Owner: Delhivery token, pickup location, written OK for shipping perfume
 
-## Phase 8: Returns and refunds
-- [ ] Return request with photos
-- [ ] Approve / reject
-- [ ] Restock or write off
-- [ ] Refund or replacement order
-- [ ] Admin: returns, refunds pages
+## Phase 8: Returns and refunds ✅
+- [x] Return request with photos (within the return window)
+- [x] Approve / reject (message to customer)
+- [x] Courier pickup, or customer posts it back with tracking
+- [x] Restock or write off (logged)
+- [x] Refund (Razorpay or UPI / bank) or ₹0 replacement order
+- [x] Admin: returns, refunds pages
 
 ## Phase 9: Reviews and back-in-stock
 - [ ] Verified-buyer reviews with photos

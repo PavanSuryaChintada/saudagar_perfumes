@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BookOpen, Boxes, Clapperboard, Gift, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
+  BookOpen, Boxes, Clapperboard, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -22,6 +22,8 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     heading: 'Sales',
     items: [
       { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+      { to: '/admin/returns', label: 'Returns', icon: RotateCcw },
+      { to: '/admin/refunds', label: 'Refunds', icon: IndianRupee },
       { to: '/admin/inventory', label: 'Inventory', icon: Boxes },
       { to: '/admin/samples', label: 'Free samples', icon: Gift },
       { to: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
