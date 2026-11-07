@@ -8,6 +8,10 @@ import { ORDER_STATUS_LABEL, paymentLabel, type OrderStatus } from '../../../lib
 import { formatINR } from '../../../lib/money';
 import { toFriendlyError } from '../../../lib/errors';
 import { formatOrderDateTime } from '../../../storefront/orders/useOrders';
+import { supabase } from '../../../lib/supabase';
+import { downloadCsv, toCsv } from '../../export/csv';
+import { toast } from 'sonner';
+import { Download } from 'lucide-react';
 
 const STATUS_FILTERS: { value: string; label: string }[] = [
   { value: '', label: 'All' },
@@ -60,7 +64,37 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <PageHeader title="Orders" description="New orders appear here live. Open an order to pack, ship, print the invoice or cancel it." />
+      <PageHeader
+        title="Orders"
+        description="New orders appear here live. Open an order to pack, ship, print the invoice or cancel it."
+        actions={
+          <Button
+            variant="secondary"
+            onClick={async () => {
+              try {
+                const rows: Record<string, unknown>[] = [];
+                for (let from = 0; ; from += 1000) {
+                  let q = supabase
+                    .from('orders')
+                    .select('order_number, created_at, status, payment_method, payment_status, subtotal, discount, shipping_fee, total, coupon_code, customer_name, customer_email, customer_phone, ship_city, ship_state, ship_pincode, courier_name, tracking_number, samples_entitled, samples_short')
+                    .order('created_at', { ascending: false })
+                    .range(from, from + 999);
+                  if (status) q = q.eq('status', status);
+                  const { data, error } = await q;
+                  if (error) throw error;
+                  rows.push(...(data ?? []));
+                  if (!data || data.length < 1000) break;
+                }
+                downloadCsv(`orders-${status || 'all'}-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(rows));
+              } catch (err) {
+                toast.error(toFriendlyError(err));
+              }
+            }}
+          >
+            <Download size={14} /> Export CSV
+          </Button>
+        }
+      />
       <div className="flex flex-wrap gap-1 mb-3">
         {STATUS_FILTERS.map((f) => (
           <button

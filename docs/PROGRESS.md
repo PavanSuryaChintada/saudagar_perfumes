@@ -151,11 +151,13 @@
 - [x] Wishlist saved to account (merges on sign-in)
 - [x] "Notify me when back" (request saved; shown in admin)
 
-## Phase 10: Admin extras
-- [ ] Dashboard charts + KPIs
-- [ ] Customers list + birthdays
-- [ ] Notifications bell
-- [ ] Data export (CSV)
+## Phase 10: Admin extras ✅
+- [x] Dashboard chart + KPIs (7 / 30 / 90 days)
+- [x] Top products, notes, cities, states
+- [x] Warnings (checkout paused, sample list empty, GSTIN missing, courier errors)
+- [x] Customers list + birthdays + CSV
+- [x] Notifications bell (live)
+- [x] Data export (CSV of every main table) + orders CSV
 
 ## Phase 11: Launch
 - [ ] SEO tags, sitemap, product schema

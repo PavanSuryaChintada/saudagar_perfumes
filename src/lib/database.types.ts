@@ -65,6 +65,36 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: number
+          kind: string
+          link: string | null
+          read_at: string | null
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: never
+          kind: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: never
+          kind?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       announcements: {
         Row: {
           created_at: string
@@ -2239,6 +2269,11 @@ export type Database = {
         }
         Returns: number
       }
+      admin_customers: {
+        Args: { p_page?: number; p_page_size?: number; p_search?: string }
+        Returns: Json
+      }
+      admin_dashboard: { Args: { p_days?: number }; Returns: Json }
       apply_shipment_status: {
         Args: { p_awb: string; p_raw: string; p_status: string }
         Returns: Json
@@ -2451,6 +2486,10 @@ export type Database = {
       }
       search_products: { Args: { p?: Json }; Returns: Json }
       search_suggest: { Args: { q: string }; Returns: Json }
+      set_customer_birthday: {
+        Args: { p_date: string; p_user: string }
+        Returns: undefined
+      }
       set_order_status: {
         Args: { p_note?: string; p_order: string; p_status: string }
         Returns: undefined

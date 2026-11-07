@@ -26,6 +26,8 @@ import ReturnsPage from './pages/orders/ReturnsPage';
 import RefundsPage from './pages/orders/RefundsPage';
 import ReviewsPage from './pages/catalog/ReviewsPage';
 import BackInStockPage from './pages/catalog/BackInStockPage';
+import CustomersPage from './pages/CustomersPage';
+import ExportPage from './pages/ExportPage';
 
 export default function AdminApp() {
   return (
@@ -69,6 +71,8 @@ export default function AdminApp() {
         <Route path="refunds" element={<RefundsPage />} />
         <Route path="reviews" element={<ReviewsPage />} />
         <Route path="back-in-stock" element={<BackInStockPage />} />
+        <Route path="customers" element={<CustomersPage />} />
+        <Route path="export" element={<ExportPage />} />
         <Route
           path="*"
           element={<p className="text-[13px] text-[#777777]">This admin page doesn't exist yet.</p>}
