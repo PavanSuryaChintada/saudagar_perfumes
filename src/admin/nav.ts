@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BookOpen, Clapperboard, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store,
+  BookOpen, Boxes, Clapperboard, Gift, ShoppingBag, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -18,6 +18,14 @@ export interface AdminNavGroup {
 // Grows phase by phase (spec §14). Only pages that exist are listed.
 export const ADMIN_NAV: AdminNavGroup[] = [
   { items: [{ to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true }] },
+  {
+    heading: 'Sales',
+    items: [
+      { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
+      { to: '/admin/inventory', label: 'Inventory', icon: Boxes },
+      { to: '/admin/samples', label: 'Free samples', icon: Gift },
+    ],
+  },
   {
     heading: 'Catalog',
     items: [
