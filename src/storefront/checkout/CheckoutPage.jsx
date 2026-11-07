@@ -8,6 +8,7 @@ import { useAccount } from '../account/useAccount';
 import AddressModal from '../account/AddressModal';
 import MinimalHeader from '../MinimalHeader';
 import SamplePicker from '../bag/SamplePicker';
+import { CouponRow } from '../bag/CouponSheet';
 import { useQuote, useSamplePool } from '../bag/useQuote';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
 
@@ -34,6 +35,8 @@ export default function CheckoutPage({
   onSamplesChange,
   note = '',
   onNoteChange,
+  couponCode = '',
+  onCouponChange,
   theme,
   onToggleTheme,
   onNavigateHome,
@@ -51,7 +54,8 @@ export default function CheckoutPage({
   const [error, setError] = useState('');
   const clientRef = useRef(newClientRef());
 
-  const { data: quote, isFetching, error: quoteError } = useQuote(cart, samples, null, cart.length > 0);
+  const { data: quote, isFetching, error: quoteError } = useQuote(cart, samples, couponCode, cart.length > 0);
+  const couponBlocked = !!couponCode && quote && !quote.coupon?.ok;
   const { data: pool = [] } = useSamplePool(!!quote?.samples?.enabled);
   const poolName = useMemo(() => new Map(pool.map((p) => [p.variant_id, p.name])), [pool]);
 
@@ -82,6 +86,7 @@ export default function CheckoutPage({
         p_address_id: address.id,
         p_items: cart.filter((l) => l.variantId).map((l) => ({ variant_id: l.variantId, qty: l.quantity })),
         p_payment_method: payment,
+        p_coupon_code: couponCode || undefined,
         p_samples: samples,
         p_note: note || undefined,
         p_client_ref: clientRef.current,
@@ -281,7 +286,7 @@ export default function CheckoutPage({
                   <button
                     type="button"
                     className={primaryBtn}
-                    disabled={placing || !quote || isFetching || hasProblems || !address || (payment === 'COD' && !codAllowed)}
+                    disabled={placing || !quote || isFetching || hasProblems || couponBlocked || !address || (payment === 'COD' && !codAllowed)}
                     onClick={placeOrder}
                   >
                     {placing ? 'Placing your order…' : `Place order · ${quote ? formatPrice(quote.total) : ''}`}
@@ -328,6 +333,10 @@ export default function CheckoutPage({
                   )}
                 </div>
 
+                <div className="py-3">
+                  <CouponRow quote={quote} couponCode={couponCode} cart={cart} onApply={(c) => onCouponChange && onCouponChange(c)} onRemove={() => onCouponChange && onCouponChange('')} />
+                  {couponBlocked && <p className="mt-1.5 text-[10.5px] text-rose-600">Remove the code to place your order.</p>}
+                </div>
                 <div className={`pt-3 border-t border-[#EAEAEA] dark:border-white/10 space-y-2 text-[11.5px] transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
                   <div className="flex justify-between text-[#666666] dark:text-[#A09D96]">
                     <span>Subtotal</span>
@@ -335,7 +344,7 @@ export default function CheckoutPage({
                   </div>
                   {quote?.discount > 0 && (
                     <div className="flex justify-between text-emerald-700 dark:text-emerald-400">
-                      <span>Discount</span>
+                      <span>Discount{quote.coupon?.ok ? ` (${quote.coupon.code})` : ''}</span>
                       <span>−{formatPrice(quote.discount)}</span>
                     </div>
                   )}

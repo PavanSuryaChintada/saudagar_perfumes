@@ -177,3 +177,30 @@ export function useCartSync(
     };
   }, [uid, cart, samples]);
 }
+
+export interface AvailableCoupon {
+  id: string;
+  code: string;
+  kind: 'general' | 'welcome' | 'birthday';
+  description: string | null;
+  expires_at: string | null;
+  ok: boolean;
+  reason: string | null;
+  message: string;
+  discount: number;
+}
+
+/** Listed codes plus the shopper's personal codes, each priced against the bag. */
+export function useAvailableCoupons(cart: BagLine[], enabled = true) {
+  const items = toQuoteItems(cart);
+  return useQuery({
+    queryKey: ['available-coupons', items],
+    enabled,
+    staleTime: 15_000,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('available_coupons', { p_items: items });
+      if (error) throw error;
+      return (data ?? []) as unknown as AvailableCoupon[];
+    },
+  });
+}

@@ -301,6 +301,191 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_categories: {
+        Row: {
+          category_id: string
+          coupon_id: string
+        }
+        Insert: {
+          category_id: string
+          coupon_id: string
+        }
+        Update: {
+          category_id?: string
+          coupon_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_categories_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupon_excluded_products: {
+        Row: {
+          coupon_id: string
+          product_id: string
+        }
+        Insert: {
+          coupon_id: string
+          product_id: string
+        }
+        Update: {
+          coupon_id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_excluded_products_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_excluded_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupon_redemptions: {
+        Row: {
+          coupon_id: string
+          created_at: string
+          discount: number
+          id: string
+          order_id: string
+          released_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          coupon_id: string
+          created_at?: string
+          discount?: number
+          id?: string
+          order_id: string
+          released_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          coupon_id?: string
+          created_at?: string
+          discount?: number
+          id?: string
+          order_id?: string
+          released_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_redemptions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_redemptions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupons: {
+        Row: {
+          admin_note: string | null
+          assigned_user_id: string | null
+          birthday_year: number | null
+          code: string
+          created_at: string
+          description: string | null
+          discount_type: string
+          expires_at: string | null
+          first_order_only: boolean
+          id: string
+          is_active: boolean
+          is_listed: boolean
+          kind: string
+          max_discount: number | null
+          min_order: number
+          per_customer_limit: number | null
+          starts_at: string | null
+          updated_at: string
+          usage_limit: number | null
+          value: number
+          welcome_tier_id: string | null
+        }
+        Insert: {
+          admin_note?: string | null
+          assigned_user_id?: string | null
+          birthday_year?: number | null
+          code: string
+          created_at?: string
+          description?: string | null
+          discount_type: string
+          expires_at?: string | null
+          first_order_only?: boolean
+          id?: string
+          is_active?: boolean
+          is_listed?: boolean
+          kind?: string
+          max_discount?: number | null
+          min_order?: number
+          per_customer_limit?: number | null
+          starts_at?: string | null
+          updated_at?: string
+          usage_limit?: number | null
+          value: number
+          welcome_tier_id?: string | null
+        }
+        Update: {
+          admin_note?: string | null
+          assigned_user_id?: string | null
+          birthday_year?: number | null
+          code?: string
+          created_at?: string
+          description?: string | null
+          discount_type?: string
+          expires_at?: string | null
+          first_order_only?: boolean
+          id?: string
+          is_active?: boolean
+          is_listed?: boolean
+          kind?: string
+          max_discount?: number | null
+          min_order?: number
+          per_customer_limit?: number | null
+          starts_at?: string | null
+          updated_at?: string
+          usage_limit?: number | null
+          value?: number
+          welcome_tier_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupons_welcome_tier_id_fkey"
+            columns: ["welcome_tier_id"]
+            isOneToOne: false
+            referencedRelation: "welcome_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       faqs: {
         Row: {
           answer: string
@@ -1603,6 +1788,42 @@ export type Database = {
           },
         ]
       }
+      welcome_tiers: {
+        Row: {
+          created_at: string
+          discount_type: string
+          id: string
+          is_active: boolean
+          label: string
+          position: number
+          updated_at: string
+          value: number
+          weight: number
+        }
+        Insert: {
+          created_at?: string
+          discount_type: string
+          id?: string
+          is_active?: boolean
+          label: string
+          position?: number
+          updated_at?: string
+          value: number
+          weight?: number
+        }
+        Update: {
+          created_at?: string
+          discount_type?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          position?: number
+          updated_at?: string
+          value?: number
+          weight?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -1620,6 +1841,18 @@ export type Database = {
       archive_product: {
         Args: { p_archived?: boolean; p_id: string }
         Returns: undefined
+      }
+      available_coupons: { Args: { p_items: Json }; Returns: Json }
+      birthday_customers: {
+        Args: { p_day: number; p_month: number; p_year?: number }
+        Returns: {
+          date_of_birth: string
+          email: string
+          full_name: string
+          has_code: boolean
+          phone: string
+          user_id: string
+        }[]
       }
       cancel_order: {
         Args: { p_order: string; p_reason?: string }
@@ -1676,6 +1909,10 @@ export type Database = {
         }
         Returns: Json
       }
+      release_birthday_coupons: {
+        Args: { p_day: number; p_month: number; p_year: number; payload: Json }
+        Returns: number
+      }
       reorder_collection_products: {
         Args: { p_collection: string; p_product_ids: string[] }
         Returns: undefined
@@ -1700,6 +1937,7 @@ export type Database = {
           variant_id: string
         }[]
       }
+      save_coupon: { Args: { payload: Json }; Returns: string }
       save_product: { Args: { payload: Json }; Returns: string }
       search_products: { Args: { p?: Json }; Returns: Json }
       search_suggest: { Args: { q: string }; Returns: Json }
