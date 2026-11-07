@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router';
 import { sanitizeHtml, hasText } from '../../lib/richText';
 import { formatINR as formatPrice } from '../../lib/money';
+import { useBlock } from '../../cms/useSite';
 
 const TIERS = [
   { key: 'top', label: 'Top Notes', hint: 'The first impression' },
@@ -132,6 +133,10 @@ function DefinitionList({ rows }) {
 
 /** Scent profile, story, the legally required details, and delivery — as accordions. */
 export function ProductAccordions({ detail, selectedSize, openAccordion, onToggle, sampleCopy, etaText }) {
+  const page = useBlock('product_page') || {};
+  const own = Array.isArray(detail.page_sections) ? detail.page_sections : [];
+  const defaults = detail.use_default_sections === false ? [] : Array.isArray(page.default_sections) ? page.default_sections : [];
+  const extra = [...own, ...defaults].filter((x) => x && (x.title || '').trim() && hasText(x.body));
   const profile = profileRows(detail.attributes);
   const c = detail.compliance || {};
   const netQty = selectedSize?.ml ? `${selectedSize.ml} ml` : null;
@@ -161,13 +166,13 @@ export function ProductAccordions({ detail, selectedSize, openAccordion, onToggl
   return (
     <div className="divide-y divide-[#EAEAEA] dark:divide-white/10 text-[12px]">
       {profile.length > 0 && (
-        <Accordion id="profile" title="Scent Profile" open={openAccordion === 'profile'} onToggle={onToggle}>
+        <Accordion id="profile" title={page.profile_title || 'Scent Profile'} open={openAccordion === 'profile'} onToggle={onToggle}>
           <DefinitionList rows={profile.map((r) => ({ label: r.label, value: r.value }))} />
-          <p className="pt-2 text-[11px] text-[#999999] dark:text-white/40">Longevity and sillage are our own guidance; skin chemistry varies.</p>
+          {page.profile_note && <p className="pt-2 text-[11px] text-[#999999] dark:text-white/40">{page.profile_note}</p>}
         </Accordion>
       )}
       {hasStory && (
-        <Accordion id="story" title="The Story" open={openAccordion === 'story'} onToggle={onToggle}>
+        <Accordion id="story" title={page.story_title || 'The Story'} open={openAccordion === 'story'} onToggle={onToggle}>
           {story.length > 0 && <DefinitionList rows={story} />}
           {hasText(detail.inspiration) && (
             <div className="pt-2 [&_p]:mb-2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(detail.inspiration) }} />
@@ -180,15 +185,20 @@ export function ProductAccordions({ detail, selectedSize, openAccordion, onToggl
           )}
         </Accordion>
       )}
-      <Accordion id="compliance" title="Details & Compliance" open={openAccordion === 'compliance'} onToggle={onToggle}>
+      <Accordion id="compliance" title={page.compliance_title || 'Details & Compliance'} open={openAccordion === 'compliance'} onToggle={onToggle}>
         <DefinitionList rows={compliance} />
         {c.caution_text && <p className="pt-2 text-[11px]">{c.caution_text}</p>}
       </Accordion>
-      <Accordion id="shipping" title="Delivery & Free Samples" open={openAccordion === 'shipping'} onToggle={onToggle}>
+      <Accordion id="shipping" title={page.delivery_title || 'Delivery & Free Samples'} open={openAccordion === 'shipping'} onToggle={onToggle}>
         <p>{etaText}</p>
         {sampleCopy && <p>{sampleCopy}</p>}
-        {detail.ships_surface_only && <p>Perfume is shipped by surface courier for safety, which can add a day or two.</p>}
+        {detail.ships_surface_only && page.surface_note && <p>{page.surface_note}</p>}
       </Accordion>
+      {extra.map((x, i) => (
+        <Accordion key={`extra-${i}`} id={`extra-${i}`} title={x.title} open={openAccordion === `extra-${i}`} onToggle={onToggle}>
+          <div className="[&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5" dangerouslySetInnerHTML={{ __html: sanitizeHtml(x.body) }} />
+        </Accordion>
+      ))}
     </div>
   );
 }

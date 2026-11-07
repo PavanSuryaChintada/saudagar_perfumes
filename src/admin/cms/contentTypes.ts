@@ -16,7 +16,7 @@ export interface ContentType {
   invalidates: string[][];
 }
 
-const t = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: 'text', help });
+const t = (key: string, label: string, help?: string, placeholder?: string): FieldDef => ({ key, label, type: 'text', help, placeholder });
 const ta = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: 'textarea', help });
 const active: FieldDef = { key: 'is_active', label: 'Show on the site', type: 'boolean' };
 
@@ -29,7 +29,7 @@ export const CONTENT_TYPES: Record<string, ContentType> = {
     titleField: 'text',
     subtitle: (r) => [r.starts_at && `from ${new Date(r.starts_at).toLocaleDateString('en-IN')}`, r.ends_at && `until ${new Date(r.ends_at).toLocaleDateString('en-IN')}`].filter(Boolean).join(' '),
     fields: [
-      t('text', 'Message'),
+      t('text', 'Message', undefined, 'e.g. Free delivery on orders above ₹4,999'),
       { key: 'link', label: 'Link', type: 'link' },
       { key: 'starts_at', label: 'Start showing', type: 'datetime', help: 'Leave empty to start now.' },
       { key: 'ends_at', label: 'Stop showing', type: 'datetime', help: 'Leave empty to keep showing.' },
@@ -46,8 +46,8 @@ export const CONTENT_TYPES: Record<string, ContentType> = {
     subtitle: (r) => r.tag ?? '',
     thumbField: 'image_url',
     fields: [
-      t('title', 'Title'),
-      t('subtitle', 'Subtitle'),
+      t('title', 'Title', undefined, 'e.g. Oud Roses is here'),
+      t('subtitle', 'Subtitle', undefined, 'e.g. Taif rose over aged oud'),
       t('tag', 'Tag', 'A short label, e.g. New drop.'),
       { key: 'image_url', label: 'Image', type: 'media', accept: 'image' },
       { key: 'video_url', label: 'Film (optional)', type: 'media', accept: 'video', help: 'Plays instead of the image.' },
@@ -67,11 +67,11 @@ export const CONTENT_TYPES: Record<string, ContentType> = {
     thumbField: 'thumbnail_url',
     linksProducts: true,
     fields: [
-      t('title', 'Title'),
+      t('title', 'Title', undefined, 'e.g. Behind the bottle'),
       ta('caption', 'Caption'),
       { key: 'video_url', label: 'Film', type: 'media', accept: 'video' },
       { key: 'thumbnail_url', label: 'Cover image', type: 'media', accept: 'image' },
-      t('external_url', 'Instagram link'),
+      t('external_url', 'Instagram link', undefined, 'https://www.instagram.com/reel/…'),
       { key: 'product_ids', label: 'Products in this reel', type: 'product', multiple: true, by: 'id' },
       active,
     ],
@@ -101,7 +101,7 @@ export const CONTENT_TYPES: Record<string, ContentType> = {
     description: 'Questions shown by FAQ sections. Group them to show different sets on different pages.',
     titleField: 'question',
     subtitle: (r) => r.group_name ?? '',
-    fields: [t('question', 'Question'), { key: 'answer', label: 'Answer', type: 'richtext' }, t('group_name', 'Group', 'e.g. Shipping. FAQ sections can show one group.'), active],
+    fields: [t('question', 'Question', undefined, 'e.g. How long does delivery take?'), { key: 'answer', label: 'Answer', type: 'richtext' }, t('group_name', 'Group', 'e.g. Shipping. FAQ sections can show one group.'), active],
     invalidates: [['cms', 'faqs']],
   },
   stockists: {
@@ -113,12 +113,12 @@ export const CONTENT_TYPES: Record<string, ContentType> = {
     subtitle: (r) => r.city ?? '',
     thumbField: 'image_url',
     fields: [
-      t('name', 'Name'),
-      t('city', 'City'),
+      t('name', 'Name', undefined, 'e.g. Saudagar Atelier'),
+      t('city', 'City', undefined, 'e.g. Hyderabad'),
       ta('address', 'Address'),
       t('phone', 'Phone'),
-      t('hours', 'Opening hours'),
-      t('map_url', 'Map link'),
+      t('hours', 'Opening hours', undefined, 'e.g. 11 am – 9 pm, all days'),
+      t('map_url', 'Map link', undefined, 'https://maps.google.com/…'),
       { key: 'image_url', label: 'Photo', type: 'media', accept: 'image' },
       active,
     ],

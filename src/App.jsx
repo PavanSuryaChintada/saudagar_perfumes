@@ -41,6 +41,7 @@ import {
 import { resolveStorefrontView, AUTH_VIEWS } from './app/routes';
 import { useAuth } from './lib/auth';
 import { useBlock } from './cms/useSite';
+import { resolveLink } from './cms/links';
 import LoginPage from './storefront/auth/LoginPage';
 import RegisterPage from './storefront/auth/RegisterPage';
 import ForgotPasswordPage from './storefront/auth/ForgotPasswordPage';
@@ -223,7 +224,10 @@ export default function App() {
       return;
     }
     if (categorySlug === 'all' || categorySlug === 'shop') {
-      routerNavigate('/shop');
+      // Admin → Site content → Brand → "Shop all" buttons go to (defaults to every product).
+      const shopLink = resolveLink(brandBlock?.shop_link);
+      if (shopLink?.external) window.open(shopLink.href, '_blank', 'noopener,noreferrer');
+      else routerNavigate(shopLink?.href || '/shop');
       resetScrollToTop();
       return;
     }

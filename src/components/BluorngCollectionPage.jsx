@@ -95,7 +95,7 @@ export default function BluorngCollectionPage({
     if (onNavigateCollection) onNavigateCollection(slug);
   };
 
-  const browseAll = () => navigate('/shop');
+  const browseAll = () => (onNavigateCollection ? onNavigateCollection('all') : navigate('/shop'));
 
   const missing =
     (isCollection && !isAll && collectionQuery.isSuccess && !collection) ||

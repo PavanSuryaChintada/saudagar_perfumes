@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { emptyProductForm, emptyVariant, fromAdminProduct, slugify, toSavePayload, validateProductForm, type ProductForm } from './productForm';
+import { copyProductDetails, emptyProductForm, emptyVariant, fromAdminProduct, slugify, toSavePayload, validateProductForm, type ProductForm } from './productForm';
 
 const valid = (): ProductForm => ({
   ...emptyProductForm(),
@@ -77,5 +77,17 @@ describe('fromAdminProduct', () => {
     expect(p.variants[0].initial_stock).toBeNull();
     expect(p.category_ids).toEqual(['c1']);
     expect(p.notes).toEqual([{ note_id: 'n1', tier: 'top', position: 0 }]);
+  });
+});
+
+describe('copyProductDetails', () => {
+  it('copies only the chosen groups', () => {
+    const source = { ...emptyProductForm(), description: '<p>Source</p>', perfumer: 'A. Nose', page_sections: [{ title: 'Care', body: '<p>x</p>' }] };
+    const target = { ...emptyProductForm(), name: 'Target', description: '<p>Mine</p>', perfumer: 'Me' };
+    const out = copyProductDetails(target, source, ['text', 'sections']);
+    expect(out.description).toBe('<p>Source</p>');
+    expect(out.page_sections).toEqual([{ title: 'Care', body: '<p>x</p>' }]);
+    expect(out.perfumer).toBe('Me');
+    expect(out.name).toBe('Target');
   });
 });

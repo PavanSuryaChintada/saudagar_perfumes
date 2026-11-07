@@ -1107,6 +1107,7 @@ export type Database = {
           name: string
           packer_address: string | null
           packer_name: string | null
+          page_sections: Json
           perfumer: string | null
           primary_category_id: string | null
           rating_avg: number
@@ -1122,6 +1123,7 @@ export type Database = {
           total_stock: number
           units_sold: number
           updated_at: string
+          use_default_sections: boolean
         }
         Insert: {
           admin_note?: string | null
@@ -1156,6 +1158,7 @@ export type Database = {
           name: string
           packer_address?: string | null
           packer_name?: string | null
+          page_sections?: Json
           perfumer?: string | null
           primary_category_id?: string | null
           rating_avg?: number
@@ -1171,6 +1174,7 @@ export type Database = {
           total_stock?: number
           units_sold?: number
           updated_at?: string
+          use_default_sections?: boolean
         }
         Update: {
           admin_note?: string | null
@@ -1205,6 +1209,7 @@ export type Database = {
           name?: string
           packer_address?: string | null
           packer_name?: string | null
+          page_sections?: Json
           perfumer?: string | null
           primary_category_id?: string | null
           rating_avg?: number
@@ -1220,6 +1225,7 @@ export type Database = {
           total_stock?: number
           units_sold?: number
           updated_at?: string
+          use_default_sections?: boolean
         }
         Relationships: [
           {

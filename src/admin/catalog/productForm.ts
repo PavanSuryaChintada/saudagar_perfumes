@@ -85,7 +85,57 @@ export type ProductForm = { id?: string } & Record<TextKey, string> & Record<Com
   attributes: AttributeLink[];
   media: MediaForm[];
   variants: VariantForm[];
+  /** Extra product-page sections (accordions) for this product only. */
+  page_sections: PageSectionForm[];
+  /** Also show the store-wide sections from Site content → Product page. */
+  use_default_sections: boolean;
 };
+
+export interface PageSectionForm {
+  title: string;
+  body: string;
+}
+
+/** Groups of details that can be copied from another product in the editor. */
+export const COPY_GROUPS = [
+  { key: 'text', label: 'Short and full description' },
+  { key: 'scent', label: 'Scent type (family, accords, concentration…)' },
+  { key: 'notes', label: 'Notes pyramid' },
+  { key: 'story', label: 'Story (perfumer, inspiration, how to wear)' },
+  { key: 'compliance', label: 'Details & compliance' },
+  { key: 'sections', label: 'Product page sections' },
+  { key: 'organisation', label: 'Categories and collections' },
+] as const;
+export type CopyGroup = (typeof COPY_GROUPS)[number]['key'];
+
+/** Copies the chosen groups of details from another product's form into this one. */
+export function copyProductDetails(target: ProductForm, source: ProductForm, groups: CopyGroup[]): ProductForm {
+  const next: ProductForm = { ...target };
+  const has = (g: CopyGroup) => groups.includes(g);
+  if (has('text')) {
+    next.short_description = source.short_description;
+    next.description = source.description;
+    next.concentration_note = source.concentration_note;
+  }
+  if (has('scent')) next.attributes = source.attributes.map((a) => ({ ...a }));
+  if (has('notes')) next.notes = source.notes.map((n) => ({ ...n }));
+  if (has('story')) {
+    next.perfumer = source.perfumer;
+    next.inspiration = source.inspiration;
+    next.how_to_wear = source.how_to_wear;
+  }
+  if (has('compliance')) for (const [k] of COMPLIANCE_FIELDS) next[k] = source[k];
+  if (has('sections')) {
+    next.page_sections = source.page_sections.map((x) => ({ ...x }));
+    next.use_default_sections = source.use_default_sections;
+  }
+  if (has('organisation')) {
+    next.primary_category_id = source.primary_category_id;
+    next.category_ids = [...source.category_ids];
+    next.collection_ids = [...source.collection_ids];
+  }
+  return next;
+}
 
 export function emptyVariant(): VariantForm {
   return {
@@ -118,6 +168,8 @@ export function emptyProductForm(defaults: Partial<Record<ComplianceKey, string>
     attributes: [],
     media: [],
     variants: [],
+    page_sections: [],
+    use_default_sections: true,
   };
 }
 
@@ -241,6 +293,10 @@ export function fromAdminProduct(b: AdminProductBundle): ProductForm {
     ships_surface_only: !!b.product.ships_surface_only,
     category_ids: b.categoryIds,
     collection_ids: b.collectionIds,
+    page_sections: Array.isArray(p.page_sections)
+      ? (p.page_sections as { title?: unknown; body?: unknown }[]).map((x) => ({ title: str(x?.title), body: str(x?.body) }))
+      : [],
+    use_default_sections: p.use_default_sections !== false,
     notes: [...b.notes].sort((x, y) => x.position - y.position),
     attributes: b.attributes,
     media: [...b.media]

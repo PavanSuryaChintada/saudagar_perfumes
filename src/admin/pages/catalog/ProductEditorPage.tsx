@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { ExternalLink, Plus, Trash2, X } from 'lucide-react';
+import { Copy, ExternalLink, Plus, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
@@ -13,10 +13,11 @@ import { RichText } from '../../ui/RichText';
 import { MediaGalleryInput, MediaPreview } from '../../ui/MediaField';
 import { SortableList } from '../../ui/SortableList';
 import {
-  COMPLIANCE_FIELDS, emptyProductForm, emptyVariant, fromAdminProduct, slugify, toSavePayload, validateProductForm,
-  type AttributeLink, type NoteLink, type ProductForm, type VariantForm,
+  COMPLIANCE_FIELDS, COPY_GROUPS, copyProductDetails, emptyProductForm, emptyVariant, fromAdminProduct, slugify, toSavePayload, validateProductForm,
+  type AttributeLink, type CopyGroup, type NoteLink, type ProductForm, type VariantForm,
 } from '../../catalog/productForm';
 import { useSetting } from '../../../lib/bootstrap';
+import { FieldInput } from '../../cms/SchemaForm';
 import { loadAdminProduct, OPTION_KINDS, rpc, throwIf, useCategories, useCollectionsAdmin, useInvalidateCatalog, useNotes, useOptions, type NoteRow, type OptionRow } from '../../catalog/api';
 
 const TIERS: { tier: NoteLink['tier']; label: string }[] = [
@@ -205,6 +206,16 @@ export default function ProductEditorPage() {
   const [saving, setSaving] = useState(false);
   const [slugTouched, setSlugTouched] = useState(!isNew);
   const [stockModal, setStockModal] = useState<VariantForm | null>(null);
+  const [copyOpen, setCopyOpen] = useState(false);
+  const [copyFrom, setCopyFrom] = useState('');
+  const [copyGroups, setCopyGroups] = useState<CopyGroup[]>(['text', 'scent', 'notes', 'story', 'compliance', 'sections']);
+  const [copyBusy, setCopyBusy] = useState(false);
+  const productList = useQuery({
+    queryKey: ['admin', 'catalog', 'product-picker'],
+    queryFn: async () =>
+      (await throwIf(supabase.from('products').select('id, name, primary_category_id').is('archived_at', null).order('name'))) as { id: string; name: string; primary_category_id: string | null }[],
+    staleTime: 30_000,
+  });
   const [stockDelta, setStockDelta] = useState('');
   const [stockReason, setStockReason] = useState('restock');
   const [stockNote, setStockNote] = useState('');
@@ -249,6 +260,15 @@ export default function ProductEditorPage() {
     setSaving(true);
     try {
       const pid = await rpc<string>('save_product', { payload: toSavePayload(form) });
+      await throwIf(
+        supabase
+          .from('products')
+          .update({
+            page_sections: form.page_sections.filter((x) => x.title.trim()).map((x) => ({ title: x.title.trim(), body: x.body })) as never,
+            use_default_sections: form.use_default_sections,
+          })
+          .eq('id', pid),
+      );
       await invalidate();
       toast.success('Product saved. Changes are live.');
       if (isNew) navigate(`/admin/products/${pid}`, { replace: true });
@@ -280,6 +300,21 @@ export default function ProductEditorPage() {
     }
   };
 
+  const runCopy = async () => {
+    if (!copyFrom) return toast.error('Choose a product to copy from.');
+    if (!copyGroups.length) return toast.error('Tick at least one group of details.');
+    setCopyBusy(true);
+    try {
+      const source = fromAdminProduct(await loadAdminProduct(copyFrom));
+      setForm((f) => (f ? copyProductDetails(f, source, copyGroups) : f));
+      setCopyOpen(false);
+      toast.success('Details copied. Review them, then save.');
+    } catch (e) {
+      toast.error(toFriendlyError(e));
+    } finally {
+      setCopyBusy(false);
+    }
+  };
   const err = (k: string) => errors[k];
   const sampleIdx = form.variants.findIndex((v) => v.kind === 'sample' && !v.is_hidden);
   const offersSample = sampleIdx >= 0 && form.variants[sampleIdx].in_sample_pool && form.variants[sampleIdx].is_active;
@@ -307,11 +342,16 @@ export default function ProductEditorPage() {
         title={isNew ? 'New product' : form.name || 'Product'}
         description={isNew ? 'Choose the category, then the scent type and notes, then the details, sizes and photos. Save when done.' : `/product/${form.slug}`}
         actions={
-          !isNew && (
-            <a href={`/product/${form.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#D5D3CC] text-[12px] hover:border-tk-ink">
-              <ExternalLink size={13} /> View on site
-            </a>
-          )
+          <>
+            <Button variant="secondary" onClick={() => setCopyOpen(true)}>
+              <Copy size={13} /> Copy details from another product
+            </Button>
+            {!isNew && (
+              <a href={`/product/${form.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#D5D3CC] text-[12px] hover:border-tk-ink">
+                <ExternalLink size={13} /> View on site
+              </a>
+            )}
+          </>
         }
       />
       {isSample && <p className="mb-4 px-3 py-2 bg-amber-50 border border-amber-200 text-[12px] text-amber-800">This is sample content from the original website. Replace the details before launch.</p>}
@@ -605,7 +645,23 @@ export default function ProductEditorPage() {
             </div>
           </Panel>
 
-          <Panel title="8 · Details & compliance" description="Shown in the product page's compliance section. Confirm HSN and GST with your CA.">
+          <Panel title="8 · Product page sections" description="Extra drop-down sections on this product's page, e.g. a ritual, gifting or care section.">
+            <label className="flex items-center gap-2 text-[13px] mb-4">
+              <Toggle checked={form.use_default_sections} onChange={(on) => set('use_default_sections', on)} label="Also show the store's default sections" />
+              Also show the store's default sections
+              <span className="text-[11px] text-[#888888]">— edit them in Site content → Product page</span>
+            </label>
+            <FieldInput
+              field={{ key: 'page_sections', label: 'This product’s own sections', type: 'list', itemLabel: 'Section', fields: [
+                { key: 'title', label: 'Title', type: 'text', placeholder: 'e.g. The ritual' },
+                { key: 'body', label: 'Text', type: 'richtext' },
+              ] }}
+              value={form.page_sections}
+              onChange={(v) => set('page_sections', v as ProductForm['page_sections'])}
+            />
+          </Panel>
+
+          <Panel title="9 · Details & compliance" description="Shown in the product page's compliance section. Confirm HSN and GST with your CA.">
             <div className="grid gap-4 sm:grid-cols-2">
               {COMPLIANCE_FIELDS.map(([key, label]) => (
                 <FieldShell key={key} label={label} htmlFor={`c-${key}`} error={err(key)}>
@@ -679,6 +735,50 @@ export default function ProductEditorPage() {
           </Button>
         </div>
       </div>
+
+      <Modal
+        open={copyOpen}
+        onOpenChange={(o) => !o && !copyBusy && setCopyOpen(false)}
+        title="Copy details from another product"
+        description="Fills the ticked parts of this form from the chosen product. Nothing is saved until you press Save."
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setCopyOpen(false)} disabled={copyBusy}>Cancel</Button>
+            <Button onClick={runCopy} busy={copyBusy}>Copy</Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <FieldShell label="Copy from" htmlFor="copy-from" help={form.primary_category_id ? 'Products in the same category are listed first.' : undefined}>
+            <select id="copy-from" value={copyFrom} onChange={(e) => setCopyFrom(e.target.value)} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+              <option value="">Choose a product…</option>
+              {[...(productList.data ?? [])]
+                .filter((p) => p.id !== form.id)
+                .sort((x, y) => Number(y.primary_category_id === form.primary_category_id) - Number(x.primary_category_id === form.primary_category_id))
+                .map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                    {form.primary_category_id && p.primary_category_id === form.primary_category_id ? ' · same category' : ''}
+                  </option>
+                ))}
+            </select>
+          </FieldShell>
+          <fieldset className="space-y-1.5">
+            <legend className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555] mb-1">What to copy</legend>
+            {COPY_GROUPS.map((g) => (
+              <label key={g.key} className="flex items-center gap-2 text-[13px]">
+                <input
+                  type="checkbox"
+                  checked={copyGroups.includes(g.key)}
+                  onChange={(e) => setCopyGroups(e.target.checked ? [...copyGroups, g.key] : copyGroups.filter((x) => x !== g.key))}
+                />
+                {g.label}
+              </label>
+            ))}
+          </fieldset>
+          <p className="text-[11px] text-[#888888]">Name, link, prices, sizes, stock and photos are never copied.</p>
+        </div>
+      </Modal>
 
       <Modal
         open={!!stockModal}

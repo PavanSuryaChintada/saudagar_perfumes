@@ -79,21 +79,28 @@
 - [x] Search suggestions editable
 - [ ] Tests run at the end (owner: all testing after the last phase)
 
-## Phase 4: Bag, samples, orders
-- [ ] Bag saved to account
-- [ ] Server-side prices (quote)
-- [ ] Free 5 ml samples: earned per 50 ml
-- [ ] Sample picker in bag ("Surprise me")
-- [ ] Free-shipping progress bar
-- [ ] Checkout: address → payment → review
-- [ ] Cash on delivery orders
-- [ ] Order success page
-- [ ] My orders + order details
-- [ ] Cancel order (while pending)
-- [ ] Admin: orders (live updates, status changes)
-- [ ] Admin: inventory (stock in/out with reasons, history)
-- [ ] Admin: free samples page
-- [ ] Invoice (GST) + packing slip print
+## Phase 4: Bag, samples, orders ✅
+- [x] Bag saved to account
+- [x] Server-side prices (quote)
+- [x] Free 5 ml samples: earned per 50 ml
+- [x] Sample picker in bag ("Surprise me")
+- [x] Surprise samples weighted by vial stock
+- [x] Free-shipping progress bar
+- [x] Checkout: address → payment → review
+- [x] Cash on delivery orders
+- [x] Order success page
+- [x] My orders + order details
+- [x] Cancel order (while pending)
+- [x] Admin: orders (live updates, status changes)
+- [x] Admin: inventory (stock in/out with reasons, history)
+- [x] Admin: free samples page
+- [x] Invoice (GST) + packing slip print
+- [x] Product editor: category first, then scent type, notes, details
+- [x] "Offer as a free sample" switch per product
+- [x] Copy details from another product
+- [x] Own product-page sections per product + store defaults
+- [x] "Shop all" buttons go where the admin chooses
+- [x] New CMS sections start with sample content
 
 ## Phase 5: Coupons
 - [ ] Coupon codes (percent / flat)
