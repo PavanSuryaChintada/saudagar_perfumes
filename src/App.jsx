@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
 import BluorngAnnouncementBar from './components/BluorngAnnouncementBar.jsx';
 import BluorngHeader from './components/BluorngHeader.jsx';
@@ -35,49 +36,27 @@ import {
   setStoredWishlist
 } from './data/bluorngSaudagarData.js';
 import { resolveCollectionTheme } from './data/collectionThemes.js';
+import { resolveStorefrontView, AUTH_VIEWS } from './app/routes';
+import { useAuth } from './lib/auth';
+import LoginPage from './storefront/auth/LoginPage';
+import RegisterPage from './storefront/auth/RegisterPage';
+import ForgotPasswordPage from './storefront/auth/ForgotPasswordPage';
+import ResetPasswordPage from './storefront/auth/ResetPasswordPage';
+import NotFoundPage from './storefront/NotFoundPage';
+
+const productExists = (id) => ALL_PRODUCTS.some((p) => p.id === id);
 
 export default function App() {
-  // Navigation State initialized synchronously from URL to prevent blank screen flash on refresh
-  const [view, setView] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const pathname = window.location.pathname;
-      const params = new URLSearchParams(window.location.search);
-      if (pathname.startsWith('/product/') || params.get('id')) return 'product';
-      if (pathname.startsWith('/wishlist')) return 'wishlist';
-      if (pathname.startsWith('/story') || pathname.startsWith('/about')) return 'story';
-      if (pathname.startsWith('/account') || pathname.startsWith('/profile')) return 'account';
-      if (pathname.startsWith('/checkout')) return 'checkout';
-      if (pathname.startsWith('/collections/') || params.get('collection')) return 'collection';
-    }
-    return 'home';
-  });
-
-  const [selectedProductId, setSelectedProductId] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const pathname = window.location.pathname;
-      const params = new URLSearchParams(window.location.search);
-      if (pathname.startsWith('/product/')) {
-        const pId = pathname.replace('/product/', '').replace(/\/$/, '');
-        if (ALL_PRODUCTS.some((p) => p.id === pId)) return pId;
-      }
-      const prodId = params.get('id');
-      if (prodId && ALL_PRODUCTS.some((p) => p.id === prodId)) return prodId;
-    }
-    return 'saudagar-deep-canopy';
-  });
-
-  const [selectedCategory, setSelectedCategory] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const pathname = window.location.pathname;
-      const params = new URLSearchParams(window.location.search);
-      if (pathname.startsWith('/collections/')) {
-        return pathname.replace('/collections/', '').replace(/\/$/, '') || 'all';
-      }
-      const cat = params.get('collection');
-      if (cat) return cat;
-    }
-    return 'all';
-  });
+  // The URL is the source of truth for which page is showing (src/app/routes.ts).
+  const location = useLocation();
+  const routerNavigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const resolved = resolveStorefrontView(location.pathname, location.search, productExists);
+  const view = resolved.view;
+  const selectedProductId = resolved.productId || 'saudagar-deep-canopy';
+  const selectedCategory = resolved.collectionSlug || 'signature';
+  const isAuthView = AUTH_VIEWS.includes(view);
+  const needsSignIn = view === 'account' || view === 'checkout';
 
   // Global State
   const [activeCurrency, setActiveCurrency] = useState(getStoredCurrency());
@@ -146,77 +125,6 @@ export default function App() {
     }, 3200);
   };
 
-  // URL Sync supporting both /collections/:slug and ?collection=:slug
-  useEffect(() => {
-    const handleUrl = () => {
-      const pathname = window.location.pathname;
-      const params = new URLSearchParams(window.location.search);
-      const prodId = params.get('id');
-      const cat = params.get('collection');
-
-      // Product route check
-      if (pathname.startsWith('/product/')) {
-        const pId = pathname.replace('/product/', '').replace(/\/$/, '');
-        if (ALL_PRODUCTS.some((p) => p.id === pId)) {
-          setSelectedProductId(pId);
-          setView('product');
-          return;
-        }
-      }
-
-      if (prodId && ALL_PRODUCTS.some((p) => p.id === prodId)) {
-        setSelectedProductId(prodId);
-        setView('product');
-        return;
-      }
-
-      // Saved fragrances page
-      if (pathname.startsWith('/wishlist')) {
-        setView('wishlist');
-        return;
-      }
-
-      // Dedicated brand story and journey page route
-      if (pathname.startsWith('/story') || pathname.startsWith('/about')) {
-        setView('story');
-        return;
-      }
-
-      // Connoisseur user profile account page route
-      if (pathname.startsWith('/account') || pathname.startsWith('/profile')) {
-        setView('account');
-        return;
-      }
-
-      // Dedicated checkout page route
-      if (pathname.startsWith('/checkout')) {
-        setView('checkout');
-        return;
-      }
-
-      // Dedicated collection routes (/collections/signature, /collections/royal, /collections/exotic)
-      if (pathname.startsWith('/collections/')) {
-        const colSlug = pathname.replace('/collections/', '').replace(/\/$/, '');
-        setSelectedCategory(colSlug || 'signature');
-        setView('collection');
-        return;
-      }
-
-      if (cat) {
-        setSelectedCategory(cat);
-        setView('collection');
-        return;
-      }
-
-      // Root path
-      setView('home');
-    };
-
-    handleUrl();
-    window.addEventListener('popstate', handleUrl);
-    return () => window.removeEventListener('popstate', handleUrl);
-  }, []);
-
   // Dynamic Themed Title Update
   useEffect(() => {
     if (view === 'product') {
@@ -235,6 +143,14 @@ export default function App() {
       document.title = 'CONNOISSEUR ACCOUNT & PROFILE | SAUDAGAR PERFUMES';
     } else if (view === 'checkout') {
       document.title = 'SECURE CHECKOUT | SAUDAGAR PERFUMES · Haute Parfumerie';
+    } else if (view === 'login') {
+      document.title = 'SIGN IN | SAUDAGAR PERFUMES';
+    } else if (view === 'register') {
+      document.title = 'CREATE ACCOUNT | SAUDAGAR PERFUMES';
+    } else if (view === 'forgot-password' || view === 'reset-password') {
+      document.title = 'RESET PASSWORD | SAUDAGAR PERFUMES';
+    } else if (view === 'notfound') {
+      document.title = 'PAGE NOT FOUND | SAUDAGAR PERFUMES';
     } else {
       document.title = 'SAUDAGAR PERFUMES | Haute Parfumerie & Artisanal Fragrances';
     }
@@ -272,36 +188,29 @@ export default function App() {
 
   // Navigation Handlers
   const navigateToProduct = (id) => {
-    setSelectedProductId(id);
-    setView('product');
-    const newUrl = `/product/${id}`;
-    window.history.pushState({ id }, '', newUrl);
+    routerNavigate(`/product/${id}`);
     resetScrollToTop();
   };
 
   const navigateToHome = () => {
-    setView('home');
-    window.history.pushState({}, '', '/');
+    routerNavigate('/');
     resetScrollToTop();
   };
 
   const navigateToWishlist = () => {
-    setView('wishlist');
-    window.history.pushState({}, '', '/wishlist');
+    routerNavigate('/wishlist');
     resetScrollToTop();
   };
 
   const navigateToAccount = () => {
     playSound('nav');
-    setView('account');
-    window.history.pushState({}, '', '/account');
+    routerNavigate('/account');
     resetScrollToTop();
   };
 
   const navigateToStory = () => {
     playSound('nav');
-    setView('story');
-    window.history.pushState({}, '', '/story');
+    routerNavigate('/story');
     resetScrollToTop();
   };
 
@@ -310,8 +219,7 @@ export default function App() {
       setCheckoutData(data);
     }
     setIsCartOpen(false);
-    setView('checkout');
-    window.history.pushState({}, '', '/checkout');
+    routerNavigate('/checkout');
     resetScrollToTop();
   };
 
@@ -323,10 +231,7 @@ export default function App() {
     let target = categorySlug;
     if (categorySlug === 'all') target = 'signature';
     const wasInCollection = view === 'collection';
-    setSelectedCategory(target);
-    setView('collection');
-    const newUrl = `/collections/${target}`;
-    window.history.pushState({ categorySlug: target }, '', newUrl);
+    routerNavigate(`/collections/${target}`);
     if (!wasInCollection) {
       resetScrollToTop();
     }
@@ -444,6 +349,27 @@ export default function App() {
   };
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  if (resolved.redirectTo) {
+    return <Navigate to={resolved.redirectTo} replace />;
+  }
+  if (needsSignIn && !authLoading && !user) {
+    return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
+  }
+  if (needsSignIn && authLoading) {
+    return <div className="min-h-screen bg-white dark:bg-[#0B0A0D]" aria-busy="true" />;
+  }
+  if (isAuthView) {
+    return (
+      <>
+        {view === 'login' && <LoginPage />}
+        {view === 'register' && <RegisterPage />}
+        {view === 'forgot-password' && <ForgotPasswordPage />}
+        {view === 'reset-password' && <ResetPasswordPage />}
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FFFFFF] dark:bg-[#0B0A0D] text-[#111111] dark:text-[#FFFFFF] flex flex-col font-sans selection:bg-[#C4823F] dark:selection:bg-[#D4AF37] dark:selection:text-[#0B0A0D] selection:text-white transition-colors duration-300">
       {/* Toast Notification */}
@@ -533,6 +459,8 @@ export default function App() {
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
             />
+          ) : view === 'notfound' ? (
+            <NotFoundPage onNavigateHome={navigateToHome} onNavigateCollection={navigateToCollection} />
           ) : view === 'collection' ? (
             <BluorngCollectionPage
               initialCategory={selectedCategory}
