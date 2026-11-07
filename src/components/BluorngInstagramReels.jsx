@@ -88,7 +88,6 @@ const REELS_SET_A = INSTAGRAM_REELS.map((r, i) => ({ ...r, uniqueKey: `setA-${r.
 const REELS_SET_B = INSTAGRAM_REELS.map((r, i) => ({ ...r, uniqueKey: `setB-${r.id}-${i}` }));
 
 export default function BluorngInstagramReels({
-  activeCurrency = 'INR',
   onSelectProduct,
   onQuickBuy,
   onOpenStory
@@ -168,7 +167,7 @@ export default function BluorngInstagramReels({
               {reel.productName}
             </span>
             <span className="text-[10.5px] sm:text-[11px] font-semibold text-[#ECC86A] whitespace-nowrap">
-              {formatPrice(reel.price, activeCurrency)}
+              {formatPrice(reel.price)}
             </span>
           </div>
         </div>

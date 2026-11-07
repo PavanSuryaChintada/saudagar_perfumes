@@ -4,7 +4,6 @@ import { formatPrice } from '../data/bluorngSaudagarData.js';
 
 export default function BluorngProductCard({
   product,
-  activeCurrency = 'INR',
   isWishlisted = false,
   onToggleWishlist,
   onSelectProduct,
@@ -137,7 +136,7 @@ export default function BluorngProductCard({
             {product.name}
           </h3>
           <span className="text-[12px] sm:text-[12.5px] font-medium shrink-0 text-[#111111] dark:text-white/95">
-            {formatPrice(product.price, activeCurrency)}
+            {formatPrice(product.price)}
           </span>
         </div>
 
@@ -147,7 +146,7 @@ export default function BluorngProductCard({
           </p>
           {product.compareAtPrice && product.compareAtPrice > product.price && (
             <span className="text-[10.5px] line-through font-normal shrink-0 text-[#AAAAAA] dark:text-white/30">
-              {formatPrice(product.compareAtPrice, activeCurrency)}
+              {formatPrice(product.compareAtPrice)}
             </span>
           )}
         </div>

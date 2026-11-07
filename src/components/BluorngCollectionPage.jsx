@@ -8,7 +8,6 @@ import BluorngFilterSidebar from './BluorngFilterSidebar.jsx';
 
 export default function BluorngCollectionPage({
   initialCategory = 'signature',
-  activeCurrency = 'INR',
   wishlist = [],
   onToggleWishlist,
   onSelectProduct,
@@ -608,13 +607,13 @@ export default function BluorngCollectionPage({
                                   ? 'text-[13px] sm:text-[14px] font-medium'
                                   : 'text-[12.5px]'
                               }`}>
-                                {formatPrice(prod.price, activeCurrency)}
+                                {formatPrice(prod.price)}
                               </span>
                               {hasDiscount && (
                                 <span className={`line-through text-[#AAAAAA] dark:text-white/40 ${
                                   gridCols === 2 ? 'text-[12px]' : gridCols === 3 ? 'text-[11.5px]' : 'text-[11px]'
                                 }`}>
-                                  {formatPrice(prod.compareAtPrice, activeCurrency)}
+                                  {formatPrice(prod.compareAtPrice)}
                                 </span>
                               )}
                             </div>

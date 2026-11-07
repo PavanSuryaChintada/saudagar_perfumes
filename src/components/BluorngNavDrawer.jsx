@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MEGA_MENU_COLLECTIONS, CURRENCIES } from '../data/bluorngSaudagarData.js';
+import { MEGA_MENU_COLLECTIONS } from '../data/bluorngSaudagarData.js';
 
 export default function BluorngNavDrawer({
   isOpen,
   onClose,
-  activeCurrency,
-  onCurrencyChange,
   theme = 'dark',
   onToggleTheme,
   onNavigateHome,
@@ -232,32 +230,11 @@ export default function BluorngNavDrawer({
             </nav>
           </div>
 
-          {/* Bottom Drawer Actions: Currency Switcher & Support */}
+          {/* Bottom Drawer Actions: Support */}
           <div className="pt-6 space-y-4">
-            <div>
-              <span className="text-[10px] font-bold tracking-wide uppercase text-[#888888] dark:text-white/50 block mb-2">
-                Select Currency
-              </span>
-              <div className="grid grid-cols-5 gap-1.5 text-[10.5px]">
-                {Object.keys(CURRENCIES).map((curr) => (
-                  <button
-                    key={curr}
-                    onClick={() => onCurrencyChange(curr)}
-                    className={`py-1.5 font-bold uppercase rounded-full transition-all text-center cursor-pointer ${
-                      activeCurrency === curr
-                        ? 'bg-[#111111] dark:bg-[#D4AF37] text-white dark:text-[#0B0A0D] font-medium shadow-xs'
-                        : 'bg-black/[0.05] dark:bg-white/10 text-[#444444] dark:text-white/80 hover:bg-black/[0.1] dark:hover:bg-white/15'
-                    }`}
-                  >
-                    {curr}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             <div className="text-[10.5px] text-[#777777] dark:text-white/50 leading-relaxed">
               <p>House Concierge: +91 84484 41388</p>
-              <p>Worldwide Insured Delivery • Complimentary Samples</p>
+              <p>Insured Delivery Across India • Complimentary Samples</p>
             </div>
           </div>
 

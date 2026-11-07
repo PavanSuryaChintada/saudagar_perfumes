@@ -8,7 +8,6 @@ export default function BluorngCartDrawer({
   cart = [],
   onUpdateQuantity,
   onRemoveItem,
-  activeCurrency = 'INR',
   onProceedToCheckout
 }) {
   const [promoCode, setPromoCode] = useState('');
@@ -137,10 +136,10 @@ export default function BluorngCartDrawer({
           <div className="shrink-0 bg-[#FAF9F6] dark:bg-[#141318] p-3.5 text-[11px] text-[#111111] dark:text-white border-b border-black/[0.06] dark:border-white/[0.08] transition-colors">
             <div className="flex items-center justify-between font-semibold tracking-wider uppercase mb-1.5">
               {amountToFreeShipping > 0 ? (
-                <span>Add {formatPrice(amountToFreeShipping, activeCurrency)} more for Free Express Courier</span>
+                <span>Add {formatPrice(amountToFreeShipping)} more for Free Express Courier</span>
               ) : (
                 <span className="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
-                  ✓ Congratulations! You unlocked Free Worldwide Express Shipping
+                  ✓ Congratulations! You unlocked free express delivery
                 </span>
               )}
             </div>
@@ -222,11 +221,6 @@ export default function BluorngCartDrawer({
                           Size: <span className="text-[#111111] dark:text-white font-semibold">{item.size || '50ML'}</span>
                         </p>
 
-                        {item.engraving && (
-                          <p className="text-[10px] text-[#C4823F] dark:text-[#ECC86A] font-medium tracking-wide mt-0.5">
-                            Engraving: "{item.engraving}"
-                          </p>
-                        )}
                       </div>
 
                       {/* Quantity Stepper & Price Row */}
@@ -252,7 +246,7 @@ export default function BluorngCartDrawer({
                         </div>
 
                         <span className="font-bold text-[12.5px] text-[#111111] dark:text-white">
-                          {formatPrice(itemPrice * item.quantity, activeCurrency)}
+                          {formatPrice(itemPrice * item.quantity)}
                         </span>
                       </div>
                     </div>
@@ -272,14 +266,14 @@ export default function BluorngCartDrawer({
                   onClick={() => setIsNoteOpen(!isNoteOpen)}
                   className="text-[10.5px] font-semibold tracking-wider uppercase text-[#777777] dark:text-white/60 hover:text-[#111111] dark:hover:text-white flex items-center gap-1 cursor-pointer"
                 >
-                  <span>{isNoteOpen ? '− Hide Gift Note' : '+ Add Complimentary Gift Note'}</span>
+                  <span>{isNoteOpen ? '− Hide note' : '+ Add a note for us'}</span>
                 </button>
                 {isNoteOpen && (
                   <textarea
                     rows={2}
                     value={orderNote}
                     onChange={(e) => setOrderNote(e.target.value)}
-                    placeholder="Enter recipient's name or custom gift note for calligraphy card..."
+                    placeholder="Anything we should know about your order (optional)"
                     className="w-full mt-2 p-2.5 bg-black/[0.05] dark:bg-white/[0.07] text-[#111111] dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11px] rounded-xs outline-none"
                   />
                 )}
@@ -317,26 +311,26 @@ export default function BluorngCartDrawer({
               <div className="space-y-1.5 text-[11.5px] pt-1">
                 <div className="flex justify-between text-[#777777] dark:text-white/60">
                   <span>Subtotal</span>
-                  <span>{formatPrice(rawSubtotal, activeCurrency)}</span>
+                  <span>{formatPrice(rawSubtotal)}</span>
                 </div>
 
                 {discountAmount > 0 && (
                   <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
                     <span>VIP Privilege ({discountPercent}%)</span>
-                    <span>-{formatPrice(discountAmount, activeCurrency)}</span>
+                    <span>-{formatPrice(discountAmount)}</span>
                   </div>
                 )}
 
                 <div className="flex justify-between text-[#777777] dark:text-white/60">
                   <span>Estimated Shipping</span>
                   <span>
-                    {amountToFreeShipping === 0 ? 'FREE' : formatPrice(250, activeCurrency)}
+                    {amountToFreeShipping === 0 ? 'FREE' : formatPrice(250)}
                   </span>
                 </div>
 
                 <div className="flex justify-between text-[14px] font-bold text-[#111111] dark:text-white pt-1.5">
                   <span className="uppercase tracking-wider">Total</span>
-                  <span>{formatPrice(finalTotal, activeCurrency)}</span>
+                  <span>{formatPrice(finalTotal)}</span>
                 </div>
                 <p className="text-[9.5px] text-[#888888] dark:text-white/40">
                   Taxes and insured worldwide courier calculated at checkout.

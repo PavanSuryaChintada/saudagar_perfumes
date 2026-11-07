@@ -14,7 +14,6 @@ import BluorngTestimonials from './BluorngTestimonials.jsx';
 import BluorngEditorial from './BluorngEditorial.jsx';
 
 export default function BluorngHome({
-  activeCurrency,
   wishlist = [],
   onToggleWishlist,
   onSelectProduct,
@@ -60,7 +59,6 @@ export default function BluorngHome({
       {/* 4. FEATURED COLLECTION 1 ("Latest drop") */}
       <div id="featured-drop-section">
         <BluorngFeaturedCollection
-          activeCurrency={activeCurrency}
           wishlist={wishlist}
           onToggleWishlist={onToggleWishlist}
           onSelectProduct={onSelectProduct}
@@ -77,7 +75,6 @@ export default function BluorngHome({
 
       {/* 6. CUSTOM EXCLUSIVE SECTION ("Saudagar Discovery Coffrets - Private Vault") */}
       <BluorngCustomExclusive
-        activeCurrency={activeCurrency}
         wishlist={wishlist}
         onToggleWishlist={onToggleWishlist}
         onSelectProduct={onSelectProduct}
@@ -92,7 +89,6 @@ export default function BluorngHome({
 
       {/* 8. FEATURED COLLECTION 2 ("Curated Fragrances & Attars") */}
       <BluorngSignatureCollection
-        activeCurrency={activeCurrency}
         wishlist={wishlist}
         onToggleWishlist={onToggleWishlist}
         onSelectProduct={onSelectProduct}
@@ -121,7 +117,6 @@ export default function BluorngHome({
 
       {/* 10. INSTAGRAM REELS ("Community & Atelier Reels - Screening Lounge") */}
       <BluorngInstagramReels
-        activeCurrency={activeCurrency}
         onSelectProduct={onSelectProduct}
         onQuickBuy={onQuickBuy}
         onOpenStory={onOpenStory}

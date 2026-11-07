@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CURRENCIES } from '../data/bluorngSaudagarData.js';
 import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
 
 export default function BluorngFooter({
-  activeCurrency,
-  onCurrencyChange,
   theme = 'dark',
   onToggleTheme,
   onNavigateHome,
@@ -55,7 +52,7 @@ export default function BluorngFooter({
               </p>
             </div>
 
-            {/* Right: Newsletter Input & Currency Switcher */}
+            {/* Right: Newsletter Input & Theme Switcher */}
             <div className="lg:col-span-5 flex flex-col gap-5 w-full">
               <form onSubmit={handleSubscribe} className="relative flex items-center w-full">
                 <input
@@ -75,26 +72,6 @@ export default function BluorngFooter({
                   {subscribed ? 'Confirmed ✓' : 'Subscribe'}
                 </button>
               </form>
-
-              {/* Currency Selector Pills */}
-              <div className="flex items-center gap-3 text-[11px] text-[#777777] dark:text-white/60">
-                <span className="text-[10px] uppercase tracking-[0.18em] text-[#888888] dark:text-white/50">Regional Atelier:</span>
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {Object.keys(CURRENCIES).map((code) => (
-                    <button
-                      key={code}
-                      onClick={() => onCurrencyChange(code)}
-                      className={`px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
-                        activeCurrency === code
-                          ? 'bg-[#111111] text-white dark:bg-white dark:text-[#111111] shadow-xs font-semibold'
-                          : 'bg-black/[0.05] hover:bg-black/[0.09] text-[#666666] dark:bg-white/[0.05] dark:hover:bg-white/[0.12] dark:text-white/70'
-                      }`}
-                    >
-                      {code}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
               {/* Atelier Theme Switcher Pills */}
               {onToggleTheme && (
@@ -183,11 +160,6 @@ export default function BluorngFooter({
               <li>
                 <button onClick={() => onNavigateCollection('bespoke')} className="hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer text-left">
                   Private Perfume Commissions
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onNavigateCollection('all')} className="hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer text-left">
-                  Diamond-Tip Bottle Engraving
                 </button>
               </li>
               <li>
@@ -321,7 +293,7 @@ export default function BluorngFooter({
           <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-center text-[#888888] dark:text-white/40">
             <span>35% Pure Extrait</span>
             <span>✦</span>
-            <span>Insured White-Glove Dispatch</span>
+            <span>Insured Dispatch Across India</span>
             <span>✦</span>
             <span>Secured Checkout</span>
             <span>✦</span>
