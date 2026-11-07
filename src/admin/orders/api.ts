@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { throwIf } from '../catalog/api';
@@ -50,9 +50,10 @@ export function useAdminOrder(id: string | undefined) {
 /** Live updates: any order change refreshes the admin order queries. */
 export function useOrdersRealtime() {
   const qc = useQueryClient();
+  const channelName = `admin-orders-${useId()}`;
   useEffect(() => {
     const channel = supabase
-      .channel('admin-orders')
+      .channel(channelName)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
         void qc.invalidateQueries({ queryKey: ['admin', 'orders'] });
         void qc.invalidateQueries({ queryKey: ['admin', 'order'] });
@@ -61,7 +62,7 @@ export function useOrdersRealtime() {
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, [qc]);
+  }, [qc, channelName]);
 }
 
 export function useBusinessSettings() {

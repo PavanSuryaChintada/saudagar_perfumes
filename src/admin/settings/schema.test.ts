@@ -40,6 +40,8 @@ describe('SETTINGS_SCHEMA', () => {
         'returns.window_days', 'samples.enabled', 'samples.ml_per_sample', 'samples.sample_size_ml', 'samples.max_per_order',
         'samples.allow_duplicates', 'payments.online_enabled', 'auth.google_enabled', 'media.transforms_enabled',
         'whatsapp.floating_number', 'analytics.ga4_id', 'analytics.gtm_id', 'inventory.low_stock_threshold', 'orders.prefix',
+        'samples.bag_heading', 'samples.bag_text', 'business.legal_name', 'business.gstin', 'business.address', 'business.state',
+        'business.invoice_note',
       ].sort(),
     );
   });

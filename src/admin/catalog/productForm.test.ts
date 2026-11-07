@@ -4,6 +4,7 @@ import { copyProductDetails, emptyProductForm, emptyVariant, fromAdminProduct, s
 const valid = (): ProductForm => ({
   ...emptyProductForm(),
   name: 'Deep Canopy',
+  primary_category_id: 'cat-1',
   slug: 'deep-canopy',
   base_price: '6600',
   variants: [

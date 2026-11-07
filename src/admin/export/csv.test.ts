@@ -13,6 +13,7 @@ describe('csv', () => {
   });
   it('writes a header from the union of keys, with a BOM', () => {
     const out = toCsv([{ a: 1 }, { b: null, a: 2 }]);
-    expect(out.startsWith('﻿a,b\r\n1,\r\n2,')).toBe(true);
+    expect(out.charCodeAt(0)).toBe(0xfeff);
+    expect(out.slice(1).startsWith('a,b\r\n1,\r\n2,')).toBe(true);
   });
 });
