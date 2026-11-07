@@ -25,3 +25,25 @@ export const getStoredCart = () => read(CART_KEY);
 export const setStoredCart = (cart) => write(CART_KEY, cart);
 export const getStoredWishlist = () => read(WISHLIST_KEY);
 export const setStoredWishlist = (list) => write(WISHLIST_KEY, list);
+
+const SAMPLES_KEY = 'saudagar_samples';
+const NOTE_KEY = 'saudagar_bag_note';
+export const getStoredSamples = () => read(SAMPLES_KEY).map((x) => (typeof x === 'string' ? x : null));
+export const setStoredSamples = (list) => write(SAMPLES_KEY, list);
+export function getStoredNote() {
+  if (typeof window === 'undefined') return '';
+  try {
+    return localStorage.getItem(NOTE_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+export function setStoredNote(note) {
+  if (typeof window === 'undefined') return;
+  try {
+    if (note) localStorage.setItem(NOTE_KEY, note);
+    else localStorage.removeItem(NOTE_KEY);
+  } catch {
+    // ignore
+  }
+}

@@ -9,6 +9,7 @@ export type StorefrontView =
   | 'story'
   | 'account'
   | 'checkout'
+  | 'order'
   | 'login'
   | 'register'
   | 'forgot-password'
@@ -26,6 +27,7 @@ export interface ResolvedView {
   collectionSlug?: string;
   listing?: ListingRoute;
   pageSlug?: string;
+  orderId?: string;
   redirectTo?: string;
 }
 
@@ -66,6 +68,7 @@ export function resolveStorefrontView(pathname: string, search: string): Resolve
   if (path.startsWith('/pages/')) return { view: 'page', pageSlug: tail(path, '/pages/') };
   if (path.startsWith('/notes/')) return { view: 'listing', listing: { kind: 'note', slug: tail(path, '/notes/') } };
   if (path === '/account' || path.startsWith('/account/') || path === '/profile') return { view: 'account' };
+  if (path.startsWith('/orders/')) return { view: 'order', orderId: tail(path, '/orders/') };
 
   const exact = EXACT[path];
   return exact ? { view: exact } : { view: 'notfound' };

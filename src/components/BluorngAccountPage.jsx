@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router';
 import { useAccount } from '../storefront/account/useAccount';
-import { addressSchema, fieldErrors, personalDetailsSchema } from '../storefront/account/schemas';
-import { INDIAN_STATES } from '../lib/indianStates';
+import { fieldErrors, personalDetailsSchema } from '../storefront/account/schemas';
+import AddressModal from '../storefront/account/AddressModal';
+import OrdersList from '../storefront/orders/OrdersList';
 import { formatIndianPhone } from '../lib/phone';
 import { toFriendlyError } from '../lib/errors';
 import { useAuth } from '../lib/auth';
@@ -14,7 +15,6 @@ const labelClass = 'block text-[10.5px] uppercase tracking-wider text-[#777777] 
 const errorClass = 'text-[10.5px] text-rose-600 dark:text-rose-400 mt-1';
 
 const TABS = ['orders', 'addresses', 'details'];
-const EMPTY_ADDRESS = { label: 'Home', full_name: '', phone: '', line1: '', line2: '', landmark: '', city: '', state: '', pincode: '' };
 
 function formatBirthday(iso) {
   if (!iso) return '';
@@ -67,39 +67,9 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
   };
 
   // ---------------- Address modal ----------------
-  const [addressModal, setAddressModal] = useState(null); // null | { id?: string }
-  const [addr, setAddr] = useState(EMPTY_ADDRESS);
-  const [addrErrors, setAddrErrors] = useState({});
-  const openNewAddress = () => {
-    setAddr({ ...EMPTY_ADDRESS, full_name: profile?.full_name || '', phone: profile?.phone || '' });
-    setAddrErrors({});
-    setAddressModal({});
-  };
-  const openEditAddress = (a) => {
-    setAddr({
-      label: a.label, full_name: a.full_name, phone: a.phone, line1: a.line1, line2: a.line2 || '',
-      landmark: a.landmark || '', city: a.city, state: a.state, pincode: a.pincode,
-    });
-    setAddrErrors({});
-    setAddressModal({ id: a.id });
-  };
-  const setAddrField = (key) => (e) => setAddr((prev) => ({ ...prev, [key]: e.target.value }));
-
-  const handleSaveAddress = async (e) => {
-    e.preventDefault();
-    const parsed = addressSchema.safeParse(addr);
-    if (!parsed.success) {
-      setAddrErrors(fieldErrors(parsed.error));
-      return;
-    }
-    try {
-      await saveAddress.mutateAsync({ id: addressModal?.id, values: parsed.data });
-      setAddressModal(null);
-      showToast(addressModal?.id ? 'Address updated.' : 'Address added.');
-    } catch (err) {
-      setAddrErrors({ form: toFriendlyError(err) });
-    }
-  };
+  const [addressModal, setAddressModal] = useState(null); // null | { address?: object }
+  const openNewAddress = () => setAddressModal({ address: null });
+  const openEditAddress = (a) => setAddressModal({ address: a });
 
   const handleRemoveAddress = async (id) => {
     try {
@@ -230,7 +200,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
       <main className="max-w-5xl mx-auto px-6 sm:px-10">
         {/* TAB 1: ORDERS */}
         {activeTab === 'orders' && (
-          <div className="py-16 text-center text-[#888888] text-[13px]">No orders yet.</div>
+          <OrdersList />
         )}
 
         {/* TAB 2: ADDRESSES */}
@@ -291,115 +261,12 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
               ))}
             </div>
 
-            {/* Address modal */}
-            <AnimatePresence>
-              {addressModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 12 }}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="address-modal-title"
-                    className="relative w-full max-w-md max-h-[90svh] overflow-y-auto bg-white dark:bg-[#141318] p-7 rounded-[2px] border border-[#EAEAEA] dark:border-white/10 shadow-xl space-y-5"
-                  >
-                    <div className="flex items-center justify-between border-b border-[#F0F0F0] dark:border-white/10 pb-3">
-                      <h3 id="address-modal-title" className="text-[15px] font-medium tracking-tight">
-                        {addressModal.id ? 'Edit Address' : 'New Address'}
-                      </h3>
-                      <button onClick={() => setAddressModal(null)} aria-label="Close" className="text-[#888888] hover:text-tk-ink dark:hover:text-white cursor-pointer text-sm">
-                        ✕
-                      </button>
-                    </div>
-
-                    <form onSubmit={handleSaveAddress} noValidate className="space-y-4 text-[12.5px]">
-                      {addrErrors.form && <p className={errorClass}>{addrErrors.form}</p>}
-                      <div>
-                        <span className={labelClass}>Label</span>
-                        <div className="flex gap-2">
-                          {['Home', 'Work', 'Other'].map((l) => (
-                            <button
-                              key={l}
-                              type="button"
-                              onClick={() => setAddr((p) => ({ ...p, label: l }))}
-                              className={`px-3 py-1.5 text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer ${
-                                addr.label === l ? 'bg-tk-ink text-white dark:bg-white dark:text-tk-night' : 'border border-[#E0E0E0] dark:border-white/20 text-[#666666] dark:text-[#AAAAAA]'
-                              }`}
-                            >
-                              {l}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label htmlFor="addr-name" className={labelClass}>Recipient Name</label>
-                          <input id="addr-name" type="text" value={addr.full_name} onChange={setAddrField('full_name')} className={inputClass} autoComplete="name" />
-                          {addrErrors.full_name && <p className={errorClass}>{addrErrors.full_name}</p>}
-                        </div>
-                        <div>
-                          <label htmlFor="addr-phone" className={labelClass}>Mobile</label>
-                          <input id="addr-phone" type="tel" inputMode="tel" value={addr.phone} onChange={setAddrField('phone')} className={inputClass} autoComplete="tel-national" />
-                          {addrErrors.phone && <p className={errorClass}>{addrErrors.phone}</p>}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label htmlFor="addr-line1" className={labelClass}>House / Flat, Street</label>
-                        <input id="addr-line1" type="text" value={addr.line1} onChange={setAddrField('line1')} className={inputClass} autoComplete="address-line1" />
-                        {addrErrors.line1 && <p className={errorClass}>{addrErrors.line1}</p>}
-                      </div>
-                      <div>
-                        <label htmlFor="addr-line2" className={labelClass}>Area / Locality (optional)</label>
-                        <input id="addr-line2" type="text" value={addr.line2} onChange={setAddrField('line2')} className={inputClass} autoComplete="address-line2" />
-                      </div>
-                      <div>
-                        <label htmlFor="addr-landmark" className={labelClass}>Landmark (optional)</label>
-                        <input id="addr-landmark" type="text" value={addr.landmark} onChange={setAddrField('landmark')} className={inputClass} />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <label htmlFor="addr-city" className={labelClass}>City</label>
-                          <input id="addr-city" type="text" value={addr.city} onChange={setAddrField('city')} className={inputClass} autoComplete="address-level2" />
-                          {addrErrors.city && <p className={errorClass}>{addrErrors.city}</p>}
-                        </div>
-                        <div>
-                          <label htmlFor="addr-pin" className={labelClass}>Pincode</label>
-                          <input id="addr-pin" type="text" inputMode="numeric" maxLength={6} value={addr.pincode} onChange={setAddrField('pincode')} className={inputClass} autoComplete="postal-code" />
-                          {addrErrors.pincode && <p className={errorClass}>{addrErrors.pincode}</p>}
-                        </div>
-                      </div>
-                      <div>
-                        <label htmlFor="addr-state" className={labelClass}>State</label>
-                        <select id="addr-state" value={addr.state} onChange={setAddrField('state')} className={`${inputClass} dark:bg-[#141318]`}>
-                          <option value="">Choose a state</option>
-                          {INDIAN_STATES.map((s) => (
-                            <option key={s} value={s}>{s}</option>
-                          ))}
-                        </select>
-                        {addrErrors.state && <p className={errorClass}>{addrErrors.state}</p>}
-                      </div>
-
-                      <div className="pt-3 border-t border-[#F0F0F0] dark:border-white/10 flex items-center justify-end gap-3">
-                        <button type="button" onClick={() => setAddressModal(null)} className="text-[11px] uppercase tracking-wider text-[#777777]">
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={saveAddress.isPending}
-                          className="px-5 py-2 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium disabled:opacity-60"
-                        >
-                          {saveAddress.isPending ? 'Saving…' : 'Save'}
-                        </button>
-                      </div>
-                    </form>
-                  </motion.div>
-                </div>
-              )}
-            </AnimatePresence>
+            <AddressModal
+              open={!!addressModal}
+              address={addressModal?.address || null}
+              onClose={() => setAddressModal(null)}
+              onSaved={() => showToast(addressModal?.address ? 'Address updated.' : 'Address added.')}
+            />
           </div>
         )}
 

@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatINR as formatPrice } from '../lib/money';
-import { useProductsBySlugs } from '../storefront/catalog/hooks';
-import { useSetting } from '../lib/bootstrap';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
+import { useQuote, trimSamples } from '../storefront/bag/useQuote';
+import SamplePicker from '../storefront/bag/SamplePicker';
 
 export default function BluorngCartDrawer({
   isOpen,
   onClose,
   cart = [],
+  samples = [],
+  onSamplesChange,
+  note = '',
+  onNoteChange,
   onUpdateQuantity,
   onRemoveItem,
   onProceedToCheckout
 }) {
-  const [promoCode, setPromoCode] = useState('');
-  const [discountPercent, setDiscountPercent] = useState(0);
-  const [discountError, setDiscountError] = useState('');
-  const [discountSuccess, setDiscountSuccess] = useState('');
-  const [orderNote, setOrderNote] = useState('');
-  const [isNoteOpen, setIsNoteOpen] = useState(false);
+  const [isNoteOpen, setIsNoteOpen] = React.useState(!!note);
 
   // Lock body scroll and pause Lenis smooth scroll while cart drawer is open
   useEffect(() => {
@@ -47,42 +46,23 @@ export default function BluorngCartDrawer({
     };
   }, [isOpen, onClose]);
 
-  const FREE_SHIPPING_THRESHOLD = Number(useSetting('shipping.free_threshold', 4999)) || 0;
-  const { bySlug } = useProductsBySlugs(cart.map((item) => item.productId));
+  // Every price, total and sample count shown here comes from the server's quote.
+  const { data: quote, isFetching, error: quoteError } = useQuote(cart, samples, null, isOpen && cart.length > 0);
+  const lineFor = (item) => quote?.lines.find((l) => l.variant_id === item.variantId);
+  const problemFor = (item) => quote?.problems.find((p) => p.variant_id === item.variantId);
+  const threshold = quote?.free_shipping?.threshold ?? null;
+  const remaining = quote?.free_shipping?.remaining ?? 0;
+  const freeShippingProgress = threshold ? Math.min(100, ((threshold - remaining) / threshold) * 100) : 100;
+  const hasProblems = (quote?.problems?.length ?? 0) > 0;
 
-  // Display subtotal (the server re-prices everything at checkout)
-  const rawSubtotal = cart.reduce((acc, item) => {
-    const prod = bySlug.get(item.productId);
-    const itemPrice = item.price ?? prod?.price ?? 0;
-    return acc + itemPrice * item.quantity;
-  }, 0);
-
-  const discountAmount = Math.round((rawSubtotal * discountPercent) / 100);
-  const finalTotal = Math.max(0, rawSubtotal - discountAmount);
-
-  // Free shipping calculation
-  const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - rawSubtotal);
-  const freeShippingProgress = FREE_SHIPPING_THRESHOLD > 0 ? Math.min(100, (rawSubtotal / FREE_SHIPPING_THRESHOLD) * 100) : 100;
-
-  const handleApplyPromo = (e) => {
-    e.preventDefault();
-    setDiscountError('');
-    setDiscountSuccess('');
-    const code = promoCode.trim().toUpperCase();
-
-    if (code === 'SAUDAGAR10' || code === 'BLUORNG10') {
-      setDiscountPercent(10);
-      setDiscountSuccess('10% VIP Atelier discount applied!');
-    } else if (code === 'FIRSTORDER') {
-      setDiscountPercent(15);
-      setDiscountSuccess('15% First Order privilege applied!');
-    } else if (code === 'ROYALOUD') {
-      setDiscountPercent(20);
-      setDiscountSuccess('20% Royal Oud collector discount applied!');
-    } else {
-      setDiscountError('Invalid promotional voucher code.');
-    }
-  };
+  // Keep sample picks within what the bag has earned, and drop picks that ran out.
+  useEffect(() => {
+    if (!quote || !onSamplesChange) return;
+    const rejected = new Set((quote.samples?.rejected ?? []).filter((r) => r.reason !== 'OVER_LIMIT').map((r) => r.variant_id));
+    const cleaned = trimSamples(samples, quote.samples?.entitlement ?? 0).map((id) => (id && rejected.has(id) ? null : id));
+    while (cleaned.length && cleaned[cleaned.length - 1] === null) cleaned.pop();
+    if (JSON.stringify(cleaned) !== JSON.stringify(samples)) onSamplesChange(cleaned);
+  }, [quote, samples, onSamplesChange]);
 
   return (
     <AnimatePresence>
@@ -137,13 +117,14 @@ export default function BluorngCartDrawer({
           </div>
 
           {/* ================= FREE SHIPPING PROGRESS BAR ================= */}
+          {cart.length > 0 && threshold && quote && (
           <div className="shrink-0 bg-[#FAF9F6] dark:bg-[#141318] p-3.5 text-[11px] text-tk-ink dark:text-white border-b border-black/[0.06] dark:border-white/[0.08] transition-colors">
             <div className="flex items-center justify-between font-semibold tracking-wider uppercase mb-1.5">
-              {amountToFreeShipping > 0 ? (
-                <span>Add {formatPrice(amountToFreeShipping)} more for Free Express Courier</span>
+              {remaining > 0 ? (
+                <span>Add {formatPrice(remaining)} more for free delivery</span>
               ) : (
                 <span className="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
-                  ✓ Congratulations! You unlocked free express delivery
+                  ✓ You've unlocked free delivery
                 </span>
               )}
             </div>
@@ -154,6 +135,7 @@ export default function BluorngCartDrawer({
               />
             </div>
           </div>
+          )}
 
           {/* ================= CART ITEMS LIST ================= */}
           <div 
@@ -184,11 +166,14 @@ export default function BluorngCartDrawer({
                 </button>
               </div>
             ) : (
-              cart.map((item, index) => {
-                const prod = bySlug.get(item.productId);
-                const itemImage = item.image || prod?.images?.[0] || PLACEHOLDER_IMAGE;
-                const itemName = item.name || prod?.name || 'Fragrance';
-                const itemPrice = item.price ?? prod?.price ?? 0;
+              <>
+              {cart.map((item, index) => {
+                const line = lineFor(item);
+                const problem = problemFor(item);
+                const itemImage = line?.image || item.image || PLACEHOLDER_IMAGE;
+                const itemName = line?.name || item.name || 'Fragrance';
+                const itemPrice = line?.unit_price ?? item.price ?? 0;
+                const atMax = line ? item.quantity >= line.stock || item.quantity >= 99 : false;
 
                 return (
                   <div
@@ -222,8 +207,11 @@ export default function BluorngCartDrawer({
                         </div>
 
                         <p className="text-[10px] text-[#777777] dark:text-white/60 uppercase tracking-wider mt-1">
-                          Size: <span className="text-tk-ink dark:text-white font-semibold">{item.size || '50ML'}</span>
+                          Size: <span className="text-tk-ink dark:text-white font-semibold">{line?.label || item.size}</span>
                         </p>
+                        {problem && (
+                          <p role="alert" className="text-[10.5px] text-rose-600 dark:text-rose-400 mt-1 font-semibold">{problem.message}</p>
+                        )}
 
                       </div>
 
@@ -242,7 +230,8 @@ export default function BluorngCartDrawer({
                           </span>
                           <button
                             onClick={() => onUpdateQuantity(index, 1)}
-                            className="w-6 h-6 flex items-center justify-center text-xs hover:bg-black/[0.08] dark:hover:bg-white/20 transition-colors cursor-pointer"
+                            disabled={atMax}
+                            className="disabled:opacity-30 disabled:cursor-not-allowed w-6 h-6 flex items-center justify-center text-xs hover:bg-black/[0.08] dark:hover:bg-white/20 transition-colors cursor-pointer"
                             aria-label="Increase quantity"
                           >
                             +
@@ -256,7 +245,9 @@ export default function BluorngCartDrawer({
                     </div>
                   </div>
                 );
-              })
+              })}
+              {quote?.samples && <SamplePicker samples={quote.samples} picks={samples} onChange={onSamplesChange} />}
+              </>
             )}
           </div>
 
@@ -275,87 +266,53 @@ export default function BluorngCartDrawer({
                 {isNoteOpen && (
                   <textarea
                     rows={2}
-                    value={orderNote}
-                    onChange={(e) => setOrderNote(e.target.value)}
+                    maxLength={500}
+                    value={note}
+                    onChange={(e) => onNoteChange && onNoteChange(e.target.value)}
                     placeholder="Anything we should know about your order (optional)"
+                    aria-label="Note for us"
                     className="w-full mt-2 p-2.5 bg-black/[0.05] dark:bg-white/[0.07] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11px] rounded-xs outline-none"
                   />
                 )}
               </div>
 
-              {/* Promo Code Input */}
-              <form onSubmit={handleApplyPromo} className="flex gap-2">
-                <input
-                  type="text"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  placeholder="PROMO CODE (e.g. SAUDAGAR10)"
-                  className="flex-1 px-3 py-2 bg-black/[0.05] dark:bg-white/[0.07] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 rounded-xs text-[11px] tracking-wider uppercase outline-none"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[10.5px] font-bold uppercase tracking-wide transition-colors rounded-xs cursor-pointer"
-                >
-                  Apply
-                </button>
-              </form>
-
-              {discountSuccess && (
-                <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wide">
-                  ✓ {discountSuccess}
-                </p>
-              )}
-              {discountError && (
-                <p className="text-[10px] text-rose-500 font-bold uppercase tracking-wide">
-                  ✕ {discountError}
-                </p>
-              )}
-
-              {/* Totals Summary */}
-              <div className="space-y-1.5 text-[11.5px] pt-1">
+              {/* Totals Summary (from the server) */}
+              <div className={`space-y-1.5 text-[11.5px] pt-1 transition-opacity ${isFetching ? 'opacity-60' : ''}`} aria-busy={isFetching}>
+                {quoteError && <p className="text-[10.5px] text-rose-600">We couldn't update the prices. Check your connection.</p>}
                 <div className="flex justify-between text-[#777777] dark:text-white/60">
                   <span>Subtotal</span>
-                  <span>{formatPrice(rawSubtotal)}</span>
+                  <span>{quote ? formatPrice(quote.subtotal) : '—'}</span>
                 </div>
 
-                {discountAmount > 0 && (
+                {quote?.discount > 0 && (
                   <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-semibold">
-                    <span>VIP Privilege ({discountPercent}%)</span>
-                    <span>-{formatPrice(discountAmount)}</span>
+                    <span>Discount</span>
+                    <span>-{formatPrice(quote.discount)}</span>
                   </div>
                 )}
 
                 <div className="flex justify-between text-[#777777] dark:text-white/60">
-                  <span>Estimated Shipping</span>
-                  <span>
-                    {amountToFreeShipping === 0 ? 'FREE' : formatPrice(250)}
-                  </span>
+                  <span>Delivery</span>
+                  <span>{quote ? (quote.shipping === 0 ? 'FREE' : formatPrice(quote.shipping)) : '—'}</span>
                 </div>
 
                 <div className="flex justify-between text-[14px] font-bold text-tk-ink dark:text-white pt-1.5">
                   <span className="uppercase tracking-wider">Total</span>
-                  <span>{formatPrice(finalTotal)}</span>
+                  <span>{quote ? formatPrice(quote.total) : '—'}</span>
                 </div>
-                <p className="text-[9.5px] text-[#888888] dark:text-white/40">
-                  Taxes and insured worldwide courier calculated at checkout.
-                </p>
+                <p className="text-[9.5px] text-[#888888] dark:text-white/40">Prices include GST. Cash on delivery across India.</p>
               </div>
 
               {/* Checkout Button */}
               <button
                 onClick={() => {
                   onClose();
-                  onProceedToCheckout({
-                    items: cart,
-                    subtotal: rawSubtotal,
-                    discount: discountAmount,
-                    total: finalTotal,
-                    note: orderNote
-                  });
+                  onProceedToCheckout();
                 }}
-                className="w-full py-3.5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
+                disabled={!quote || hasProblems}
+                className="disabled:opacity-50 disabled:cursor-not-allowed w-full py-3.5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
               >
-                <span>Proceed to Checkout</span>
+                <span>{hasProblems ? 'Fix your bag to continue' : 'Proceed to Checkout'}</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </button>
             </div>

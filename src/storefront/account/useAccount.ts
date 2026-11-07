@@ -47,10 +47,14 @@ export function useAccount() {
   const saveAddress = useMutation({
     mutationFn: async ({ id, values, makeDefault }: { id?: string; values: AddressValues; makeDefault?: boolean }) => {
       const row = { ...values, ...(makeDefault ? { is_default: true } : {}) };
-      const { error } = id
-        ? await supabase.from('addresses').update(row).eq('id', id)
-        : await supabase.from('addresses').insert(row);
+      if (id) {
+        const { error } = await supabase.from('addresses').update(row).eq('id', id);
+        if (error) throw error;
+        return id;
+      }
+      const { data, error } = await supabase.from('addresses').insert(row).select('id').single();
       if (error) throw error;
+      return data.id as string;
     },
     onSuccess: invalidateAddresses,
   });

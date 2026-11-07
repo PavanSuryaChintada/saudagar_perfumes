@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { AnimatePresence } from 'framer-motion';
 import BluorngAnnouncementBar from './components/BluorngAnnouncementBar.jsx';
@@ -12,7 +12,9 @@ import BluorngStoryViewer from './components/BluorngStoryViewer.jsx';
 import BluorngCartDrawer from './components/BluorngCartDrawer.jsx';
 import BluorngSearchModal from './components/BluorngSearchModal.jsx';
 import BluorngQuickBuyModal from './components/BluorngQuickBuyModal.jsx';
-import BluorngCheckoutPage from './components/BluorngCheckoutPage.jsx';
+import CheckoutPage from './storefront/checkout/CheckoutPage.jsx';
+import OrderPage from './storefront/orders/OrderPage.jsx';
+import { useCartSync } from './storefront/bag/useQuote';
 import BluorngNavDrawer from './components/BluorngNavDrawer.jsx';
 import BluorngWishlistPage from './components/BluorngWishlistPage.jsx';
 import BluorngAccountPage from './components/BluorngAccountPage.jsx';
@@ -30,7 +32,11 @@ import {
   getStoredCart,
   setStoredCart,
   getStoredWishlist,
-  setStoredWishlist
+  setStoredWishlist,
+  getStoredSamples,
+  setStoredSamples,
+  getStoredNote,
+  setStoredNote
 } from './lib/localStore';
 import { resolveStorefrontView, AUTH_VIEWS } from './app/routes';
 import { useAuth } from './lib/auth';
@@ -56,10 +62,25 @@ export default function App() {
   const selectedProductId = resolved.productId || 'saudagar-deep-canopy';
   const selectedCategory = resolved.collectionSlug || 'signature';
   const isAuthView = AUTH_VIEWS.includes(view);
-  const needsSignIn = view === 'account' || view === 'checkout';
+  const needsSignIn = view === 'account' || view === 'checkout' || view === 'order';
 
   // Global State
-  const [cart, setCart] = useState(getStoredCart());
+  const [cart, setCart] = useState(() => getStoredCart().filter((i) => i && i.variantId));
+  const [samples, setSamplesState] = useState(getStoredSamples);
+  const [bagNote, setBagNoteState] = useState(getStoredNote);
+  const setSamples = useCallback((next) => {
+    setSamplesState(next);
+    setStoredSamples(next);
+  }, []);
+  const setBagNote = useCallback((next) => {
+    setBagNoteState(next);
+    setStoredNote(next);
+  }, []);
+  const replaceCart = useCallback((next) => {
+    setCart(next);
+    setStoredCart(next);
+  }, []);
+  useCartSync(cart, replaceCart, samples, setSamples);
   const [wishlist, setWishlist] = useState(getStoredWishlist());
 
   // Theme State: 'light' (Editorial Clean Canvas) | 'dark' (Noir Obsidian Luxury)
@@ -96,7 +117,6 @@ export default function App() {
   const [isStoryOpen, setIsStoryOpen] = useState(false);
   const [isNavDrawerOpen, setIsNavDrawerOpen] = useState(false);
   const [quickBuyProduct, setQuickBuyProduct] = useState(null);
-  const [checkoutData, setCheckoutData] = useState(null);
 
   // Luxury Preloader State: plays smoothly on initial site entry / reload
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
@@ -134,6 +154,8 @@ export default function App() {
       document.title = 'SAVED FRAGRANCES | SAUDAGAR PERFUMES';
     } else if (view === 'story') {
       document.title = 'THE MAISON & COMPLETE BRAND JOURNEY | SAUDAGAR PERFUMES';
+    } else if (view === 'order') {
+      document.title = 'YOUR ORDER | SAUDAGAR PERFUMES';
     } else if (view === 'account') {
       document.title = 'CONNOISSEUR ACCOUNT & PROFILE | SAUDAGAR PERFUMES';
     } else if (view === 'checkout') {
@@ -189,10 +211,7 @@ export default function App() {
     resetScrollToTop();
   };
 
-  const navigateToCheckout = (data = null) => {
-    if (data) {
-      setCheckoutData(data);
-    }
+  const navigateToCheckout = () => {
     setIsCartOpen(false);
     routerNavigate('/checkout');
     resetScrollToTop();
@@ -279,14 +298,7 @@ export default function App() {
   const handleBuyNow = (item) => {
     handleAddToCart(item, { openCart: false });
     setIsCartOpen(false);
-    const total = (item.price ?? 0) * (item.quantity || 1);
-    navigateToCheckout({
-      items: [item],
-      subtotal: total,
-      discount: 0,
-      total,
-      note: ''
-    });
+    navigateToCheckout();
   };
 
   const handleUpdateQuantity = (index, delta) => {
@@ -316,10 +328,12 @@ export default function App() {
     triggerToast('Item removed from your bag.', 'remove');
   };
 
-  const handleOrderSuccess = (orderInfo) => {
-    setCart([]);
-    setStoredCart([]);
-    triggerToast(`Order ${orderInfo.orderId} confirmed! Check your email.`, 'success');
+  const handleOrderPlaced = (order) => {
+    replaceCart([]);
+    setSamples([]);
+    setBagNote('');
+    routerNavigate(`/orders/${order.id}?placed=1`, { replace: true });
+    resetScrollToTop();
   };
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -362,7 +376,7 @@ export default function App() {
       <Toast message={toastMessage} />
 
       {/* 1. MAIN HEADER (Logo, mega menu, search, story, stores, cart badge, theme toggle) */}
-      {view !== 'product' && view !== 'checkout' && view !== 'account' && view !== 'story' && (
+      {view !== 'product' && view !== 'checkout' && view !== 'account' && view !== 'order' && view !== 'story' && (
         <BluorngHeader
           isHomePage={view === 'home'}
           cartCount={totalCartCount}
@@ -389,15 +403,18 @@ export default function App() {
       <main className="flex-1">
         <PageTransition routeKey={view === 'product' ? `product-${selectedProductId}` : view === 'collection' ? 'collection' : `${view}:${location.pathname}`}>
           {view === 'checkout' ? (
-            <BluorngCheckoutPage
+            <CheckoutPage
               cart={cart}
-              checkoutData={checkoutData}
+              samples={samples}
+              onSamplesChange={setSamples}
+              note={bagNote}
+              onNoteChange={setBagNote}
               theme={theme}
               onToggleTheme={toggleTheme}
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
-              onOrderSuccess={handleOrderSuccess}
-              onClearCart={() => setCart([])}
+              onOpenBag={() => setIsCartOpen(true)}
+              onOrderPlaced={handleOrderPlaced}
             />
           ) : view === 'story' ? (
             <BluorngStoryPage
@@ -406,6 +423,8 @@ export default function App() {
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
             />
+          ) : view === 'order' ? (
+            <OrderPage orderId={resolved.orderId} theme={theme} onToggleTheme={toggleTheme} onNavigateHome={navigateToHome} />
           ) : view === 'account' ? (
             <BluorngAccountPage
               theme={theme}
@@ -475,7 +494,7 @@ export default function App() {
       </main>
 
       {/* 4. MASTER LUXURY FOOTER (Links, newsletter, currency, massive SAUDAGAR brand wordmark) */}
-      {view !== 'checkout' && view !== 'account' && view !== 'story' && (
+      {view !== 'checkout' && view !== 'account' && view !== 'order' && view !== 'story' && (
         <BluorngFooter
           theme={theme}
           onToggleTheme={toggleTheme}
@@ -517,9 +536,11 @@ export default function App() {
         cart={cart}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
-        onProceedToCheckout={(data) => {
-          navigateToCheckout(data);
-        }}
+        samples={samples}
+        onSamplesChange={setSamples}
+        note={bagNote}
+        onNoteChange={setBagNote}
+        onProceedToCheckout={() => navigateToCheckout()}
       />
 
       {/* Search Modal */}

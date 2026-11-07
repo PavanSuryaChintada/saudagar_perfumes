@@ -140,6 +140,33 @@ export type Database = {
         }
         Relationships: []
       }
+      carts: {
+        Row: {
+          coupon_code: string | null
+          items: Json
+          note: string | null
+          samples: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coupon_code?: string | null
+          items?: Json
+          note?: string | null
+          samples?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          coupon_code?: string | null
+          items?: Json
+          note?: string | null
+          samples?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -469,6 +496,267 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      order_events: {
+        Row: {
+          actor: string | null
+          actor_role: string | null
+          created_at: string
+          from_status: string | null
+          id: number
+          kind: string
+          message: string | null
+          order_id: string
+          to_status: string | null
+        }
+        Insert: {
+          actor?: string | null
+          actor_role?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: never
+          kind: string
+          message?: string | null
+          order_id: string
+          to_status?: string | null
+        }
+        Update: {
+          actor?: string | null
+          actor_role?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: never
+          kind?: string
+          message?: string | null
+          order_id?: string
+          to_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_items: {
+        Row: {
+          compare_at_price: number | null
+          gst_rate: number | null
+          hsn_code: string | null
+          id: string
+          image_url: string | null
+          line_total: number
+          line_type: string
+          order_id: string
+          position: number
+          product_id: string | null
+          product_name: string
+          product_slug: string | null
+          qty: number
+          sample_auto: boolean
+          size_ml: number | null
+          sku: string | null
+          unit_price: number
+          variant_id: string | null
+          variant_label: string | null
+        }
+        Insert: {
+          compare_at_price?: number | null
+          gst_rate?: number | null
+          hsn_code?: string | null
+          id?: string
+          image_url?: string | null
+          line_total?: number
+          line_type?: string
+          order_id: string
+          position?: number
+          product_id?: string | null
+          product_name: string
+          product_slug?: string | null
+          qty: number
+          sample_auto?: boolean
+          size_ml?: number | null
+          sku?: string | null
+          unit_price?: number
+          variant_id?: string | null
+          variant_label?: string | null
+        }
+        Update: {
+          compare_at_price?: number | null
+          gst_rate?: number | null
+          hsn_code?: string | null
+          id?: string
+          image_url?: string | null
+          line_total?: number
+          line_type?: string
+          order_id?: string
+          position?: number
+          product_id?: string | null
+          product_name?: string
+          product_slug?: string | null
+          qty?: number
+          sample_auto?: boolean
+          size_ml?: number | null
+          sku?: string | null
+          unit_price?: number
+          variant_id?: string | null
+          variant_label?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          admin_note: string | null
+          amount_refunded: number
+          cancel_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          client_ref: string | null
+          coupon_code: string | null
+          coupon_id: string | null
+          courier_name: string | null
+          created_at: string
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          delivered_at: string | null
+          discount: number
+          id: string
+          note: string | null
+          order_number: string
+          out_for_delivery_at: string | null
+          packed_at: string | null
+          paid_at: string | null
+          payment_method: string
+          payment_status: string
+          rto_at: string | null
+          samples_entitled: number
+          samples_short: number
+          ship_city: string | null
+          ship_pincode: string
+          ship_state: string
+          shipped_at: string | null
+          shipping_address: Json
+          shipping_fee: number
+          status: string
+          stock_restored_at: string | null
+          subtotal: number
+          total: number
+          tracking_number: string | null
+          tracking_url: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_note?: string | null
+          amount_refunded?: number
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          client_ref?: string | null
+          coupon_code?: string | null
+          coupon_id?: string | null
+          courier_name?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          delivered_at?: string | null
+          discount?: number
+          id?: string
+          note?: string | null
+          order_number: string
+          out_for_delivery_at?: string | null
+          packed_at?: string | null
+          paid_at?: string | null
+          payment_method: string
+          payment_status?: string
+          rto_at?: string | null
+          samples_entitled?: number
+          samples_short?: number
+          ship_city?: string | null
+          ship_pincode: string
+          ship_state: string
+          shipped_at?: string | null
+          shipping_address: Json
+          shipping_fee?: number
+          status?: string
+          stock_restored_at?: string | null
+          subtotal: number
+          total: number
+          tracking_number?: string | null
+          tracking_url?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_note?: string | null
+          amount_refunded?: number
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          client_ref?: string | null
+          coupon_code?: string | null
+          coupon_id?: string | null
+          courier_name?: string | null
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          delivered_at?: string | null
+          discount?: number
+          id?: string
+          note?: string | null
+          order_number?: string
+          out_for_delivery_at?: string | null
+          packed_at?: string | null
+          paid_at?: string | null
+          payment_method?: string
+          payment_status?: string
+          rto_at?: string | null
+          samples_entitled?: number
+          samples_short?: number
+          ship_city?: string | null
+          ship_pincode?: string
+          ship_state?: string
+          shipped_at?: string | null
+          shipping_address?: Json
+          shipping_fee?: number
+          status?: string
+          stock_restored_at?: string | null
+          subtotal?: number
+          total?: number
+          tracking_number?: string | null
+          tracking_url?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       pages: {
         Row: {
@@ -1327,8 +1615,28 @@ export type Database = {
         Args: { p_archived?: boolean; p_id: string }
         Returns: undefined
       }
+      cancel_order: {
+        Args: { p_order: string; p_reason?: string }
+        Returns: undefined
+      }
       catalog_filters: { Args: never; Returns: Json }
       category_with_children: { Args: { p_slug: string }; Returns: string[] }
+      create_order: {
+        Args: {
+          p_address_id: string
+          p_client_ref?: string
+          p_coupon_code?: string
+          p_items: Json
+          p_note?: string
+          p_payment_method?: string
+          p_samples?: Json
+        }
+        Returns: Json
+      }
+      create_sample_variant: {
+        Args: { p_product: string; p_size_ml?: number; p_stock?: number }
+        Returns: string
+      }
       delete_product: { Args: { p_id: string }; Returns: undefined }
       duplicate_product: { Args: { p_id: string }; Returns: string }
       duplicate_section: { Args: { p_id: string }; Returns: string }
@@ -1339,11 +1647,29 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean }
       jsonb_text_array: { Args: { j: Json }; Returns: string[] }
       normalize_indian_phone: { Args: { input: string }; Returns: string }
+      order_transition_allowed: {
+        Args: {
+          p_from: string
+          p_payment_method: string
+          p_payment_status: string
+          p_to: string
+        }
+        Returns: boolean
+      }
       page_content: { Args: { p_slug: string }; Returns: Json }
       page_is_published: { Args: { pid: string }; Returns: boolean }
       product_card: { Args: { pid: string }; Returns: Json }
       product_detail: { Args: { p_slug: string }; Returns: Json }
       product_is_visible: { Args: { pid: string }; Returns: boolean }
+      quote_order: {
+        Args: {
+          p_coupon_code?: string
+          p_items: Json
+          p_payment_method?: string
+          p_samples?: Json
+        }
+        Returns: Json
+      }
       reorder_collection_products: {
         Args: { p_collection: string; p_product_ids: string[] }
         Returns: undefined
@@ -1356,9 +1682,25 @@ export type Database = {
       resolve_collection: { Args: { p_slug: string }; Returns: Json }
       resolve_note: { Args: { p_slug: string }; Returns: Json }
       safe_birthday: { Args: { input: string }; Returns: string }
+      sample_pool: {
+        Args: never
+        Returns: {
+          family: string
+          image: string
+          label: string
+          name: string
+          product_id: string
+          slug: string
+          variant_id: string
+        }[]
+      }
       save_product: { Args: { payload: Json }; Returns: string }
       search_products: { Args: { p?: Json }; Returns: Json }
       search_suggest: { Args: { q: string }; Returns: Json }
+      set_order_status: {
+        Args: { p_note?: string; p_order: string; p_status: string }
+        Returns: undefined
+      }
       similar_products: {
         Args: { p_limit?: number; p_slug: string }
         Returns: Json
