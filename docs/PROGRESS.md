@@ -2,7 +2,7 @@
 
 `[x]` done · `[ ]` not yet · ◐ = phase in progress
 
-**Overall: phase 1 done, phase 2 in progress, 9 phases left (11 total; WhatsApp automation removed by owner)**
+**Overall: phases 1–2 done, phase 3 next, 9 phases left (11 total; WhatsApp automation removed by owner)**
 
 ---
 
@@ -31,7 +31,7 @@
 - [x] Removed: unused components, mock data
 - [x] Test admin login (test@gmail.com)
 
-## Phase 2: Catalog ◐ (issue #2)
+## Phase 2: Catalog ✅ (issue #2)
 - [x] Categories (tree)
 - [x] Collections (hero, video, old-link aliases)
 - [x] Notes library + note families
@@ -52,14 +52,14 @@
 - [x] Filters saved in the URL
 - [x] Product page: note pyramid, accords, profile, compliance, similar, recently viewed
 - [x] Fake reviews removed ("No reviews yet")
-- [ ] Admin: products list
-- [ ] Admin: product editor
-- [ ] Admin: categories
-- [ ] Admin: collections
-- [ ] Admin: notes
-- [ ] Admin: scent profile options
+- [x] Admin: products list
+- [x] Admin: product editor
+- [x] Admin: categories
+- [x] Admin: collections
+- [x] Admin: notes
+- [x] Admin: scent profile options
 
-## Phase 3: CMS (everything editable)
+## Phase 3: CMS (everything editable) ◐
 - [ ] Page builder (add / reorder / hide / duplicate / delete sections)
 - [ ] Every home section editable
 - [ ] Story page editable

@@ -918,6 +918,14 @@ export type Database = {
       product_card: { Args: { pid: string }; Returns: Json }
       product_detail: { Args: { p_slug: string }; Returns: Json }
       product_is_visible: { Args: { pid: string }; Returns: boolean }
+      reorder_collection_products: {
+        Args: { p_collection: string; p_product_ids: string[] }
+        Returns: undefined
+      }
+      reorder_rows: {
+        Args: { p_ids: string[]; p_table: string }
+        Returns: undefined
+      }
       resolve_category: { Args: { p_slug: string }; Returns: Json }
       resolve_collection: { Args: { p_slug: string }; Returns: Json }
       resolve_note: { Args: { p_slug: string }; Returns: Json }
