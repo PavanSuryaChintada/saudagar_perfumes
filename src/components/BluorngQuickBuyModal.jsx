@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { formatPrice } from '../data/bluorngSaudagarData.js';
 
-export default function BluorngQuickBuyModal({
+export default function BluorngQuickBuyModal(props) {
+  // Hooks must not run after an early return, so the null guard lives in this wrapper.
+  if (!props.product) return null;
+  return <QuickBuyModalContent {...props} />;
+}
+
+function QuickBuyModalContent({
   product,
   activeCurrency = 'INR',
   wishlist = [],
@@ -11,8 +17,6 @@ export default function BluorngQuickBuyModal({
   onAddToCart,
   onViewDetails
 }) {
-  if (!product) return null;
-
   const defaultSizes = [
     { ml: 50, label: '50 ml', price: product.price || 5500 },
     { ml: 100, label: '100 ml', price: Math.round((product.price || 5500) * 1.62) },
