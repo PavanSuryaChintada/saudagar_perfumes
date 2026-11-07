@@ -16,29 +16,15 @@ function QuickBuyModalContent({
   onAddToCart,
   onViewDetails
 }) {
-  const defaultSizes = [
-    { ml: 50, label: '50 ml', price: product.price || 5500 },
-    { ml: 100, label: '100 ml', price: Math.round((product.price || 5500) * 1.62) },
-    { ml: 30, label: '30 ml', price: Math.round((product.price || 5500) * 0.76) }
-  ];
-
-  const sizes = product.sizes && product.sizes.length > 0
-    ? product.sizes.map((sz, idx) => ({
-        ml: sz.ml || (idx === 0 ? 50 : idx === 1 ? 100 : 30),
-        label: sz.label
-          ? sz.label.toLowerCase().includes('ml')
-            ? sz.label.replace(/ml/i, ' ml').replace(/extrait/i, '').trim()
-            : sz.label
-          : `${sz.ml || 50} ml`,
-        price: sz.price || product.price
-      }))
-    : defaultSizes;
-
-  const [selectedSize, setSelectedSize] = useState(sizes[0]);
+  // Real sizes only; a product with none can't be added.
+  const sizes = product.sizes || [];
+  const [selectedSize, setSelectedSize] = useState(() => sizes.find((sz) => sz.stock > 0) || sizes[0] || null);
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
 
-  const currentPrice = selectedSize?.price || product.price;
+  const currentPrice = selectedSize?.price ?? product.price;
+  const maxQty = Math.max(1, Math.min(99, selectedSize?.stock ?? 0));
+  const canBuy = !!selectedSize && selectedSize.stock > 0;
   const image = product.images?.[0] || product.image || '/images/crystal_square_flacon.png';
 
   // Extract key notes chord for olfactive preview
@@ -55,12 +41,16 @@ function QuickBuyModalContent({
     : 'Extrait de Parfum';
 
   const handleAdd = () => {
+    if (!canBuy) return;
     setIsAdded(true);
     onAddToCart({
       productId: product.id,
+      variantId: selectedSize.variantId,
       size: selectedSize.label,
+      name: product.name,
+      image,
       price: currentPrice,
-      quantity
+      quantity: Math.min(quantity, maxQty)
     });
     setTimeout(() => {
       setIsAdded(false);
@@ -204,19 +194,22 @@ function QuickBuyModalContent({
                   Select Volume
                 </span>
                 <span className="text-[10px] text-[#C4823F] dark:text-[#ECC86A] font-mono">
-                  {selectedSize.label}
+                  {selectedSize ? (selectedSize.stock > 0 ? selectedSize.label : `${selectedSize.label} · sold out`) : 'Unavailable'}
                 </span>
               </div>
 
               <div className="grid grid-cols-3 gap-2">
                 {sizes.map((sz) => {
-                  const isSelected = selectedSize.label === sz.label;
+                  const isSelected = selectedSize?.variantId === sz.variantId;
                   return (
                     <button
-                      key={sz.label}
+                      key={sz.variantId}
                       type="button"
-                      onClick={() => setSelectedSize(sz)}
-                      className={`py-2 px-2.5 rounded-xl border text-center transition-all duration-200 cursor-pointer ${
+                      onClick={() => {
+                        setSelectedSize(sz);
+                        setQuantity(1);
+                      }}
+                      className={`py-2 px-2.5 rounded-xl border text-center transition-all duration-200 cursor-pointer ${sz.stock <= 0 ? 'opacity-50 line-through ' : ''}${
                         isSelected
                           ? 'border-[#111111] bg-[#111111] text-white dark:border-[#ECC86A] dark:bg-[#D4AF37] dark:text-[#0B0A0D] shadow-sm font-medium'
                           : 'border-[#EAEAEA] dark:border-white/10 bg-[#FAF9F6] dark:bg-[#18171E] text-[#666666] dark:text-[#A09D96] hover:border-[#CCCCCC] dark:hover:border-white/20'
@@ -251,7 +244,7 @@ function QuickBuyModalContent({
                 </span>
                 <button
                   type="button"
-                  onClick={() => setQuantity((q) => q + 1)}
+                  onClick={() => setQuantity((q) => Math.min(maxQty, q + 1))}
                   className="w-6 h-6 flex items-center justify-center text-[13px] text-[#777777] hover:text-[#111111] dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                   aria-label="Increase quantity"
                 >
@@ -263,11 +256,12 @@ function QuickBuyModalContent({
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={handleAdd}
-                className="flex-1 py-3 px-5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center justify-between"
+                disabled={!canBuy}
+                className="disabled:opacity-50 disabled:cursor-not-allowed flex-1 py-3 px-5 bg-[#111111] hover:bg-[#C4823F] dark:bg-[#D4AF37] dark:hover:bg-[#ECC86A] text-white dark:text-[#0B0A0D] text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center justify-between"
               >
-                <span>{isAdded ? 'Added to Bag ✓' : 'Add to Bag'}</span>
+                <span>{isAdded ? 'Added to Bag ✓' : canBuy ? 'Add to Bag' : 'Sold out'}</span>
                 <span className="font-semibold tabular-nums ml-2">
-                  {formatPrice(currentPrice * quantity)}
+                  {formatPrice(currentPrice * Math.min(quantity, maxQty))}
                 </span>
               </motion.button>
             </div>
@@ -276,7 +270,7 @@ function QuickBuyModalContent({
             <div className="pt-2 border-t border-[#EAEAEA] dark:border-white/10 flex items-center justify-between text-[10.5px]">
               <span className="text-[#888888] dark:text-[#88857F] flex items-center gap-1 font-light">
                 <span className="text-[#C4823F] dark:text-[#ECC86A]">✦</span>
-                <span>Complimentary 2ml vial included</span>
+                <span>Free samples with every 50 ml</span>
               </span>
 
               {onViewDetails && (

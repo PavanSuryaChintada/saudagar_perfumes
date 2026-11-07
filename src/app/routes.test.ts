@@ -1,21 +1,26 @@
 import { describe, expect, it } from 'vitest';
 import { resolveStorefrontView } from './routes';
 
-const known = new Set(['saudagar-deep-canopy', 'saudagar-amber-bark']);
-const exists = (id: string) => known.has(id);
-const r = (path: string, search = '') => resolveStorefrontView(path, search, exists);
+const r = (path: string, search = '') => resolveStorefrontView(path, search);
 
 describe('resolveStorefrontView', () => {
   it('home', () => expect(r('/')).toEqual({ view: 'home' }));
   it('product page', () => expect(r('/product/saudagar-deep-canopy')).toEqual({ view: 'product', productId: 'saudagar-deep-canopy' }));
   it('product page with trailing slash', () => expect(r('/product/saudagar-deep-canopy/')).toEqual({ view: 'product', productId: 'saudagar-deep-canopy' }));
-  it('unknown product is a 404', () => expect(r('/product/nope')).toEqual({ view: 'notfound' }));
+  it('any product slug resolves; the page shows the 404 when the database has no such product', () =>
+    expect(r('/product/nope')).toEqual({ view: 'product', productId: 'nope' }));
   it('legacy ?id= redirects to the product path', () =>
     expect(r('/', '?id=saudagar-deep-canopy')).toEqual({ view: 'home', redirectTo: '/product/saudagar-deep-canopy' }));
   it('legacy ?collection= redirects to the collection path', () =>
     expect(r('/', '?collection=royal')).toEqual({ view: 'home', redirectTo: '/collections/royal' }));
   it('collection page', () => expect(r('/collections/royal')).toEqual({ view: 'collection', collectionSlug: 'royal' }));
   it('bare /collections/ falls back to signature', () => expect(r('/collections/')).toEqual({ view: 'collection', collectionSlug: 'signature' }));
+  it('/collections/all is the shop', () => expect(r('/collections/all')).toEqual({ view: 'collection', collectionSlug: 'all' }));
+  it('shop', () => expect(r('/shop')).toEqual({ view: 'listing', listing: { kind: 'shop' } }));
+  it('category', () => expect(r('/categories/royal-attars')).toEqual({ view: 'listing', listing: { kind: 'category', slug: 'royal-attars' } }));
+  it('notes index', () => expect(r('/notes')).toEqual({ view: 'notes' }));
+  it('note page', () => expect(r('/notes/taif-rose')).toEqual({ view: 'listing', listing: { kind: 'note', slug: 'taif-rose' } }));
+  it('search', () => expect(r('/search', '?q=oud')).toEqual({ view: 'listing', listing: { kind: 'search' } }));
   it('/about is the story page', () => expect(r('/about')).toEqual({ view: 'story' }));
   it('/story', () => expect(r('/story')).toEqual({ view: 'story' }));
   it('/profile is the account page', () => expect(r('/profile')).toEqual({ view: 'account' }));

@@ -27,13 +27,11 @@ import PageTransition from './components/motion/PageTransition.jsx';
 import { useSmoothScroll } from './components/motion/SmoothScrollProvider.jsx';
 
 import {
-  ALL_PRODUCTS,
   getStoredCart,
   setStoredCart,
   getStoredWishlist,
   setStoredWishlist
 } from './data/bluorngSaudagarData.js';
-import { resolveCollectionTheme } from './data/collectionThemes.js';
 import { resolveStorefrontView, AUTH_VIEWS } from './app/routes';
 import { useAuth } from './lib/auth';
 import LoginPage from './storefront/auth/LoginPage';
@@ -41,15 +39,15 @@ import RegisterPage from './storefront/auth/RegisterPage';
 import ForgotPasswordPage from './storefront/auth/ForgotPasswordPage';
 import ResetPasswordPage from './storefront/auth/ResetPasswordPage';
 import NotFoundPage from './storefront/NotFoundPage';
-
-const productExists = (id) => ALL_PRODUCTS.some((p) => p.id === id);
+import ListingPage from './storefront/ListingPage.jsx';
+import NotesIndexPage from './storefront/NotesIndexPage.jsx';
 
 export default function App() {
   // The URL is the source of truth for which page is showing (src/app/routes.ts).
   const location = useLocation();
   const routerNavigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const resolved = resolveStorefrontView(location.pathname, location.search, productExists);
+  const resolved = resolveStorefrontView(location.pathname, location.search);
   const view = resolved.view;
   const selectedProductId = resolved.productId || 'saudagar-deep-canopy';
   const selectedCategory = resolved.collectionSlug || 'signature';
@@ -124,14 +122,10 @@ export default function App() {
 
   // Dynamic Themed Title Update
   useEffect(() => {
-    if (view === 'product') {
-      const prod = ALL_PRODUCTS.find((p) => p.id === selectedProductId);
-      if (prod) {
-        document.title = `${prod.name} | SAUDAGAR PERFUMES · Haute Parfumerie`;
-      }
-    } else if (view === 'collection') {
-      const currentTheme = resolveCollectionTheme(selectedCategory);
-      document.title = `${currentTheme.name.toUpperCase()} · ${currentTheme.headline} | SAUDAGAR PERFUMES`;
+    if (view === 'product' || view === 'collection' || view === 'listing') {
+      // These pages set their own title once their data has loaded.
+    } else if (view === 'notes') {
+      document.title = 'FRAGRANCE NOTES | SAUDAGAR PERFUMES';
     } else if (view === 'wishlist') {
       document.title = 'SAVED FRAGRANCES | SAUDAGAR PERFUMES';
     } else if (view === 'story') {
@@ -162,26 +156,6 @@ export default function App() {
       window.__lenis.scrollTo(0, { immediate: true });
     }
   };
-
-  // Idle preloader for key collection and product flacon images
-  useEffect(() => {
-    const preloadHeroImages = () => {
-      const topProducts = ALL_PRODUCTS.slice(0, 8);
-      topProducts.forEach((p) => {
-        const imgs = p.images || (p.image ? [p.image] : []);
-        imgs.forEach((src) => {
-          const img = new Image();
-          img.src = src;
-        });
-      });
-    };
-
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(preloadHeroImages, { timeout: 1500 });
-    } else {
-      setTimeout(preloadHeroImages, 300);
-    }
-  }, []);
 
   // Navigation Handlers
   const navigateToProduct = (id) => {
@@ -259,8 +233,7 @@ export default function App() {
     setCart((prevCart) => {
       const existing = prevCart.find(
         (i) =>
-          i.productId === item.productId &&
-          i.size === item.size
+          (item.variantId ? i.variantId === item.variantId : i.productId === item.productId && i.size === item.size)
       );
       let updated;
       if (existing) {
@@ -274,10 +247,9 @@ export default function App() {
       return updated;
     });
 
-    const prod = ALL_PRODUCTS.find((p) => p.id === item.productId);
-    const productImage = prod ? prod.images?.[0] || prod.image : null;
+    const productImage = item.image || null;
 
-    triggerToast(`${prod ? prod.name : 'Fragrance'} added to your bag.`);
+    triggerToast(`${item.name || 'Fragrance'} added to your bag.`);
 
     // Product flies into the bag; the bag chime plays as it lands, then the drawer opens
     flyToCart({
@@ -292,9 +264,7 @@ export default function App() {
   const handleBuyNow = (item) => {
     handleAddToCart(item, { openCart: false });
     setIsCartOpen(false);
-    const prod = ALL_PRODUCTS.find((p) => p.id === item.productId);
-    const price = item.price || (prod ? prod.price : 5500);
-    const total = price * (item.quantity || 1);
+    const total = (item.price ?? 0) * (item.quantity || 1);
     navigateToCheckout({
       items: [item],
       subtotal: total,
@@ -390,7 +360,7 @@ export default function App() {
 
       {/* 3. MAIN PAGE CONTENT VIEW WITH LUXURY ROUTE TRANSITIONS */}
       <main className="flex-1">
-        <PageTransition routeKey={view === 'product' ? `product-${selectedProductId}` : view === 'collection' ? 'collection' : view === 'wishlist' ? 'wishlist' : view === 'checkout' ? 'checkout' : view === 'account' ? 'account' : view === 'story' ? 'story' : 'home'}>
+        <PageTransition routeKey={view === 'product' ? `product-${selectedProductId}` : view === 'collection' ? 'collection' : `${view}:${location.pathname}`}>
           {view === 'checkout' ? (
             <BluorngCheckoutPage
               cart={cart}
@@ -440,9 +410,22 @@ export default function App() {
               onSelectProduct={navigateToProduct}
               onAddToCart={handleAddToCart}
               onBuyNow={handleBuyNow}
+              onQuickBuy={(prod) => setQuickBuyProduct(prod)}
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
             />
+          ) : view === 'listing' ? (
+            <ListingPage
+              listing={resolved.listing}
+              wishlist={wishlist}
+              onToggleWishlist={handleToggleWishlist}
+              onSelectProduct={navigateToProduct}
+              onQuickBuy={(prod) => setQuickBuyProduct(prod)}
+              onNavigateHome={navigateToHome}
+              onNavigateCollection={navigateToCollection}
+            />
+          ) : view === 'notes' ? (
+            <NotesIndexPage />
           ) : view === 'notfound' ? (
             <NotFoundPage onNavigateHome={navigateToHome} onNavigateCollection={navigateToCollection} />
           ) : view === 'collection' ? (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ALL_PRODUCTS } from '../data/bluorngSaudagarData.js';
+import { useProductsBySlugs } from '../storefront/catalog/hooks';
 import BluorngProductCard from './BluorngProductCard.jsx';
 
 export default function BluorngWishlistPage({
@@ -10,9 +10,7 @@ export default function BluorngWishlistPage({
   onQuickBuy,
   onNavigateCollection
 }) {
-  const savedProducts = wishlist
-    .map((id) => ALL_PRODUCTS.find((p) => p.id === id))
-    .filter(Boolean);
+  const { products: savedProducts } = useProductsBySlugs(wishlist);
 
   const count = savedProducts.length;
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import BluorngProductCard from './BluorngProductCard.jsx';
-import { ALL_PRODUCTS } from '../data/bluorngSaudagarData.js';
+import { useLegacyProducts } from '../storefront/catalog/hooks';
 import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 
 export default function BluorngFeaturedCollection({
@@ -10,8 +10,8 @@ export default function BluorngFeaturedCollection({
   onQuickBuy,
   onDiscoverMore
 }) {
-  // First 8 products for Latest Drop
-  const latestProducts = ALL_PRODUCTS.slice(0, 8);
+  // The "Latest Drop" collection, in the order set in the admin
+  const { products: latestProducts } = useLegacyProducts({ collection: 'latest-drop', page_size: 8 });
 
   return (
     <section className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FILTER_SECTIONS } from '../data/fragranceFilters.js';
 
 export default function BluorngFilterSidebar({
+  sections = [],
   activeFilters = {},
   filterCounts = {},
   onToggleFilter,
@@ -14,10 +14,8 @@ export default function BluorngFilterSidebar({
   // Accordion state: by default, intensity, notes, and occasion are open
   const [openSections, setOpenSections] = useState({
     intensity: true,
-    notes: true,
-    occasion: true,
-    concentration: false,
-    price: false
+    families: true,
+    occasion: true
   });
 
   const toggleSection = (sectionId) => {
@@ -93,7 +91,7 @@ export default function BluorngFilterSidebar({
 
       {/* ================= ACCORDION SECTIONS ================= */}
       <div className={`divide-y divide-[#EAEAEA] dark:divide-white/10 ${isMobileDrawer ? 'flex-1 overflow-y-auto px-5 py-2' : ''}`}>
-        {FILTER_SECTIONS.map((section) => {
+        {sections.map((section) => {
           const isOpen = !!openSections[section.id];
           const sectionActiveCount = (activeFilters[section.id] || []).length;
           const sectionCounts = filterCounts[section.id] || {};
@@ -157,8 +155,10 @@ export default function BluorngFilterSidebar({
                   >
                     {section.options.map((option) => {
                       const isSelected = (activeFilters[section.id] || []).includes(option.id);
-                      const count = sectionCounts[option.id] ?? 0;
-                      const isDisabled = count === 0 && !isSelected;
+                      // Sections without live counts (size, price, availability) show no number and are never disabled.
+                      const count = sectionCounts[option.id];
+                      const hasCount = section.id in filterCounts;
+                      const isDisabled = hasCount && !count && !isSelected;
 
                       return (
                         <motion.label
@@ -228,9 +228,11 @@ export default function BluorngFilterSidebar({
                               </span>
 
                               {/* Fragrance Count */}
-                              <span className="text-[11px] text-[#888888] dark:text-[#777570] font-light tabular-nums shrink-0">
-                                ({count})
-                              </span>
+                              {hasCount && (
+                                <span className="text-[11px] text-[#888888] dark:text-[#777570] font-light tabular-nums shrink-0">
+                                  ({count ?? 0})
+                                </span>
+                              )}
                             </div>
 
                             {/* Subtitle / Badge for intensity or occasion */}

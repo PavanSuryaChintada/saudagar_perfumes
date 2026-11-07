@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import BluorngProductCard from './BluorngProductCard.jsx';
-import { ALL_PRODUCTS } from '../data/bluorngSaudagarData.js';
+import { useLegacyProducts } from '../storefront/catalog/hooks';
 import ScrollReveal, { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 
 export default function BluorngSignatureCollection({
@@ -12,22 +12,16 @@ export default function BluorngSignatureCollection({
 }) {
   const [selectedFilter, setSelectedFilter] = useState('All');
 
+  // Tabs map onto scent-profile filters in the database (made editable in the CMS in phase 3).
   const filters = [
-    { label: 'All Formulations', value: 'All' },
-    { label: 'Oud & Woods', value: 'Oud & Woods' },
-    { label: 'Oriental Amber', value: 'Oriental Amber' },
-    { label: 'Solar Citrus', value: 'Solar Citrus' },
-    { label: 'Royal Attars', value: 'Royal Attars' }
+    { label: 'All Formulations', value: 'All', attrs: {} },
+    { label: 'Oud & Woods', value: 'Oud & Woods', attrs: { family: ['oud', 'woody'] } },
+    { label: 'Oriental Amber', value: 'Oriental Amber', attrs: { family: ['amber'] } },
+    { label: 'Solar Citrus', value: 'Solar Citrus', attrs: { family: ['citrus', 'aquatic'] } },
+    { label: 'Royal Attars', value: 'Royal Attars', attrs: { concentration: ['attar'] } }
   ];
-
-  const signatureProducts = ALL_PRODUCTS.filter((p) => {
-    if (selectedFilter === 'All') return true;
-    if (selectedFilter === 'Oud & Woods') return p.notes?.base?.some(n => n.toLowerCase().includes('oud') || n.toLowerCase().includes('wood')) || p.category.includes('Oud');
-    if (selectedFilter === 'Oriental Amber') return p.category.includes('Amber') || p.notes?.base?.some(n => n.toLowerCase().includes('amber'));
-    if (selectedFilter === 'Solar Citrus') return p.category.includes('Solar') || p.notes?.top?.some(n => n.toLowerCase().includes('lemon') || n.toLowerCase().includes('orange'));
-    if (selectedFilter === 'Royal Attars') return p.category.includes('Attar');
-    return true;
-  }).slice(0, 8);
+  const activeTab = filters.find((f) => f.value === selectedFilter) || filters[0];
+  const { products: signatureProducts } = useLegacyProducts({ attrs: activeTab.attrs, page_size: 8 });
 
   return (
     <section className="relative w-full bg-[#FFFFFF] dark:bg-[#0B0A0D] py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">

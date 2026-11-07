@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatPrice, ALL_PRODUCTS } from '../data/bluorngSaudagarData.js';
+import { formatPrice } from '../data/bluorngSaudagarData.js';
+import { useProductsBySlugs } from '../storefront/catalog/hooks';
+import { useSetting } from '../lib/bootstrap';
+import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 
 export default function BluorngCartDrawer({
   isOpen,
@@ -44,12 +47,13 @@ export default function BluorngCartDrawer({
     };
   }, [isOpen, onClose]);
 
-  const FREE_SHIPPING_THRESHOLD = 3500; // in INR
+  const FREE_SHIPPING_THRESHOLD = Number(useSetting('shipping.free_threshold', 4999)) || 0;
+  const { bySlug } = useProductsBySlugs(cart.map((item) => item.productId));
 
-  // Calculate Subtotal
+  // Display subtotal (the server re-prices everything at checkout)
   const rawSubtotal = cart.reduce((acc, item) => {
-    const prod = ALL_PRODUCTS.find((p) => p.id === item.productId);
-    const itemPrice = item.price || (prod ? prod.price : 5500);
+    const prod = bySlug.get(item.productId);
+    const itemPrice = item.price ?? prod?.price ?? 0;
     return acc + itemPrice * item.quantity;
   }, 0);
 
@@ -58,7 +62,7 @@ export default function BluorngCartDrawer({
 
   // Free shipping calculation
   const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - rawSubtotal);
-  const freeShippingProgress = Math.min(100, (rawSubtotal / FREE_SHIPPING_THRESHOLD) * 100);
+  const freeShippingProgress = FREE_SHIPPING_THRESHOLD > 0 ? Math.min(100, (rawSubtotal / FREE_SHIPPING_THRESHOLD) * 100) : 100;
 
   const handleApplyPromo = (e) => {
     e.preventDefault();
@@ -181,10 +185,10 @@ export default function BluorngCartDrawer({
               </div>
             ) : (
               cart.map((item, index) => {
-                const prod = ALL_PRODUCTS.find((p) => p.id === item.productId);
-                const itemImage = prod?.images?.[0] || prod?.image || '/images/crystal_square_flacon.png';
-                const itemName = prod?.name || 'Saudagar Extrait';
-                const itemPrice = item.price || prod?.price || 5500;
+                const prod = bySlug.get(item.productId);
+                const itemImage = item.image || prod?.images?.[0] || PLACEHOLDER_IMAGE;
+                const itemName = item.name || prod?.name || 'Fragrance';
+                const itemPrice = item.price ?? prod?.price ?? 0;
 
                 return (
                   <div

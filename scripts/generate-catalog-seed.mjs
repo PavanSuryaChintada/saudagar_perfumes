@@ -1,4 +1,6 @@
-// One-off generator: turns the original hardcoded storefront data into supabase/migrations/0006_seed_catalog.sql.
+// HISTORICAL one-off generator (ran once, output committed as supabase/migrations/0006_seed_catalog.sql).
+// The source files it read (ALL_PRODUCTS, collectionThemes.js, fragranceFilters.js) were deleted afterwards;
+// see commit d048df5 to run it again.
 // Run with: npx jiti scripts/generate-catalog-seed.mjs
 // Memberships and scent-profile tags are computed with the storefront's original rules, so pages show the same
 // products they did before. Everything it writes is sample content for the owner to replace.
