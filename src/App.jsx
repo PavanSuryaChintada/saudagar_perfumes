@@ -339,12 +339,12 @@ export default function App() {
     triggerToast('Item removed from your bag.', 'remove');
   };
 
-  const handleOrderPlaced = (order) => {
+  const handleOrderPlaced = (order, query = 'placed=1') => {
     replaceCart([]);
     setSamples([]);
     setBagNote('');
     setCouponCode('');
-    routerNavigate(`/orders/${order.id}?placed=1`, { replace: true });
+    routerNavigate(`/orders/${order.id}?${query}`, { replace: true });
     resetScrollToTop();
   };
 

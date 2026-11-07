@@ -112,11 +112,15 @@
 - [x] Birthday coupons (code shown in account)
 - [x] Admin: coupons pages
 
-## Phase 6: Online payments (Razorpay, off until keys)
-- [ ] UPI / cards / netbanking / wallets
-- [ ] Payment verify + webhook
-- [ ] Auto refund if out of stock
-- [ ] Admin refunds
+## Phase 6: Online payments (Razorpay, off until keys) ✅
+- [x] UPI / cards / netbanking / wallets (Razorpay checkout)
+- [x] Payment verify + webhook
+- [x] Auto refund if out of stock
+- [x] Admin refunds
+- [x] Stock, samples and coupon taken only when paid
+- [x] Unpaid online orders cancelled after 24 h
+- [x] "Pay now" on unpaid orders
+- [ ] Owner: add Razorpay keys + webhook secret, then switch on in Settings
 
 ## Phase 7: Shipping
 - [ ] Manual courier mode (enter tracking number)
