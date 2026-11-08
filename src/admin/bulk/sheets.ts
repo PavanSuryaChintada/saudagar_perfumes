@@ -7,7 +7,12 @@ import { emptyProductForm, emptyVariant, slugify, validateProductForm, type Note
 // ============================================================ prices and stock
 export interface VariantRow {
   sku: string;
+  product_id: string;
   product: string;
+  /** 'ml': the perfume's liquid is shared by its sizes; 'piece': each size has its own count. */
+  stock_unit: 'ml' | 'piece';
+  /** Liquid left for the whole perfume (ml products). */
+  liquid_ml: number;
   label: string;
   kind: string;
   base_price: number;
@@ -16,7 +21,7 @@ export interface VariantRow {
   stock: number;
 }
 
-export const PRICE_STOCK_COLUMNS = ['SKU', 'Product', 'Size', 'Type', 'Base price (₹)', 'Price (₹)', 'Compare-at price (₹)', 'Stock'];
+export const PRICE_STOCK_COLUMNS = ['SKU', 'Product', 'Size', 'Type', 'Base price (₹)', 'Price (₹)', 'Compare-at price (₹)', 'Liquid left (ml)', 'Stock'];
 
 export function priceStockSheet(rows: VariantRow[]): string {
   return toCsv(
@@ -28,7 +33,9 @@ export function priceStockSheet(rows: VariantRow[]): string {
       'Base price (₹)': r.base_price,
       'Price (₹)': r.price ?? '',
       'Compare-at price (₹)': r.compare_at_price ?? '',
-      Stock: r.stock,
+      // Perfumes: one liquid amount per perfume (repeated on each of its rows); pieces: a count per size.
+      'Liquid left (ml)': r.stock_unit === 'ml' ? r.liquid_ml : '',
+      Stock: r.stock_unit === 'piece' ? r.stock : '',
     })),
     PRICE_STOCK_COLUMNS,
   );
@@ -45,6 +52,7 @@ export interface SizeChange {
   price?: FieldChange;
   compare_at_price?: FieldChange;
   stock?: FieldChange;
+  liquid?: FieldChange;
   /** What bulk_update_variants receives (only the fields that change). */
   payload: Record<string, unknown>;
 }
@@ -72,6 +80,8 @@ export function diffPriceStock(text: string, current: VariantRow[]): { changes: 
   const hasPrice = headers.includes('price');
   const hasCompare = headers.includes('compare_at_price');
   const hasStock = headers.includes('stock');
+  const hasLiquid = headers.includes('liquid_left');
+  const liquidDone = new Map<string, number>();
   const seen = new Set<string>();
   const changes: SizeChange[] = [];
   const problems: SheetProblem[] = [];
@@ -102,7 +112,24 @@ export function diffPriceStock(text: string, current: VariantRow[]): { changes: 
         change.payload.compare_at_price = c;
       }
     }
-    if (hasStock && (r.stock ?? '').trim() !== '') {
+    if (hasLiquid && v.stock_unit === 'ml' && (r.liquid_left ?? '').trim() !== '') {
+      const ml = Number((r.liquid_left ?? '').replace(/[,\s]/g, ''));
+      if (!Number.isFinite(ml) || ml < 0) return void problems.push({ line, sku, message: `Liquid left “${r.liquid_left}” must be a number of ml, 0 or more.` });
+      const earlier = liquidDone.get(v.product_id);
+      if (earlier !== undefined) {
+        if (earlier !== ml) problems.push({ line, sku, message: `${v.product} has a different Liquid left on another row; the first row's ${earlier} ml is used.` });
+      } else {
+        liquidDone.set(v.product_id, ml);
+        if (Math.round(ml * 100) !== Math.round(v.liquid_ml * 100)) {
+          change.liquid = { from: `${v.liquid_ml.toLocaleString('en-IN')} ml`, to: `${ml.toLocaleString('en-IN')} ml` };
+          change.payload.liquid_ml = ml;
+        }
+      }
+    }
+    if (hasStock && v.stock_unit === 'ml' && (r.stock ?? '').trim() !== '' && Number(r.stock) !== v.stock) {
+      return void problems.push({ line, sku, message: `${v.product} is kept as liquid; change Liquid left (ml) instead of Stock.` });
+    }
+    if (hasStock && v.stock_unit === 'piece' && (r.stock ?? '').trim() !== '') {
       const n = Number((r.stock ?? '').replace(/[,\s]/g, ''));
       if (!Number.isInteger(n) || n < 0) return void problems.push({ line, sku, message: `Stock “${r.stock}” must be a whole number, 0 or more.` });
       if (n !== v.stock) {
@@ -110,7 +137,7 @@ export function diffPriceStock(text: string, current: VariantRow[]): { changes: 
         change.payload.stock = n;
       }
     }
-    if (change.price || change.compare_at_price || change.stock) changes.push(change);
+    if (change.price || change.compare_at_price || change.stock || change.liquid) changes.push(change);
   });
   return { changes, problems, rows: rows.length };
 }
@@ -118,7 +145,8 @@ export function diffPriceStock(text: string, current: VariantRow[]): { changes: 
 // ============================================================ new products
 export const IMPORT_COLUMNS = [
   'handle', 'name', 'main_category', 'also_list_under', 'collections', 'top_notes', 'heart_notes', 'base_notes',
-  'short_description', 'description', 'base_price', 'gst_rate', 'hsn_code', 'size_label', 'size_ml', 'sku', 'size_price', 'stock', 'live',
+  'short_description', 'description', 'base_price', 'gst_rate', 'hsn_code', 'kept_as', 'liquid_in_stock', 'liquid_unit',
+  'size_label', 'size_ml', 'sku', 'size_price', 'stock', 'live',
 ];
 
 export const IMPORT_TEMPLATE = toCsv(
@@ -126,10 +154,16 @@ export const IMPORT_TEMPLATE = toCsv(
     {
       handle: 'amber-noir', name: 'Amber Noir', main_category: 'Perfumes', also_list_under: 'Gift sets', collections: 'The Oud Edit',
       top_notes: 'Saffron | Pink pepper', heart_notes: 'Rose', base_notes: 'Amber | Oud', short_description: 'A warm amber for evenings.',
-      description: 'Long description shown on the product page.', base_price: '4900', gst_rate: '18', hsn_code: '3303',
-      size_label: '50 ml', size_ml: '50', sku: 'AMBER-NOIR-50', size_price: '', stock: '20', live: 'no',
+      description: 'Long description shown on the product page.', base_price: '2900', gst_rate: '18', hsn_code: '3303',
+      kept_as: 'ml', liquid_in_stock: '1', liquid_unit: 'L',
+      size_label: '30 ml', size_ml: '30', sku: 'AMBER-NOIR-30', size_price: '', stock: '', live: 'no',
     },
-    { handle: 'amber-noir', size_label: '100 ml', size_ml: '100', sku: 'AMBER-NOIR-100', size_price: '7900', stock: '10' },
+    { handle: 'amber-noir', size_label: '50 ml', size_ml: '50', sku: 'AMBER-NOIR-50', size_price: '4900' },
+    { handle: 'amber-noir', size_label: '100 ml', size_ml: '100', sku: 'AMBER-NOIR-100', size_price: '7900' },
+    {
+      handle: 'oud-gift-box', name: 'Oud Gift Box', main_category: 'Gift sets', base_price: '3500', kept_as: 'pieces',
+      size_label: 'Box', size_ml: '', sku: 'OUD-GIFT-BOX', stock: '25', live: 'no',
+    },
   ],
   IMPORT_COLUMNS,
 );
@@ -206,6 +240,10 @@ export function planImport(text: string, ctx: ImportContext): { products: Planne
     form.description = first.description ? `<p>${escapeHtml(first.description)}</p>` : '';
     form.base_price = (first.base_price ?? '').replace(/[₹,\s]/g, '');
     form.is_active = yes(first.live);
+    form.stock_unit = /^(piece|pieces|pcs|count)$/i.test((first.kept_as ?? '').trim()) ? 'piece' : 'ml';
+    form.liquid_amount = (first.liquid_in_stock ?? '').replace(/[,\s]/g, '');
+    const unit = (first.liquid_unit ?? 'ml').trim().toLowerCase();
+    form.liquid_unit = unit === 'l' || unit === 'litre' || unit === 'liter' ? 'L' : unit === 'tola' ? 'tola' : 'ml';
     if (ctx.existingSlugs.has(handle)) errors.push(`A product with the handle “${handle}” already exists. Update it from its product page or the prices & stock tab.`);
 
     const mainCategory = (first.main_category ?? '').trim();

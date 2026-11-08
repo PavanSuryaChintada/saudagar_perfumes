@@ -20,11 +20,11 @@ const TEXT_KEYS = [
   'name', 'slug', 'short_name', 'headline', 'tagline', 'descriptor', 'notes_subtitle', 'image_url', 'hero_video_url', 'hero_poster_url',
   'hero_badge', 'hero_title', 'hero_tagline', 'hero_subtext', 'hero_accent_tag', 'seo_title', 'seo_description',
 ] as const;
-type Draft = Record<(typeof TEXT_KEYS)[number], string> & { id?: string; aliases: string; is_active: boolean };
+type Draft = Record<(typeof TEXT_KEYS)[number], string> & { id?: string; aliases: string; is_active: boolean; mobile: Record<string, string> };
 
 const toDraft = (c?: CollectionRow): Draft => {
   const d = Object.fromEntries(TEXT_KEYS.map((k) => [k, c ? String((c as unknown as Record<string, unknown>)[k] ?? '') : ''])) as unknown as Draft;
-  return { ...d, id: c?.id, aliases: (c?.aliases ?? []).join(', '), is_active: c?.is_active ?? true };
+  return { ...d, id: c?.id, aliases: (c?.aliases ?? []).join(', '), is_active: c?.is_active ?? true, mobile: { ...((c as { mobile_media?: Record<string, string> } | undefined)?.mobile_media ?? {}) } };
 };
 
 function CollectionProducts({ collectionId }: { collectionId: string }) {
@@ -56,7 +56,7 @@ function CollectionProducts({ collectionId }: { collectionId: string }) {
 
   return (
     <div>
-      <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1.5">Products in this collection · drag to set the order</p>
+      <p className="text-[12px] text-[#454545] mb-1.5 font-medium">Products in this collection · drag to set the order</p>
       <SortableList
         items={ids.map((id) => ({ id }))}
         className="divide-y divide-[#E9E7E2] border border-[#E2E0DB] mb-2"
@@ -67,7 +67,7 @@ function CollectionProducts({ collectionId }: { collectionId: string }) {
             <button
               type="button"
               aria-label="Remove from collection"
-              className="p-1 text-[#6B6B6B] hover:text-rose-600"
+              className="p-1 text-[#575757] hover:text-rose-600"
               onClick={() => run(() => throwIf(supabase.from('product_collections').delete().eq('collection_id', collectionId).eq('product_id', id)))}
             >
               <X size={13} />
@@ -75,7 +75,7 @@ function CollectionProducts({ collectionId }: { collectionId: string }) {
           </div>
         )}
       />
-      {ids.length === 0 && <p className="text-[13px] text-[#626262] mb-2">No products yet.</p>}
+      {ids.length === 0 && <p className="text-[13px] text-[#4F4F4F] mb-2">No products yet.</p>}
       <div className="relative">
         <TextInput placeholder="Add a product…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Add product to collection" />
         {candidates.length > 0 && (
@@ -118,6 +118,7 @@ export default function CollectionsPage() {
     if (!draft) return;
     if (!draft.name.trim()) return setError('Enter a name.');
     const row: Record<string, unknown> = Object.fromEntries(TEXT_KEYS.map((k) => [k, draft[k].trim() || null]));
+    row.mobile_media = Object.fromEntries(Object.entries(draft.mobile).filter(([, v]) => v));
     row.name = draft.name.trim();
     row.slug = draft.slug || slugify(draft.name);
     row.aliases = draft.aliases.split(',').map((a) => slugify(a)).filter(Boolean);
@@ -177,19 +178,19 @@ export default function CollectionsPage() {
           <div className="flex items-center gap-3 pr-2 py-2">
             <div className="w-10 h-10 bg-[#F4F3EE] overflow-hidden shrink-0">{c.image_url && <img src={c.image_url} alt="" className="w-full h-full object-cover" />}</div>
             <div className="min-w-0 flex-1">
-              <p className={`text-[14px] ${c.is_active ? '' : 'text-[#6B6B6B] line-through'}`}>{c.name}</p>
-              <p className="text-[12px] text-[#626262] truncate">
+              <p className={`text-[14px] ${c.is_active ? '' : 'text-[#575757] line-through'}`}>{c.name}</p>
+              <p className="text-[12px] text-[#4F4F4F] truncate">
                 /collections/{c.slug}
                 {c.aliases.length > 0 && ` · old links: ${c.aliases.join(', ')}`}
               </p>
             </div>
-            <a href={`/collections/${c.slug}`} target="_blank" rel="noreferrer" className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" aria-label="View on site">
+            <a href={`/collections/${c.slug}`} target="_blank" rel="noreferrer" className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" aria-label="View on site">
               <ExternalLink size={14} />
             </a>
-            <button type="button" aria-label={`Edit ${c.name}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => { setError(''); setDraft(toDraft(c)); }}>
+            <button type="button" aria-label={`Edit ${c.name}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => { setError(''); setDraft(toDraft(c)); }}>
               <Pencil size={14} />
             </button>
-            <button type="button" aria-label={`Delete ${c.name}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(c)}>
+            <button type="button" aria-label={`Delete ${c.name}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setDeleting(c)}>
               <Trash2 size={14} />
             </button>
           </div>
@@ -230,17 +231,23 @@ export default function CollectionsPage() {
               <FieldShell label="Card image">
                 <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload image" />
               </FieldShell>
+              <FieldShell label="Card image: phone version (optional)" help="Shown on phones. Leave empty to use the picture above everywhere.">
+                <MediaField value={draft.mobile.image_url ?? ''} onChange={(url) => setDraft({ ...draft, mobile: { ...draft.mobile, image_url: url } })} kind="image" label="Upload phone picture" />
+              </FieldShell>
               <label className="flex items-center gap-2 text-[14px]">
                 <Toggle checked={draft.is_active} onChange={(on) => setDraft({ ...draft, is_active: on })} label="Active" /> Active
               </label>
             </div>
             <div className="space-y-4">
-              <p className="text-[13px] text-[#5A5A5A]">Hero film (leave the video and poster empty for a simple page header)</p>
+              <p className="text-[13px] text-[#4A4A4A]">Hero film (leave the video and poster empty for a simple page header)</p>
               <FieldShell label="Hero video">
                 <MediaField value={draft.hero_video_url} onChange={(url) => setDraft({ ...draft, hero_video_url: url })} kind="video" label="Upload video" />
               </FieldShell>
               <FieldShell label="Hero poster image">
                 <MediaField value={draft.hero_poster_url} onChange={(url) => setDraft({ ...draft, hero_poster_url: url })} kind="image" label="Upload image" />
+              </FieldShell>
+              <FieldShell label="Hero poster: phone version (optional)" help="Shown on phones. Leave empty to use the picture above everywhere.">
+                <MediaField value={draft.mobile.hero_poster_url ?? ''} onChange={(url) => setDraft({ ...draft, mobile: { ...draft.mobile, hero_poster_url: url } })} kind="image" label="Upload phone picture" />
               </FieldShell>
               {field('hero_title', 'Hero title')}
               {field('hero_tagline', 'Hero tagline')}
@@ -249,7 +256,7 @@ export default function CollectionsPage() {
               {field('hero_accent_tag', 'Hero accent tag')}
               {field('seo_title', 'SEO title')}
               {field('seo_description', 'SEO description', undefined, true)}
-              {draft.id ? <CollectionProducts collectionId={draft.id} /> : <p className="text-[13px] text-[#626262]">Save the collection to add products.</p>}
+              {draft.id ? <CollectionProducts collectionId={draft.id} /> : <p className="text-[13px] text-[#4F4F4F]">Save the collection to add products.</p>}
             </div>
           </div>
         )}

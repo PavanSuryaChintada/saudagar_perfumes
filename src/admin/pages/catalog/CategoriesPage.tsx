@@ -17,10 +17,10 @@ import { slugify } from '../../catalog/productForm';
 import { rpc, throwIf, useCategories, useInvalidateCatalog, type CategoryRow } from '../../catalog/api';
 
 type Draft = {
-  id?: string; name: string; slug: string; parent_id: string; description: string; image_url: string; video_url: string;
+  id?: string; name: string; slug: string; parent_id: string; description: string; image_url: string; video_url: string; mobile: Record<string, string>;
   is_active: boolean; seo_title: string; seo_description: string;
 };
-const empty: Draft = { name: '', slug: '', parent_id: '', description: '', image_url: '', video_url: '', is_active: true, seo_title: '', seo_description: '' };
+const empty: Draft = { name: '', slug: '', parent_id: '', description: '', image_url: '', video_url: '', mobile: {}, is_active: true, seo_title: '', seo_description: '' };
 
 /** Flattens the tree into display order with depth. */
 export function flattenTree(rows: CategoryRow[]): { row: CategoryRow; depth: number }[] {
@@ -53,7 +53,8 @@ export default function CategoriesPage() {
     setError('');
     setDraft({
       id: row.id, name: row.name, slug: row.slug, parent_id: row.parent_id ?? '', description: row.description ?? '',
-      image_url: row.image_url ?? '', video_url: row.video_url ?? '', is_active: row.is_active, seo_title: row.seo_title ?? '',
+      image_url: row.image_url ?? '', video_url: row.video_url ?? '', mobile: { ...((row as { mobile_media?: Record<string, string> }).mobile_media ?? {}) },
+      is_active: row.is_active, seo_title: row.seo_title ?? '',
       seo_description: row.seo_description ?? '',
     });
   };
@@ -89,6 +90,7 @@ export default function CategoriesPage() {
       description: draft.description.trim() || null,
       image_url: draft.image_url || null,
       video_url: draft.video_url || null,
+      mobile_media: Object.fromEntries(Object.entries(draft.mobile).filter(([, v]) => v)),
       is_active: draft.is_active,
       seo_title: draft.seo_title.trim() || null,
       seo_description: draft.seo_description.trim() || null,
@@ -130,25 +132,25 @@ export default function CategoriesPage() {
         {paged.rows.map(({ row, depth }) => (
           <div key={row.id} className="flex items-center gap-2 px-3 py-2" style={{ paddingLeft: 12 + depth * 22 }}>
             <div className="min-w-0 flex-1">
-              <p className={`text-[14px] ${row.is_active ? '' : 'text-[#6B6B6B] line-through'}`}>{row.name}</p>
-              <p className="text-[12px] text-[#626262]">/categories/{row.slug}</p>
+              <p className={`text-[14px] ${row.is_active ? '' : 'text-[#575757] line-through'}`}>{row.name}</p>
+              <p className="text-[12px] text-[#4F4F4F]">/categories/{row.slug}</p>
             </div>
-            <button type="button" aria-label="Move up" className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => move(row, -1)}><ArrowUp size={14} /></button>
-            <button type="button" aria-label="Move down" className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => move(row, 1)}><ArrowDown size={14} /></button>
+            <button type="button" aria-label="Move up" className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => move(row, -1)}><ArrowUp size={14} /></button>
+            <button type="button" aria-label="Move down" className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => move(row, 1)}><ArrowDown size={14} /></button>
             <button
               type="button"
               aria-label={`Edit ${row.name}`}
-              className="p-1.5 text-[#5A5A5A] hover:text-tk-ink"
+              className="p-1.5 text-[#4A4A4A] hover:text-tk-ink"
               onClick={() => edit(row)}
             >
               <Pencil size={14} />
             </button>
-            <button type="button" aria-label={`Delete ${row.name}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(row)}>
+            <button type="button" aria-label={`Delete ${row.name}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setDeleting(row)}>
               <Trash2 size={14} />
             </button>
           </div>
         ))}
-        {tree.length === 0 && <p className="p-8 text-center text-[14px] text-[#5A5A5A]">No categories yet.</p>}
+        {tree.length === 0 && <p className="p-8 text-center text-[14px] text-[#4A4A4A]">No categories yet.</p>}
       </div>
       <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="categories" />
 
@@ -187,6 +189,9 @@ export default function CategoriesPage() {
             </FieldShell>
             <FieldShell label="Image">
               <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload image" />
+            </FieldShell>
+            <FieldShell label="Image: phone version (optional)" help="Shown on phones. Leave empty to use the picture above everywhere.">
+              <MediaField value={draft.mobile.image_url ?? ''} onChange={(url) => setDraft({ ...draft, mobile: { ...draft.mobile, image_url: url } })} kind="image" label="Upload phone picture" />
             </FieldShell>
             <FieldShell label="Video (optional)">
               <MediaField value={draft.video_url} onChange={(url) => setDraft({ ...draft, video_url: url })} kind="video" label="Upload video" />

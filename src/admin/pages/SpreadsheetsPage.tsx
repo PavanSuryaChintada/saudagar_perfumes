@@ -23,12 +23,12 @@ function useVariantRows() {
     queryKey: ['admin', 'catalog', 'variant-sheet'],
     queryFn: async () => {
       const rows = await fetchAll<{
-        sku: string; label: string; kind: string; price: number | null; compare_at_price: number | null; stock: number;
-        products: { name: string; base_price: number; archived_at: string | null } | null;
+        sku: string; label: string; kind: string; price: number | null; compare_at_price: number | null; stock: number; product_id: string;
+        products: { name: string; base_price: number; archived_at: string | null; stock_unit: 'ml' | 'piece'; stock_ml: number } | null;
       }>((from, to) =>
         supabase
           .from('product_variants')
-          .select('sku, label, kind, price, compare_at_price, stock, products!inner(name, base_price, archived_at)', { count: 'exact' })
+          .select('sku, label, kind, price, compare_at_price, stock, product_id, products!inner(name, base_price, archived_at, stock_unit, stock_ml)', { count: 'exact' })
           .order('sku')
           .range(from, to) as never,
       );
@@ -36,7 +36,10 @@ function useVariantRows() {
         .filter((r) => r.products && !r.products.archived_at)
         .map<VariantRow>((r) => ({
           sku: r.sku,
+          product_id: r.product_id,
           product: r.products!.name,
+          stock_unit: r.products!.stock_unit,
+          liquid_ml: Number(r.products!.stock_ml),
           label: r.label,
           kind: r.kind,
           base_price: Number(r.products!.base_price),
@@ -96,7 +99,7 @@ function PriceStockTab() {
   const [busy, setBusy] = useState(false);
   const counts = useMemo(() => {
     const c = plan?.changes ?? [];
-    return { price: c.filter((x) => x.price || x.compare_at_price).length, stock: c.filter((x) => x.stock).length };
+    return { price: c.filter((x) => x.price || x.compare_at_price).length, stock: c.filter((x) => x.stock || x.liquid).length };
   }, [plan]);
 
   return (
@@ -106,8 +109,8 @@ function PriceStockTab() {
           <Download size={14} /> Download {rows.length ? `${rows.length} sizes` : 'sheet'}
         </Button>
         <ul className="mt-3 text-[13px] text-[#454545] list-disc pl-5 space-y-1">
-          <li>Change <strong>Price</strong>, <strong>Compare-at price</strong> or <strong>Stock</strong>. Don't change the SKU; it's how each row is matched.</li>
-          <li>An empty Price means the size uses the product's base price. Stock is the new count; the difference is logged in the stock history.</li>
+          <li>Change <strong>Price</strong>, <strong>Compare-at price</strong>, <strong>Liquid left (ml)</strong> for perfumes, or <strong>Stock</strong> for sets and accessories. Don't change the SKU; it's how each row is matched.</li>
+          <li>An empty Price means the size uses the product's base price. A perfume's liquid is shared by its sizes, so it repeats on each of its rows; change it on any one. Every change is logged in the stock history.</li>
           <li>You can delete rows or columns you aren't changing. Save as CSV.</li>
         </ul>
       </Panel>
@@ -130,18 +133,18 @@ function PriceStockTab() {
               {plan.changes.length
                 ? `${plan.changes.length} ${plan.changes.length === 1 ? 'size changes' : 'sizes change'}: ${counts.price} price, ${counts.stock} stock.`
                 : 'Nothing changes: the sheet matches the store.'}{' '}
-              <span className="text-[#5A5A5A]">({plan.rows} rows read)</span>
+              <span className="text-[#4A4A4A]">({plan.rows} rows read)</span>
             </p>
             <Problems items={plan.problems.map((p) => `Row ${p.line}${p.sku ? ` · ${p.sku}` : ''}: ${p.message}`)} />
             {plan.changes.length > 0 && (
               <div className="border border-[#E2E0DB] overflow-x-auto max-h-[420px]">
                 <table className="w-full text-[13.5px] min-w-[640px]">
                   <thead className="sticky top-0 bg-[#F8F7F5]">
-                    <tr className="text-left text-[12px] uppercase tracking-[0.06em] border-b border-[#E2E0DB]">
+                    <tr className="text-left text-[12px] border-b border-[#E2E0DB] font-medium">
                       <th className="px-3 py-2 font-medium">Size</th>
                       <th className="px-3 py-2 font-medium">Price</th>
                       <th className="px-3 py-2 font-medium">Compare-at</th>
-                      <th className="px-3 py-2 font-medium">Stock</th>
+                      <th className="px-3 py-2 font-medium">Liquid / stock</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E9E7E2]">
@@ -149,20 +152,23 @@ function PriceStockTab() {
                       <tr key={c.sku}>
                         <td className="px-3 py-2">
                           {c.product} · {c.label}
-                          <span className="block text-[12px] font-mono text-[#5A5A5A]">{c.sku}</span>
+                          <span className="block text-[12px] font-mono text-[#4A4A4A]">{c.sku}</span>
                         </td>
-                        {(['price', 'compare_at_price', 'stock'] as const).map((k) => (
+                        {(['price', 'compare_at_price', 'stock'] as const).map((k) => {
+                          const ch = k === 'stock' ? c.liquid ?? c.stock : c[k];
+                          return (
                           <td key={k} className="px-3 py-2 tabular-nums">
-                            {c[k] ? (
+                            {ch ? (
                               <>
-                                <span className="text-[#6B6B6B] line-through mr-1.5">{c[k]!.from}</span>
-                                <span className="font-medium text-tk-ink">{c[k]!.to}</span>
+                                <span className="text-[#575757] line-through mr-1.5">{ch.from}</span>
+                                <span className="font-medium text-tk-ink">{ch.to}</span>
                               </>
                             ) : (
-                              <span className="text-[#7A7A7A]">—</span>
+                              <span className="text-[#666666]">—</span>
                             )}
                           </td>
-                        ))}
+                          );
+                        })}
                       </tr>
                     ))}
                   </tbody>
@@ -285,6 +291,7 @@ function ImportTab() {
           <li><strong>handle</strong> becomes the web address (amber-noir → /product/amber-noir). Rows with the same handle are one product.</li>
           <li><strong>main_category</strong> is required. Separate several categories, collections or notes with a | bar, e.g. <em>Saffron | Rose</em>.</li>
           <li>Categories, collections and notes that don't exist yet are created for you.</li>
+          <li><strong>kept_as</strong>: ml for perfumes (then <strong>liquid_in_stock</strong> with <strong>liquid_unit</strong> ml, L or tola), or pieces for sets and accessories (then a <strong>stock</strong> count on each size row).</li>
           <li><strong>size_price</strong> empty = the base price. <strong>live</strong> = yes to sell straight away; otherwise the product is saved as a draft.</li>
           <li>Add photos, the scent profile and the story afterwards on each product's page.</li>
         </ul>
@@ -326,7 +333,7 @@ function ImportTab() {
                 {ready.map((p) => (
                   <li key={p.handle} className="px-3 py-2 flex flex-wrap gap-x-4 gap-y-1 text-[13.5px]">
                     <span className="font-medium">{p.form.name}</span>
-                    <span className="text-[#5A5A5A]">/{p.handle}</span>
+                    <span className="text-[#4A4A4A]">/{p.handle}</span>
                     <span className="text-[#454545]">{p.mainCategory}</span>
                     <span className="text-[#454545]">{p.sizes} size{p.sizes === 1 ? '' : 's'}</span>
                     <span className="text-[#454545]">{p.noteNames.length} notes</span>

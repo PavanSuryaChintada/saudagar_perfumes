@@ -81,6 +81,8 @@ export interface ProductListRow {
   updated_at: string;
   admin_note: string | null;
   image: string | null;
+  stock_unit: 'ml' | 'piece';
+  stock_ml: number;
 }
 
 export function useAdminProducts() {
@@ -90,7 +92,7 @@ export function useAdminProducts() {
       const rows = await throwIf(
         supabase
           .from('products')
-          .select('id, slug, name, is_active, archived_at, min_price, max_price, base_price, total_stock, units_sold, badge, updated_at, admin_note, product_media(url, kind, position)')
+          .select('id, slug, name, is_active, archived_at, min_price, max_price, base_price, total_stock, stock_unit, stock_ml, units_sold, badge, updated_at, admin_note, product_media(url, kind, position)')
           .order('updated_at', { ascending: false }),
       );
       return (rows as any[]).map((r) => {

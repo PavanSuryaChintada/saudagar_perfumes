@@ -75,20 +75,20 @@ export default function ReviewsPage() {
         ))}
       </div>
       <div className="space-y-3">
-        {isLoading && <p className="text-[14px] text-[#5A5A5A]">Loading…</p>}
-        {!isLoading && rows.length === 0 && <p className="bg-white border border-[#E2E0DB] px-4 py-6 text-[14px] text-[#5A5A5A]">No reviews here.</p>}
+        {isLoading && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}
+        {!isLoading && rows.length === 0 && <p className="bg-white border border-[#E2E0DB] px-4 py-6 text-[14px] text-[#4A4A4A]">No reviews here.</p>}
         {paged.rows.map((r) => (
           <div key={r.id} className="bg-white border border-[#E2E0DB] p-4 text-[14px] space-y-2">
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-tk-accent">{'★'.repeat(r.rating)}<span className="text-[#DDDDDD]">{'★'.repeat(5 - r.rating)}</span></span>
               {r.title && <span className="font-medium">{r.title}</span>}
-              <span className="text-[12px] text-[#626262]">
+              <span className="text-[12px] text-[#4F4F4F]">
                 {r.display_name}{r.city ? `, ${r.city}` : ''} · {formatOrderDateTime(r.created_at)} · {r.product ? <Link to={`/admin/products/${r.product.id}`} className="underline">{r.product.name}</Link> : 'Deleted product'}
               </span>
-              <span className="ml-auto text-[11.5px] uppercase tracking-[0.06em] text-[#5A5A5A]">{r.status.toLowerCase()}{r.helpful_count ? ` · ${r.helpful_count} helpful` : ''}</span>
+              <span className="ml-auto text-[12.5px] text-[#4A4A4A] font-medium">{r.status.toLowerCase()}{r.helpful_count ? ` · ${r.helpful_count} helpful` : ''}</span>
             </div>
             {r.body && <p className="text-[#444444] whitespace-pre-line">{r.body}</p>}
-            {(r.longevity || r.sillage) && <p className="text-[12px] text-[#626262]">{[r.longevity && `Longevity: ${r.longevity.label}`, r.sillage && `Sillage: ${r.sillage.label}`].filter(Boolean).join(' · ')}</p>}
+            {(r.longevity || r.sillage) && <p className="text-[12px] text-[#4F4F4F]">{[r.longevity && `Longevity: ${r.longevity.label}`, r.sillage && `Sillage: ${r.sillage.label}`].filter(Boolean).join(' · ')}</p>}
             {r.review_media.length > 0 && (
               <div className="flex gap-2">
                 {[...r.review_media].sort((a, b) => a.position - b.position).map((m) => (

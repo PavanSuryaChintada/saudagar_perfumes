@@ -26,7 +26,8 @@ export interface Insights {
   stock: {
     low_threshold: number;
     sold_out: { id: string; product: string; size: string; sku: string; stock: number }[];
-    low: { id: string; product: string; size: string; sku: string; stock: number }[];
+    low: { id: string; product: string; size: string; sku: string | null; stock: number | null; ml: number | null }[];
+    low_ml: number;
     best: { id: string; product: string; units: number; revenue: number }[];
     slow: { id: string; product: string; stock: number | null }[];
     never_sold_sizes: number;
@@ -45,7 +46,7 @@ export function Stat({ label, value, hint, to, attention }: { label: string; val
     <div className={`h-full bg-white border px-4 py-3 ${busy ? 'border-amber-300 border-l-4 border-l-amber-500' : 'border-[#E2E0DB]'} ${to ? 'group-hover:border-tk-ink' : ''}`}>
       <p className="text-[12.5px] font-medium text-[#454545]">{label}</p>
       <p className="text-[26px] leading-tight text-tk-ink tabular-nums mt-1">{value}</p>
-      {hint && <p className="text-[12.5px] text-[#5A5A5A] mt-0.5">{hint}</p>}
+      {hint && <p className="text-[12.5px] text-[#4A4A4A] mt-0.5">{hint}</p>}
       {to && (
         <p className="mt-2 inline-flex items-center gap-1 text-[12.5px] text-tk-accent group-hover:underline underline-offset-4">
           Open <ArrowRight size={12} aria-hidden />
@@ -86,12 +87,12 @@ export function OrdersView({ d, days }: { d: Insights['pipeline']; days: number 
           {d.steps.map((s, i) => (
             <li key={s.status} className="relative">
               <Link to={`/admin/orders?status=${s.status}`} className="group block h-full bg-white border border-[#E2E0DB] hover:border-tk-ink px-3 py-3">
-                <span className="block text-[12px] text-[#5A5A5A] tabular-nums">Step {i + 1}</span>
+                <span className="block text-[12px] text-[#4A4A4A] tabular-nums">Step {i + 1}</span>
                 <span className="block text-[14px] font-medium text-tk-ink">{s.label}</span>
                 <span className="block text-[26px] leading-tight tabular-nums mt-1">{s.count}</span>
               </Link>
               {i < d.steps.length - 1 && (
-                <ChevronRight size={16} className="hidden md:block absolute -right-[13px] top-1/2 -translate-y-1/2 text-[#7A7A7A] z-10" aria-hidden />
+                <ChevronRight size={16} className="hidden md:block absolute -right-[13px] top-1/2 -translate-y-1/2 text-[#666666] z-10" aria-hidden />
               )}
             </li>
           ))}
@@ -108,7 +109,7 @@ export function OrdersView({ d, days }: { d: Insights['pipeline']; days: number 
           <div className="overflow-x-auto">
             <table className="w-full text-[14px] min-w-[480px]">
               <thead>
-                <tr className="text-left text-[12px] uppercase tracking-[0.06em] border-b border-[#E2E0DB]">
+                <tr className="text-left text-[12px] border-b border-[#E2E0DB] font-medium">
                   <th className="py-2 pr-3 font-medium">Order</th>
                   <th className="py-2 pr-3 font-medium">Customer</th>
                   <th className="py-2 pr-3 font-medium">Stuck at</th>
@@ -139,7 +140,7 @@ export function OrdersView({ d, days }: { d: Insights['pipeline']; days: number 
 function SplitBar({ parts }: { parts: { label: string; value: number; count: number; color: string }[] }) {
   const [hover, setHover] = useState<number | null>(null);
   const total = parts.reduce((n, p) => n + p.value, 0);
-  if (!total) return <p className="text-[14px] text-[#5A5A5A]">No sales in this period yet.</p>;
+  if (!total) return <p className="text-[14px] text-[#4A4A4A]">No sales in this period yet.</p>;
   const pct = (v: number) => Math.round((v / total) * 100);
   return (
     <div>
@@ -207,14 +208,14 @@ export function PaymentsView({ d, days }: { d: Insights['payments']; days: numbe
 }
 
 function StockList({ rows, empty, right }: { rows: { id: string; product: string; size?: string; sku?: string }[]; empty: string; right: (r: never) => string }) {
-  if (!rows.length) return <p className="text-[14px] text-[#5A5A5A]">{empty}</p>;
+  if (!rows.length) return <p className="text-[14px] text-[#4A4A4A]">{empty}</p>;
   return (
     <ul className="divide-y divide-[#E9E7E2] text-[14px]">
       {rows.map((r, i) => (
         <li key={`${r.id}-${r.sku ?? i}`} className="py-2 flex justify-between gap-3">
           <Link to={`/admin/products/${r.id}`} className="min-w-0 hover:underline underline-offset-4">
             <span className="block truncate">{r.product}</span>
-            {r.size && <span className="block text-[12.5px] text-[#5A5A5A]">{r.size}{r.sku ? ` · ${r.sku}` : ''}</span>}
+            {r.size && <span className="block text-[12.5px] text-[#4A4A4A]">{r.size}{r.sku ? ` · ${r.sku}` : ''}</span>}
           </Link>
           <span className="shrink-0 tabular-nums text-[#3F3F3F]">{right(r as never)}</span>
         </li>
@@ -228,7 +229,7 @@ export function StockView({ d, days }: { d: Insights['stock']; days: number }) {
     <div className="space-y-5">
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <Stat label="Sizes sold out" value={d.sold_out.length} hint="Live products with a size at 0" to="/admin/inventory" attention />
-        <Stat label="Running low" value={d.low.length} hint={`${d.low_threshold} or fewer left`} to="/admin/inventory" attention />
+        <Stat label="Running low" value={d.low.length} hint={`Perfumes at ${d.low_ml} ml or less; pieces at ${d.low_threshold} or fewer`} to="/admin/inventory" attention />
         <Stat label="Sizes never sold" value={d.never_sold_sizes} hint="Live sizes with no sales yet" to="/admin/products" />
         <Stat label="Sample vials in stock" value={d.vials.in_stock} hint={`${d.vials.kinds} scents · ${d.vials.low} running low`} to="/admin/samples" attention={d.vials.low > 0} />
       </div>
@@ -237,7 +238,11 @@ export function StockView({ d, days }: { d: Insights['stock']; days: number }) {
           <StockList rows={d.sold_out} empty="Nothing is sold out." right={() => 'sold out'} />
         </Panel>
         <Panel title="Running low">
-          <StockList rows={d.low} empty="Nothing is running low." right={(r: { stock: number }) => `${r.stock} left`} />
+          <StockList
+            rows={d.low.map((r) => ({ ...r, size: r.ml !== null ? undefined : r.size, sku: r.sku ?? undefined }))}
+            empty="Nothing is running low."
+            right={(r: { stock: number | null; ml: number | null }) => (r.ml !== null ? `${Number(r.ml).toLocaleString('en-IN')} ml left` : `${r.stock} left`)}
+          />
         </Panel>
         <Panel title={`Best sellers · ${days} days`}>
           <StockList rows={d.best} empty="No sales in this period yet." right={(r: { units: number; revenue: number }) => `${r.units} sold · ${formatINR(Number(r.revenue))}`} />

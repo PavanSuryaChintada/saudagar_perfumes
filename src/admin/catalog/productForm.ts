@@ -72,6 +72,13 @@ const TEXT_FIELDS = [
 type TextKey = (typeof TEXT_FIELDS)[number];
 
 export type ProductForm = { id?: string } & Record<TextKey, string> & Record<ComplianceKey, string> & {
+  /** 'ml' = perfume kept as liquid; 'piece' = counted per size. Changes later through set_stock_mode. */
+  stock_unit: 'ml' | 'piece';
+  /** Liquid left (read-only, existing products). */
+  stock_ml: number;
+  /** New perfumes: the liquid they start with, in the unit chosen. */
+  liquid_amount: string;
+  liquid_unit: 'ml' | 'L' | 'tola';
   base_price: string;
   compare_at_price: string;
   launch_year: string;
@@ -105,6 +112,7 @@ export const COPY_GROUPS = [
   { key: 'compliance', label: 'Details & compliance' },
   { key: 'sections', label: 'Product page sections' },
   { key: 'organisation', label: 'Categories and collections' },
+  { key: 'sizes', label: 'Sizes and prices (new SKUs are made for this product)' },
 ] as const;
 export type CopyGroup = (typeof COPY_GROUPS)[number]['key'];
 
@@ -128,6 +136,13 @@ export function copyProductDetails(target: ProductForm, source: ProductForm, gro
   if (has('sections')) {
     next.page_sections = source.page_sections.map((x) => ({ ...x }));
     next.use_default_sections = source.use_default_sections;
+  }
+  if (has('sizes')) {
+    next.base_price = source.base_price;
+    next.compare_at_price = source.compare_at_price;
+    next.variants = source.variants
+      .filter((v) => !v.is_hidden)
+      .map((v) => ({ ...v, id: undefined, sku: '', initial_stock: '', stock: undefined, units_sold: undefined }));
   }
   if (has('organisation')) {
     next.primary_category_id = source.primary_category_id;
@@ -155,6 +170,10 @@ export function emptyProductForm(defaults: Partial<Record<ComplianceKey, string>
     gst_rate: '18',
     caution_text: 'For external use only. Flammable: keep away from heat and open flame.',
     ...defaults,
+    stock_unit: 'ml',
+    stock_ml: 0,
+    liquid_amount: '',
+    liquid_unit: 'ml',
     base_price: '',
     compare_at_price: '',
     launch_year: '',
@@ -198,14 +217,21 @@ export function validateProductForm(f: ProductForm): Record<string, string> {
   if (f.launch_year.trim() && !(Number(f.launch_year) >= 1900 && Number(f.launch_year) <= 2100)) e.launch_year = 'Enter a year from 1900.';
   if (f.gst_rate.trim() && !(Number(f.gst_rate) >= 0 && Number(f.gst_rate) <= 100)) e.gst_rate = 'GST must be between 0 and 100.';
 
+  if (!f.id && f.stock_unit === 'ml' && f.liquid_amount.trim() && !(Number(f.liquid_amount) >= 0)) {
+    e.liquid_amount = 'Enter how much you have, e.g. 1 (L) or 500 (ml).';
+  }
   const live = f.variants.filter((v) => v.kind === 'retail' && !v.is_hidden);
   if (live.length === 0) e.variants = 'Add at least one bottle size.';
   const seen = new Set<string>();
   f.variants.forEach((v, i) => {
     const sku = v.sku.trim().toUpperCase();
-    if (!sku) e[`variants.${i}.sku`] = 'Enter a SKU.';
-    else if (seen.has(sku)) e[`variants.${i}.sku`] = 'This SKU is already used above.';
-    seen.add(sku);
+    const finalSku = sku || autoSku(f.slug, v).toUpperCase();
+    if (!finalSku) e[`variants.${i}.sku`] = 'Enter a SKU.';
+    else if (seen.has(finalSku)) e[`variants.${i}.sku`] = 'This SKU is already used above. Change one of them.';
+    seen.add(finalSku);
+    if (f.stock_unit === 'ml' && v.kind === 'retail' && !v.is_hidden && !(Number(v.size_ml) > 0)) {
+      e[`variants.${i}.size_ml`] = 'Enter the size in ml; this perfume is kept as liquid.';
+    }
     if (!v.label.trim()) e[`variants.${i}.label`] = 'Enter a label, e.g. 50 ml.';
     if (v.size_ml.trim() && !(Number(v.size_ml) > 0)) e[`variants.${i}.size_ml`] = 'Size must be above 0.';
     if (!optionalMoney(v.price)) e[`variants.${i}.price`] = 'Enter a valid price or leave empty to use the base price.';
@@ -236,6 +262,8 @@ export function toSavePayload(f: ProductForm): Record<string, unknown> {
     is_active: f.is_active,
     counts_toward_samples: f.counts_toward_samples,
     ships_surface_only: f.ships_surface_only,
+    stock_unit: f.stock_unit,
+    liquid_ml: !f.id && f.stock_unit === 'ml' && f.liquid_amount.trim() ? liquidMl(f.liquid_amount, f.liquid_unit) : null,
     category_ids: f.category_ids,
     collection_ids: f.collection_ids,
     notes: f.notes.map((n, i) => ({ note_id: n.note_id, tier: n.tier, position: n.position ?? i })),
@@ -244,7 +272,7 @@ export function toSavePayload(f: ProductForm): Record<string, unknown> {
     variants: f.variants.map((v) => ({
       ...(v.id ? { id: v.id } : {}),
       kind: v.kind,
-      sku: v.sku.trim().toUpperCase(),
+      sku: (v.sku.trim() || autoSku(f.slug, v)).toUpperCase(),
       size_ml: toNum(v.size_ml),
       label: v.label.trim(),
       price: toNum(v.price),
@@ -256,7 +284,7 @@ export function toSavePayload(f: ProductForm): Record<string, unknown> {
       is_active: v.is_active,
       is_hidden: v.is_hidden,
       in_sample_pool: v.in_sample_pool,
-      initial_stock: v.id ? null : toInt(v.initial_stock),
+      initial_stock: v.id || f.stock_unit === 'ml' ? null : toInt(v.initial_stock),
     })),
   };
 }
@@ -284,6 +312,8 @@ export function fromAdminProduct(b: AdminProductBundle): ProductForm {
     ...text,
     ...compliance,
     id: b.product.id,
+    stock_unit: (p.stock_unit === 'piece' ? 'piece' : 'ml') as 'ml' | 'piece',
+    stock_ml: Number(p.stock_ml ?? 0),
     base_price: str(b.product.base_price),
     compare_at_price: str(b.product.compare_at_price),
     launch_year: str(b.product.launch_year),
@@ -324,4 +354,17 @@ export function fromAdminProduct(b: AdminProductBundle): ProductForm {
         units_sold: v.units_sold,
       })),
   };
+}
+
+const UNIT_ML: Record<string, number> = { ml: 1, L: 1000, tola: 11.66 };
+/** Amount in the chosen unit → ml. */
+export function liquidMl(amount: string, unit: string): number {
+  return Math.round(Number(amount) * (UNIT_ML[unit] ?? 1) * 100) / 100;
+}
+
+/** SKU from the web address and size: amber-noir + 50 ml → AMBER-NOIR-50 (sample vials get -S5). */
+export function autoSku(slug: string, v: Pick<VariantForm, 'kind' | 'size_ml' | 'label'>): string {
+  const base = (slug || 'ITEM').toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  const size = v.size_ml.trim() || v.label.replace(/[^0-9.]+/g, '') || '';
+  return `${base}-${v.kind === 'sample' ? 'S' : ''}${size || '1'}`.slice(0, 60);
 }
