@@ -88,6 +88,8 @@ export type ProductForm = { id?: string } & Record<TextKey, string> & Record<Com
   ships_surface_only: boolean;
   category_ids: string[];
   collection_ids: string[];
+  /** Hand-picked “You may also appreciate” products, in order. Empty = automatic. */
+  related_product_ids: string[];
   notes: NoteLink[];
   attributes: AttributeLink[];
   media: MediaForm[];
@@ -183,6 +185,7 @@ export function emptyProductForm(defaults: Partial<Record<ComplianceKey, string>
     ships_surface_only: true,
     category_ids: [],
     collection_ids: [],
+    related_product_ids: [],
     notes: [],
     attributes: [],
     media: [],
@@ -266,6 +269,7 @@ export function toSavePayload(f: ProductForm): Record<string, unknown> {
     liquid_ml: !f.id && f.stock_unit === 'ml' && f.liquid_amount.trim() ? liquidMl(f.liquid_amount, f.liquid_unit) : null,
     category_ids: f.category_ids,
     collection_ids: f.collection_ids,
+    related_product_ids: f.related_product_ids,
     notes: f.notes.map((n, i) => ({ note_id: n.note_id, tier: n.tier, position: n.position ?? i })),
     attributes: f.attributes.map((a) => ({ option_id: a.option_id, strength: a.strength, is_primary: a.is_primary })),
     media: f.media.map((m) => ({ kind: m.kind, url: m.url, alt: blankToNull(m.alt), variant_sku: blankToNull(m.variant_sku) })),
@@ -323,6 +327,7 @@ export function fromAdminProduct(b: AdminProductBundle): ProductForm {
     ships_surface_only: !!b.product.ships_surface_only,
     category_ids: b.categoryIds,
     collection_ids: b.collectionIds,
+    related_product_ids: Array.isArray(p.related_product_ids) ? (p.related_product_ids as string[]) : [],
     page_sections: Array.isArray(p.page_sections)
       ? (p.page_sections as { title?: unknown; body?: unknown }[]).map((x) => ({ title: str(x?.title), body: str(x?.body) }))
       : [],

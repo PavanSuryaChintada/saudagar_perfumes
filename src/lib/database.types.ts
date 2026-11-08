@@ -1454,6 +1454,7 @@ export type Database = {
           primary_category_id: string | null
           rating_avg: number
           rating_count: number
+          related_product_ids: string[]
           search_text: string | null
           search_vector: unknown
           seo_description: string | null
@@ -1508,6 +1509,7 @@ export type Database = {
           primary_category_id?: string | null
           rating_avg?: number
           rating_count?: number
+          related_product_ids?: string[]
           search_text?: string | null
           search_vector?: unknown
           seo_description?: string | null
@@ -1562,6 +1564,7 @@ export type Database = {
           primary_category_id?: string | null
           rating_avg?: number
           rating_count?: number
+          related_product_ids?: string[]
           search_text?: string | null
           search_vector?: unknown
           seo_description?: string | null

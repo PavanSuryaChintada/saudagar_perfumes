@@ -11,6 +11,14 @@ import { useListing } from '../storefront/catalog/useListing';
 import { optionLabel } from '../storefront/catalog/listing';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 import ListingBanner from '../storefront/ListingBanner.jsx';
+import { CmsSections } from '../cms/SectionRenderer';
+import { SectionContext } from '../cms/SectionContext';
+
+const LISTING_PAGE_DEFAULT = [
+  { id: 'd1', type: 'listing_header', config: {} },
+  { id: 'd2', type: 'listing_grid', config: {} },
+];
+const LISTING_REQUIRED = ['listing_header', 'listing_grid'];
 import ListingHeader from '../storefront/ListingHeader.jsx';
 import NotFoundPage from '../storefront/NotFoundPage';
 
@@ -148,7 +156,12 @@ export default function BluorngCollectionPage({
     <div className="w-full min-h-screen font-sans select-none pb-28 bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300">
       
       {/* ================= 1. CINEMATIC HERO (Video & Collection Identity) ================= */}
-      {header}
+      <SectionContext.Provider
+        value={{
+          listing: {
+            header,
+            grid: (
+              <>
 
       {/* ================= 2. CLEAN MINIMAL TOOLBAR ================= */}
       <div id="catalog-section" className="w-full px-4 sm:px-8 lg:px-12 pt-10 pb-4">
@@ -678,6 +691,14 @@ export default function BluorngCollectionPage({
         )}
       </AnimatePresence>
 
+              </>
+            ),
+          },
+        }}
+      >
+        {/* Admin → Pages → Category & collection pages decides what sits above and below these two. */}
+        <CmsSections slug="listing-page" fallback={LISTING_PAGE_DEFAULT} ensure={LISTING_REQUIRED} />
+      </SectionContext.Provider>
     </div>
   );
 }

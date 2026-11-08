@@ -27,7 +27,14 @@ export interface PageRow {
   updated_at: string;
 }
 
-export const pageHref = (slug: string) => (slug === 'home' ? '/' : slug === 'story' ? '/story' : `/pages/${slug}`);
+/** Built-in layouts used by many pages at once; they have no link of their own. */
+export const TEMPLATE_PAGES: Record<string, string> = {
+  'product-page': 'Used by every product page, below the photos and the buy button.',
+  'listing-page': 'Used by every category and collection page.',
+};
+
+export const pageHref = (slug: string) =>
+  TEMPLATE_PAGES[slug] ? '' : slug === 'home' ? '/' : slug === 'story' ? '/story' : `/pages/${slug}`;
 
 export function usePages() {
   return useQuery({
@@ -91,14 +98,17 @@ export default function PagesPage() {
             <Link to={`/admin/pages/${p.id}`} className="min-w-0 flex-1">
               <p className="text-[14px] text-tk-ink truncate hover:underline">{p.title}</p>
               <p className="text-[12px] text-[#4F4F4F] truncate">
-                {pageHref(p.slug)} · {p.layout === 'sections' ? 'Sections' : 'Text'}
-                {p.is_system ? ' · Built-in' : ''}
+                {TEMPLATE_PAGES[p.slug] ?? `${pageHref(p.slug)} · ${p.layout === 'sections' ? 'Sections' : 'Text'}${p.is_system ? ' · Built-in' : ''}`}
               </p>
             </Link>
             <span className="sm:w-[90px]"><ShownPill on={p.is_published} onText="Published" offText="Draft" /></span>
-            <a href={pageHref(p.slug)} target="_blank" rel="noreferrer" aria-label={`View ${p.title} on the site`} className="sm:w-[70px] inline-flex items-center justify-end gap-1 px-2 py-1.5 text-[12.5px] text-[#3F3F3F] hover:text-tk-ink">
-              <ExternalLink size={13} aria-hidden /> View
-            </a>
+            {pageHref(p.slug) ? (
+              <a href={pageHref(p.slug)} target="_blank" rel="noreferrer" aria-label={`View ${p.title} on the site`} className="sm:w-[70px] inline-flex items-center justify-end gap-1 px-2 py-1.5 text-[12.5px] text-[#3F3F3F] hover:text-tk-ink">
+                <ExternalLink size={13} aria-hidden /> View
+              </a>
+            ) : (
+              <span className="sm:w-[70px]" />
+            )}
           </div>
         ))}
       </div>

@@ -7,7 +7,7 @@ import BluorngProductReviews from './BluorngProductReviews.jsx';
 import NotifyMe from '../storefront/product/NotifyMe.jsx';
 import { StaggerContainer, StaggerItem } from './motion/ScrollReveal.jsx';
 import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
-import { useProductDetail, useProductsBySlugs, useSimilarProducts } from '../storefront/catalog/hooks';
+import { useProductDetail, useProductsBySlugs } from '../storefront/catalog/hooks';
 import { toLegacyProduct } from '../storefront/catalog/adapter';
 import { recordView } from '../storefront/catalog/recentlyViewed';
 import { useSetting } from '../lib/bootstrap';
@@ -16,6 +16,16 @@ import NotFoundPage from '../storefront/NotFoundPage';
 import { useSEO, productJsonLd, breadcrumbJsonLd } from '../lib/seo';
 import { track } from '../lib/analytics';
 import { useBlock } from '../cms/useSite';
+import { CmsSections } from '../cms/SectionRenderer';
+import { SectionContext } from '../cms/SectionContext';
+
+// Shown until the product page layout loads (and if it can't): the same sections it starts with.
+const PRODUCT_PAGE_DEFAULT = [
+  { id: 'd1', type: 'product_composition', config: { eyebrow: 'Atelier Specifications', heading: 'Craft & Olfactory Composition' } },
+  { id: 'd2', type: 'product_reviews', config: {} },
+  { id: 'd3', type: 'product_similar', config: { eyebrow: 'Similar Scents', heading: 'You May Also Appreciate', limit: 4 } },
+  { id: 'd4', type: 'product_recent', config: { eyebrow: 'Your Journey', heading: 'Recently Viewed' } },
+];
 
 export default function BluorngPDP(props) {
   const { data: detail, isLoading, error } = useProductDetail(props.productId);
@@ -197,7 +207,6 @@ function PDPView({
     ? `Every ${mlPerSample} ml of perfume in your order earns a free ${sampleSize} ml sample of your choice.`
     : null;
 
-  const { products: similarProducts } = useSimilarProducts(product.slug, 4);
   const [recentSlugs, setRecentSlugs] = useState([]);
   useEffect(() => setRecentSlugs(recordView(product.slug).slice(0, 4)), [product.slug]);
   const { products: recentProducts } = useProductsBySlugs(recentSlugs);
@@ -237,6 +246,13 @@ function PDPView({
   const categoryPrefix = (product.category || product.concentration || 'Parfum').split(' ')[0].toUpperCase();
   const familyLine = product.family || product.collection || '';
   const accords = detail.attributes?.accord ?? [];
+  // What the product page's CMS sections need (src/storefront/sections/PageSections.jsx).
+  const sectionCtx = {
+    product: {
+      detail, name: product.name, accords, selectedSize, openAccordion, toggleAccordion, sampleCopy, etaText, recentProducts,
+      wishlist, onToggleWishlist, onSelectProduct, onQuickBuy,
+    },
+  };
 
   // Animations
   const flaconHeroVariants = {
@@ -803,69 +819,10 @@ function PDPView({
 
       </div>
 
-      {/* ============================================================== */}
-      {/* ================= 3. SHARED ACCORDIONS & ATELIER ============= */}
-      {/* ============================================================== */}
-      <div className="w-full bg-[#FFFFFF] dark:bg-tk-night border-t border-[#EAEAEA] dark:border-white/10 px-6 sm:px-10 lg:px-16 py-14 sm:py-16 transition-colors duration-300">
-        <div className="max-w-2xl mx-auto">
-          
-          <div className="mb-6">
-            <span className="text-[11px] uppercase tracking-[0.14em] text-[#777777] dark:text-[#999999]">
-              Atelier Specifications
-            </span>
-            <h2 className="text-[22px] sm:text-[26px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white mt-1">
-              Craft & Olfactory Composition
-            </h2>
-          </div>
-
-          <NotePyramid notes={detail.notes} />
-          <AccordBars accords={accords} />
-          <ProductAccordions
-            detail={detail}
-            selectedSize={selectedSize}
-            openAccordion={openAccordion}
-            onToggle={toggleAccordion}
-            sampleCopy={sampleCopy}
-            etaText={etaText}
-          />
-
-        </div>
-      </div>
-
-      {/* ============================================================== */}
-      {/* ================= 3b. REVIEWS & FEEDBACK SECTION ============= */}
-      {/* ============================================================== */}
-      <BluorngProductReviews productSlug={detail.slug} productName={product.name} />
-
-      {/* ================= 4. SIMILAR SCENTS & RECENTLY VIEWED ========== */}
-      {[
-        { key: 'similar', eyebrow: 'Similar Scents', title: 'You May Also Appreciate', items: similarProducts },
-        { key: 'recent', eyebrow: 'Your Journey', title: 'Recently Viewed', items: recentProducts },
-      ]
-        .filter((block) => block.items.length > 0)
-        .map((block) => (
-          <div key={block.key} className="w-full px-6 sm:px-10 lg:px-16 pt-16 pb-16 last:pb-28 lg:last:pb-16 border-t border-[#EAEAEA] dark:border-white/10 bg-[#FFFFFF] dark:bg-tk-night transition-colors duration-300">
-            <div className="max-w-7xl mx-auto">
-              <div className="mb-8">
-                <span className="text-[11px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night font-medium">{block.eyebrow}</span>
-                <h2 className="text-[22px] sm:text-[26px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white mt-1">{block.title}</h2>
-              </div>
-              <StaggerContainer staggerDelay={0.06} className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                {block.items.map((relProd) => (
-                  <StaggerItem key={relProd.id}>
-                    <BluorngProductCard
-                      product={relProd}
-                      isWishlisted={wishlist.includes(relProd.id)}
-                      onToggleWishlist={onToggleWishlist}
-                      onSelectProduct={onSelectProduct}
-                      onQuickBuy={() => onQuickBuy && onQuickBuy(relProd)}
-                    />
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </div>
-          </div>
-        ))}
+      {/* ================= 3. EVERYTHING BELOW: Admin → Pages → Product page ================= */}
+      <SectionContext.Provider value={sectionCtx}>
+        <CmsSections slug="product-page" fallback={PRODUCT_PAGE_DEFAULT} />
+      </SectionContext.Provider>
 
       {/* Sticky mobile add-to-bag bar */}
       <AnimatePresence>

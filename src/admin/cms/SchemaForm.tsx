@@ -446,13 +446,13 @@ function LinkLookup({ id, label, kind, value, onChange }: { id: string; label: s
 }
 
 const SOURCE_MODES: { value: SourceMode; label: string }[] = [
-  { value: 'featured', label: 'Featured products' },
-  { value: 'newest', label: 'Newest products' },
-  { value: 'best_selling', label: 'Best sellers' },
-  { value: 'collection', label: 'A collection' },
-  { value: 'category', label: 'A category' },
-  { value: 'filter', label: 'Products matching filters' },
-  { value: 'manual', label: 'Products I pick' },
+  { value: 'manual', label: 'Products I pick (search and choose)' },
+  { value: 'best_selling', label: 'Automatic: best sellers' },
+  { value: 'newest', label: 'Automatic: newest' },
+  { value: 'featured', label: 'Automatic: featured products' },
+  { value: 'collection', label: 'Automatic: a collection' },
+  { value: 'category', label: 'Automatic: a category' },
+  { value: 'filter', label: 'Automatic: products matching filters' },
 ];
 
 export function SourceInput({ label, help, value, onChange }: { label: string; help?: string; value: ProductSource | null; onChange: (v: unknown) => void }) {
@@ -477,7 +477,15 @@ export function SourceInput({ label, help, value, onChange }: { label: string; h
       {src.mode === 'category' && (
         <LookupSelect id={`${id}-k`} label="Category" value={src.category ?? ''} onChange={(v) => set({ category: String(v ?? '') })} kind="category" by="slug" />
       )}
-      {src.mode === 'manual' && <MultiPick label="Products" value={src.products ?? []} onChange={(v) => set({ products: v as string[] })} by="slug" />}
+      {src.mode === 'manual' && (
+        <MultiPick
+          label="Products"
+          help="Search a product and press Enter or click it to add. They show in this order; use the arrows to move one up."
+          value={src.products ?? []}
+          onChange={(v) => set({ products: v as string[] })}
+          by="slug"
+        />
+      )}
       {src.mode === 'filter' && (
         <div className="space-y-2">
           <p className="text-[12px] text-[#4F4F4F]">Products must match one ticked option in every group you use.</p>

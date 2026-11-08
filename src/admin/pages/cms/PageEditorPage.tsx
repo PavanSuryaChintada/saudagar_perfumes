@@ -16,9 +16,10 @@ import { RichText } from '../../ui/RichText';
 import { rpc, throwIf } from '../../catalog/api';
 import { slugify } from '../../catalog/productForm';
 import { SchemaForm } from '../../cms/SchemaForm';
-import { SECTION_TYPES } from '../../../cms/registry';
+import { SECTION_PRESETS, SECTION_TYPES, sectionTypesFor } from '../../../cms/registry';
 import { emptyItem } from '../../../cms/schema';
-import { pageHref, type PageRow } from './PagesPage';
+import { pageHref, TEMPLATE_PAGES, type PageRow } from './PagesPage';
+import { RowAction } from '../../ui/ListHead';
 
 interface SectionRow {
   id: string;
@@ -101,16 +102,21 @@ export default function PageEditorPage() {
     }
   };
 
-  const addSection = async (type: string) => {
+  const addSection = async (type: string, preset?: { label: string; config: Record<string, unknown> }) => {
     try {
       const def = SECTION_TYPES[type];
-      // Start from the content of an existing section of this type, so the admin edits rather than starts blank.
-      const { data: sample } = await supabase.from('website_sections').select('config').eq('section_type', type).order('updated_at', { ascending: false }).limit(1).maybeSingle();
-      const startConfig = sample?.config && typeof sample.config === 'object' && Object.keys(sample.config).length ? structuredClone(sample.config) : emptyItem(def.fields);
+      // Start from a ready-made section, or from the content of an existing section of this type, so the admin
+      // edits rather than starts blank.
+      const { data: sample } = preset
+        ? { data: null }
+        : await supabase.from('website_sections').select('config').eq('section_type', type).order('updated_at', { ascending: false }).limit(1).maybeSingle();
+      const startConfig = preset
+        ? structuredClone(preset.config)
+        : sample?.config && typeof sample.config === 'object' && Object.keys(sample.config).length ? structuredClone(sample.config) : emptyItem(def.fields);
       const row = (await throwIf(
         supabase
           .from('website_sections')
-          .insert({ page_id: page.id, section_type: type, label: def.label, position: sections.length, is_visible: true, config: startConfig as never })
+          .insert({ page_id: page.id, section_type: type, label: preset?.label ?? def.label, position: sections.length, is_visible: true, config: startConfig as never })
           .select('*')
           .single(),
       )) as SectionRow;
@@ -161,12 +167,14 @@ export default function PageEditorPage() {
         </Link>
         <PageHeader
           title={page.title}
-          description={`${pageHref(page.slug)} · ${page.layout === 'sections' ? 'Section page' : 'Text page'}${page.is_system ? ' · Built-in' : ''}`}
+          description={TEMPLATE_PAGES[page.slug] ?? `${pageHref(page.slug)} · ${page.layout === 'sections' ? 'Section page' : 'Text page'}${page.is_system ? ' · Built-in' : ''}`}
           actions={
             <>
-              <a href={pageHref(page.slug)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-[13px] border border-[#C4C1B9] bg-white hover:border-tk-ink">
-                <ExternalLink size={14} /> View on site
-              </a>
+              {pageHref(page.slug) && (
+                <a href={pageHref(page.slug)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-[13px] border border-[#C4C1B9] bg-white hover:border-tk-ink">
+                  <ExternalLink size={14} /> View on site
+                </a>
+              )}
               {!page.is_system && (
                 <Button variant="ghost" onClick={() => setDeletingPage(true)}>
                   <Trash2 size={14} /> Delete page
@@ -178,7 +186,16 @@ export default function PageEditorPage() {
       </div>
 
       {page.layout === 'sections' && (
-        <Panel title="Sections" description="Drag to reorder. Hidden sections stay here but don't show on the site.">
+        <Panel
+          title="Sections"
+          description={
+            page.slug === 'listing-page'
+              ? 'Drag to reorder. “Top picture and title” and “Products with filters” are needed on every category page: move them, and add sections above or below.'
+              : page.slug === 'product-page'
+                ? 'Drag to reorder. These show on every product page, below the photos and the buy button. Hidden sections stay here but don’t show.'
+                : 'Drag to reorder. Hidden sections stay here but don’t show on the site.'
+          }
+        >
           {sections.length === 0 ? (
             <p className="text-[14px] text-[#4A4A4A] mb-3">No sections yet.</p>
           ) : (
@@ -196,37 +213,47 @@ export default function PageEditorPage() {
               renderItem={(s) => {
                 const def = SECTION_TYPES[s.section_type];
                 const name = s.label || def?.label || s.section_type;
+                const src = (s.config as { source?: { mode?: string; products?: string[] } }).source;
+                const nothingPicked = src?.mode === 'manual' && !(src.products ?? []).length;
                 return (
-                  <div className="flex items-center gap-2 pr-2 py-2">
+                  <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 pr-2 py-2">
                     <button type="button" className="min-w-0 flex-1 text-left" onClick={() => setEditing(s)}>
-                      <p className={`text-[14px] truncate ${s.is_visible ? 'text-tk-ink' : 'text-[#575757]'}`}>{name}</p>
-                      <p className="text-[12px] text-[#4F4F4F] truncate">{def ? def.label : `Unknown type “${s.section_type}”`}{s.is_visible ? '' : ' · Hidden'}</p>
+                      <p className="text-[14px] font-medium truncate text-tk-ink">{name}</p>
+                      <p className="text-[12px] text-[#4F4F4F] truncate">
+                        {def ? def.label : `Unknown type “${s.section_type}”`}
+                        {def?.required ? ' · Needed: can be moved, not removed' : ''}
+                      </p>
+                      {nothingPicked && <p className="text-[12px] text-amber-800">No products picked yet, so it doesn’t show. Edit it to pick products.</p>}
                     </button>
-                    <button type="button" aria-label={s.is_visible ? `Hide ${name}` : `Show ${name}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => setVisible(s, !s.is_visible)}>
-                      {s.is_visible ? <Eye size={14} /> : <EyeOff size={14} />}
-                    </button>
-                    <button type="button" aria-label={`Edit ${name}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => setEditing(s)}>
-                      <Pencil size={14} />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label={`Duplicate ${name}`}
-                      className="p-1.5 text-[#4A4A4A] hover:text-tk-ink"
-                      onClick={async () => {
-                        try {
-                          await rpc('duplicate_section', { p_id: s.id });
-                          await invalidate();
-                          toast.success('Section duplicated.');
-                        } catch (err) {
-                          toast.error(toFriendlyError(err));
-                        }
-                      }}
-                    >
-                      <Copy size={14} />
-                    </button>
-                    <button type="button" aria-label={`Delete ${name}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setRemoving(s)}>
-                      <Trash2 size={14} />
-                    </button>
+                    <span className={`px-2 py-0.5 text-[12px] font-medium border ${s.is_visible ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-[#EFEDE8] text-[#4A4A4A] border-[#D6D1C6]'}`}>
+                      {s.is_visible ? 'Shown' : 'Hidden'}
+                    </span>
+                    {!def?.required && (
+                      <RowAction icon={s.is_visible ? EyeOff : Eye} label={s.is_visible ? `Hide ${name}` : `Show ${name}`} onClick={() => setVisible(s, !s.is_visible)}>
+                        {s.is_visible ? 'Hide' : 'Show'}
+                      </RowAction>
+                    )}
+                    <RowAction icon={Pencil} label={`Edit ${name}`} onClick={() => setEditing(s)}>Edit</RowAction>
+                    {!def?.required && (
+                      <RowAction
+                        icon={Copy}
+                        label={`Duplicate ${name}`}
+                        onClick={async () => {
+                          try {
+                            await rpc('duplicate_section', { p_id: s.id });
+                            await invalidate();
+                            toast.success('Section duplicated.');
+                          } catch (err) {
+                            toast.error(toFriendlyError(err));
+                          }
+                        }}
+                      >
+                        Copy
+                      </RowAction>
+                    )}
+                    {!def?.required && (
+                      <RowAction icon={Trash2} danger label={`Delete ${name}`} onClick={() => setRemoving(s)}>Delete</RowAction>
+                    )}
                   </div>
                 );
               }}
@@ -238,6 +265,7 @@ export default function PageEditorPage() {
         </Panel>
       )}
 
+      {!TEMPLATE_PAGES[page.slug] && (
       <Panel title="Page settings">
         <div className="space-y-4">
           {pageError && <p className="text-[13px] text-rose-600">{pageError}</p>}
@@ -273,15 +301,28 @@ export default function PageEditorPage() {
           </div>
         </div>
       </Panel>
+      )}
 
-      <Modal open={adding} onOpenChange={setAdding} title="Add a section" description="New sections start with sample content copied from an existing section of the same kind. Edit it, then save." wide>
-        <div className="grid sm:grid-cols-2 gap-2">
-          {Object.entries(SECTION_TYPES).map(([type, def]) => (
-            <button key={type} type="button" onClick={() => addSection(type)} className="text-left border border-[#E2E0DB] p-3 hover:border-tk-ink">
-              <p className="text-[14px] text-tk-ink">{def.label}</p>
-              <p className="text-[12px] text-[#4F4F4F] mt-0.5">{def.description}</p>
+      <Modal open={adding} onOpenChange={setAdding} title="Add a section" description="Pick a ready-made section or any section type. New sections start with sample content; edit it, then save." wide>
+        <p className="text-[12.5px] font-semibold uppercase tracking-[0.12em] text-tk-accent mb-2">Ready-made: pick the products</p>
+        <div className="grid sm:grid-cols-2 gap-2 mb-5">
+          {SECTION_PRESETS.map((p) => (
+            <button key={p.key} type="button" onClick={() => addSection(p.type, p)} className="text-left border border-[#E2E0DB] bg-[#FAF8F4] p-3 hover:border-tk-ink">
+              <p className="text-[14px] font-medium text-tk-ink">{p.label}</p>
+              <p className="text-[12px] text-[#4F4F4F] mt-0.5">{p.description}</p>
             </button>
           ))}
+        </div>
+        <p className="text-[12.5px] font-semibold uppercase tracking-[0.12em] text-tk-accent mb-2">All sections</p>
+        <div className="grid sm:grid-cols-2 gap-2">
+          {sectionTypesFor(page.slug)
+            .filter(([, def]) => !def.required)
+            .map(([type, def]) => (
+              <button key={type} type="button" onClick={() => addSection(type)} className="text-left border border-[#E2E0DB] p-3 hover:border-tk-ink">
+                <p className="text-[14px] font-medium text-tk-ink">{def.label}</p>
+                <p className="text-[12px] text-[#4F4F4F] mt-0.5">{def.description}</p>
+              </button>
+            ))}
         </div>
       </Modal>
 

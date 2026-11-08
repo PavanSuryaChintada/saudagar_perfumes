@@ -61,7 +61,7 @@ test('admin creates a product with two sizes and a note, it goes live, archiving
 test('admin catalog pages load', async ({ page }) => {
   await adminLogin(page, '/admin/notes');
   await expect(page.getByRole('heading', { name: 'Notes' })).toBeVisible();
-  await expect(page.getByText(/\d+ notes/)).toBeVisible();
+  await expect(page.getByText(/\d+ notes/).first()).toBeVisible();
   await page.goto('/admin/scent-profile');
   await expect(page.getByRole('heading', { name: 'Fragrance families', exact: true })).toBeVisible();
   await page.goto('/admin/collections');

@@ -12,7 +12,7 @@ test('a customer buys with cash on delivery, the admin packs and ships it, the c
   // Product page → bag
   await page.goto(`/product/${product.slug}`);
   await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(product.name.toUpperCase());
-  await page.getByRole('button', { name: 'Add to cart' }).first().click();
+  await page.getByRole('button', { name: 'Add to bag' }).first().click();
   const bag = page.getByRole('button', { name: /Proceed to Checkout/ });
   await expect(bag).toBeVisible({ timeout: 15_000 });
   await expect(page.getByText('Free samples', { exact: false }).first()).toBeVisible();
@@ -74,7 +74,7 @@ test('a customer cancels a new order and the stock comes back', async ({ page })
 
   await page.goto(`/product/${product.slug}`);
   await expect(page.getByText('Only 3 left').first()).toBeVisible();
-  await page.getByRole('button', { name: 'Add to cart' }).first().click();
+  await page.getByRole('button', { name: 'Add to bag' }).first().click();
   await page.getByRole('button', { name: /Proceed to Checkout/ }).click({ timeout: 15_000 });
   await page.getByRole('button', { name: '+ Add a new address' }).click();
   await page.getByLabel('Recipient Name').fill('Meena Iyer');
