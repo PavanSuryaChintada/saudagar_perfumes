@@ -160,7 +160,7 @@ export default function BluorngCollectionHero({
                 Saudagar Haute Parfumerie · {activeHero.accentTag}
               </span>
 
-              <h1 className="font-serif text-[26px] xs:text-[30px] sm:text-[40px] lg:text-[48px] font-normal tracking-[0.04em] uppercase text-white leading-[1.08] drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
+              <h1 className="font-serif text-[26px] min-[390px]:text-[30px] sm:text-[40px] lg:text-[48px] font-normal tracking-[0.04em] uppercase text-white leading-[1.08] drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
                 {activeHero.title}
               </h1>
 

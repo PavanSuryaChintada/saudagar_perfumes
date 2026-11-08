@@ -111,7 +111,7 @@ export default function BluorngHeader({
               <img
                 src={brand.logo_on_image}
                 alt={brand.name || ''}
-                className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85"
+                className="h-[18px] min-[360px]:h-[21px] min-[390px]:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85"
               />
             ) : null
           ) : (
@@ -120,14 +120,14 @@ export default function BluorngHeader({
                 <img
                   src={brand.logo_light_bg}
                   alt={brand.name || ''}
-                  className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 block dark:hidden"
+                  className="h-[18px] min-[360px]:h-[21px] min-[390px]:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 block dark:hidden"
                 />
               )}
               {brand.logo_dark_bg && (
                 <img
                   src={brand.logo_dark_bg}
                   alt={brand.name || ''}
-                  className="h-[21px] xs:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 hidden dark:block"
+                  className="h-[18px] min-[360px]:h-[21px] min-[390px]:h-[23px] sm:h-7 md:h-8 lg:h-9 w-auto max-w-full object-contain transition-all duration-300 hover:opacity-85 hidden dark:block"
                 />
               )}
             </>
@@ -144,7 +144,7 @@ export default function BluorngHeader({
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.94 }}
             onClick={onOpenSearch}
-            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-[2px] transition-all cursor-pointer flex items-center justify-center ${
+            className={`w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-[2px] transition-all cursor-pointer flex items-center justify-center ${
               isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             title="Search"
@@ -247,7 +247,7 @@ export default function BluorngHeader({
           {/* Wishlist Bookmark Button with Badge */}
           <button
             onClick={() => onNavigateCollection('wishlist')}
-            className={`relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-[2px] transition-all cursor-pointer ${
+            className={`relative w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-[2px] transition-all cursor-pointer ${
               isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             title="Wishlist"
@@ -267,7 +267,7 @@ export default function BluorngHeader({
           <button
             data-cart-target
             onClick={onOpenCart}
-            className={`flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-[2px] transition-all cursor-pointer ${
+            className={`flex items-center justify-center w-8 h-8 min-[360px]:w-9 min-[360px]:h-9 sm:w-10 sm:h-10 rounded-[2px] transition-all cursor-pointer ${
               isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             aria-label={`Shopping Cart (${cartCount})`}
