@@ -751,17 +751,15 @@ function ContentTab({ params, setParams }: { params: URLSearchParams; setParams:
     <>
       <div className="p-3 border-b border-[#E0DBD1] space-y-2">
         <label htmlFor="cms-kind" className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-[#555555]">Content</label>
-        <div className="flex gap-2">
-          <select id="cms-kind" className={pickerCls} value={kind} onChange={(e) => { const v = e.target.value; guard(() => setParams({ kind: v, item: null })); }}>
-            {KINDS.map((k) => (
-              <option key={k} value={k}>{CONTENT_TYPES[k].label}</option>
-            ))}
-          </select>
-          <Button variant="secondary" onClick={() => guard(() => setParams({ item: 'new' }))}>
-            <Plus size={14} /> Add {type.singular}
-          </Button>
-        </div>
+        <select id="cms-kind" className={pickerCls} value={kind} onChange={(e) => { const v = e.target.value; guard(() => setParams({ kind: v, item: null })); }}>
+          {KINDS.map((k) => (
+            <option key={k} value={k}>{CONTENT_TYPES[k].label}</option>
+          ))}
+        </select>
         <p className="text-[12.5px] text-[#4A4A4A]">{type.description}</p>
+        <Button variant="secondary" className="w-full" onClick={() => guard(() => setParams({ item: 'new' }))}>
+          <Plus size={14} /> Add {type.singular}
+        </Button>
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
         {isLoading && <p className="px-4 py-4 text-[13.5px] text-[#4A4A4A]">Loading…</p>}

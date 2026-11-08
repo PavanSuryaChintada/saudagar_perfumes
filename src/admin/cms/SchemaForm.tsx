@@ -288,20 +288,24 @@ function ListInput({ field, value, onChange }: { field: Extract<FieldDef, { type
 function StringsInput({ label, help, placeholder, value, onChange }: { label: string; help?: string; placeholder?: string; value: string[]; onChange: (v: unknown) => void }) {
   return (
     <div className="space-y-2">
-      <p className="text-[12px] font-medium text-[#454545]">{label}</p>
-      {help && <p className="text-[12px] text-[#4F4F4F]">{help}</p>}
+      <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#454545]">{label}</p>
+      {help && <p className="text-[12.5px] text-[#4F4F4F]">{help}</p>}
       {value.map((s, i) => (
-        <div key={i} className="flex items-center gap-1">
+        <div key={i} className="flex items-center gap-1 border border-[#DDD8CD] bg-[#F3F1EC] pl-2">
+          <span className="w-6 shrink-0 text-[12px] font-semibold tabular-nums text-[#4A4A4A]">{i + 1}</span>
           <TextInput aria-label={`${label} ${i + 1}`} value={s} placeholder={placeholder} onChange={(e) => onChange(value.map((x, j) => (j === i ? e.target.value : x)))} />
-          <button type="button" aria-label="Move up" className={iconBtn} disabled={i === 0} onClick={() => onChange(move(value, i, i - 1))}>
+          <button type="button" aria-label="Move up" title="Move up" className={iconBtn} disabled={i === 0} onClick={() => onChange(move(value, i, i - 1))}>
             <ArrowUp size={14} />
           </button>
-          <button type="button" aria-label="Remove" className={`${iconBtn} hover:text-rose-600`} onClick={() => onChange(value.filter((_, j) => j !== i))}>
+          <button type="button" aria-label="Move down" title="Move down" className={iconBtn} disabled={i === value.length - 1} onClick={() => onChange(move(value, i, i + 1))}>
+            <ArrowDown size={14} />
+          </button>
+          <button type="button" aria-label="Remove" title="Remove" className={`${iconBtn} hover:text-rose-600`} onClick={() => onChange(value.filter((_, j) => j !== i))}>
             <Trash2 size={14} />
           </button>
         </div>
       ))}
-      <button type="button" onClick={() => onChange([...value, ''])} className="inline-flex items-center gap-1.5 text-[13px] text-tk-ink hover:text-tk-accent">
+      <button type="button" onClick={() => onChange([...value, ''])} className="inline-flex items-center gap-1.5 px-3 py-2 border border-dashed border-[#BDB8AD] text-[13px] text-tk-ink hover:border-tk-ink">
         <Plus size={13} /> Add
       </button>
     </div>
