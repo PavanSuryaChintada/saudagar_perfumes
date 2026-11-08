@@ -7,6 +7,7 @@ import { useAuth } from '../../lib/auth';
 import { formatRupees as formatINR } from '../../lib/money';
 import { toFriendlyError } from '../../lib/errors';
 import { PageHeader, Panel } from '../ui/PageHeader';
+import { Part, PartsLayout, usePart, type PartDef } from '../ui/Parts';
 import { OrdersView, PaymentsView, StockView, TodayView, type Insights } from './dashboard/InsightViews';
 
 interface Dashboard {
@@ -22,25 +23,24 @@ interface Dashboard {
 }
 
 /** Switched off until their keys are added; nothing in the database can tell whether they are set. */
-const INTEGRATIONS = [
-  { label: 'Razorpay keys (online payments)', detail: 'Until then the store takes cash on delivery only. Turn it on in Settings → Payments and sign-in once the keys are in.' },
-  { label: 'Delhivery token and pickup location', detail: 'Until then shipments are booked by hand with a tracking number.' },
-  { label: 'Email provider (SMTP)', detail: 'Needed before sign-up confirmations and password-reset emails reach customers.' },
-  { label: 'Supabase Pro plan', detail: 'Needed before launch for backups, bandwidth and image resizing.' },
-];
 
 const dayLabel = (iso: string) => new Date(`${iso}T00:00:00+05:30`).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' });
 const compact = (n: number) => (n >= 100000 ? `₹${(n / 100000).toFixed(n >= 1000000 ? 0 : 1)}L` : n >= 1000 ? `₹${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : `₹${Math.round(n)}`);
 
-function Kpi({ label, value, hint, to }: { label: string; value: string; hint?: string; to?: string }) {
+function Kpi({ label, value, hint, to, alert }: { label: string; value: string; hint?: string; to?: string; alert?: boolean }) {
   const body = (
-    <div className="bg-white border border-[#E2E0DB] px-4 py-3 h-full">
-      <p className="text-[12px] text-[#4A4A4A] font-medium">{label}</p>
-      <p className="text-[22px] text-tk-ink tabular-nums mt-0.5">{value}</p>
-      {hint && <p className="text-[12px] text-[#4F4F4F]">{hint}</p>}
+    <div
+      className={`bg-white border border-[#E0DBD1] border-l-[3px] px-4 py-3.5 h-full shadow-[0_1px_2px_rgba(20,20,20,0.05)] ${
+        alert ? 'border-l-tk-accent' : 'border-l-[#E0DBD1]'
+      }`}
+    >
+      <p className="text-[12.5px] text-[#3F3F3F] font-medium">{label}</p>
+      <p className="text-[26px] leading-tight font-semibold text-tk-ink tabular-nums mt-1">{value}</p>
+      {hint && <p className="text-[12.5px] text-[#4F4F4F] mt-0.5">{hint}</p>}
+      {to && <p className="text-[12.5px] text-tk-accent font-medium mt-1.5">Open →</p>}
     </div>
   );
-  return to ? <Link to={to} className="block hover:opacity-90">{body}</Link> : body;
+  return to ? <Link to={to} className="block hover:-translate-y-px transition-transform">{body}</Link> : body;
 }
 
 /** Revenue per day: one series, thin bars on a baseline, hover for the day's revenue and orders. */
@@ -157,8 +157,8 @@ export default function DashboardPage() {
   const setup = data?.setup ?? [];
   const setupDone = setup.filter((s) => s.done).length;
   const setupLeft = setup.length - setupDone;
-  const [params, setParams] = useSearchParams();
-  const view = (['overview', 'orders', 'payments', 'stock'] as const).find((v) => v === params.get('view')) ?? 'overview';
+  const [params] = useSearchParams();
+  const oldView = params.get('view');
   const insights = useQuery({
     queryKey: ['admin', 'insights', days],
     queryFn: async () => {
@@ -169,6 +169,16 @@ export default function DashboardPage() {
     refetchInterval: 60_000,
   });
   const ins = insights.data;
+  const attention = k ? Number(k.pending) + Number(k.returns_waiting) + Number(k.reviews_waiting) + Number(k.refunds_due ?? 0) + Number(k.low_stock) : 0;
+  const parts: PartDef[] = [
+    { id: 'attention', label: 'Needs attention', hint: k ? (attention ? `${attention} thing${attention === 1 ? '' : 's'} to do` : 'All clear') : undefined, status: k && !attention ? 'done' : null },
+    { id: 'sales', label: 'Sales', hint: k ? `${formatINR(Number(k.revenue))} in ${days} days` : undefined },
+    { id: 'orders', label: 'Orders', hint: 'Where every order is' },
+    { id: 'payments', label: 'Payments and refunds', hint: 'Cash and online' },
+    { id: 'stock', label: 'Stock and products', hint: 'Running low, best sellers' },
+    ...(setupLeft > 0 ? [{ id: 'setup', label: 'Store setup', hint: `${setupDone} of ${setup.length} done` } as PartDef] : []),
+  ];
+  const [part, setPart] = usePart(parts, oldView === 'orders' || oldView === 'payments' || oldView === 'stock' ? oldView : 'attention');
 
   return (
     <div className="space-y-5">
@@ -193,6 +203,22 @@ export default function DashboardPage() {
         </Link>
       ))}
 
+
+      {insights.error && <p className="text-[14px] text-rose-600">{toFriendlyError(insights.error)}</p>}
+
+      <PartsLayout parts={parts} current={part} onSelect={setPart}>
+      <Part id="attention">
+      {ins && <TodayView d={ins.today} />}
+      {/* Today's tiles cover orders, returns and refunds; these two add what else is waiting. */}
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+        <Kpi label="Reviews waiting" value={k ? String(k.reviews_waiting) : '—'} hint="Approve them before they show" to="/admin/reviews" alert={!!k && Number(k.reviews_waiting) > 0} />
+        <Kpi label="Low stock" value={k ? String(k.low_stock) : '—'} hint="Perfumes and sizes running low" to="/admin/inventory" alert={!!k && Number(k.low_stock) > 0} />
+      </div>
+      </Part>
+      <Part id="orders">{ins ? <OrdersView d={ins.pipeline} days={days} /> : !insights.error && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}</Part>
+      <Part id="payments">{ins ? <PaymentsView d={ins.payments} days={days} /> : !insights.error && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}</Part>
+      <Part id="stock">{ins ? <StockView d={ins.stock} days={days} /> : !insights.error && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}</Part>
+      <Part id="setup">
       {setupLeft > 0 && (
         <Panel title={`Get your store ready · ${setupDone} of ${setup.length} done`} description="Each step opens the page that finishes it. This card disappears when everything is done.">
           <ul className="divide-y divide-[#E9E7E2]">
@@ -210,45 +236,12 @@ export default function DashboardPage() {
           </ul>
         </Panel>
       )}
-
-      <div role="tablist" aria-label="Dashboard views" className="flex gap-1 border-b border-[#E2E0DB] overflow-x-auto">
-        {([
-          ['overview', 'Overview'],
-          ['orders', 'Orders'],
-          ['payments', 'Payments & refunds'],
-          ['stock', 'Stock & products'],
-        ] as const).map(([k, label]) => (
-          <button
-            key={k}
-            type="button"
-            role="tab"
-            aria-selected={view === k}
-            onClick={() => setParams(k === 'overview' ? {} : { view: k })}
-            className={`px-4 py-2.5 text-[14px] whitespace-nowrap border-b-2 -mb-px ${view === k ? 'border-tk-accent text-tk-ink font-semibold' : 'border-transparent text-[#454545] hover:text-tk-ink'}`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-      {insights.error && <p className="text-[14px] text-rose-600">{toFriendlyError(insights.error)}</p>}
-
-      {view === 'orders' && ins && <OrdersView d={ins.pipeline} days={days} />}
-      {view === 'payments' && ins && <PaymentsView d={ins.payments} days={days} />}
-      {view === 'stock' && ins && <StockView d={ins.stock} days={days} />}
-      {view !== 'overview' && !ins && !insights.error && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}
-
-      {view === 'overview' && (
-      <>
-      {ins && <TodayView d={ins.today} />}
-      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+      </Part>
+      <Part id="sales">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
         <Kpi label={`Revenue · ${days} days`} value={k ? formatINR(Number(k.revenue)) : '—'} hint="Excludes cancelled and unpaid online orders" />
         <Kpi label="Orders" value={k ? String(k.orders) : '—'} hint={k ? `Average ${formatINR(Number(k.aov))}` : undefined} />
-        <Kpi label="Ready to pack" value={k ? String(k.pending) : '—'} hint={k ? `${k.to_ship} packed, waiting to ship${k.unpaid ? ` · ${k.unpaid} awaiting online payment` : ''}` : undefined} to="/admin/orders?status=PENDING" />
         <Kpi label="Customers" value={k ? String(k.customers) : '—'} hint={k ? `${k.new_customers} new in ${days} days` : undefined} to="/admin/customers" />
-        <Kpi label="Low stock" value={k ? String(k.low_stock) : '—'} hint="Sizes and sample vials" to="/admin/inventory" />
-        <Kpi label="Returns waiting" value={k ? String(k.returns_waiting) : '—'} to="/admin/returns" />
-        <Kpi label="Reviews waiting" value={k ? String(k.reviews_waiting) : '—'} to="/admin/reviews" />
-        <Kpi label="Refunds due" value={k ? String(k.refunds_due ?? 0) : '—'} hint="Cancelled or returned paid orders" to="/admin/refunds" />
       </div>
 
       <Panel title={`Revenue per day · last ${days} days`}>
@@ -261,23 +254,9 @@ export default function DashboardPage() {
         <Panel title="Top cities" description="Revenue · orders"><RankList rows={data?.cities ?? []} value="revenue" empty="No sales yet." /></Panel>
         <Panel title="Top states" description="Revenue · orders"><RankList rows={data?.states ?? []} value="revenue" empty="No sales yet." /></Panel>
       </div>
+      </Part>
+      </PartsLayout>
 
-      </>
-      )}
-
-      <Panel title="Integrations" description="Built and switched off. Each one starts working once its keys are added (steps in the setup guide, docs/SETUP.md).">
-        <ul className="divide-y divide-[#E9E7E2]">
-          {INTEGRATIONS.map((s) => (
-            <li key={s.label} className="py-3 flex gap-3">
-              <span className="mt-1.5 h-2 w-2 shrink-0 bg-tk-accent" aria-hidden />
-              <div>
-                <p className="text-[14px] text-tk-ink">{s.label}</p>
-                <p className="text-[13px] text-[#4A4A4A]">{s.detail}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </Panel>
     </div>
   );
 }

@@ -272,6 +272,12 @@
 - [x] Filter panel redesigned: larger text and checkboxes, counts in boxes, choices with no match hidden, chips for short choices, search and “show all” in long lists
 - [x] Sort is a proper menu (Featured, Newest, Best sellers, Price low to high, Price high to low); clear Filters button and “Filtered by” chips
 
+## Phase 23: Admin pages in parts ✅
+- [x] Product editor, Settings, Shipping, the order page and the Dashboard list their parts on a side menu and show one part at a time (same pattern as the Website screen)
+- [x] Each part shows a short hint and a tick when filled in; saving with a problem jumps to the part that needs fixing
+- [x] Order page: status and next steps always on top; items, customer, shipping, payment and history as parts
+- [x] Dashboard: Needs attention, Sales, Orders, Payments and refunds, Stock and products, Store setup
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain
