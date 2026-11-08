@@ -18,7 +18,6 @@ import { useCartSync } from './storefront/bag/useQuote';
 import { addToBag, bagCount } from './storefront/bag/bagLines';
 import GiftPackPage from './storefront/giftpack/GiftPackPage';
 import { useWishlistSync } from './storefront/wishlistSync';
-import BluorngNavDrawer from './components/BluorngNavDrawer.jsx';
 import BluorngWishlistPage from './components/BluorngWishlistPage.jsx';
 import BluorngAccountPage from './components/BluorngAccountPage.jsx';
 import BluorngStoryPage from './components/BluorngStoryPage.jsx';
@@ -143,10 +142,11 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isStoryOpen, setIsStoryOpen] = useState(false);
-  const [isNavDrawerOpen, setIsNavDrawerOpen] = useState(false);
   const [quickBuyProduct, setQuickBuyProduct] = useState(null);
 
   // Brand intro: once per visit, and only when the visit starts on the home page (src/lib/intro.ts).
+  // "enabled" is true here: the owner's switch (brand.show_preloader) may not be loaded on the first render, so it is
+  // checked where the intro is drawn.
   const [introWanted] = useState(() => shouldPlayIntro(view, true, introStore()));
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
   // Stable, so the intro's timer is not restarted every time the page re-renders while data loads.
@@ -408,7 +408,6 @@ export default function App() {
           onOpenCart={() => setIsCartOpen(true)}
           onOpenSearch={() => setIsSearchOpen(true)}
           onOpenStory={navigateToStory}
-          onOpenNavDrawer={() => setIsNavDrawerOpen(true)}
           onNavigateHome={navigateToHome}
           onNavigateCollection={navigateToCollection}
           onScrollToStores={scrollToStores}
@@ -580,25 +579,6 @@ export default function App() {
           />
         )}
       </AnimatePresence>
-
-      {/* Side Navigation Drawer */}
-      <BluorngNavDrawer
-        isOpen={isNavDrawerOpen}
-        onClose={() => setIsNavDrawerOpen(false)}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-        onNavigateHome={navigateToHome}
-        onNavigateCollection={navigateToCollection}
-        onScrollToStores={scrollToStores}
-        onOpenStory={() => {
-          setIsNavDrawerOpen(false);
-          navigateToStory();
-        }}
-        onOpenAccount={() => {
-          setIsNavDrawerOpen(false);
-          navigateToAccount();
-        }}
-      />
     </div>
     </StorefrontProvider>
   );

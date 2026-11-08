@@ -13,7 +13,6 @@ export default function BluorngHeader({
   onOpenCart,
   onOpenSearch,
   onOpenStory,
-  onOpenNavDrawer,
   onNavigateHome,
   onNavigateCollection,
   onScrollToStores,
