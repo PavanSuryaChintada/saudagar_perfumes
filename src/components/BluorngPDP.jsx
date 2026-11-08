@@ -14,6 +14,7 @@ import { recordView } from '../storefront/catalog/recentlyViewed';
 import { useSetting } from '../lib/bootstrap';
 import { NotePyramid, AccordBars, ProductAccordions } from '../storefront/product/ProductSections.jsx';
 import NotFoundPage from '../storefront/NotFoundPage';
+import ServiceDown from './ServiceDown';
 import { useSEO, productJsonLd, breadcrumbJsonLd } from '../lib/seo';
 import { track } from '../lib/analytics';
 import { useBlock } from '../cms/useSite';
@@ -80,7 +81,10 @@ export default function BluorngPDP(props) {
   if (isLoading) {
     return <div className="min-h-screen bg-white dark:bg-tk-night" aria-busy="true" />;
   }
-  if (error || !detail || !product) {
+  if (error) {
+    return <ServiceDown inline />;
+  }
+  if (!detail || !product) {
     return <NotFoundPage onNavigateHome={props.onNavigateHome} onNavigateCollection={props.onNavigateCollection} />;
   }
   return <PDPView key={product.id} {...props} product={product} detail={detail} />;

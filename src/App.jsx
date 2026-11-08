@@ -47,7 +47,8 @@ import { useAuth } from './lib/auth';
 import { useBlock } from './cms/useSite';
 import { resolveLink } from './cms/links';
 import { initAnalytics, track, trackPageView } from './lib/analytics';
-import { useSetting } from './lib/bootstrap';
+import { useBootstrap, useSetting } from './lib/bootstrap';
+import ServiceDown from './components/ServiceDown';
 import LoginPage from './storefront/auth/LoginPage';
 import RegisterPage from './storefront/auth/RegisterPage';
 import ForgotPasswordPage from './storefront/auth/ForgotPasswordPage';
@@ -58,6 +59,7 @@ import NotesIndexPage from './storefront/NotesIndexPage.jsx';
 import CmsPage from './storefront/CmsPage.jsx';
 import { StorefrontProvider } from './cms/StorefrontContext';
 import { introStore, markIntroSeen, shouldPlayIntro } from './lib/intro';
+import { PRIVATE_VIEWS, pageTitle } from './lib/pageTitles';
 
 export default function App() {
   // The URL is the source of truth for which page is showing (src/app/routes.ts).
@@ -65,6 +67,7 @@ export default function App() {
   const routerNavigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const brandBlock = useBlock('brand');
+  const boot = useBootstrap();
   const resolved = resolveStorefrontView(location.pathname, location.search);
   const view = resolved.view;
   const selectedProductId = resolved.productId || 'saudagar-deep-canopy';
@@ -178,33 +181,24 @@ export default function App() {
     }, 3200);
   };
 
-  // Dynamic Themed Title Update
+  // Tab titles for the fixed pages (src/lib/pageTitles.ts); private pages are kept out of search results.
+  // Products, listings, CMS pages and the home page set their own title and Google words once loaded.
   useEffect(() => {
-    if (view === 'product' || view === 'collection' || view === 'listing') {
-      // These pages set their own title once their data has loaded.
-    } else if (view === 'notes') {
-      document.title = 'FRAGRANCE NOTES | SAUDAGAR PERFUMES';
-    } else if (view === 'wishlist') {
-      document.title = 'SAVED FRAGRANCES | SAUDAGAR PERFUMES';
-    } else if (view === 'story') {
-      document.title = 'THE MAISON & COMPLETE BRAND JOURNEY | SAUDAGAR PERFUMES';
-    } else if (view === 'order') {
-      document.title = 'YOUR ORDER | SAUDAGAR PERFUMES';
-    } else if (view === 'account') {
-      document.title = 'CONNOISSEUR ACCOUNT & PROFILE | SAUDAGAR PERFUMES';
-    } else if (view === 'checkout') {
-      document.title = 'SECURE CHECKOUT | SAUDAGAR PERFUMES · Haute Parfumerie';
-    } else if (view === 'login') {
-      document.title = 'SIGN IN | SAUDAGAR PERFUMES';
-    } else if (view === 'register') {
-      document.title = 'CREATE ACCOUNT | SAUDAGAR PERFUMES';
-    } else if (view === 'forgot-password' || view === 'reset-password') {
-      document.title = 'RESET PASSWORD | SAUDAGAR PERFUMES';
-    } else if (view === 'notfound') {
-      document.title = 'PAGE NOT FOUND | SAUDAGAR PERFUMES';
+    const title = pageTitle(view, brandBlock?.name);
+    if (title) document.title = title;
+    let robots = document.querySelector('meta[name="robots"][data-private]');
+    if (PRIVATE_VIEWS.has(view)) {
+      if (!robots) {
+        robots = document.createElement('meta');
+        robots.setAttribute('name', 'robots');
+        robots.setAttribute('data-private', '');
+        document.head.appendChild(robots);
+      }
+      robots.setAttribute('content', 'noindex, nofollow');
+    } else if (robots) {
+      robots.remove();
     }
-    // Home and CMS pages set their own title and meta tags (Admin → Pages / Site content → SEO).
-  }, [view, selectedProductId, selectedCategory]);
+  }, [view, brandBlock?.name]);
 
   const { scrollTo } = useSmoothScroll();
 
@@ -389,6 +383,11 @@ export default function App() {
         {view === 'reset-password' && <ResetPasswordPage />}
       </>
     );
+  }
+
+  // The shop's settings and content could not be loaded (outage or no connection): say so instead of an empty page.
+  if (boot.isError && !boot.data) {
+    return <ServiceDown />;
   }
 
   return (

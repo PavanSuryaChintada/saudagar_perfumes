@@ -27,6 +27,7 @@ const DEFAULT_WORDS = {
  */
 export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
   const block = useBlock('gift_pack') ?? NO_WORDS;
+  const siteName = useBlock('brand')?.name || 'Saudagar Perfumers';
   const { data: opts, isLoading, error } = useGiftPackOptions();
   const [picks, setPicks] = useState([]);
   const [term, setTerm] = useState('');
@@ -38,8 +39,8 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
   }, [block, opts]);
 
   useEffect(() => {
-    document.title = `${(words.title || 'Gift pack').toUpperCase()} | SAUDAGAR PERFUMES`;
-  }, [words.title]);
+    document.title = `${words.title || 'Gift pack'} | ${siteName}`;
+  }, [words.title, siteName]);
 
   const perfumes = useMemo(() => {
     const all = opts?.perfumes ?? [];

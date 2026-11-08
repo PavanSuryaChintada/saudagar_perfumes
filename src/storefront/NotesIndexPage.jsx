@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useShopWords } from '../cms/shopWords';
 import { Link } from 'react-router';
 import { useCatalogFilters } from './catalog/hooks';
@@ -10,9 +10,6 @@ import { usePaged } from '../lib/paging';
 export default function NotesIndexPage() {
   const { data, isLoading } = useCatalogFilters();
   const words = useShopWords();
-  useEffect(() => {
-    document.title = 'FRAGRANCE NOTES | SAUDAGAR PERFUMES';
-  }, []);
 
   const groups = useMemo(() => {
     if (!data) return [];
