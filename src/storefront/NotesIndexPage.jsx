@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { useShopWords } from '../cms/shopWords';
 import { Link } from 'react-router';
 import { useCatalogFilters } from './catalog/hooks';
 import ListingHeader from './ListingHeader.jsx';
@@ -8,6 +9,7 @@ import { usePaged } from '../lib/paging';
 /** Every note, grouped by note family; each links to the perfumes that contain it. */
 export default function NotesIndexPage() {
   const { data, isLoading } = useCatalogFilters();
+  const words = useShopWords();
   useEffect(() => {
     document.title = 'FRAGRANCE NOTES | SAUDAGAR PERFUMES';
   }, []);
@@ -35,7 +37,7 @@ export default function NotesIndexPage() {
 
   return (
     <div className="w-full min-h-screen bg-white dark:bg-tk-night text-tk-ink dark:text-white pb-28">
-      <ListingHeader eyebrow="The Library" title="Fragrance Notes" description="Explore by ingredient. Each note leads to every Saudagar creation that carries it." />
+      <ListingHeader eyebrow={words.notes_eyebrow} title={words.notes_title} description={words.notes_text} />
       <div className="px-4 sm:px-8 lg:px-12 py-12 space-y-12">
         {isLoading && <p className="text-[12.5px] text-[#888888]">Loading notes…</p>}
         {pageGroups.map((g) => (

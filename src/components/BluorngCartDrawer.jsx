@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useShopWords } from '../cms/shopWords';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatINR as formatPrice } from '../lib/money';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
@@ -25,6 +26,7 @@ export default function BluorngCartDrawer({
   onProceedToCheckout
 }) {
   const [isNoteOpen, setIsNoteOpen] = React.useState(!!note);
+  const words = useShopWords();
 
   // Lock body scroll and pause Lenis smooth scroll while cart drawer is open
   useEffect(() => {
@@ -106,7 +108,7 @@ export default function BluorngCartDrawer({
           <div className="shrink-0 p-4 sm:p-5 flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.08] text-tk-ink dark:text-white">
             <div className="flex items-center gap-2">
               <h2 className="text-[14px] font-bold tracking-[0.04em] uppercase text-tk-ink dark:text-white">
-                Your Shopping Bag
+                {words.bag_title}
               </h2>
               <span className="text-[12px] text-[#777777] dark:text-white/60 font-medium">
                 ({bagCount(cart)})
@@ -133,7 +135,7 @@ export default function BluorngCartDrawer({
                 <span>Add {formatPrice(remaining)} more for free delivery</span>
               ) : (
                 <span className="text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
-                  ✓ You've unlocked free delivery
+                  ✓ {words.bag_free_delivery_done}
                 </span>
               )}
             </div>
@@ -162,16 +164,16 @@ export default function BluorngCartDrawer({
                   </svg>
                 </div>
                 <p className="text-[13px] font-bold tracking-wider uppercase text-tk-ink">
-                  Your Bag is Currently Empty
+                  {words.bag_empty_title}
                 </p>
                 <p className="text-[11.5px] text-[#777777] max-w-xs">
-                  Explore our royal collection of extraits, rare attars, and bespoke crystal flacons.
+                  {words.bag_empty_text}
                 </p>
                 <button
                   onClick={onClose}
                   className="mt-3 px-6 py-2.5 bg-tk-ink hover:bg-tk-accent dark:hover:bg-tk-gold dark:hover:text-tk-night text-white text-[11px] font-bold uppercase tracking-wide transition-colors"
                 >
-                  Continue Browsing
+                  {words.bag_empty_button}
                 </button>
               </div>
             ) : (
@@ -279,7 +281,7 @@ export default function BluorngCartDrawer({
                   onClick={() => setIsNoteOpen(!isNoteOpen)}
                   className="text-[10.5px] font-semibold tracking-wider uppercase text-[#777777] dark:text-white/60 hover:text-tk-ink dark:hover:text-white flex items-center gap-1 cursor-pointer"
                 >
-                  <span>{isNoteOpen ? '− Hide note' : '+ Add a note for us'}</span>
+                  <span>{isNoteOpen ? '− Hide note' : `+ ${words.bag_note_button}`}</span>
                 </button>
                 {isNoteOpen && (
                   <textarea
@@ -320,7 +322,7 @@ export default function BluorngCartDrawer({
                   <span className="uppercase tracking-wider">Total</span>
                   <span>{quote ? formatPrice(quote.total) : '—'}</span>
                 </div>
-                <p className="text-[9.5px] text-[#888888] dark:text-white/40">Prices include GST. Cash on delivery across India.</p>
+                <p className="text-[9.5px] text-[#777777] dark:text-white/50">{words.bag_small_print}</p>
               </div>
 
               {/* Checkout Button */}
@@ -332,7 +334,7 @@ export default function BluorngCartDrawer({
                 disabled={!quote || hasProblems}
                 className="disabled:opacity-50 disabled:cursor-not-allowed w-full py-3.5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
               >
-                <span>{hasProblems ? 'Fix your bag to continue' : 'Proceed to Checkout'}</span>
+                <span>{hasProblems ? 'Fix your bag to continue' : words.bag_checkout_button}</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </button>
             </div>

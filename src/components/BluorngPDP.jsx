@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { useShopWords } from '../cms/shopWords';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { formatINR as formatPrice } from '../lib/money';
 import BluorngProductCard from './BluorngProductCard.jsx';
@@ -84,6 +85,7 @@ function PDPView({
   const images = product.images;
 
   const [activeImgIdx, setActiveImgIdx] = useState(0);
+  const words = useShopWords();
   const [mobileImgIdx, setMobileImgIdx] = useState(0);
   const trackRef = useRef(null);
   const { scrollTo } = useSmoothScroll();
@@ -390,7 +392,7 @@ function PDPView({
           </>
         )}
         <span className="ml-auto text-[11px] text-[#777777] dark:text-[#999999]">
-          {!selectedSize ? 'Currently unavailable' : selectedSize.stock <= 0 ? 'Sold out' : selectedSize.stock <= 5 ? `Only ${selectedSize.stock} left` : 'In stock'}
+          {!selectedSize ? 'Currently unavailable' : selectedSize.stock <= 0 ? words.sold_out : selectedSize.stock <= 5 ? `Only ${selectedSize.stock} left` : words.in_stock}
         </span>
       </motion.div>
 
@@ -441,7 +443,7 @@ function PDPView({
           className="disabled:opacity-50 disabled:cursor-not-allowed flex-1 h-[46px] bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:hover:bg-tk-accent-night dark:text-tk-night rounded-[2px] flex items-center shadow-[0_4px_16px_rgba(0,0,0,0.18)] hover:shadow-[0_6px_20px_rgba(196,130,63,0.3)] dark:shadow-[0_4px_16px_rgba(212,175,55,0.25)] active:scale-[0.99] transition-all cursor-pointer select-none group font-medium"
         >
           <span className="flex-1 text-center text-[12.5px] font-medium tracking-[0.03em]">
-            {canBuy ? 'Add to cart' : 'Sold out'}
+            {canBuy ? words.add_to_bag : words.sold_out}
           </span>
           <span className="w-[1px] h-[20px] bg-white/20 dark:bg-black/20 shrink-0" />
           <span className="px-4 sm:px-5 text-center text-[12.5px] font-medium tracking-[0.02em] whitespace-nowrap text-[#FFF7ED] dark:text-tk-night">
@@ -885,7 +887,7 @@ function PDPView({
               disabled={!canBuy}
               className="shrink-0 h-10 px-5 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[12px] font-medium rounded-[2px] disabled:opacity-50"
             >
-              {canBuy ? 'Add to bag' : 'Sold out'}
+              {canBuy ? words.add_to_bag : words.sold_out}
             </button>
           </motion.div>
         )}

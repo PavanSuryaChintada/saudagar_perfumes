@@ -237,7 +237,7 @@ export default function CollectionsPage() {
               {field('tagline', 'Tagline')}
               {field('descriptor', 'Description', undefined, true)}
               {field('notes_subtitle', 'Notes line', 'e.g. Taif rose · wild Assam oud · saffron')}
-              <FieldShell label="Card image">
+              <FieldShell label="Card image" help="Shown on collection cards, and full width at the top of the collection page when it has no hero film.">
                 <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload image" />
               </FieldShell>
               <FieldShell label="Card image: phone version (optional)" help="Shown on phones. Leave empty to use the picture above everywhere.">

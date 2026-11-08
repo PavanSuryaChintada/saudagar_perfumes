@@ -10,6 +10,7 @@ import { useCategory, useCollection, useNote } from '../storefront/catalog/hooks
 import { useListing } from '../storefront/catalog/useListing';
 import { optionLabel } from '../storefront/catalog/listing';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
+import ListingBanner from '../storefront/ListingBanner.jsx';
 import ListingHeader from '../storefront/ListingHeader.jsx';
 import NotFoundPage from '../storefront/NotFoundPage';
 
@@ -113,9 +114,23 @@ export default function BluorngCollectionPage({
   const header = showFilmHero ? (
     <BluorngCollectionHero activeCollectionId={isAll ? 'signature' : collection?.slug || initialCategory} onSwitchCollection={handleSwitchCollection} />
   ) : isCollection ? (
-    <ListingHeader eyebrow="Collection" title={collection?.headline || collection?.name} description={collection?.descriptor || collection?.tagline} image={collection?.image_url} />
+    collection?.image_url ? (
+      <ListingBanner eyebrow="Collection" title={collection?.headline || collection?.name} description={collection?.descriptor || collection?.tagline} image={collection.image_url} />
+    ) : (
+      <ListingHeader eyebrow="Collection" title={collection?.headline || collection?.name} description={collection?.descriptor || collection?.tagline} />
+    )
   ) : listing.kind === 'category' ? (
-    <ListingHeader eyebrow="Category" title={categoryQuery.data?.name} description={categoryQuery.data?.description} image={categoryQuery.data?.image_url} />
+    categoryQuery.data?.image_url || categoryQuery.data?.video_url ? (
+      <ListingBanner
+        eyebrow="Category"
+        title={categoryQuery.data.name}
+        description={categoryQuery.data.description}
+        image={categoryQuery.data.image_url}
+        video={categoryQuery.data.video_url}
+      />
+    ) : (
+      <ListingHeader eyebrow="Category" title={categoryQuery.data?.name} description={categoryQuery.data?.description} />
+    )
   ) : listing.kind === 'note' ? (
     <ListingHeader
       eyebrow={noteQuery.data?.family ? `Note · ${noteQuery.data.family}` : 'Note'}

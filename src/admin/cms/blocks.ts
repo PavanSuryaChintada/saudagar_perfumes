@@ -1,4 +1,5 @@
 import type { FieldDef } from '../../cms/schema';
+import { SHOP_WORD_FIELDS } from '../../cms/shopWords';
 
 // Site-wide content blocks (site_blocks table), edited in Admin → Site content.
 const t = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: 'text', help });
@@ -163,6 +164,11 @@ export const BLOCK_SCHEMAS: Record<string, BlockDef> = {
         fields: [t('title', 'Title', 'e.g. How to store your perfume'), { key: 'body', label: 'Text', type: 'richtext' }],
       },
     ],
+  },
+  shop_words: {
+    label: 'Shop words',
+    description: 'The fixed wording around the shop: the bag, buttons, empty pages, checkout, wishlist and the page-not-found page. Leave a box empty to keep the wording shown under it.',
+    fields: SHOP_WORD_FIELDS.map((f) => t(f.key, f.label, `Now: ${f.fallback}`)),
   },
   search: {
     label: 'Search',

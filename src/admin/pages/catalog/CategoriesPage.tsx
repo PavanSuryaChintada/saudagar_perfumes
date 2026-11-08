@@ -192,14 +192,14 @@ export default function CategoriesPage() {
             <FieldShell label="Description" htmlFor="c-desc">
               <TextArea id="c-desc" rows={2} value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
             </FieldShell>
-            <FieldShell label="Image">
-              <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload image" />
+            <FieldShell label="Top picture of the category page" help="Shown full width at the top of this category’s page, with its name over it. Use a wide photo, e.g. 2400 × 1000. Without one, the page starts with a plain heading.">
+              <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload picture" />
             </FieldShell>
-            <FieldShell label="Image: phone version (optional)" help="Shown on phones. Leave empty to use the picture above everywhere.">
+            <FieldShell label="Top picture on phones (optional)" help="A taller photo for phones, e.g. 1080 × 1350. Leave empty to use the picture above on phones too.">
               <MediaField value={draft.mobile.image_url ?? ''} onChange={(url) => setDraft({ ...draft, mobile: { ...draft.mobile, image_url: url } })} kind="image" label="Upload phone picture" />
             </FieldShell>
-            <FieldShell label="Video (optional)">
-              <MediaField value={draft.video_url} onChange={(url) => setDraft({ ...draft, video_url: url })} kind="video" label="Upload video" />
+            <FieldShell label="Top film (optional)" help="Plays at the top instead of the picture. Keep it short and silent; the picture shows while it loads.">
+              <MediaField value={draft.video_url} onChange={(url) => setDraft({ ...draft, video_url: url })} kind="video" label="Upload film" />
             </FieldShell>
             <FieldShell label="SEO title" htmlFor="c-seot">
               <TextInput id="c-seot" value={draft.seo_title} onChange={(e) => setDraft({ ...draft, seo_title: e.target.value })} />
