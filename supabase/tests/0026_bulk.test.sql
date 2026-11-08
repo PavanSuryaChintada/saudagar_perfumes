@@ -18,9 +18,9 @@ grant all on t_ids to public;
 do $$
 declare cat uuid := (select id from public.categories order by created_at limit 1); extra uuid;
 begin
-  insert into t_ids values ('a', public.save_product(jsonb_build_object('slug', 'tst-bulk-a', 'name', 'Bulk A', 'base_price', 1000, 'is_active', true, 'primary_category_id', cat,
+  insert into t_ids values ('a', public.save_product(jsonb_build_object('slug', 'tst-bulk-a', 'name', 'Bulk A', 'base_price', 1000, 'is_active', true, 'stock_unit', 'piece', 'primary_category_id', cat,
     'variants', jsonb_build_array(jsonb_build_object('sku', 'TST-BULK-A50', 'kind', 'retail', 'size_ml', 50, 'label', '50 ml', 'initial_stock', 10)))));
-  insert into t_ids values ('b', public.save_product(jsonb_build_object('slug', 'tst-bulk-b', 'name', 'Bulk B', 'base_price', 2000, 'is_active', true, 'primary_category_id', cat,
+  insert into t_ids values ('b', public.save_product(jsonb_build_object('slug', 'tst-bulk-b', 'name', 'Bulk B', 'base_price', 2000, 'is_active', true, 'stock_unit', 'piece', 'primary_category_id', cat,
     'variants', jsonb_build_array(jsonb_build_object('sku', 'TST-BULK-B50', 'kind', 'retail', 'size_ml', 50, 'label', '50 ml', 'initial_stock', 4)))));
   insert into public.categories (slug, name) values ('tst-bulk-gifts', 'Bulk Gifts') returning id into extra;
   insert into t_ids values ('cat', extra);

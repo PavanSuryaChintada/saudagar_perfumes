@@ -13,7 +13,7 @@ do $$
 declare pid uuid; v50 uuid; v100 uuid;
 begin
   pid := public.save_product('{
-    "slug": "test-oud", "name": "Test Oud", "base_price": 5000, "is_active": true,
+    "slug": "test-oud", "name": "Test Oud", "base_price": 5000, "is_active": true, "stock_unit": "piece",
     "variants": [
       {"sku": "TST-OUD-50", "kind": "retail", "size_ml": 50, "label": "50 ml", "price": 4200, "initial_stock": 10},
       {"sku": "TST-OUD-100", "kind": "retail", "size_ml": 100, "label": "100 ml", "initial_stock": 10}

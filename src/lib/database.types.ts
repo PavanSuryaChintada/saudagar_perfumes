@@ -245,6 +245,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean
+          mobile_media: Json
           name: string
           parent_id: string | null
           position: number
@@ -260,6 +261,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          mobile_media?: Json
           name: string
           parent_id?: string | null
           position?: number
@@ -275,6 +277,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          mobile_media?: Json
           name?: string
           parent_id?: string | null
           position?: number
@@ -310,6 +313,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean
+          mobile_media: Json
           name: string
           notes_subtitle: string | null
           position: number
@@ -335,6 +339,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          mobile_media?: Json
           name: string
           notes_subtitle?: string | null
           position?: number
@@ -360,6 +365,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          mobile_media?: Json
           name?: string
           notes_subtitle?: string | null
           position?: number
@@ -596,35 +602,51 @@ export type Database = {
           created_at: string
           delta: number
           id: number
+          ml_after: number | null
+          ml_delta: number | null
           note: string | null
           order_id: string | null
+          product_id: string | null
           reason: string
           stock_after: number
-          variant_id: string
+          variant_id: string | null
         }
         Insert: {
           actor?: string | null
           created_at?: string
           delta: number
           id?: never
+          ml_after?: number | null
+          ml_delta?: number | null
           note?: string | null
           order_id?: string | null
+          product_id?: string | null
           reason: string
           stock_after: number
-          variant_id: string
+          variant_id?: string | null
         }
         Update: {
           actor?: string | null
           created_at?: string
           delta?: number
           id?: never
+          ml_after?: number | null
+          ml_delta?: number | null
           note?: string | null
           order_id?: string | null
+          product_id?: string | null
           reason?: string
           stock_after?: number
-          variant_id?: string
+          variant_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "inventory_movements_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inventory_movements_variant_id_fkey"
             columns: ["variant_id"]
@@ -1423,6 +1445,8 @@ export type Database = {
           ships_surface_only: boolean
           short_description: string | null
           slug: string
+          stock_ml: number
+          stock_unit: string
           total_stock: number
           units_sold: number
           updated_at: string
@@ -1474,6 +1498,8 @@ export type Database = {
           ships_surface_only?: boolean
           short_description?: string | null
           slug: string
+          stock_ml?: number
+          stock_unit?: string
           total_stock?: number
           units_sold?: number
           updated_at?: string
@@ -1525,6 +1551,8 @@ export type Database = {
           ships_surface_only?: boolean
           short_description?: string | null
           slug?: string
+          stock_ml?: number
+          stock_unit?: string
           total_stock?: number
           units_sold?: number
           updated_at?: string
@@ -1619,6 +1647,7 @@ export type Database = {
           external_url: string | null
           id: string
           is_active: boolean
+          mobile_media: Json
           position: number
           thumbnail_url: string | null
           title: string
@@ -1631,6 +1660,7 @@ export type Database = {
           external_url?: string | null
           id?: string
           is_active?: boolean
+          mobile_media?: Json
           position?: number
           thumbnail_url?: string | null
           title: string
@@ -1643,6 +1673,7 @@ export type Database = {
           external_url?: string | null
           id?: string
           is_active?: boolean
+          mobile_media?: Json
           position?: number
           thumbnail_url?: string | null
           title?: string
@@ -1996,6 +2027,7 @@ export type Database = {
           image_url: string | null
           is_active: boolean
           map_url: string | null
+          mobile_media: Json
           name: string
           phone: string | null
           position: number
@@ -2010,6 +2042,7 @@ export type Database = {
           image_url?: string | null
           is_active?: boolean
           map_url?: string | null
+          mobile_media?: Json
           name: string
           phone?: string | null
           position?: number
@@ -2024,6 +2057,7 @@ export type Database = {
           image_url?: string | null
           is_active?: boolean
           map_url?: string | null
+          mobile_media?: Json
           name?: string
           phone?: string | null
           position?: number
@@ -2038,6 +2072,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean
+          mobile_media: Json
           position: number
           product_id: string | null
           subtitle: string | null
@@ -2052,6 +2087,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          mobile_media?: Json
           position?: number
           product_id?: string | null
           subtitle?: string | null
@@ -2066,6 +2102,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          mobile_media?: Json
           position?: number
           product_id?: string | null
           subtitle?: string | null
@@ -2090,6 +2127,7 @@ export type Database = {
           id: string
           is_active: boolean
           location: string | null
+          mobile_media: Json
           name: string
           position: number
           product_id: string | null
@@ -2102,6 +2140,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           location?: string | null
+          mobile_media?: Json
           name: string
           position?: number
           product_id?: string | null
@@ -2114,6 +2153,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           location?: string | null
+          mobile_media?: Json
           name?: string
           position?: number
           product_id?: string | null
@@ -2260,6 +2300,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      adjust_liquid: {
+        Args: {
+          p_amount: number
+          p_mode: string
+          p_note?: string
+          p_product: string
+          p_reason?: string
+          p_unit: string
+        }
+        Returns: number
+      }
       adjust_stock: {
         Args: {
           p_delta: number
@@ -2402,6 +2453,10 @@ export type Database = {
         }
         Returns: Json
       }
+      product_stock_history: {
+        Args: { p_limit?: number; p_product: string }
+        Returns: Json
+      }
       quote_order: {
         Args: {
           p_coupon_code?: string
@@ -2540,6 +2595,10 @@ export type Database = {
       }
       set_return_tracking: {
         Args: { p_courier: string; p_return: string; p_tracking: string }
+        Returns: undefined
+      }
+      set_stock_mode: {
+        Args: { p_product: string; p_unit: string }
         Returns: undefined
       }
       set_wishlist: { Args: { p_slugs: string[] }; Returns: string[] }
