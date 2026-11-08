@@ -135,10 +135,10 @@ export default function BluorngEditorial({ config = {} }) {
             whileInView="show"
             viewport={{ once: true, amount: 0.25 }}
             custom={3}
-            className="md:col-span-6 lg:col-span-5 relative overflow-hidden rounded-sm bg-[#EDE8DF] dark:bg-[#1A1820] p-7 sm:p-9 min-h-[220px] flex flex-col justify-between"
+            className="md:col-span-6 lg:col-span-12 relative overflow-hidden rounded-sm bg-[#EDE8DF] dark:bg-[#1A1820] p-7 sm:p-9 lg:px-12 min-h-[220px] flex flex-col lg:flex-row lg:items-center justify-between gap-6"
           >
-            <span className="text-[11px] uppercase tracking-[0.22em] text-[#666666] dark:text-[#A09D96]">{craft.kicker}</span>
-            <p className="font-serif text-[24px] sm:text-[32px] leading-[1.15] max-w-[420px]">
+            <span className="text-[11px] uppercase tracking-[0.22em] text-[#666666] dark:text-[#A09D96] lg:self-start">{craft.kicker}</span>
+            <p className="font-serif text-[24px] sm:text-[32px] lg:text-[40px] leading-[1.15] max-w-[420px] lg:max-w-[760px] lg:text-right">
               <Emphasis text={craft.text} />
             </p>
           </motion.div>
@@ -151,7 +151,7 @@ export default function BluorngEditorial({ config = {} }) {
             {config.view_all_label && <button
               type="button"
               onClick={() => go(config.view_all_link)}
-              className="hidden sm:inline text-[11px] uppercase tracking-[0.18em] font-medium hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
+              className="shrink-0 text-[11px] uppercase tracking-[0.18em] font-medium hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
             >
               {config.view_all_label}
             </button>}

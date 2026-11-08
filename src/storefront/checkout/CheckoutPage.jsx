@@ -44,8 +44,6 @@ export default function CheckoutPage({
   onNoteChange,
   couponCode = '',
   onCouponChange,
-  theme,
-  onToggleTheme,
   onNavigateHome,
   onNavigateCollection,
   onOpenBag,
@@ -130,7 +128,7 @@ export default function CheckoutPage({
 
   return (
     <div className="min-h-screen bg-white dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300 font-sans pb-28">
-      <MinimalHeader backLabel="Continue shopping" onBack={onNavigateHome} theme={theme} onToggleTheme={onToggleTheme} />
+      <MinimalHeader backLabel="Continue shopping" onBack={onNavigateHome} />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
         {cart.length === 0 ? (

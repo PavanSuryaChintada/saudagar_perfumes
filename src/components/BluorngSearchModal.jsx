@@ -103,7 +103,7 @@ export default function BluorngSearchModal({
                     whileTap={{ scale: 0.92 }}
                     transition={{ duration: 0.2 }}
                     onClick={onClose}
-                    className="p-2 text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer rounded-full hover:bg-black/5 dark:hover:bg-white/10"
+                    className="p-2 text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer rounded-[2px] hover:bg-black/5 dark:hover:bg-white/10"
                     aria-label="Close search"
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -360,7 +360,7 @@ export default function BluorngSearchModal({
                                     e.stopPropagation();
                                     onToggleWishlist && onToggleWishlist(product.id);
                                   }}
-                                  className="absolute top-2 right-2 z-10 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/85 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-tk-ink dark:text-white shadow-xs"
+                                  className="absolute top-2 right-2 z-10 w-6 h-6 rounded-[2px] flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/85 dark:bg-black/60 hover:bg-white dark:hover:bg-black text-tk-ink dark:text-white shadow-xs"
                                   title={wishlist.includes(product.id) ? 'Remove from wishlist' : 'Save to wishlist'}
                                   aria-label="Wishlist"
                                 >

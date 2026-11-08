@@ -89,20 +89,10 @@ export default function BluorngPDP(props) {
 function PDPView({
   product,
   detail,
-  cartCount = 0,
   wishlist = [],
   onToggleWishlist,
-  theme = 'light',
-  onToggleTheme,
-  onOpenCart,
-  onOpenSearch,
-  onOpenStory,
-  onOpenNavDrawer,
   onSelectProduct,
   onAddToCart,
-  onBuyNow,
-  onNavigateHome,
-  onNavigateCollection,
   onQuickBuy
 }) {
   const isCurrentWishlisted = wishlist.includes(product.id);
@@ -324,7 +314,7 @@ function PDPView({
       variants={monographContainerVariants}
       initial="hidden"
       animate="visible"
-      className={`${isMobile ? 'w-full py-4' : 'my-auto py-8 sm:py-12 max-w-[420px] w-full mx-auto lg:mx-0'}`}
+      className={`${isMobile ? 'w-full py-4' : 'py-6 max-w-[480px] w-full mx-auto'}`}
     >
       {/* 1. Sub-label with Pill Badge & Reviews Anchor */}
       <motion.div variants={monographItemVariants} className="flex items-center justify-between gap-2 mb-2.5">
@@ -377,7 +367,7 @@ function PDPView({
       {/* 3. Description Paragraph */}
       <motion.p
         variants={monographItemVariants}
-        className="font-sans font-light text-[13px] sm:text-[13.5px] leading-[1.68] text-[#333333] dark:text-[#CCCCCC] mb-6"
+        className="font-sans font-normal text-[14px] leading-[1.7] text-[#3F3F3F] dark:text-[#CCCCCC] mb-6"
       >
         {product.description}
       </motion.p>
@@ -413,15 +403,15 @@ function PDPView({
       ) : null}
 
       {/* 4b. Price with MRP strike-through and stock state */}
-      <motion.div variants={monographItemVariants} className="flex items-baseline gap-3 mb-5 text-[13px]">
-        <span className="font-medium text-tk-ink dark:text-white">{formatPrice(currentPrice)}</span>
+      <motion.div variants={monographItemVariants} className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-5 text-[13px]">
+        <span className="text-[22px] font-medium tracking-[-0.01em] text-tk-ink dark:text-white">{formatPrice(currentPrice)}</span>
         {currentCompare && currentCompare > currentPrice && (
           <>
-            <span className="line-through text-[#6B6B6B] dark:text-white/40">{formatPrice(currentCompare)}</span>
-            <span className="text-[11px] text-tk-accent dark:text-tk-accent-night font-medium">{Math.round((1 - currentPrice / currentCompare) * 100)}% off</span>
+            <span className="text-[14px] line-through text-[#6B6B6B] dark:text-white/40">{formatPrice(currentCompare)}</span>
+            <span className="text-[12px] text-tk-accent dark:text-tk-accent-night font-semibold">{Math.round((1 - currentPrice / currentCompare) * 100)}% off</span>
           </>
         )}
-        <span className="ml-auto text-[11px] text-[#5F5F5F] dark:text-[#999999]">
+        <span className="ml-auto text-[12px] text-[#5F5F5F] dark:text-[#999999]">
           {!selectedSize ? 'Currently unavailable' : selectedSize.stock <= 0 ? words.sold_out : selectedSize.stock <= 5 ? `Only ${selectedSize.stock} left` : words.in_stock}
         </span>
       </motion.div>
@@ -501,19 +491,24 @@ function PDPView({
       {/* 7. Delivery & Trust Micro-lines */}
       <motion.div
         variants={monographItemVariants}
-        className="mt-5 space-y-1.5 text-[11px] text-[#5F5F5F] dark:text-[#999999] leading-relaxed"
+        className="mt-5 pt-4 border-t border-[#EFEDE8] dark:border-white/10 space-y-2 text-[12.5px] text-[#4F4F4F] dark:text-[#A8A8A8] leading-relaxed"
       >
-        <div className="flex items-center gap-2">
-          <span className="text-[12px] leading-none text-tk-accent dark:text-tk-accent-night">✓</span>
+        <div className="flex items-start gap-2.5">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="mt-[3px] shrink-0 text-tk-accent dark:text-tk-accent-night" aria-hidden>
+            <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z" />
+            <circle cx="5.5" cy="18.5" r="2.5" />
+            <circle cx="18.5" cy="18.5" r="2.5" />
+          </svg>
           <span>{etaText}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[12px] leading-none text-tk-accent dark:text-tk-accent-night">•</span>
-          <span>Delivering across India</span>
-        </div>
         {sampleCopy && (
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] leading-none text-tk-accent dark:text-tk-accent-night">•</span>
+          <div className="flex items-start gap-2.5">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="mt-[3px] shrink-0 text-tk-accent dark:text-tk-accent-night" aria-hidden>
+              <polyline points="20 12 20 22 4 22 4 12" />
+              <rect x="2" y="7" width="20" height="5" />
+              <line x1="12" y1="22" x2="12" y2="7" />
+              <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+            </svg>
             <span>{sampleCopy}</span>
           </div>
         )}
@@ -533,37 +528,14 @@ function PDPView({
         style={{ height: `${Math.max(1, images.length) * 100}vh` }}
       >
         {/* Sticky 100vh Split-Screen Viewport */}
-        <div className="sticky top-0 h-screen w-full overflow-hidden grid grid-cols-2 z-10">
+        <div
+          className="sticky w-full overflow-hidden grid grid-cols-2 z-10"
+          style={{ top: 'var(--site-header-h, 68px)', height: 'calc(100vh - var(--site-header-h, 68px))' }}
+        >
           
           {/* Left Half: Pedestal with Parallax Vertical Images */}
           <div className="bg-[#F8F8F8] dark:bg-[#141318] border-r border-[#EEEEEE] dark:border-white/10 h-full relative overflow-hidden flex flex-col justify-between transition-colors duration-300">
             
-            {/* Top-Left Pinned Brand Logo */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease: 'easeOut', delay: 0.05 }}
-              className="absolute top-10 left-10 lg:top-14 lg:left-14 z-30 pointer-events-auto"
-            >
-              <button
-                onClick={onNavigateHome}
-                className="flex items-center hover:opacity-80 transition-opacity cursor-pointer select-none"
-                title="Return to Home"
-                aria-label="Saudagar Perfumers Home"
-              >
-                <img
-                  src="/images/saudagar_logo_black.png"
-                  alt="Saudagar Perfumers"
-                  className="h-7 lg:h-8 w-auto object-contain dark:hidden block"
-                />
-                <img
-                  src="/images/saudagar_logo_gold.png"
-                  alt="Saudagar Perfumers"
-                  className="h-7 lg:h-8 w-auto object-contain hidden dark:block"
-                />
-              </button>
-            </motion.div>
-
             {/* Vertical Animated Flacon Stack (Driven by Desktop Scroll) */}
             <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
               <motion.div
@@ -629,60 +601,10 @@ function PDPView({
           </div>
 
           {/* Right Half: Editorial Details (Pinned with internal scroll) */}
-          <div className="bg-[#FFFFFF] dark:bg-tk-night h-full flex flex-col justify-between p-10 lg:p-14 transition-colors duration-300 overflow-y-auto">
+          <div className="bg-[#FFFFFF] dark:bg-tk-night h-full flex flex-col p-10 xl:p-14 transition-colors duration-300 overflow-y-auto">
             
-            {/* Top-Right Navigation Bar */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease: 'easeOut', delay: 0.08 }}
-              className="flex items-center justify-end gap-7 xl:gap-8 text-[11px] font-normal tracking-[0.14em] uppercase text-tk-ink dark:text-white select-none z-10 shrink-0"
-            >
-              <button
-                onClick={onNavigateHome}
-                className="hover:opacity-60 transition-opacity cursor-pointer"
-              >
-                Home
-              </button>
-              <button
-                onClick={() => onNavigateCollection('all')}
-                className="hover:opacity-60 transition-opacity cursor-pointer"
-              >
-                Collections
-              </button>
-              <button
-                onClick={() => (onOpenStory ? onOpenStory() : onNavigateHome())}
-                className="hover:opacity-60 transition-opacity cursor-pointer"
-              >
-                About
-              </button>
-              
-              <button
-                onClick={onOpenNavDrawer}
-                className="p-1 text-tk-ink dark:text-white hover:opacity-60 transition-opacity cursor-pointer"
-                title="Open Navigation Menu"
-                aria-label="Open Navigation Menu"
-              >
-                <div className="w-5 flex flex-col gap-1">
-                  <span className="w-full h-[1.6px] bg-current rounded-full" />
-                  <span className="w-full h-[1.6px] bg-current rounded-full" />
-                </div>
-              </button>
-
-              <button
-                onClick={onOpenCart}
-                className="w-6 h-6 rounded-full bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] font-bold flex items-center justify-center cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.25)] hover:opacity-85 transition-opacity"
-                aria-label={`Cart (${cartCount})`}
-                title="View Cart"
-              >
-                {cartCount}
-              </button>
-            </motion.div>
-
-            {/* Desktop Monograph Form */}
-            {renderMonographDetails(false)}
-
-            <div className="h-6" />
+            {/* Buy box, centred in the space beside the bottle */}
+            <div className="my-auto w-full">{renderMonographDetails(false)}</div>
           </div>
 
         </div>
@@ -693,66 +615,6 @@ function PDPView({
       {/* ============================================================== */}
       <div className="block lg:hidden w-full">
         
-        {/* Mobile Header Bar */}
-        <div className="w-full px-5 py-3.5 flex items-center justify-between border-b border-[#EEEEEE] dark:border-white/10 bg-white/95 dark:bg-tk-night/95 backdrop-blur-md sticky top-0 z-30 transition-colors">
-          <button
-            onClick={onNavigateHome}
-            className="flex items-center cursor-pointer"
-            aria-label="Saudagar Perfumers Home"
-          >
-            <img
-              src="/images/saudagar_logo_black.png"
-              alt="Saudagar Perfumers"
-              className="h-[22px] w-auto object-contain dark:hidden block"
-            />
-            <img
-              src="/images/saudagar_logo_gold.png"
-              alt="Saudagar Perfumers"
-              className="h-[22px] w-auto object-contain hidden dark:block"
-            />
-          </button>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => onToggleWishlist && onToggleWishlist(product.id)}
-              className="p-1.5 cursor-pointer text-tk-ink dark:text-white"
-              aria-label="Wishlist"
-              title={isCurrentWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                className={isCurrentWishlisted ? 'text-tk-accent dark:text-tk-accent-night' : 'currentColor'}
-                fill={isCurrentWishlisted ? 'currentColor' : 'none'}
-                stroke="currentColor"
-                strokeWidth="1.8"
-              >
-                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-              </svg>
-            </button>
-
-            <button
-              onClick={onOpenNavDrawer}
-              className="p-1.5 text-tk-ink dark:text-white cursor-pointer"
-              aria-label="Open Navigation Menu"
-            >
-              <div className="w-5 flex flex-col gap-1">
-                <span className="w-full h-[1.6px] bg-current rounded-full" />
-                <span className="w-full h-[1.6px] bg-current rounded-full" />
-              </div>
-            </button>
-            
-            <button
-              onClick={onOpenCart}
-              className="w-6 h-6 rounded-full bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] font-bold flex items-center justify-center cursor-pointer shadow-xs"
-              aria-label={`Cart (${cartCount})`}
-            >
-              {cartCount}
-            </button>
-          </div>
-        </div>
-
         {/* Mobile Dedicated Flacon Vitrine (NEVER CROPPED, Full Bottle Visible) */}
         <div className="relative w-full h-[46vh] min-h-[350px] max-h-[440px] bg-[#F8F8F8] dark:bg-[#141318] flex items-center justify-center overflow-hidden border-b border-[#EEEEEE] dark:border-white/10 select-none">
           {/* Ambient Warm Studio Aura */}
@@ -791,7 +653,7 @@ function PDPView({
               <button
                 type="button"
                 onClick={() => setMobileImgIdx((prev) => (prev - 1 + images.length) % images.length)}
-                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/85 dark:bg-black/60 text-tk-ink dark:text-white flex items-center justify-center text-xs backdrop-blur-xs shadow-xs hover:bg-white dark:hover:bg-black transition-colors cursor-pointer"
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-[2px] bg-white/90 dark:bg-black/60 text-tk-ink dark:text-white flex items-center justify-center text-xs backdrop-blur-xs shadow-xs hover:bg-white dark:hover:bg-black transition-colors cursor-pointer"
                 aria-label="Previous view angle"
               >
                 ‹
@@ -799,7 +661,7 @@ function PDPView({
               <button
                 type="button"
                 onClick={() => setMobileImgIdx((prev) => (prev + 1) % images.length)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/85 dark:bg-black/60 text-tk-ink dark:text-white flex items-center justify-center text-xs backdrop-blur-xs shadow-xs hover:bg-white dark:hover:bg-black transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-[2px] bg-white/90 dark:bg-black/60 text-tk-ink dark:text-white flex items-center justify-center text-xs backdrop-blur-xs shadow-xs hover:bg-white dark:hover:bg-black transition-colors cursor-pointer"
                 aria-label="Next view angle"
               >
                 ›

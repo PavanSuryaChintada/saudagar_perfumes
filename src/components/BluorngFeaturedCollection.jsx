@@ -24,13 +24,13 @@ export default function BluorngFeaturedCollection({
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
         <ScrollReveal variant="fade-up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-white/50 font-medium block mb-1">
+            <span className="sf-eyebrow">
               {config.eyebrow}
             </span>
-            <h2 className="text-[22px] sm:text-[28px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white leading-tight">
+            <h2 className="sf-title">
               {config.heading}
             </h2>
-            <p className="text-[12px] text-[#5F5F5F] dark:text-white/60 tracking-wide mt-1.5 font-normal max-w-lg">
+            <p className="sf-lead">
               {config.text}
             </p>
           </div>

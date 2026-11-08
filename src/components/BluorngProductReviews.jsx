@@ -62,7 +62,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
   return (
     <section
       id="reviews-section"
-      className="w-full bg-[#FFFFFF] dark:bg-tk-night border-t border-[#EAEAEA] dark:border-white/10 px-6 sm:px-10 lg:px-16 py-14 sm:py-16 transition-colors duration-300"
+      className="w-full bg-[#FFFFFF] dark:bg-tk-night border-t border-[#EAEAEA] dark:border-white/10 px-6 sm:px-10 lg:px-16 py-12 sm:py-16 transition-colors duration-300"
       aria-label="Customer reviews"
     >
       <div className="max-w-6xl mx-auto">
@@ -87,7 +87,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
         {query.isLoading && <p className="py-10 text-center text-[12.5px] text-[#666666]">Loading reviews…</p>}
 
         {!query.isLoading && count === 0 && (
-          <div className="py-14 text-center">
+          <div className="py-8 sm:py-10 text-center">
             <p className="text-[15px] text-tk-ink dark:text-white">No reviews yet</p>
             <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#999999] mt-1.5">Bought this fragrance? You'll be able to review it from your orders once it's delivered.</p>
           </div>

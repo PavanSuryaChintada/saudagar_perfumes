@@ -85,8 +85,8 @@ export function ShopByNote({ config = {} }) {
       <div className="px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         <div className="flex items-end justify-between gap-4 mb-8">
           <div>
-            {config.eyebrow && <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#A09D96] font-medium block mb-1">{config.eyebrow}</span>}
-            {config.heading && <h2 className="text-[22px] sm:text-[28px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">{config.heading}</h2>}
+            {config.eyebrow && <span className="sf-eyebrow">{config.eyebrow}</span>}
+            {config.heading && <h2 className="sf-title">{config.heading}</h2>}
           </div>
           <Link to="/notes" className="text-[11px] uppercase tracking-[0.12em] text-[#666666] hover:text-tk-ink dark:hover:text-white">
             {config.all_label || 'All notes'} →

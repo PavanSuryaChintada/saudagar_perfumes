@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStories } from '../cms/useContent';
 import { useBlock } from '../cms/useSite';
+import { posterFor } from '../lib/media';
 
 export default function BluorngStoryViewer({
   isOpen,
@@ -98,7 +99,7 @@ export default function BluorngStoryViewer({
           <video
             key={currentStory.id}
             src={currentStory.video}
-            poster={currentStory.image || undefined}
+            poster={posterFor(currentStory.video, currentStory.image)}
             autoPlay
             muted
             playsInline
@@ -162,14 +163,14 @@ export default function BluorngStoryViewer({
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsPaused(!isPaused)}
-                className="w-7 h-7 flex items-center justify-center rounded-full bg-black/40 text-white/80 hover:text-white"
+                className="w-7 h-7 flex items-center justify-center rounded-[2px] bg-black/40 text-white/80 hover:text-white"
                 aria-label={isPaused ? 'Play story' : 'Pause story'}
               >
                 {isPaused ? '▶' : '⏸'}
               </button>
               <button
                 onClick={onClose}
-                className="w-7 h-7 flex items-center justify-center rounded-full bg-black/40 text-white/80 hover:text-white hover:bg-black/60 transition-all font-bold"
+                className="w-7 h-7 flex items-center justify-center rounded-[2px] bg-black/40 text-white/80 hover:text-white hover:bg-black/60 transition-all font-bold"
                 aria-label="Close story"
               >
                 ✕

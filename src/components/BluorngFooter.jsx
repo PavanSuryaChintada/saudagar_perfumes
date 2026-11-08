@@ -52,27 +52,18 @@ export default function BluorngFooter({
   };
 
   return (
-    <footer className="relative w-full bg-white dark:bg-tk-night border-t border-[#EEEEEE] dark:border-white/10 text-tk-ink dark:text-white select-none overflow-hidden pt-16 sm:pt-24 pb-12 sm:pb-16 transition-colors duration-300">
+    <footer className="relative w-full bg-white dark:bg-tk-night border-t border-[#EEEEEE] dark:border-white/10 text-tk-ink dark:text-white select-none overflow-hidden pt-12 sm:pt-16 pb-24 lg:pb-14 transition-colors duration-300">
       <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
         
         {/* ================= 1. VIP INNER CIRCLE NEWSLETTER & CONCIERGE CARD ================= */}
-        <div className="bg-white/90 dark:bg-white/[0.035] shadow-xs backdrop-blur-xl rounded-2xl p-8 sm:p-12 lg:p-14 mb-16 sm:mb-20 transition-colors duration-300">
+        <div className="bg-[#F8F7F4] dark:bg-white/[0.035] border border-[#ECE9E2] dark:border-white/10 rounded-[2px] p-7 sm:p-10 lg:p-12 mb-14 sm:mb-16 transition-colors duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* Left: Headline & Manifesto */}
             <div className="lg:col-span-7 flex flex-col items-start text-left">
-              <div className="inline-flex items-center gap-2 mb-3">
-                <span className="text-tk-accent dark:text-tk-accent-night text-[11px]">✦</span>
-                <span className="text-[11.5px] uppercase tracking-[0.24em] text-tk-accent dark:text-tk-accent-night font-medium">
-                  {footer.newsletter_eyebrow}
-                </span>
-              </div>
-              <h3 className="font-serif text-[26px] sm:text-[34px] lg:text-[40px] font-normal leading-tight text-tk-ink dark:text-white mb-3">
-                {footer.newsletter_heading}
-              </h3>
-              <p className="text-[13px] sm:text-[14px] text-[#666666] dark:text-white/65 font-light leading-relaxed max-w-xl">
-                {footer.newsletter_text}
-              </p>
+              {footer.newsletter_eyebrow && <span className="sf-eyebrow">{footer.newsletter_eyebrow}</span>}
+              <h3 className="sf-title">{footer.newsletter_heading}</h3>
+              <p className="sf-lead">{footer.newsletter_text}</p>
             </div>
 
             {/* Right: Newsletter Input & Theme Switcher */}
@@ -82,16 +73,16 @@ export default function BluorngFooter({
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={subscribed ? (footer.newsletter_success || '').toUpperCase() : footer.newsletter_placeholder}
+                  placeholder={subscribed ? footer.newsletter_success || '' : footer.newsletter_placeholder}
                   aria-label="Email address"
                   disabled={subscribed}
                   required
-                  className="w-full bg-black/[0.05] hover:bg-black/[0.08] focus:bg-black/[0.1] dark:bg-white/[0.07] dark:hover:bg-white/[0.10] dark:focus:bg-white/[0.12] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11.5px] tracking-[0.14em] uppercase px-5 py-4 rounded-[2px] outline-none transition-all duration-300 pr-32"
+                  className="w-full h-14 bg-white border border-[#DEDAD2] focus:border-tk-ink dark:border-white/15 dark:focus:border-white/50 dark:bg-white/[0.07] dark:hover:bg-white/[0.10] dark:focus:bg-white/[0.12] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[13px] tracking-[0.02em] px-5 rounded-[2px] outline-none transition-all duration-300 pr-36"
                 />
                 <button
                   type="submit"
                   disabled={subscribed}
-                  className="absolute right-1.5 top-1.5 bottom-1.5 px-6 bg-tk-accent hover:bg-[#B57432] dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11.5px] font-semibold uppercase tracking-[0.18em] rounded-[2px] transition-all duration-300 cursor-pointer shadow-md shrink-0 flex items-center justify-center"
+                  className="absolute right-1.5 top-1.5 bottom-1.5 px-6 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11.5px] font-semibold uppercase tracking-[0.18em] rounded-[2px] transition-colors duration-300 cursor-pointer shrink-0 flex items-center justify-center"
                 >
                   {subscribed ? '✓' : footer.newsletter_button}
                 </button>
@@ -101,8 +92,8 @@ export default function BluorngFooter({
               {/* Atelier Theme Switcher Pills */}
               {onToggleTheme && (
                 <div className="flex items-center gap-3 text-[11px] text-[#5F5F5F] dark:text-white/60">
-                  <span className="text-[11px] uppercase tracking-[0.18em] text-[#666666] dark:text-white/50">Atelier Theme:</span>
-                  <div className="inline-flex items-center p-0.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] transition-colors">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-[#666666] dark:text-white/50">Theme</span>
+                  <div className="inline-flex items-center p-0.5 rounded-[2px] border border-[#DEDAD2] dark:border-white/15 bg-white dark:bg-white/[0.04] transition-colors">
                     <button
                       type="button"
                       onClick={() => {
@@ -147,7 +138,7 @@ export default function BluorngFooter({
                 <h4 className="text-[11px] font-semibold tracking-[0.22em] uppercase text-tk-accent dark:text-tk-accent-night mb-2">
                   {col.heading}
                 </h4>
-                <ul className="space-y-2.5 text-[12.5px] text-[#555555] dark:text-white/65 font-light">
+                <ul className="space-y-2.5 text-[13px] text-[#4A4A4A] dark:text-white/70 font-normal">
                   {(col.links || []).map((item, li) => (
                     <li key={`${item.label}-${li}`}>
                       <button onClick={() => runLink(item)} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer text-left">
@@ -199,11 +190,11 @@ export default function BluorngFooter({
         </div>
 
         {/* ================= 4. BOTTOM COPYRIGHT & PRIVILEGE ASSURANCE ================= */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[11.5px] text-[#5F5F5F] dark:text-white/45 tracking-wider uppercase">
-          <div className="flex flex-col items-center md:items-start gap-2">
+        <div className="pt-8 border-t border-[#EEEEEE] dark:border-white/10 flex flex-col md:flex-row items-center md:items-start justify-between gap-4 text-[11.5px] text-[#5F5F5F] dark:text-white/45 tracking-wider uppercase">
+          <div className="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
             <p>{String(footer.copyright || '').replace('{year}', String(new Date().getFullYear()))}</p>
             {(footer.legal_links || []).length > 0 && (
-              <nav className="flex flex-wrap gap-4" aria-label="Policies">
+              <nav className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-1" aria-label="Policies">
                 {footer.legal_links.map((l, i) => (
                   <button key={`${l.label}-${i}`} onClick={() => go(l.link)} className="hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer">
                     {l.label}
@@ -214,14 +205,14 @@ export default function BluorngFooter({
           </div>
 
           {/* Reassurance Badges */}
-          <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-center text-[#666666] dark:text-white/40">
+          <ul className="flex items-center gap-x-4 sm:gap-x-5 gap-y-1.5 flex-wrap justify-center md:justify-end text-[#666666] dark:text-white/40">
             {(footer.badges || []).map((badge, i) => (
-              <React.Fragment key={`${badge}-${i}`}>
-                {i > 0 && <span>✦</span>}
+              <li key={`${badge}-${i}`} className="flex items-center gap-x-4 sm:gap-x-5">
+                {i > 0 && <span className="hidden md:inline" aria-hidden>✦</span>}
                 <span>{badge}</span>
-              </React.Fragment>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
 
       </div>

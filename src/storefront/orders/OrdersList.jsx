@@ -15,7 +15,19 @@ export default function OrdersList() {
 
   if (isLoading) return <p className="py-16 text-center text-[#666666] text-[13px]">Loading orders…</p>;
   if (error) return <p className="py-16 text-center text-rose-600 text-[13px]">{toFriendlyError(error)}</p>;
-  if (orders.length === 0) return <div className="py-16 text-center text-[#666666] text-[13px]">No orders yet.</div>;
+  if (orders.length === 0)
+    return (
+      <div className="py-16 flex flex-col items-center text-center">
+        <p className="text-[15px] text-tk-ink dark:text-white">No orders yet</p>
+        <p className="mt-1.5 text-[13px] text-[#5F5F5F] dark:text-[#999999]">When you place an order, you can follow it here.</p>
+        <Link
+          to="/shop"
+          className="mt-6 inline-flex items-center justify-center h-11 px-7 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[11.5px] font-semibold uppercase tracking-[0.16em] rounded-[2px] transition-colors"
+        >
+          Start shopping
+        </Link>
+      </div>
+    );
 
   return (
     <div>

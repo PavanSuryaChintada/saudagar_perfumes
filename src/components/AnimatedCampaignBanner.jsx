@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useGo } from '../cms/useSite';
+import { posterFor } from '../lib/media';
 
 /** Section "campaign_banner_animated": film, headline, copy, note strip, buttons and badge come from the CMS. */
 export default function AnimatedCampaignBanner({ config = {} }) {
@@ -26,7 +27,7 @@ export default function AnimatedCampaignBanner({ config = {} }) {
             muted
             playsInline
             preload="auto"
-            poster={config.image || undefined}
+            poster={posterFor(config.video, config.image)}
             className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.78] dark:brightness-[0.62]"
           >
             <source src={config.video} type="video/mp4" />

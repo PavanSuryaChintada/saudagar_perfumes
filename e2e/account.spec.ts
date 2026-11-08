@@ -7,7 +7,7 @@ test('a new customer registers, fills personal details and manages addresses', a
   await page.getByLabel('Password').fill('secret1234');
   await page.getByRole('button', { name: 'Create account' }).click();
   await expect(page).toHaveURL(/\/account$/);
-  await expect(page.getByText('No orders yet.')).toBeVisible();
+  await expect(page.getByText('No orders yet', { exact: true })).toBeVisible();
 
   // Personal details: name, phone, birthday (locks once saved)
   await page.getByRole('button', { name: 'Personal Details' }).click();

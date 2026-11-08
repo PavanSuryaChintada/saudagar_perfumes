@@ -165,7 +165,7 @@ export default function BluorngCollectionPage({
   );
 
   return (
-    <div className="w-full min-h-screen font-sans select-none pb-28 bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300">
+    <div className="w-full min-h-screen font-sans select-none pb-12 bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300">
       
       {/* ================= 1. CINEMATIC HERO (Video & Collection Identity) ================= */}
       <SectionContext.Provider
@@ -540,13 +540,13 @@ export default function BluorngCollectionPage({
                           onClick={() => onSelectProduct(prod.id)}
                         >
                           {/* Flacon Pedestal Stage (Consistent Soft Stage #F8F7F5 / Dark #141318) */}
-                          <div className={`w-full aspect-square rounded-md relative flex items-center justify-center overflow-hidden bg-[#F8F7F5] dark:bg-[#141318] group-hover:bg-[#F2EFEA] dark:group-hover:bg-[#1C1A22] transition-all duration-400 group-hover:scale-[1.01] ${
+                          <div className={`w-full aspect-square rounded-[2px] relative flex items-center justify-center overflow-hidden bg-[#F8F7F5] dark:bg-[#141318] group-hover:bg-[#F2EFEA] dark:group-hover:bg-[#1C1A22] transition-all duration-400 group-hover:scale-[1.01] ${
                             gridCols === 2 ? 'p-8 sm:p-14' : gridCols === 3 ? 'p-6 sm:p-10' : 'p-6 sm:p-8'
                           }`}>
                             {/* Badge */}
                             {(isSale || prod.badge) && (
                               <div className="absolute top-3 left-3 z-10">
-                                <span className="text-[10.5px] font-medium tracking-wider uppercase px-2 py-0.5 rounded-sm bg-white/85 dark:bg-white/10 text-[#666666] dark:text-white/80">
+                                <span className="text-[10.5px] font-medium tracking-wider uppercase px-2 py-0.5 rounded-[2px] bg-white/85 dark:bg-white/10 text-[#666666] dark:text-white/80">
                                   {isSale ? 'Sale' : prod.badge}
                                 </span>
                               </div>
@@ -559,7 +559,7 @@ export default function BluorngCollectionPage({
                                 e.stopPropagation();
                                 onToggleWishlist && onToggleWishlist(prod.id);
                               }}
-                              className={`absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-tk-ink dark:text-white ${
+                              className={`absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-[2px] flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-tk-ink dark:text-white ${
                                 isWish ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#707070]'
                               }`}
                               title={isWish ? 'Remove from wishlist' : 'Save to wishlist'}
@@ -598,7 +598,7 @@ export default function BluorngCollectionPage({
                                   e.stopPropagation();
                                   onQuickBuy(prod);
                                 }}
-                                className="w-full py-2.5 text-[11.5px] uppercase tracking-[0.16em] font-medium rounded-full shadow-lg transition-all duration-300 cursor-pointer bg-tk-ink/95 text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night backdrop-blur-md flex items-center justify-center gap-1.5"
+                                className="w-full py-2.5 text-[11.5px] uppercase tracking-[0.16em] font-medium rounded-[2px] shadow-lg transition-all duration-300 cursor-pointer bg-tk-ink/95 text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night backdrop-blur-md flex items-center justify-center gap-1.5"
                               >
                                 <span>+ Quick Add</span>
                               </button>
@@ -607,7 +607,7 @@ export default function BluorngCollectionPage({
 
                           {/* Product Details */}
                           <div className="pt-3 flex flex-col">
-                            <h3 className={`font-normal leading-snug line-clamp-1 transition-colors text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night ${
+                            <h3 className={`font-normal leading-[1.4] min-h-[2.8em] line-clamp-2 transition-colors text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night ${
                               gridCols === 2
                                 ? 'text-[15px] sm:text-[17px]'
                                 : gridCols === 3
@@ -628,7 +628,7 @@ export default function BluorngCollectionPage({
                               }
                             </p>
 
-                            <div className="flex items-center gap-2 mt-1 text-[12.5px]">
+                            <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 mt-1.5 text-[12.5px]">
                               <span className={`font-normal text-tk-ink dark:text-white ${
                                 gridCols === 2
                                   ? 'text-[14px] sm:text-[15.5px] font-medium'
@@ -643,6 +643,11 @@ export default function BluorngCollectionPage({
                                   gridCols === 2 ? 'text-[12px]' : gridCols === 3 ? 'text-[11.5px]' : 'text-[11px]'
                                 }`}>
                                   {formatPrice(prod.compareAtPrice)}
+                                </span>
+                              )}
+                              {hasDiscount && (
+                                <span className="text-[11px] font-medium text-tk-accent dark:text-tk-accent-night">
+                                  {Math.round((1 - prod.price / prod.compareAtPrice) * 100)}% off
                                 </span>
                               )}
                             </div>

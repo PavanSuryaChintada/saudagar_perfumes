@@ -41,7 +41,7 @@ describe('section registry', () => {
     it(`${type} renders with empty settings and invents no text`, () => {
       const { container } = renderSection(type, {});
       // No content may come from component code: an empty section shows at most UI control labels.
-      const CONTROLS = ['Sound Off', 'Sound On', 'Auto-scrolling', 'Paused ⏸', 'All notes', 'Subscribe'];
+      const CONTROLS = ['Sound Off', 'Sound On', 'Pause', 'Play', 'All notes', 'Subscribe'];
       let text = container.textContent ?? '';
       for (const c of CONTROLS) text = text.split(c).join('');
       expect(text.replace(/[→↓↑✦•·|\s+]/g, '')).toBe('');

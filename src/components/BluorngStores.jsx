@@ -36,7 +36,7 @@ export default function BluorngStores({ config = {} }) {
                 {config.script_line}
               </span>
             </div>
-            <h2 className="text-[22px] sm:text-[30px] font-black uppercase tracking-[0.02em] text-tk-ink dark:text-white leading-tight">
+            <h2 className="sf-title">
               {config.heading}
             </h2>
             <p className="text-[12px] text-[#666666] dark:text-[#A09D96] tracking-wide mt-1 max-w-xl font-normal">

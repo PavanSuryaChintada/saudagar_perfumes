@@ -65,6 +65,17 @@
 
 /* Custom Editorial Button Utilities Matching Product Page */
 @layer components {
+  /* Shop section headings: the same small brand-coloured line, title and intro on every section and page */
+  .sf-eyebrow {
+    @apply block text-[11px] font-medium uppercase tracking-[0.18em] text-tk-accent dark:text-tk-accent-night mb-1.5;
+  }
+  .sf-title {
+    @apply text-[22px] sm:text-[28px] font-normal uppercase tracking-[0.03em] leading-tight text-tk-ink dark:text-white;
+  }
+  .sf-lead {
+    @apply mt-2 max-w-xl text-[13.5px] leading-relaxed font-normal text-[#5F5F5F] dark:text-white/60;
+  }
+
   /* Solid Black Button (BUY IT NOW) */
   .btn-black {
     @apply inline-flex items-center justify-center px-7 py-3.5 text-xs font-medium uppercase tracking-[0.04em] transition-all duration-200;
