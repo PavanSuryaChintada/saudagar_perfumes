@@ -19,7 +19,7 @@ function formatBytes(n: number | null) {
   return `${(n / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-export default function MediaLibraryPage() {
+export default function MediaLibraryPage({ embedded = false }: { embedded?: boolean }) {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [pendingDelete, setPendingDelete] = useState<MediaAsset | null>(null);
@@ -78,18 +78,25 @@ export default function MediaLibraryPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Media library"
-        description="Every image and video uploaded to the store. Images are compressed to WebP automatically. Videos can be up to 50 MB."
-        actions={
-          <>
-            <input ref={fileInput} type="file" multiple accept="image/*,video/mp4,video/webm,video/quicktime" className="hidden" onChange={(e) => onFiles(e.target.files)} />
+      <input ref={fileInput} type="file" multiple accept="image/*,video/mp4,video/webm,video/quicktime" className="hidden" onChange={(e) => onFiles(e.target.files)} />
+      {embedded ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+          <p className="text-[14px] text-[#3F3F3F] max-w-[680px]">Every image and video uploaded to the store. Images are compressed to WebP automatically. Videos can be up to 50 MB.</p>
+          <Button onClick={() => fileInput.current?.click()} busy={busy}>
+            <Upload size={14} /> Upload files
+          </Button>
+        </div>
+      ) : (
+        <PageHeader
+          title="Media library"
+          description="Every image and video uploaded to the store. Images are compressed to WebP automatically. Videos can be up to 50 MB."
+          actions={
             <Button onClick={() => fileInput.current?.click()} busy={busy}>
               <Upload size={14} /> Upload files
             </Button>
-          </>
-        }
-      />
+          }
+        />
+      )}
 
       {items.length > 0 && (
         <div className="mb-5 border border-[#E2E0DB] bg-white p-4 space-y-2.5">

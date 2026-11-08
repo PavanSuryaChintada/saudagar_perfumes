@@ -153,7 +153,7 @@ export const GUIDE: GuideSection[] = [
     id: 'website',
     title: 'Homepage and pages',
     why: 'Everything a visitor reads is edited here; no code changes are needed.',
-    routes: ['/admin/pages', '/admin/site', '/admin/content', '/admin/media'],
+    routes: ['/admin/cms', '/admin/pages', '/admin/site', '/admin/content', '/admin/media'],
     check: 'website',
     steps: [
       { text: 'Pages → Home: each block is a section. Edit it, drag to reorder, or hide it.', link: { to: '/admin/pages', label: 'Pages' } },

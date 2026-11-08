@@ -219,55 +219,65 @@ function itemTitle(item: Obj, fields: FieldDef[], fallback: string): string {
 }
 
 function ListInput({ field, value, onChange }: { field: Extract<FieldDef, { type: 'list' }>; value: Obj[]; onChange: (v: unknown) => void }) {
-  const [open, setOpen] = useState<number | null>(null);
+  // Short lists open fully; long ones start folded so the page stays short. Click a strip to open or fold it.
+  const [folded, setFolded] = useState<Set<number>>(() => new Set(value.length > 4 ? value.map((_, i) => i) : []));
   const noun = (field.itemLabel ?? 'Item').toLowerCase();
   const full = field.max !== undefined && value.length >= field.max;
+  const shift = (from: number, to: number) => {
+    onChange(move(value, from, to));
+    setFolded((cur) => {
+      const next = new Set<number>();
+      for (const i of cur) next.add(i === from ? to : i === to ? from : i);
+      return next;
+    });
+  };
   return (
     <div className="space-y-2">
-      <p className="text-[12px] font-medium text-[#454545]">{field.label}</p>
-      {field.help && <p className="text-[12px] text-[#4F4F4F]">{field.help}</p>}
-      <div className="border border-[#E2E0DB] divide-y divide-[#E9E7E2] bg-white">
-        {value.length === 0 && <p className="px-3 py-3 text-[13px] text-[#4F4F4F]">Nothing here yet.</p>}
-        {value.map((item, i) => {
-          const title = itemTitle(item, field.fields, `${field.itemLabel ?? 'Item'} ${i + 1}`);
-          const isOpen = open === i;
-          return (
-            <div key={i}>
-              <div className="flex items-center gap-1 pr-1">
-                <button type="button" className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 text-left text-[14px]" onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen}>
-                  {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                  <span className="truncate">{title}</span>
-                </button>
-                <button type="button" aria-label="Move up" className={iconBtn} disabled={i === 0} onClick={() => { onChange(move(value, i, i - 1)); setOpen(null); }}>
-                  <ArrowUp size={14} />
-                </button>
-                <button type="button" aria-label="Move down" className={iconBtn} disabled={i === value.length - 1} onClick={() => { onChange(move(value, i, i + 1)); setOpen(null); }}>
-                  <ArrowDown size={14} />
-                </button>
-                <button type="button" aria-label="Duplicate" className={iconBtn} disabled={full} onClick={() => onChange([...value.slice(0, i + 1), structuredClone(item), ...value.slice(i + 1)])}>
-                  <Copy size={14} />
-                </button>
-                <button type="button" aria-label="Remove" className={`${iconBtn} hover:text-rose-600`} onClick={() => { onChange(value.filter((_, j) => j !== i)); setOpen(null); }}>
-                  <Trash2 size={14} />
-                </button>
-              </div>
-              {isOpen && (
-                <div className="px-3 pb-3 pt-1 bg-[#FAFAF7]">
-                  <SchemaForm fields={field.fields} value={item} onChange={(next) => onChange(value.map((x, j) => (j === i ? next : x)))} />
-                </div>
-              )}
+      <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#454545]">{field.label}</p>
+      {field.help && <p className="text-[12.5px] text-[#4F4F4F]">{field.help}</p>}
+      {value.length === 0 && <p className="px-3 py-3 text-[13px] text-[#4F4F4F] border border-dashed border-[#D6D1C6]">Nothing here yet.</p>}
+      {value.map((item, i) => {
+        const title = itemTitle(item, field.fields, '');
+        const open = !folded.has(i);
+        return (
+          <div key={i} className="border border-[#DDD8CD] bg-white">
+            <div className="flex items-center gap-1 pr-1 bg-[#F3F1EC] border-b border-[#E3DED4]">
+              <button
+                type="button"
+                className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2.5 text-left"
+                onClick={() => setFolded((cur) => { const next = new Set(cur); if (next.has(i)) next.delete(i); else next.add(i); return next; })}
+                aria-expanded={open}
+              >
+                {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                <span className="text-[11.5px] font-semibold uppercase tracking-[0.12em] text-[#2F2F2F] shrink-0">{field.itemLabel ?? 'Item'} {i + 1}</span>
+                {title && <span className="text-[13px] text-[#4A4A4A] truncate">· {title}</span>}
+              </button>
+              <button type="button" aria-label="Move up" title="Move up" className={iconBtn} disabled={i === 0} onClick={() => shift(i, i - 1)}>
+                <ArrowUp size={14} />
+              </button>
+              <button type="button" aria-label="Move down" title="Move down" className={iconBtn} disabled={i === value.length - 1} onClick={() => shift(i, i + 1)}>
+                <ArrowDown size={14} />
+              </button>
+              <button type="button" aria-label="Duplicate" title="Make a copy" className={iconBtn} disabled={full} onClick={() => onChange([...value.slice(0, i + 1), structuredClone(item), ...value.slice(i + 1)])}>
+                <Copy size={14} />
+              </button>
+              <button type="button" aria-label="Remove" title="Remove" className={`${iconBtn} hover:text-rose-600`} onClick={() => { onChange(value.filter((_, j) => j !== i)); setFolded(new Set()); }}>
+                <Trash2 size={14} />
+              </button>
             </div>
-          );
-        })}
-      </div>
+            {open && (
+              <div className="px-3 pb-3 pt-3">
+                <SchemaForm fields={field.fields} value={item} onChange={(next) => onChange(value.map((x, j) => (j === i ? next : x)))} />
+              </div>
+            )}
+          </div>
+        );
+      })}
       <button
         type="button"
         disabled={full}
-        onClick={() => {
-          onChange([...value, emptyItem(field.fields)]);
-          setOpen(value.length);
-        }}
-        className="inline-flex items-center gap-1.5 text-[13px] text-tk-ink hover:text-tk-accent disabled:opacity-40"
+        onClick={() => onChange([...value, emptyItem(field.fields)])}
+        className="inline-flex items-center gap-1.5 px-3 py-2 border border-dashed border-[#BDB8AD] text-[13px] text-tk-ink hover:border-tk-ink disabled:opacity-40"
       >
         <Plus size={13} /> Add {noun}
       </button>

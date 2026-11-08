@@ -11,10 +11,8 @@ import CategoriesPage from './pages/catalog/CategoriesPage';
 import CollectionsPage from './pages/catalog/CollectionsPage';
 import NotesPage from './pages/catalog/NotesPage';
 import ScentProfilePage from './pages/catalog/ScentProfilePage';
-import PagesPage from './pages/cms/PagesPage';
-import PageEditorPage from './pages/cms/PageEditorPage';
-import SiteContentPage from './pages/cms/SiteContentPage';
-import ContentListPage from './pages/cms/ContentListPage';
+import CmsWorkspace from './pages/cms/CmsWorkspace';
+import { ContentRedirect, PageIdRedirect, PagesRedirect, SiteRedirect } from './pages/cms/redirects';
 import OrdersPage from './pages/orders/OrdersPage';
 import OrderDetailPage from './pages/orders/OrderDetailPage';
 import PrintOrderPage, { PrintOrdersPage } from './pages/orders/PrintOrderPage';
@@ -72,10 +70,11 @@ export default function AdminApp() {
         <Route path="collections" element={<CollectionsPage />} />
         <Route path="notes" element={<NotesPage />} />
         <Route path="scent-profile" element={<ScentProfilePage />} />
-        <Route path="pages" element={<PagesPage />} />
-        <Route path="pages/:id" element={<PageEditorPage />} />
-        <Route path="site" element={<SiteContentPage />} />
-        <Route path="content/:kind" element={<ContentListPage />} />
+        <Route path="cms" element={<CmsWorkspace />} />
+        <Route path="pages" element={<PagesRedirect />} />
+        <Route path="pages/:id" element={<PageIdRedirect />} />
+        <Route path="site" element={<SiteRedirect />} />
+        <Route path="content/:kind" element={<ContentRedirect />} />
         <Route path="orders" element={<OrdersPage />} />
         <Route path="orders/:id" element={<OrderDetailPage />} />
         <Route path="inventory" element={<InventoryPage />} />
