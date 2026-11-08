@@ -1,4 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { SearchListing } from '../../ui/SearchListing';
+import { suggestListing } from '../../../lib/searchListing';
+import { useBlock } from '../../../cms/useSite';
 import { Link, useSearchParams } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp, Copy, ExternalLink, Eye, EyeOff, Plus, Settings2, Trash2 } from 'lucide-react';
@@ -9,7 +12,7 @@ import { PageHeader } from '../../ui/PageHeader';
 import { Button } from '../../ui/Button';
 import { Modal } from '../../ui/Modal';
 import { ConfirmDialog } from '../../ui/ConfirmDialog';
-import { FieldShell, TextArea, TextInput, Toggle } from '../../ui/Field';
+import { FieldShell, TextInput, Toggle } from '../../ui/Field';
 import { MediaField } from '../../ui/MediaField';
 import { RichText } from '../../ui/RichText';
 import { rpc, throwIf } from '../../catalog/api';
@@ -537,6 +540,7 @@ function PageSettings({ page, invalidate, onDeleted }: { page: PageRow; invalida
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const brandName = useBlock<Record<string, string>>('brand')?.name || 'Saudagar Perfumers';
   useEffect(() => setForm(page), [page]);
   const dirty = JSON.stringify(form) !== JSON.stringify(page);
   useEffect(() => setDirty(dirty), [dirty, setDirty]);
@@ -607,13 +611,16 @@ function PageSettings({ page, invalidate, onDeleted }: { page: PageRow; invalida
             <RichText value={form.body ?? ''} onChange={(html) => setForm({ ...form, body: html })} minHeight={320} />
           </FieldShell>
         )}
-        <FieldShell label="Search title" htmlFor="pe-seo-title" help="Leave empty to use the page title.">
-          <TextInput id="pe-seo-title" value={form.seo_title ?? ''} onChange={(e) => setForm({ ...form, seo_title: e.target.value })} />
-        </FieldShell>
-        <FieldShell label="Search description" htmlFor="pe-seo-desc" help="About 150 characters.">
-          <TextArea id="pe-seo-desc" rows={2} value={form.seo_description ?? ''} onChange={(e) => setForm({ ...form, seo_description: e.target.value })} />
-        </FieldShell>
-        <FieldShell label="Share image">
+        <div className="pt-2 border-t border-[#E9E5DC]">
+          <p className="text-[14px] font-semibold text-tk-ink mb-2">How it shows on Google</p>
+          <SearchListing
+            path={pageHref(page.slug) || `/pages/${page.slug}`}
+            value={{ title: form.seo_title ?? '', description: form.seo_description ?? '' }}
+            onChange={(v) => setForm({ ...form, seo_title: v.title, seo_description: v.description })}
+            suggestion={suggestListing({ kind: 'page', name: form.title || 'Page', body: form.layout === 'rich_text' ? form.body : null, siteName: brandName })}
+          />
+        </div>
+        <FieldShell label="Picture when the page is shared" help="Shown when the link is shared on WhatsApp, Instagram or Facebook. 1200 × 630 works best.">
           <MediaField value={form.og_image ?? ''} onChange={(url) => setForm({ ...form, og_image: url })} kind="image" label="Upload image" />
         </FieldShell>
       </div>

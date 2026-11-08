@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
+import { SearchListing } from '../../ui/SearchListing';
+import { suggestListing } from '../../../lib/searchListing';
+import { useBlock } from '../../../cms/useSite';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Copy, ExternalLink, Plus, Trash2, X } from 'lucide-react';
@@ -195,6 +198,7 @@ export default function ProductEditorPage() {
   const navigate = useNavigate();
   const invalidate = useInvalidateCatalog();
   const { data: options = [] } = useOptions();
+  const brandName = useBlock<Record<string, string>>('brand')?.name || 'Saudagar Perfumers';
   const { data: notes = [], refetch: refetchNotes } = useNotes();
   const { data: categories = [], refetch: refetchCategories } = useCategories();
   const { data: collections = [], refetch: refetchCollections } = useCollectionsAdmin();
@@ -912,15 +916,30 @@ export default function ProductEditorPage() {
           </Panel>
 
 
-          <Panel title="Search engines">
-            <div className="space-y-3">
-              <FieldShell label="SEO title" htmlFor="p-seot" help="Defaults to the product name.">
-                <TextInput id="p-seot" value={form.seo_title} onChange={(e) => set('seo_title', e.target.value)} />
-              </FieldShell>
-              <FieldShell label="SEO description" htmlFor="p-seod">
-                <TextArea id="p-seod" rows={3} value={form.seo_description} onChange={(e) => set('seo_description', e.target.value)} />
-              </FieldShell>
-            </div>
+          <Panel title="How it shows on Google">
+            <SearchListing
+              path={`/product/${form.slug || 'new-product'}`}
+              value={{ title: form.seo_title, description: form.seo_description }}
+              onChange={(v) => {
+                set('seo_title', v.title);
+                set('seo_description', v.description);
+              }}
+              suggestion={suggestListing({
+                kind: 'product',
+                name: form.name || 'New product',
+                summary: form.short_description,
+                body: form.description,
+                notes: (['top', 'heart', 'base'] as const).flatMap((tier) =>
+                  form.notes
+                    .filter((n) => n.tier === tier)
+                    .sort((a, b) => a.position - b.position)
+                    .map((n) => notes.find((x) => x.id === n.note_id)?.name ?? ''),
+                ).filter(Boolean),
+                family: options.find((o) => form.attributes.some((a) => a.kind === 'family' && a.is_primary && a.option_id === o.id))?.label ?? null,
+                sizes: form.variants.filter((v) => v.kind === 'retail' && !v.is_hidden).map((v) => Number(v.size_ml)).filter((n) => n > 0),
+                siteName: brandName,
+              })}
+            />
           </Panel>
 
           <Panel title="Internal note" description="Only admins see this.">

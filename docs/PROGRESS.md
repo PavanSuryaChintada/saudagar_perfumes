@@ -260,6 +260,12 @@
 - [x] Parcel weight counts sold items only (samples and gift-pack pours ride inside)
 - [x] Catalog setup steps numbered 1–4 in the sidebar
 
+## Phase 21: Google listings in plain words, clearer sample list ✅
+- [x] “How it shows on Google” on products, categories, collections and pages: a live Google preview written automatically from the page; “Write my own words” with a plain length guide
+- [x] The shop uses the same automatic words, and now honours the words written for categories and collections (they were ignored before)
+- [x] Site settings → Google & sharing in plain words
+- [x] Free samples list in clear columns: perfume, liquid left, samples it can give, offered
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain

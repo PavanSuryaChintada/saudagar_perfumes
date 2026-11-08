@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { ListHead, StockText } from '../../ui/ListHead';
 import { Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
@@ -12,7 +13,6 @@ import { FieldShell, TextInput, Toggle } from '../../ui/Field';
 import { Modal } from '../../ui/Modal';
 import { SortableList } from '../../ui/SortableList';
 import { SearchSelect } from '../../ui/SearchSelect';
-import { formatMl } from '../../inventory/stock';
 import { rpc, throwIf, useInvalidateCatalog } from '../../catalog/api';
 import { useProductLookup } from '../../cms/lookups';
 
@@ -140,6 +140,14 @@ export default function SamplesPage() {
         {pool.length === 0 ? (
           <p className="text-[14px] text-[#4A4A4A]">No sample vials yet. Add one, or switch on “Offer as a free sample” in a product.</p>
         ) : (
+          <>
+          <ListHead className="border border-b-0 border-[#E2E0DB]">
+            <span className="w-4" aria-hidden />
+            <span className="flex-1">Perfume (drag ⋮⋮ to set the order)</span>
+            <span className="w-[150px]">Liquid left</span>
+            <span className="w-[170px]">Samples it can give</span>
+            <span className="w-[130px]">Offered</span>
+          </ListHead>
           <SortableList
             items={pool}
             className="border border-[#E2E0DB] divide-y divide-[#E9E7E2]"
@@ -151,26 +159,43 @@ export default function SamplesPage() {
                 toast.error(toFriendlyError(err));
               }
             }}
-            renderItem={(r) => (
-              <div className="flex items-center gap-3 pr-3 py-2 text-[14px]">
-                <div className="min-w-0 flex-1">
-                  <Link to={`/admin/products/${r.product?.id}`} className="hover:underline">{r.product?.name}</Link>
-                  <p className="text-[12px] text-[#4F4F4F]">{r.label} · {r.sku}{r.product && !r.product.is_active ? ' · product is a draft' : ''}</p>
+            renderItem={(r) => {
+              const ml = Number(r.product?.stock_ml ?? 0);
+              const level = r.stock === 0 ? 'out' : r.stock <= 5 ? 'low' : 'ok';
+              return (
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-4 gap-y-2 pr-3 py-3 text-[14px]">
+                  <div className="min-w-0 flex-1 basis-full sm:basis-auto">
+                    <Link to={`/admin/products/${r.product?.id}`} className="font-medium text-tk-ink hover:underline underline-offset-4">{r.product?.name}</Link>
+                    <p className="text-[12.5px] text-[#4F4F4F]">
+                      {r.label} · <span className="font-mono text-[12px]">{r.sku}</span>
+                      {r.product && !r.product.is_active ? <span className="ml-1 text-amber-800">· product is a draft</span> : ''}
+                    </p>
+                  </div>
+                  <div className="sm:w-[150px] tabular-nums">
+                    {r.product?.stock_unit === 'ml' ? (
+                      <>
+                        <p className="text-[15px] font-medium text-tk-ink">{ml >= 1000 ? `${(ml / 1000).toLocaleString('en-IN', { maximumFractionDigits: 2 })} L` : `${ml.toLocaleString('en-IN')} ml`}</p>
+                        {ml >= 1000 && <p className="text-[12px] text-[#4F4F4F]">{ml.toLocaleString('en-IN')} ml</p>}
+                      </>
+                    ) : (
+                      <p className="text-[15px] font-medium text-tk-ink">{r.stock} vials</p>
+                    )}
+                  </div>
+                  <div className="sm:w-[170px]">
+                    <StockText level={level}>
+                      <span className="tabular-nums font-medium">{r.stock.toLocaleString('en-IN')}</span>{' '}
+                      <span className="text-[12.5px]">{level === 'out' ? 'none left: hidden from customers' : level === 'low' ? 'running low' : 'samples'}</span>
+                    </StockText>
+                  </div>
+                  <label className="sm:w-[130px] flex items-center gap-2 text-[13px] text-[#2F2F2F]">
+                    <Toggle checked={r.in_sample_pool} onChange={(on) => setInPool(r, on)} label={`Offer ${r.product?.name ?? ''} as a free sample`} />
+                    {r.in_sample_pool ? 'Offered' : 'Not offered'}
+                  </label>
                 </div>
-                <span className={`tabular-nums text-[13px] text-right ${r.stock === 0 ? 'text-rose-600' : r.stock <= 5 ? 'text-amber-700' : 'text-[#454545]'}`}>
-                  {r.product?.stock_unit === 'ml' ? (
-                    <>
-                      {formatMl(Number(r.product.stock_ml))} left
-                      <span className="block text-[12px] text-[#4A4A4A]">enough for {r.stock} samples</span>
-                    </>
-                  ) : (
-                    `${r.stock} in stock`
-                  )}
-                </span>
-                <Toggle checked={r.in_sample_pool} onChange={(on) => setInPool(r, on)} label={`Offer ${r.product?.name ?? ''} as a free sample`} />
-              </div>
-            )}
+              );
+            }}
           />
+          </>
         )}
         <p className="mt-2 text-[13px] text-[#4F4F4F]">Samples are poured from each perfume's own stock, so there's nothing separate to restock. Add perfume in Inventory.</p>
       </Panel>
