@@ -79,17 +79,17 @@ export default function BluorngProductReviews({ productSlug, productName }) {
             <div className="text-right">
               <p className="text-[32px] font-light text-tk-ink dark:text-white leading-none">{Number(first.average).toFixed(1)}</p>
               <div className="mt-1.5 flex justify-end"><Stars value={Number(first.average)} /></div>
-              <p className="text-[11px] text-[#777777] dark:text-[#999999] mt-1">{count} review{count === 1 ? '' : 's'}</p>
+              <p className="text-[11px] text-[#5F5F5F] dark:text-[#999999] mt-1">{count} review{count === 1 ? '' : 's'}</p>
             </div>
           )}
         </div>
 
-        {query.isLoading && <p className="py-10 text-center text-[12.5px] text-[#888888]">Loading reviews…</p>}
+        {query.isLoading && <p className="py-10 text-center text-[12.5px] text-[#666666]">Loading reviews…</p>}
 
         {!query.isLoading && count === 0 && (
           <div className="py-14 text-center">
             <p className="text-[15px] text-tk-ink dark:text-white">No reviews yet</p>
-            <p className="text-[12.5px] text-[#777777] dark:text-[#999999] mt-1.5">Bought this fragrance? You'll be able to review it from your orders once it's delivered.</p>
+            <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#999999] mt-1.5">Bought this fragrance? You'll be able to review it from your orders once it's delivered.</p>
           </div>
         )}
 
@@ -101,11 +101,11 @@ export default function BluorngProductReviews({ productSlug, productName }) {
                   const n = Number(first.distribution?.[s] ?? 0);
                   return (
                     <div key={s} className="flex items-center gap-2">
-                      <span className="w-8 text-[#777777]">{s} ★</span>
+                      <span className="w-8 text-[#5F5F5F]">{s} ★</span>
                       <span className="flex-1 h-1.5 bg-[#EEEEEE] dark:bg-white/10 overflow-hidden">
                         <span className="block h-full bg-tk-accent dark:bg-tk-accent-night" style={{ width: `${count ? (n / count) * 100 : 0}%` }} />
                       </span>
-                      <span className="w-6 text-right text-[#777777] tabular-nums">{n}</span>
+                      <span className="w-6 text-right text-[#5F5F5F] tabular-nums">{n}</span>
                     </div>
                   );
                 })}
@@ -113,10 +113,10 @@ export default function BluorngProductReviews({ productSlug, productName }) {
               {[['Longevity', first.longevity], ['Sillage', first.sillage]].map(([label, rows]) =>
                 rows?.length ? (
                   <div key={label}>
-                    <p className="text-[10.5px] uppercase tracking-[0.16em] text-[#888888] mb-1.5">{label}, as buyers felt it</p>
+                    <p className="text-[11.5px] uppercase tracking-[0.16em] text-[#666666] mb-1.5">{label}, as buyers felt it</p>
                     <ul className="space-y-1">
                       {rows.map((r) => (
-                        <li key={r.label} className="flex justify-between"><span>{r.label}</span><span className="text-[#777777] tabular-nums">{r.count}</span></li>
+                        <li key={r.label} className="flex justify-between"><span>{r.label}</span><span className="text-[#5F5F5F] tabular-nums">{r.count}</span></li>
                       ))}
                     </ul>
                   </div>
@@ -126,7 +126,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
 
             <div className="lg:col-span-8">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[11px] uppercase tracking-[0.16em] text-[#888888]">{count} review{count === 1 ? '' : 's'}</p>
+                <p className="text-[11px] uppercase tracking-[0.16em] text-[#666666]">{count} review{count === 1 ? '' : 's'}</p>
                 <select value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort reviews" className="text-[12px] border border-[#E0E0E0] dark:border-white/20 bg-transparent dark:bg-tk-night px-2 py-1">
                   {SORTS.map(([v, l]) => (
                     <option key={v} value={v}>{l}</option>
@@ -143,7 +143,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
                     </div>
                     {r.body && <p className="text-[13px] leading-relaxed text-[#444444] dark:text-[#CCCCCC] whitespace-pre-line">{r.body}</p>}
                     {(r.longevity || r.sillage) && (
-                      <p className="text-[11px] text-[#888888]">{[r.longevity && `Longevity: ${r.longevity}`, r.sillage && `Sillage: ${r.sillage}`].filter(Boolean).join(' · ')}</p>
+                      <p className="text-[11px] text-[#666666]">{[r.longevity && `Longevity: ${r.longevity}`, r.sillage && `Sillage: ${r.sillage}`].filter(Boolean).join(' · ')}</p>
                     )}
                     {r.media?.length > 0 && (
                       <div className="flex gap-2 pt-1">
@@ -157,7 +157,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
                         })}
                       </div>
                     )}
-                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#888888] pt-1">
+                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#666666] pt-1">
                       <span className="text-tk-ink dark:text-white">{r.display_name}</span>
                       {r.city && <span>{r.city}</span>}
                       {r.verified && <span className="text-emerald-700 dark:text-emerald-400">Verified buyer</span>}

@@ -6,6 +6,19 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    // One small corner across the shop and admin (buttons, cards, images, panels). Circles use rounded-full.
+    borderRadius: {
+      none: '0',
+      xs: '2px',
+      sm: '2px',
+      DEFAULT: '2px',
+      md: '2px',
+      lg: '2px',
+      xl: '3px',
+      '2xl': '3px',
+      '3xl': '3px',
+      full: '9999px',
+    },
     extend: {
       colors: {
         // Theme tokens: set at runtime from Admin → Site content → Theme (src/cms/ThemeRuntime.tsx)

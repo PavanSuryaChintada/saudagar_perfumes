@@ -18,13 +18,13 @@ export default function BluorngCustomExclusive({
   const { products: exclusiveProducts } = useSourceProducts(config.source);
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-[#121114] py-16 sm:py-24 text-tk-ink dark:text-white overflow-hidden select-none transition-colors duration-300">
+    <section className="relative w-full bg-[#FFFFFF] dark:bg-[#121114] py-14 sm:py-20 text-tk-ink dark:text-white overflow-hidden select-none transition-colors duration-300">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
         <ScrollReveal variant="fade-up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.16em] text-tk-accent dark:text-tk-accent-night font-medium block mb-1">
+            <span className="text-[11px] uppercase tracking-[0.16em] text-tk-accent dark:text-tk-accent-night font-medium block mb-1">
               {config.eyebrow}
             </span>
             <h2 className="text-[22px] sm:text-[28px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
@@ -36,7 +36,7 @@ export default function BluorngCustomExclusive({
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="text-[11px] font-normal text-[#888888] dark:text-white/40 uppercase tracking-widest hidden md:inline">
+            <span className="text-[11px] font-normal text-[#666666] dark:text-white/40 uppercase tracking-widest hidden md:inline">
               {config.side_label}
             </span>
             {config.cta_label && <button

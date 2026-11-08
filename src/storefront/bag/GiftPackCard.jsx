@@ -20,7 +20,7 @@ export default function GiftPackCard({ cart, onNavigate }) {
       <div className="flex-1 min-w-0">
         <p className="text-[11.5px] font-bold uppercase tracking-wider text-tk-ink dark:text-white">{heading}</p>
         <p className="text-[11px] text-[#555555] dark:text-white/70 mt-0.5 leading-relaxed">{text}</p>
-        <p className="text-[10.5px] text-tk-accent dark:text-tk-accent-night font-semibold mt-1">{packFacts(opts).join(' · ')}</p>
+        <p className="text-[11.5px] text-tk-accent dark:text-tk-accent-night font-semibold mt-1">{packFacts(opts).join(' · ')}</p>
       </div>
       <button
         type="button"
@@ -28,7 +28,7 @@ export default function GiftPackCard({ cart, onNavigate }) {
           onNavigate?.();
           navigate('/gift-pack');
         }}
-        className="shrink-0 px-3.5 py-2 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[10px] font-bold uppercase tracking-[0.12em] cursor-pointer"
+        className="shrink-0 px-3.5 py-2 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] font-bold uppercase tracking-[0.12em] cursor-pointer"
       >
         {button}
       </button>

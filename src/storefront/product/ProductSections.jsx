@@ -21,8 +21,8 @@ export function NotePyramid({ notes }) {
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-10">
       {tiers.map((t) => (
         <div key={t.key}>
-          <p className="text-[10.5px] uppercase tracking-[0.16em] text-tk-accent dark:text-tk-accent-night font-medium">{t.label}</p>
-          <p className="text-[11px] text-[#999999] dark:text-white/40 mb-3">{t.hint}</p>
+          <p className="text-[11.5px] uppercase tracking-[0.16em] text-tk-accent dark:text-tk-accent-night font-medium">{t.label}</p>
+          <p className="text-[11px] text-[#6B6B6B] dark:text-white/40 mb-3">{t.hint}</p>
           <ul className="space-y-2.5">
             {notes[t.key].map((n) => (
               <li key={n.slug}>
@@ -50,7 +50,7 @@ export function AccordBars({ accords }) {
   if (!accords || accords.length === 0) return null;
   return (
     <div className="mb-10">
-      <p className="text-[10.5px] uppercase tracking-[0.16em] text-[#777777] dark:text-[#999999] mb-3">Main Accords</p>
+      <p className="text-[11.5px] uppercase tracking-[0.16em] text-[#5F5F5F] dark:text-[#999999] mb-3">Main Accords</p>
       <div className="space-y-2">
         {accords.map((a) => (
           <div key={a.slug} className="flex items-center gap-3">
@@ -125,7 +125,7 @@ function DefinitionList({ rows }) {
     <dl className="grid grid-cols-[minmax(110px,40%)_1fr] gap-x-4 gap-y-2">
       {rows.map((r) => (
         <React.Fragment key={r.label}>
-          <dt className="text-[#888888] dark:text-white/50">{r.label}</dt>
+          <dt className="text-[#666666] dark:text-white/50">{r.label}</dt>
           <dd className="text-[#222222] dark:text-[#DDDDDD] break-words">{r.value}</dd>
         </React.Fragment>
       ))}
@@ -183,7 +183,7 @@ export function ProductAccordions({ detail, selectedSize, openAccordion, onToggl
       {profile.length > 0 && (
         <Accordion id="profile" title={page.profile_title || 'Scent Profile'} open={openAccordion === 'profile'} onToggle={onToggle}>
           <DefinitionList rows={profile.map((r) => ({ label: r.label, value: r.value }))} />
-          {page.profile_note && <p className="pt-2 text-[11px] text-[#999999] dark:text-white/40">{page.profile_note}</p>}
+          {page.profile_note && <p className="pt-2 text-[11px] text-[#6B6B6B] dark:text-white/40">{page.profile_note}</p>}
         </Accordion>
       )}
       {hasStory && (

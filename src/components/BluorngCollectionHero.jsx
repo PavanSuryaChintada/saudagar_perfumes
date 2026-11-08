@@ -155,7 +155,7 @@ export default function BluorngCollectionHero({
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               className="max-w-md sm:max-w-lg lg:max-w-xl"
             >
-              <span className="text-[9.5px] sm:text-[11px] font-semibold tracking-[0.28em] uppercase text-tk-accent-night block mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+              <span className="text-[10.5px] sm:text-[11px] font-semibold tracking-[0.28em] uppercase text-tk-accent-night block mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                 Saudagar Haute Parfumerie · {activeHero.accentTag}
               </span>
 
@@ -163,7 +163,7 @@ export default function BluorngCollectionHero({
                 {activeHero.title}
               </h1>
 
-              <p className="font-sans text-[10.5px] sm:text-[12.5px] font-light tracking-[0.16em] uppercase text-white/90 mt-2.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+              <p className="font-sans text-[11.5px] sm:text-[12.5px] font-light tracking-[0.16em] uppercase text-white/90 mt-2.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                 {activeHero.tagline}
               </p>
             </motion.div>
@@ -189,7 +189,7 @@ export default function BluorngCollectionHero({
                   ref={isActive ? activeTabRef : null}
                   onClick={() => onSwitchCollection(col.slug)}
                   className={`py-3.5 sm:py-4 text-[11px] sm:text-[12px] uppercase tracking-[0.14em] transition-all relative cursor-pointer whitespace-nowrap shrink-0 ${
-                    isActive ? 'text-tk-ink dark:text-white font-semibold' : 'text-[#777777] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-white font-normal'
+                    isActive ? 'text-tk-ink dark:text-white font-semibold' : 'text-[#5F5F5F] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-white font-normal'
                   }`}
                 >
                   <span>{col.name}</span>

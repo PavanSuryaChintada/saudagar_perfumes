@@ -171,7 +171,7 @@ export default function BluorngHero({ config = {} }) {
                     onClick={() => setActiveVideoIdx(idx)}
                     title={vid.title}
                     aria-label={`Switch to ${vid.title}`}
-                    className={`relative flex items-center gap-1.5 pb-1 text-[9px] font-normal tracking-[0.2em] uppercase whitespace-nowrap transition-colors duration-300 cursor-pointer ${
+                    className={`relative flex items-center gap-1.5 pb-1 text-[10.5px] font-normal tracking-[0.2em] uppercase whitespace-nowrap transition-colors duration-300 cursor-pointer ${
                       isActive ? 'text-white' : 'text-white/45 hover:text-white'
                     }`}
                   >
@@ -214,7 +214,7 @@ export default function BluorngHero({ config = {} }) {
               aria-pressed={!isMuted}
               title={isMuted ? 'Turn Sound On' : 'Mute Sound'}
               aria-label={isMuted ? 'Turn sound on' : 'Mute sound'}
-              className={`cursor-pointer whitespace-nowrap text-[9px] tracking-[0.2em] uppercase transition-colors duration-300 ${
+              className={`cursor-pointer whitespace-nowrap text-[10.5px] tracking-[0.2em] uppercase transition-colors duration-300 ${
                 isMuted ? 'text-white/50 hover:text-white' : 'text-white'
               }`}
             >

@@ -19,8 +19,8 @@ export function CouponRow({ quote, couponCode, onApply, onRemove, cart }) {
             {coupon && <p className={coupon.ok ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}>{coupon.message}</p>}
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <button type="button" onClick={() => setOpen(true)} className="uppercase tracking-wider text-[10px] text-[#777777] dark:text-white/60 underline underline-offset-2">Change</button>
-            <button type="button" onClick={onRemove} className="uppercase tracking-wider text-[10px] text-rose-600 underline underline-offset-2">Remove</button>
+            <button type="button" onClick={() => setOpen(true)} className="uppercase tracking-wider text-[11px] text-[#5F5F5F] dark:text-white/60 underline underline-offset-2">Change</button>
+            <button type="button" onClick={onRemove} className="uppercase tracking-wider text-[11px] text-rose-600 underline underline-offset-2">Remove</button>
           </div>
         </div>
       ) : (
@@ -74,23 +74,23 @@ function CouponSheet({ open, onClose, cart, current, onApply }) {
               autoCapitalize="characters"
               className="flex-1 px-3 py-2 bg-black/[0.05] dark:bg-white/[0.07] rounded-xs text-[11px] tracking-wider uppercase outline-none"
             />
-            <button type="submit" className="px-4 py-2 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night text-white text-[10.5px] font-bold uppercase tracking-wide rounded-xs cursor-pointer">
+            <button type="submit" className="px-4 py-2 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night text-white text-[11.5px] font-bold uppercase tracking-wide rounded-xs cursor-pointer">
               Apply
             </button>
           </form>
           <div data-lenis-prevent="true" className="flex-1 overflow-y-auto px-4 pb-6 space-y-2">
-            {isLoading && <p className="text-[11px] text-[#777777]">Looking for offers…</p>}
-            {!isLoading && offers.length === 0 && <p className="text-[11px] text-[#777777] dark:text-white/60">No offers for this bag right now. Have a code? Type it above.</p>}
+            {isLoading && <p className="text-[11px] text-[#5F5F5F]">Looking for offers…</p>}
+            {!isLoading && offers.length === 0 && <p className="text-[11px] text-[#5F5F5F] dark:text-white/60">No offers for this bag right now. Have a code? Type it above.</p>}
             {offers.map((o) => (
               <div key={o.id} className={`p-3 border rounded-xs ${o.ok ? 'border-black/10 dark:border-white/15' : 'border-black/[0.06] dark:border-white/10 opacity-70'}`}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="text-[12px] font-bold uppercase tracking-wider">
                       {o.code}
-                      {o.kind !== 'general' && <span className="ml-2 text-[9.5px] text-tk-accent dark:text-tk-accent-night">{o.kind === 'welcome' ? 'Your welcome gift' : 'Your birthday gift'}</span>}
+                      {o.kind !== 'general' && <span className="ml-2 text-[10.5px] text-tk-accent dark:text-tk-accent-night">{o.kind === 'welcome' ? 'Your welcome gift' : 'Your birthday gift'}</span>}
                     </p>
                     {o.description && <p className="text-[11px] text-[#555555] dark:text-white/70 mt-0.5">{o.description}</p>}
-                    <p className={`text-[10.5px] mt-1 ${o.ok ? 'text-emerald-700 dark:text-emerald-400' : 'text-[#777777] dark:text-white/50'}`}>
+                    <p className={`text-[11.5px] mt-1 ${o.ok ? 'text-emerald-700 dark:text-emerald-400' : 'text-[#5F5F5F] dark:text-white/50'}`}>
                       {o.ok ? `You save ${formatINR(Number(o.discount))}` : o.message}
                     </p>
                   </div>
@@ -98,7 +98,7 @@ function CouponSheet({ open, onClose, cart, current, onApply }) {
                     type="button"
                     disabled={!o.ok || current === o.code}
                     onClick={() => onApply(o.code)}
-                    className="shrink-0 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider border border-tk-ink dark:border-white rounded-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    className="shrink-0 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider border border-tk-ink dark:border-white rounded-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {current === o.code ? 'Applied' : 'Apply'}
                   </button>

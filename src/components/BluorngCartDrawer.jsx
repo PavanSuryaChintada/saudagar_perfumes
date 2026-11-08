@@ -110,7 +110,7 @@ export default function BluorngCartDrawer({
               <h2 className="text-[14px] font-bold tracking-[0.04em] uppercase text-tk-ink dark:text-white">
                 {words.bag_title}
               </h2>
-              <span className="text-[12px] text-[#777777] dark:text-white/60 font-medium">
+              <span className="text-[12px] text-[#5F5F5F] dark:text-white/60 font-medium">
                 ({bagCount(cart)})
               </span>
             </div>
@@ -156,7 +156,7 @@ export default function BluorngCartDrawer({
           >
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-16 space-y-3">
-                <div className="w-16 h-16 rounded-full bg-[#F5F5F3] flex items-center justify-center text-[#777777]">
+                <div className="w-16 h-16 rounded-full bg-[#F5F5F3] flex items-center justify-center text-[#5F5F5F]">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                     <line x1="3" y1="6" x2="21" y2="6" />
@@ -166,7 +166,7 @@ export default function BluorngCartDrawer({
                 <p className="text-[13px] font-bold tracking-wider uppercase text-tk-ink">
                   {words.bag_empty_title}
                 </p>
-                <p className="text-[11.5px] text-[#777777] max-w-xs">
+                <p className="text-[11.5px] text-[#5F5F5F] max-w-xs">
                   {words.bag_empty_text}
                 </p>
                 <button
@@ -212,7 +212,7 @@ export default function BluorngCartDrawer({
                           </h4>
                           <button
                             onClick={() => onRemoveItem(index)}
-                            className="text-[#999999] dark:text-white/40 hover:text-rose-500 transition-colors cursor-pointer"
+                            className="text-[#6B6B6B] dark:text-white/40 hover:text-rose-500 transition-colors cursor-pointer"
                             title="Remove item"
                             aria-label="Remove item"
                           >
@@ -220,11 +220,11 @@ export default function BluorngCartDrawer({
                           </button>
                         </div>
 
-                        <p className="text-[10px] text-[#777777] dark:text-white/60 uppercase tracking-wider mt-1">
+                        <p className="text-[11px] text-[#5F5F5F] dark:text-white/60 uppercase tracking-wider mt-1">
                           Size: <span className="text-tk-ink dark:text-white font-semibold">{line?.label || item.size}</span>
                         </p>
                         {problem && (
-                          <p role="alert" className="text-[10.5px] text-rose-600 dark:text-rose-400 mt-1 font-semibold">{problem.message}</p>
+                          <p role="alert" className="text-[11.5px] text-rose-600 dark:text-rose-400 mt-1 font-semibold">{problem.message}</p>
                         )}
 
                       </div>
@@ -279,7 +279,7 @@ export default function BluorngCartDrawer({
               <div>
                 <button
                   onClick={() => setIsNoteOpen(!isNoteOpen)}
-                  className="text-[10.5px] font-semibold tracking-wider uppercase text-[#777777] dark:text-white/60 hover:text-tk-ink dark:hover:text-white flex items-center gap-1 cursor-pointer"
+                  className="text-[11.5px] font-semibold tracking-wider uppercase text-[#5F5F5F] dark:text-white/60 hover:text-tk-ink dark:hover:text-white flex items-center gap-1 cursor-pointer"
                 >
                   <span>{isNoteOpen ? '− Hide note' : `+ ${words.bag_note_button}`}</span>
                 </button>
@@ -300,8 +300,8 @@ export default function BluorngCartDrawer({
 
               {/* Totals Summary (from the server) */}
               <div className={`space-y-1.5 text-[11.5px] pt-1 transition-opacity ${isFetching ? 'opacity-60' : ''}`} aria-busy={isFetching}>
-                {quoteError && <p className="text-[10.5px] text-rose-600">We couldn't update the prices. Check your connection.</p>}
-                <div className="flex justify-between text-[#777777] dark:text-white/60">
+                {quoteError && <p className="text-[11.5px] text-rose-600">We couldn't update the prices. Check your connection.</p>}
+                <div className="flex justify-between text-[#5F5F5F] dark:text-white/60">
                   <span>Subtotal</span>
                   <span>{quote ? formatPrice(quote.subtotal) : '—'}</span>
                 </div>
@@ -313,7 +313,7 @@ export default function BluorngCartDrawer({
                   </div>
                 )}
 
-                <div className="flex justify-between text-[#777777] dark:text-white/60">
+                <div className="flex justify-between text-[#5F5F5F] dark:text-white/60">
                   <span>Delivery</span>
                   <span>{quote ? (quote.shipping === 0 ? 'FREE' : formatPrice(quote.shipping)) : '—'}</span>
                 </div>
@@ -322,7 +322,7 @@ export default function BluorngCartDrawer({
                   <span className="uppercase tracking-wider">Total</span>
                   <span>{quote ? formatPrice(quote.total) : '—'}</span>
                 </div>
-                <p className="text-[9.5px] text-[#777777] dark:text-white/50">{words.bag_small_print}</p>
+                <p className="text-[10.5px] text-[#5F5F5F] dark:text-white/50">{words.bag_small_print}</p>
               </div>
 
               {/* Checkout Button */}

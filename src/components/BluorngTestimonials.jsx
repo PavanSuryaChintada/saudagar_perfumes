@@ -41,7 +41,7 @@ export default function BluorngTestimonials() {
       onMouseLeave={() => setPaused(false)}
     >
       <div className="max-w-[880px] mx-auto text-center">
-        <span className="block text-[10.5px] uppercase tracking-[0.22em] font-medium text-tk-accent dark:text-tk-accent-night mb-8">
+        <span className="block text-[11.5px] uppercase tracking-[0.22em] font-medium text-tk-accent dark:text-tk-accent-night mb-8">
           Words from the Atelier
         </span>
 
@@ -64,7 +64,7 @@ export default function BluorngTestimonials() {
                 <span className="text-[12px] uppercase tracking-[0.16em] font-semibold text-tk-ink dark:text-white">
                   {current.name}
                 </span>
-                <span className="text-[11px] uppercase tracking-[0.12em] text-[#888888] dark:text-[#A09D96]">
+                <span className="text-[11px] uppercase tracking-[0.12em] text-[#666666] dark:text-[#A09D96]">
                   {current.location}
                   {current.product ? ` · ${current.product}` : ''}
                 </span>

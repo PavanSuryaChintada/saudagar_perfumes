@@ -78,7 +78,7 @@ function QuickBuyModalContent({
         {/* Minimal Circle Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-[#777777] hover:text-tk-ink dark:text-[#A09D96] dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-[#5F5F5F] hover:text-tk-ink dark:text-[#A09D96] dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           aria-label="Close Quick Add"
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -97,7 +97,7 @@ function QuickBuyModalContent({
 
             {/* Optional Badge */}
             {product.badge && (
-              <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[9px] uppercase tracking-[0.16em] font-semibold bg-white/95 dark:bg-tk-night/95 text-tk-ink dark:text-tk-accent-night shadow-xs border border-black/5 dark:border-white/10 z-10">
+              <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-[2px] text-[10.5px] uppercase tracking-[0.16em] font-semibold bg-white/95 dark:bg-tk-night/95 text-tk-ink dark:text-tk-accent-night shadow-xs border border-black/5 dark:border-white/10 z-10">
                 {product.badge}
               </span>
             )}
@@ -117,7 +117,7 @@ function QuickBuyModalContent({
                 width="13"
                 height="13"
                 viewBox="0 0 24 24"
-                className={wishlist.includes(product.id) ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#888888] dark:text-white/60'}
+                className={wishlist.includes(product.id) ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#666666] dark:text-white/60'}
                 fill={wishlist.includes(product.id) ? 'currentColor' : 'none'}
                 stroke="currentColor"
                 strokeWidth="1.8"
@@ -140,7 +140,7 @@ function QuickBuyModalContent({
             />
 
             {/* Flacon Volume Watermark */}
-            <span className="absolute bottom-3 left-3 text-[9.5px] uppercase font-mono tracking-wider text-[#888888] dark:text-[#88857F] z-10">
+            <span className="absolute bottom-3 left-3 text-[10.5px] uppercase font-mono tracking-wider text-[#666666] dark:text-[#88857F] z-10">
               {product.volume || '50ml / 1.7 FL. OZ.'}
             </span>
           </div>
@@ -151,11 +151,11 @@ function QuickBuyModalContent({
             {/* Monograph Header */}
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[9.5px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night font-semibold">
+                <span className="text-[10.5px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night font-semibold">
                   {concentrationText}
                 </span>
                 <span className="text-[#CCCCCC] dark:text-white/20">·</span>
-                <span className="text-[9.5px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#88857F]">
+                <span className="text-[10.5px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#88857F]">
                   Atelier Edition
                 </span>
               </div>
@@ -165,7 +165,7 @@ function QuickBuyModalContent({
               </h3>
 
               {/* Olfactive Notes Preview */}
-              <p className="text-[12px] font-light text-[#777777] dark:text-[#A09D96] tracking-wide mt-1 line-clamp-1">
+              <p className="text-[12px] font-light text-[#5F5F5F] dark:text-[#A09D96] tracking-wide mt-1 line-clamp-1">
                 {notesChord}
               </p>
 
@@ -176,10 +176,10 @@ function QuickBuyModalContent({
                 </span>
                 {product.compareAtPrice && product.compareAtPrice > currentPrice && (
                   <>
-                    <span className="text-[12.5px] text-[#999999] dark:text-[#777570] line-through tabular-nums">
+                    <span className="text-[12.5px] text-[#6B6B6B] dark:text-[#777570] line-through tabular-nums">
                       {formatPrice(product.compareAtPrice)}
                     </span>
-                    <span className="text-[9.5px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40">
+                    <span className="text-[10.5px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-[2px] bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40">
                       Privilege
                     </span>
                   </>
@@ -190,10 +190,10 @@ function QuickBuyModalContent({
             {/* Size Selector Grid with Capacity and Price */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[9.5px] uppercase tracking-[0.16em] font-medium text-[#888888] dark:text-[#88857F]">
+                <span className="text-[10.5px] uppercase tracking-[0.16em] font-medium text-[#666666] dark:text-[#88857F]">
                   Select Volume
                 </span>
-                <span className="text-[10px] text-tk-accent dark:text-tk-accent-night font-mono">
+                <span className="text-[11px] text-tk-accent dark:text-tk-accent-night font-mono">
                   {selectedSize ? (selectedSize.stock > 0 ? selectedSize.label : `${selectedSize.label} · sold out`) : 'Unavailable'}
                 </span>
               </div>
@@ -218,7 +218,7 @@ function QuickBuyModalContent({
                       <div className="text-[11.5px] uppercase tracking-wider font-semibold">
                         {sz.label}
                       </div>
-                      <div className={`text-[10px] tabular-nums mt-0.5 ${isSelected ? 'opacity-90' : 'text-[#888888] dark:text-[#88857F]'}`}>
+                      <div className={`text-[11px] tabular-nums mt-0.5 ${isSelected ? 'opacity-90' : 'text-[#666666] dark:text-[#88857F]'}`}>
                         {formatPrice(sz.price)}
                       </div>
                     </button>
@@ -230,11 +230,11 @@ function QuickBuyModalContent({
             {/* Action Row: Stepper & Add to Bag CTA */}
             <div className="pt-1 flex items-center gap-3">
               {/* Refined Rounded Stepper */}
-              <div className="flex items-center gap-1.5 bg-[#F4F3F0] dark:bg-[#18171E] border border-[#EAE8E0] dark:border-white/10 px-2.5 py-1.5 rounded-full text-tk-ink dark:text-white shrink-0">
+              <div className="flex items-center gap-1.5 bg-[#F4F3F0] dark:bg-[#18171E] border border-[#EAE8E0] dark:border-white/10 px-2.5 py-1.5 rounded-[2px] text-tk-ink dark:text-white shrink-0">
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#777777] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                   aria-label="Decrease quantity"
                 >
                   −
@@ -245,7 +245,7 @@ function QuickBuyModalContent({
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.min(maxQty, q + 1))}
-                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#777777] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                   aria-label="Increase quantity"
                 >
                   +
@@ -257,7 +257,7 @@ function QuickBuyModalContent({
                 whileTap={{ scale: 0.98 }}
                 onClick={handleAdd}
                 disabled={!canBuy}
-                className="disabled:opacity-50 disabled:cursor-not-allowed flex-1 py-3 px-5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-medium uppercase tracking-[0.16em] rounded-full transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center justify-between"
+                className="disabled:opacity-50 disabled:cursor-not-allowed flex-1 py-3 px-5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-medium uppercase tracking-[0.16em] rounded-[2px] transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center justify-between"
               >
                 <span>{isAdded ? 'Added to Bag ✓' : canBuy ? 'Add to Bag' : 'Sold out'}</span>
                 <span className="font-semibold tabular-nums ml-2">
@@ -267,8 +267,8 @@ function QuickBuyModalContent({
             </div>
 
             {/* Atelier Privilege & Monograph Navigation Footer */}
-            <div className="pt-2 border-t border-[#EAEAEA] dark:border-white/10 flex items-center justify-between text-[10.5px]">
-              <span className="text-[#888888] dark:text-[#88857F] flex items-center gap-1 font-light">
+            <div className="pt-2 border-t border-[#EAEAEA] dark:border-white/10 flex items-center justify-between text-[11.5px]">
+              <span className="text-[#666666] dark:text-[#88857F] flex items-center gap-1 font-light">
                 <span className="text-tk-accent dark:text-tk-accent-night">✦</span>
                 <span>Free samples with every 50 ml</span>
               </span>

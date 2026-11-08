@@ -13,9 +13,9 @@ export default function OrdersList() {
   const { data: orders = [], isLoading, error } = useMyOrders();
   const paged = usePaged(orders, 10);
 
-  if (isLoading) return <p className="py-16 text-center text-[#888888] text-[13px]">Loading orders…</p>;
+  if (isLoading) return <p className="py-16 text-center text-[#666666] text-[13px]">Loading orders…</p>;
   if (error) return <p className="py-16 text-center text-rose-600 text-[13px]">{toFriendlyError(error)}</p>;
-  if (orders.length === 0) return <div className="py-16 text-center text-[#888888] text-[13px]">No orders yet.</div>;
+  if (orders.length === 0) return <div className="py-16 text-center text-[#666666] text-[13px]">No orders yet.</div>;
 
   return (
     <div>
@@ -38,14 +38,14 @@ export default function OrdersList() {
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-tk-ink dark:text-white">
                 {o.order_number}
-                <span className="ml-2 text-[10px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night">{ORDER_STATUS_LABEL[o.status] ?? o.status}</span>
+                <span className="ml-2 text-[11px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night">{ORDER_STATUS_LABEL[o.status] ?? o.status}</span>
               </p>
-              <p className="text-[12px] text-[#777777] dark:text-[#999999] mt-0.5 truncate">
+              <p className="text-[12px] text-[#5F5F5F] dark:text-[#999999] mt-0.5 truncate">
                 {formatOrderDate(o.created_at)} · {count} item{count === 1 ? '' : 's'} · {items.map((i) => i.product_name).join(', ')}
               </p>
             </div>
             <span className="text-[13px] font-medium tabular-nums text-tk-ink dark:text-white">{formatINR(Number(o.total))}</span>
-            <span className="text-[#BBBBBB] group-hover:text-tk-ink dark:group-hover:text-white transition-colors">→</span>
+            <span className="text-[#767676] group-hover:text-tk-ink dark:group-hover:text-white transition-colors">→</span>
           </Link>
         );
       })}

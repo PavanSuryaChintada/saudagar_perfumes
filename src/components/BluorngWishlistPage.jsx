@@ -24,7 +24,7 @@ export default function BluorngWishlistPage({
           initial={{ opacity: 0, letterSpacing: '0.08em' }}
           animate={{ opacity: 1, letterSpacing: '0.24em' }}
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          className="block text-[10.5px] uppercase font-medium text-tk-accent dark:text-tk-accent-night"
+          className="block text-[11.5px] uppercase font-medium text-tk-accent dark:text-tk-accent-night"
         >
           {words.wishlist_eyebrow}
         </motion.span>
@@ -42,7 +42,7 @@ export default function BluorngWishlistPage({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.35 }}
-          className="mt-5 text-[11px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#A09D96]"
+          className="mt-5 text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#A09D96]"
         >
           {count === 0 ? 'Nothing saved yet' : `${count} ${count === 1 ? 'fragrance' : 'fragrances'} saved`}
         </motion.p>
@@ -63,7 +63,7 @@ export default function BluorngWishlistPage({
             <p className="font-serif italic text-[22px] sm:text-[26px] text-tk-ink dark:text-white">
               {words.wishlist_empty_title}
             </p>
-            <p className="mt-3 max-w-[420px] text-[13px] leading-relaxed text-[#777777] dark:text-[#A09D96]">
+            <p className="mt-3 max-w-[420px] text-[13px] leading-relaxed text-[#5F5F5F] dark:text-[#A09D96]">
               {words.wishlist_empty_text}
             </p>
             <button

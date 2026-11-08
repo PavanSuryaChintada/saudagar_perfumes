@@ -129,17 +129,17 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
               const p = byId.get(picks[i]);
               return (
                 <li key={i} className={`flex items-center gap-2.5 p-2.5 border min-h-[64px] ${p ? 'border-tk-ink/30 dark:border-white/25' : 'border-dashed border-[#C9C6BE] dark:border-white/20'}`}>
-                  <span className="text-[11px] text-[#777777] dark:text-white/50 w-4 shrink-0">{i + 1}</span>
+                  <span className="text-[11px] text-[#5F5F5F] dark:text-white/50 w-4 shrink-0">{i + 1}</span>
                   {p ? (
                     <>
                       <img src={p.image || PLACEHOLDER_IMAGE} alt="" className="w-10 h-10 object-contain bg-[#F7F7F6] dark:bg-[#18171C] shrink-0" />
                       <span className="min-w-0 flex-1 text-[12px] font-semibold uppercase tracking-wide leading-tight line-clamp-2">{p.name}</span>
-                      <button type="button" onClick={() => removeAt(i)} aria-label={`Remove ${p.name}`} className="text-[#777777] dark:text-white/50 hover:text-rose-600 px-1">
+                      <button type="button" onClick={() => removeAt(i)} aria-label={`Remove ${p.name}`} className="text-[#5F5F5F] dark:text-white/50 hover:text-rose-600 px-1">
                         ✕
                       </button>
                     </>
                   ) : (
-                    <span className="text-[12px] text-[#777777] dark:text-white/50">Choose a perfume</span>
+                    <span className="text-[12px] text-[#5F5F5F] dark:text-white/50">Choose a perfume</span>
                   )}
                 </li>
               );
@@ -192,7 +192,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
                         type="button"
                         onClick={() => add(p.product_id)}
                         disabled={!ok}
-                        className="flex-1 h-9 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[10.5px] uppercase tracking-[0.14em] disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex-1 h-9 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] uppercase tracking-[0.14em] disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         {soldOut ? 'No more left' : n > 0 ? 'Add another' : 'Add'}
                       </button>
@@ -215,7 +215,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
               {picks.length > 0 && (
                 <>
                   {' · '}
-                  {est.saved > 0 && <span className="line-through text-[#777777] dark:text-white/50 mr-1.5">{formatINR(est.full)}</span>}
+                  {est.saved > 0 && <span className="line-through text-[#5F5F5F] dark:text-white/50 mr-1.5">{formatINR(est.full)}</span>}
                   <span>{formatINR(est.price)}</span>
                 </>
               )}

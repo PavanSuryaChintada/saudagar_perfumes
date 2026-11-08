@@ -125,7 +125,7 @@ export default function BluorngNavDrawer({
                   >
                     <span className="text-emerald-700 dark:text-emerald-400">{drawer.highlight.label}</span>
                     {drawer.highlight.badge && (
-                      <span className="text-[10px] text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 rounded-xs font-bold tracking-wider">
+                      <span className="text-[11px] text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.5 rounded-xs font-bold tracking-wider">
                         {drawer.highlight.badge}
                       </span>
                     )}
@@ -155,7 +155,7 @@ export default function BluorngNavDrawer({
                       className="w-full text-left hover:text-tk-accent dark:hover:text-tk-accent-night hover:translate-x-1 transition-all flex items-center justify-between"
                     >
                       <span>{c.label}</span>
-                      {c.count_label && <span className="text-[10px] text-[#999999] dark:text-white/40">({c.count_label})</span>}
+                      {c.count_label && <span className="text-[11px] text-[#6B6B6B] dark:text-white/40">({c.count_label})</span>}
                     </button>
                   ))}
                 </div>
@@ -179,7 +179,7 @@ export default function BluorngNavDrawer({
                 {/* Luxury Theme Toggle in Drawer */}
                 {onToggleTheme && (
                   <div className="pt-3 flex items-center justify-between">
-                    <span className="text-[11px] font-medium text-[#777777] dark:text-white/60">
+                    <span className="text-[11px] font-medium text-[#5F5F5F] dark:text-white/60">
                       {drawer.theme_label}
                     </span>
                     <div className="inline-flex items-center p-0.5 rounded-full bg-black/[0.06] dark:bg-white/10 transition-colors">
@@ -188,7 +188,7 @@ export default function BluorngNavDrawer({
                         onClick={() => {
                           if (theme !== 'light') onToggleTheme();
                         }}
-                        className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                        className={`flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-[11px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                           theme === 'light'
                             ? 'bg-tk-accent text-white shadow-xs font-semibold'
                             : 'text-tk-ink/70 dark:text-white/70 hover:text-tk-ink dark:hover:text-white'
@@ -202,7 +202,7 @@ export default function BluorngNavDrawer({
                         onClick={() => {
                           if (theme !== 'dark') onToggleTheme();
                         }}
-                        className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                        className={`flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-[11px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                           theme === 'dark'
                             ? 'bg-tk-gold text-tk-night shadow-xs font-semibold'
                             : 'text-tk-ink/70 dark:text-white/70 hover:text-tk-ink dark:hover:text-white'
@@ -220,7 +220,7 @@ export default function BluorngNavDrawer({
 
           {/* Bottom Drawer Actions: Support */}
           <div className="pt-6 space-y-4">
-            <div className="text-[10.5px] text-[#777777] dark:text-white/50 leading-relaxed">
+            <div className="text-[11.5px] text-[#5F5F5F] dark:text-white/50 leading-relaxed">
               {(drawer.footer_lines || []).map((line, i) => (
                 <p key={i}>{line}</p>
               ))}

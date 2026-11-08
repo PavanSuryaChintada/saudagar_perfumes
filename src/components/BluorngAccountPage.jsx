@@ -12,8 +12,8 @@ import { useAuth } from '../lib/auth';
 
 const inputClass =
   'w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-tk-ink dark:focus:border-white';
-const labelClass = 'block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1';
-const errorClass = 'text-[10.5px] text-rose-600 dark:text-rose-400 mt-1';
+const labelClass = 'block text-[11.5px] uppercase tracking-wider text-[#5F5F5F] mb-1';
+const errorClass = 'text-[11.5px] text-rose-600 dark:text-rose-400 mt-1';
 
 const TABS = ['orders', 'offers', 'addresses', 'details'];
 
@@ -123,7 +123,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
         <div className="max-w-5xl mx-auto px-6 sm:px-10 h-16 flex items-center justify-between">
           <button
             onClick={onNavigateHome}
-            className="text-[11px] uppercase tracking-[0.18em] text-[#777777] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
+            className="text-[11px] uppercase tracking-[0.18em] text-[#5F5F5F] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
           >
             <span>←</span>
             <span>Boutique</span>
@@ -138,7 +138,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
             {onToggleTheme && (
               <button
                 onClick={onToggleTheme}
-                className="text-[11px] uppercase tracking-wider text-[#777777] dark:text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
+                className="text-[11px] uppercase tracking-wider text-[#5F5F5F] dark:text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
                 title="Toggle Theme"
               >
                 {theme === 'dark' ? 'Light' : 'Dark'}
@@ -152,9 +152,9 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
       <section className="max-w-5xl mx-auto px-6 sm:px-10 pt-12 sm:pt-16 pb-10">
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-6 pb-10 border-b border-[#F0F0F0] dark:border-white/10">
           <div className="min-w-0">
-            <span className="text-[10px] uppercase tracking-[0.24em] text-[#888888] dark:text-[#777777] block mb-2 font-medium">Client Account</span>
+            <span className="text-[11px] uppercase tracking-[0.24em] text-[#666666] dark:text-[#777777] block mb-2 font-medium">Client Account</span>
             <h1 className="text-[28px] sm:text-[36px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white leading-tight break-words">{displayName}</h1>
-            <p className="text-[12.5px] text-[#777777] dark:text-[#999999] mt-1 font-light break-all">
+            <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#999999] mt-1 font-light break-all">
               {[user?.email, profile?.phone ? formatIndianPhone(profile.phone) : null].filter(Boolean).join(' · ')}
             </p>
             {!profile?.full_name && (
@@ -167,19 +167,19 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
             )}
           </div>
 
-          <div className="flex items-center gap-6 text-[12px] text-[#777777] dark:text-[#888888]">
+          <div className="flex items-center gap-6 text-[12px] text-[#5F5F5F] dark:text-[#888888]">
             {isAdmin && (
               <button
                 type="button"
                 onClick={() => navigate('/admin')}
-                className="px-4 py-2 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[10px] uppercase tracking-[0.16em] rounded-[2px] transition-colors cursor-pointer"
+                className="px-4 py-2 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[11px] uppercase tracking-[0.16em] rounded-[2px] transition-colors cursor-pointer"
               >
                 Admin panel
               </button>
             )}
             <button
               onClick={handleSignOut}
-              className="text-[10px] uppercase tracking-[0.16em] text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
+              className="text-[11px] uppercase tracking-[0.16em] text-[#6B6B6B] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
             >
               Sign out
             </button>
@@ -200,7 +200,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
               className={`pb-4 relative transition-colors cursor-pointer whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'text-tk-ink dark:text-white font-medium'
-                  : 'text-[#888888] hover:text-tk-ink dark:text-[#777777] dark:hover:text-white font-normal'
+                  : 'text-[#666666] hover:text-tk-ink dark:text-[#777777] dark:hover:text-white font-normal'
               }`}
             >
               {tab.label}
@@ -223,16 +223,16 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
         {activeTab === 'addresses' && (
           <div className="space-y-8">
             <div className="flex items-center justify-between pb-3 border-b border-[#F0F0F0] dark:border-white/10">
-              <span className="text-[11px] uppercase tracking-[0.16em] text-[#888888] font-medium">Saved Addresses ({addressList.length})</span>
+              <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] font-medium">Saved Addresses ({addressList.length})</span>
               <button onClick={openNewAddress} className="text-[11px] uppercase tracking-[0.16em] text-tk-ink dark:text-white hover:underline cursor-pointer font-medium">
                 + Add Address
               </button>
             </div>
 
-            {addresses.isLoading && <p className="text-[12.5px] text-[#888888]">Loading addresses…</p>}
+            {addresses.isLoading && <p className="text-[12.5px] text-[#666666]">Loading addresses…</p>}
             {addresses.error && <p className={errorClass}>{toFriendlyError(addresses.error)}</p>}
             {!addresses.isLoading && addressList.length === 0 && (
-              <p className="py-10 text-center text-[13px] text-[#888888]">No saved addresses yet. Add one to check out faster.</p>
+              <p className="py-10 text-center text-[13px] text-[#666666]">No saved addresses yet. Add one to check out faster.</p>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -242,8 +242,8 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                   className={`p-6 rounded-[2px] border transition-colors ${a.is_default ? 'border-tk-ink dark:border-white/30' : 'border-[#EEEEEE] dark:border-white/10'}`}
                 >
                   <div className="flex items-center justify-between mb-3 text-[11px]">
-                    <span className="uppercase tracking-widest text-[#888888] font-medium">{a.label}</span>
-                    {a.is_default && <span className="text-[10px] uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-semibold">Default</span>}
+                    <span className="uppercase tracking-widest text-[#666666] font-medium">{a.label}</span>
+                    {a.is_default && <span className="text-[11px] uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-semibold">Default</span>}
                   </div>
                   <p className="text-[13.5px] font-medium text-tk-ink dark:text-white">{a.full_name}</p>
                   <p className="text-[12.5px] text-[#666666] dark:text-[#AAAAAA] mt-1 leading-relaxed font-light">
@@ -258,14 +258,14 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                     ) : null}
                     {a.city}, {a.state} {a.pincode}
                   </p>
-                  <p className="text-[11.5px] text-[#888888] mt-2 font-mono">{formatIndianPhone(a.phone)}</p>
+                  <p className="text-[11.5px] text-[#666666] mt-2 font-mono">{formatIndianPhone(a.phone)}</p>
 
                   <div className="mt-4 pt-3 border-t border-[#F0F0F0] dark:border-white/10 flex flex-wrap gap-4">
-                    <button onClick={() => openEditAddress(a)} className="text-[11px] uppercase tracking-wider text-[#777777] hover:text-tk-ink dark:hover:text-white cursor-pointer">
+                    <button onClick={() => openEditAddress(a)} className="text-[11px] uppercase tracking-wider text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer">
                       Edit
                     </button>
                     {!a.is_default && (
-                      <button onClick={() => handleSetDefault(a.id)} className="text-[11px] uppercase tracking-wider text-[#777777] hover:text-tk-ink dark:hover:text-white cursor-pointer">
+                      <button onClick={() => handleSetDefault(a.id)} className="text-[11px] uppercase tracking-wider text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer">
                         Make Default
                       </button>
                     )}
@@ -298,7 +298,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
 
               <div>
                 <label htmlFor="pd-email" className={labelClass}>Email</label>
-                <input id="pd-email" type="email" value={user?.email || ''} readOnly className={`${inputClass} text-[#888888] cursor-not-allowed`} />
+                <input id="pd-email" type="email" value={user?.email || ''} readOnly className={`${inputClass} text-[#666666] cursor-not-allowed`} />
               </div>
 
               <div>
@@ -323,7 +323,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                     <p id="pd-dob" className="px-3 py-2 border border-[#F0F0F0] dark:border-white/10 rounded-[2px] text-tk-ink dark:text-white">
                       {formatBirthday(profile.date_of_birth)}
                     </p>
-                    <p className="text-[10.5px] text-[#888888] mt-1">Your birthday is saved. Contact us if it needs correcting.</p>
+                    <p className="text-[11.5px] text-[#666666] mt-1">Your birthday is saved. Contact us if it needs correcting.</p>
                   </>
                 ) : (
                   <>
@@ -335,7 +335,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
                       onChange={(e) => setDetails((d) => ({ ...d, date_of_birth: e.target.value }))}
                       className={inputClass}
                     />
-                    <p className="text-[10.5px] text-[#888888] mt-1">We send a birthday gift every year. It can only be set once.</p>
+                    <p className="text-[11.5px] text-[#666666] mt-1">We send a birthday gift every year. It can only be set once.</p>
                   </>
                 )}
                 {detailErrors.date_of_birth && <p className={errorClass}>{detailErrors.date_of_birth}</p>}

@@ -44,7 +44,7 @@ export default function LuxuryKineticMarquee({
               <span className="text-[11px] sm:text-[12.5px] font-sans font-medium uppercase tracking-[0.22em] text-tk-ink dark:text-[#EFECE6] transition-colors hover:text-tk-accent dark:hover:text-tk-accent-night">
                 {text}
               </span>
-              <span className="pl-8 sm:pl-12 text-[9px] text-tk-accent dark:text-tk-accent-night opacity-90 select-none">
+              <span className="pl-8 sm:pl-12 text-[10.5px] text-tk-accent dark:text-tk-accent-night opacity-90 select-none">
                 ✦
               </span>
             </div>
@@ -58,7 +58,7 @@ export default function LuxuryKineticMarquee({
               <span className="text-[11px] sm:text-[12.5px] font-sans font-medium uppercase tracking-[0.22em] text-tk-ink dark:text-[#EFECE6] transition-colors hover:text-tk-accent dark:hover:text-tk-accent-night">
                 {text}
               </span>
-              <span className="pl-8 sm:pl-12 text-[9px] text-tk-accent dark:text-tk-accent-night opacity-90 select-none">
+              <span className="pl-8 sm:pl-12 text-[10.5px] text-tk-accent dark:text-tk-accent-night opacity-90 select-none">
                 ✦
               </span>
             </div>

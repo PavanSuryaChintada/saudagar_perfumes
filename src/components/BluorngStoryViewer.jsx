@@ -146,14 +146,14 @@ export default function BluorngStoryViewer({
           {/* User profile / Tag & Close button */}
           <div className="flex items-center justify-between text-white">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night p-0.5 border border-white/40 overflow-hidden flex items-center justify-center text-[10px] font-bold text-white">
+              <div className="w-8 h-8 rounded-full bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night p-0.5 border border-white/40 overflow-hidden flex items-center justify-center text-[11px] font-bold text-white">
                 S
               </div>
               <div>
                 <p className="text-[12px] font-bold tracking-wider uppercase leading-none">
                   Saudagar Parfumerie
                 </p>
-                <span className="text-[10px] text-white/70 tracking-widest uppercase">
+                <span className="text-[11px] text-white/70 tracking-widest uppercase">
                   {currentStory.tag}
                 </span>
               </div>

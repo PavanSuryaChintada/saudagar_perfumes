@@ -52,7 +52,7 @@ export function ProductCompositionSection({ config = {} }) {
       <div className="max-w-2xl mx-auto">
         {(config.eyebrow || config.heading) && (
           <div className="mb-6">
-            {config.eyebrow && <span className="text-[11px] uppercase tracking-[0.14em] text-[#777777] dark:text-[#999999]">{config.eyebrow}</span>}
+            {config.eyebrow && <span className="text-[11px] uppercase tracking-[0.14em] text-[#5F5F5F] dark:text-[#999999]">{config.eyebrow}</span>}
             {config.heading && <h2 className="text-[22px] sm:text-[26px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white mt-1">{config.heading}</h2>}
           </div>
         )}

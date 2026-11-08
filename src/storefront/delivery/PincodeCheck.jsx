@@ -53,7 +53,7 @@ export default function PincodeCheck({ surface = false }) {
           aria-label="Delivery pincode"
           className="w-32 px-3 py-1.5 border border-[#E0E0E0] dark:border-white/20 bg-transparent text-[12px] outline-none focus:border-tk-ink dark:focus:border-white"
         />
-        <button type="submit" className="px-3 py-1.5 text-[10.5px] uppercase tracking-wider border border-tk-ink dark:border-white">
+        <button type="submit" className="px-3 py-1.5 text-[11.5px] uppercase tracking-wider border border-tk-ink dark:border-white">
           {isFetching ? 'Checking…' : 'Check'}
         </button>
       </form>

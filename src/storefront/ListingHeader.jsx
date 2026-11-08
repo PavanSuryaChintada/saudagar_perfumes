@@ -11,7 +11,7 @@ export default function ListingHeader({ eyebrow, title, description, image, sear
           <img src={image} alt="" className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full bg-white dark:bg-white/5 shrink-0" loading="lazy" />
         )}
         <div className="min-w-0 flex-1">
-          {eyebrow && <p className="text-[10.5px] uppercase tracking-[0.2em] text-tk-accent dark:text-tk-accent-night mb-2">{eyebrow}</p>}
+          {eyebrow && <p className="text-[11.5px] uppercase tracking-[0.2em] text-tk-accent dark:text-tk-accent-night mb-2">{eyebrow}</p>}
           <h1 className="text-[28px] sm:text-[38px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white leading-tight break-words">{title || ' '}</h1>
           {description && <p className="mt-2 text-[13px] text-[#666666] dark:text-[#A09D96] max-w-2xl leading-relaxed">{description}</p>}
           {onSearch && (

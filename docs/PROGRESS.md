@@ -266,6 +266,12 @@
 - [x] Site settings → Google & sharing in plain words
 - [x] Free samples list in clear columns: perfume, liquid left, samples it can give, offered
 
+## Phase 22: Shop polish and many more filters ✅
+- [x] One small corner everywhere (no mix of pill and square shapes); faint grey text darkened; tiny text enlarged; category strip labels no longer cut off; calmer spacing between home sections
+- [x] Filters: offers (on sale, new arrivals, in stock), category, collection, price (bands or your own range), size, fragrance family, accords, notes (searchable), note families, intensity, concentration, longevity, sillage, occasion, season, day or night, wear it as
+- [x] Filter panel redesigned: larger text and checkboxes, counts in boxes, choices with no match hidden, chips for short choices, search and “show all” in long lists
+- [x] Sort is a proper menu (Featured, Newest, Best sellers, Price low to high, Price high to low); clear Filters button and “Filtered by” chips
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain

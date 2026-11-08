@@ -8,13 +8,13 @@ export function AuthLayout({ eyebrow, title, children, footer }: { eyebrow: stri
         <Link to="/" className="text-[15px] sm:text-[17px] tracking-[0.32em] font-medium uppercase">
           Saudagar
         </Link>
-        <Link to="/" className="text-[10.5px] uppercase tracking-[0.16em] text-[#777777] dark:text-white/60 hover:text-tk-accent dark:hover:text-tk-accent-night">
+        <Link to="/" className="text-[11.5px] uppercase tracking-[0.16em] text-[#5F5F5F] dark:text-white/60 hover:text-tk-accent dark:hover:text-tk-accent-night">
           Continue shopping
         </Link>
       </header>
       <main className="flex-1 flex items-start sm:items-center justify-center px-4 py-10 sm:py-16">
         <div className="w-full max-w-[420px]">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night mb-2">{eyebrow}</p>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night mb-2">{eyebrow}</p>
           <h1 className="text-[24px] sm:text-[28px] font-normal tracking-[-0.015em] mb-8">{title}</h1>
           {children}
           {footer && <div className="mt-8 pt-6 border-t border-[#EAEAEA] dark:border-white/10 text-[12px] text-[#666666] dark:text-white/60">{footer}</div>}
@@ -30,7 +30,7 @@ export function AuthField({ label, error, hint, id, ...input }: FieldProps) {
   const fieldId = id ?? input.name;
   return (
     <div className="mb-5">
-      <label htmlFor={fieldId} className="block text-[10px] font-medium uppercase tracking-[0.14em] text-[#666666] dark:text-[#A09D96] mb-2">
+      <label htmlFor={fieldId} className="block text-[11px] font-medium uppercase tracking-[0.14em] text-[#666666] dark:text-[#A09D96] mb-2">
         {label}
       </label>
       <input
@@ -44,7 +44,7 @@ export function AuthField({ label, error, hint, id, ...input }: FieldProps) {
       {error ? (
         <p className="mt-1.5 text-[11px] text-rose-600 dark:text-rose-400">{error}</p>
       ) : hint ? (
-        <p className="mt-1.5 text-[11px] text-[#888888] dark:text-white/40">{hint}</p>
+        <p className="mt-1.5 text-[11px] text-[#666666] dark:text-white/40">{hint}</p>
       ) : null}
     </div>
   );

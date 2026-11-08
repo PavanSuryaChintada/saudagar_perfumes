@@ -28,16 +28,17 @@ test('unknown product shows the 404', async ({ page }) => {
 test('old collection links still work', async ({ page }) => {
   await page.goto('/collections/oud-royale');
   await expect(page.getByText('THE ROYAL COLLECTION').first()).toBeVisible();
-  await expect(page.getByText(/5\s*Fragrances Found/i)).toBeVisible();
+  await expect(page.getByText(/^5\s*perfumes$/i)).toBeVisible();
 });
 
 test('filters are saved in the URL and narrow the results', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/shop');
-  await expect(page.getByText(/16\s*Fragrances Found/i)).toBeVisible();
+  await expect(page.getByText(/^16\s*perfumes$/i)).toBeVisible();
+  await page.getByRole('button', { name: /Occasion & ritual/i }).first().click();
   await page.getByText('Royal Gala & Evening', { exact: true }).first().click();
   await expect(page).toHaveURL(/occasion=evening/);
-  await expect(page.getByText(/16\s*Fragrances Found/i)).toHaveCount(0);
+  await expect(page.getByText(/^16\s*perfumes$/i)).toHaveCount(0);
   await page.reload();
   await expect(page.getByRole('button', { name: /Royal Gala & Evening/ })).toBeVisible(); // active filter chip survives reload
 });
@@ -45,7 +46,7 @@ test('filters are saved in the URL and narrow the results', async ({ page }) => 
 test('search finds products by note', async ({ page }) => {
   await page.goto('/search?q=bergamot');
   await expect(page.getByRole('heading', { name: /Results for “bergamot”/ })).toBeVisible();
-  await expect(page.getByText(/[1-9]\d*\s*Fragrances? Found/i)).toBeVisible();
+  await expect(page.getByText(/^[1-9]\d*\s*perfumes?$/i)).toBeVisible();
 });
 
 test('notes library links to note pages', async ({ page }) => {

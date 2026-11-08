@@ -65,7 +65,7 @@ export default function BluorngProductCard({
 
         {/* Minimal Discrete Badge (Top-Left) */}
         {product.badge && (
-          <span className="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 text-[9px] uppercase tracking-wider font-medium rounded-sm bg-black/5 dark:bg-white/10 text-[#666666] dark:text-white/90">
+          <span className="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 text-[10.5px] uppercase tracking-wider font-medium rounded-sm bg-black/5 dark:bg-white/10 text-[#666666] dark:text-white/90">
             {product.badge}
           </span>
         )}
@@ -122,7 +122,7 @@ export default function BluorngProductCard({
               e.stopPropagation();
               onQuickBuy && onQuickBuy(product);
             }}
-            className="w-full py-2 text-[10.5px] uppercase tracking-[0.14em] font-medium rounded-sm shadow-md transition-colors cursor-pointer bg-tk-ink text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night"
+            className="w-full py-2 text-[11.5px] uppercase tracking-[0.14em] font-medium rounded-sm shadow-md transition-colors cursor-pointer bg-tk-ink text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night"
           >
             + Quick Add
           </button>
@@ -141,11 +141,11 @@ export default function BluorngProductCard({
         </div>
 
         <div className="flex items-center justify-between mt-0.5">
-          <p className="text-[10px] sm:text-[10.5px] font-normal tracking-wide truncate text-[#888888] dark:text-white/50">
+          <p className="text-[11px] sm:text-[11.5px] font-normal tracking-wide truncate text-[#666666] dark:text-white/50">
             {product.category || 'Extrait de Parfum'}
           </p>
           {product.compareAtPrice && product.compareAtPrice > product.price && (
-            <span className="text-[10.5px] line-through font-normal shrink-0 text-[#AAAAAA] dark:text-white/30">
+            <span className="text-[11.5px] line-through font-normal shrink-0 text-[#707070] dark:text-white/30">
               {formatPrice(product.compareAtPrice)}
             </span>
           )}

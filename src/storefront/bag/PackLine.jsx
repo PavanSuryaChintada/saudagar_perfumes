@@ -18,12 +18,12 @@ export default function PackLine({ item, line, problem, onRemove, compact = fals
         <div className="flex items-start justify-between gap-2">
           <h4 className="font-bold uppercase tracking-wider text-tk-ink dark:text-white leading-tight">{name}</h4>
           {onRemove && (
-            <button onClick={onRemove} className="text-[#777777] dark:text-white/50 hover:text-rose-600 transition-colors cursor-pointer" title="Remove pack" aria-label="Remove pack">
+            <button onClick={onRemove} className="text-[#5F5F5F] dark:text-white/50 hover:text-rose-600 transition-colors cursor-pointer" title="Remove pack" aria-label="Remove pack">
               ✕
             </button>
           )}
         </div>
-        {line?.label && <p className="text-[10.5px] text-[#666666] dark:text-white/60 uppercase tracking-wider mt-1">{line.label}</p>}
+        {line?.label && <p className="text-[11.5px] text-[#666666] dark:text-white/60 uppercase tracking-wider mt-1">{line.label}</p>}
         {contents.length > 0 && (
           <ul className="mt-1.5 space-y-0.5 text-[11px] text-[#444444] dark:text-white/75">
             {contents.map((c) => (
@@ -35,17 +35,17 @@ export default function PackLine({ item, line, problem, onRemove, compact = fals
           </ul>
         )}
         {line?.sample_ml > 0 && (
-          <p className="mt-1.5 text-[10.5px] text-tk-accent dark:text-tk-accent-night font-semibold">
+          <p className="mt-1.5 text-[11.5px] text-tk-accent dark:text-tk-accent-night font-semibold">
             + Free {Number(line.sample_ml)} ml sample, chosen for you
           </p>
         )}
         {problem && (
-          <p role="alert" className="text-[10.5px] text-rose-600 dark:text-rose-400 mt-1 font-semibold">
+          <p role="alert" className="text-[11.5px] text-rose-600 dark:text-rose-400 mt-1 font-semibold">
             {problem.message}
           </p>
         )}
         <p className="mt-2 text-right">
-          {line?.compare_at_price > price && <span className="line-through text-[#777777] dark:text-white/50 mr-1.5">{formatINR(line.compare_at_price)}</span>}
+          {line?.compare_at_price > price && <span className="line-through text-[#5F5F5F] dark:text-white/50 mr-1.5">{formatINR(line.compare_at_price)}</span>}
           <span className="font-bold text-[12.5px] text-tk-ink dark:text-white">{formatINR(price)}</span>
         </p>
       </div>
