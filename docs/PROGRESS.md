@@ -278,6 +278,20 @@
 - [x] Order page: status and next steps always on top; items, customer, shipping, payment and history as parts
 - [x] Dashboard: Needs attention, Sales, Orders, Payments and refunds, Stock and products, Store setup
 
+## Phase 24: Public site audit ✅
+- [x] One header everywhere (product, story, account and order pages had their own, without search or account); checkout keeps a quiet header with “Secure checkout”; sign-in pages show the logo
+- [x] Logo intro plays once per visit and only when the visit starts on the home page (it replayed on every page load, including product links from Google)
+- [x] Product cards: full name on up to two lines (was cut off), price below with “% off”; same on listings, search and gift pack
+- [x] Prices read ₹6,600 everywhere (was “RS. 6,600” on some screens and ₹ on others)
+- [x] Product page: bigger price, one delivery line instead of two, buy box centred beside the bottle
+- [x] Section headings share one style; serif kept only for editorial and quote moments
+- [x] Home: hero film numbers no longer doubled, category tile button no longer wraps, editorial tiles fill their row, reel captions end with “…”, a clear Pause/Play button for the video row
+- [x] Phone tab bar: Home, Shop, Saved, Account, Bag with the current page marked (the theme switch was a tab)
+- [x] Videos show a still picture while they load (menu tiles were black boxes)
+- [x] Footer: newsletter as a clear panel, readable links, bottom row aligned, centred on phones; gift-pack bar no longer covers it
+- [x] Remaining round buttons made square; big empty gaps above the footer and at the top of listing pages trimmed
+- [x] Account: “Start shopping” when there are no orders; tab names in capitals like the rest of the site
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain
