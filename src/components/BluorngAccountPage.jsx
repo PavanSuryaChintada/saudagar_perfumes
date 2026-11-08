@@ -24,7 +24,7 @@ function formatBirthday(iso) {
 }
 
 export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onNavigateHome }) {
-  const { signOut } = useAuth();
+  const { signOut, isAdmin } = useAuth();
   const { user, profile, addresses, saveProfile, saveAddress, deleteAddress, setDefault } = useAccount();
   const location = useLocation();
   const navigate = useNavigate();
@@ -91,8 +91,11 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    onNavigateHome();
+    try {
+      await signOut();
+    } finally {
+      onNavigateHome();
+    }
   };
 
   const addressList = addresses.data || [];
@@ -165,6 +168,15 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
           </div>
 
           <div className="flex items-center gap-6 text-[12px] text-[#777777] dark:text-[#888888]">
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => navigate('/admin')}
+                className="px-4 py-2 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[10px] uppercase tracking-[0.16em] rounded-[2px] transition-colors cursor-pointer"
+              >
+                Admin panel
+              </button>
+            )}
             <button
               onClick={handleSignOut}
               className="text-[10px] uppercase tracking-[0.16em] text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"

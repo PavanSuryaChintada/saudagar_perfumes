@@ -189,7 +189,17 @@ export default function OrderDetailPage() {
         )}
         {o.payment_method === 'ONLINE' && ['PAID', 'PARTIALLY_REFUNDED'].includes(o.payment_status) && (
           <div className="mt-4 pt-4 border-t border-[#EAEAEA] flex flex-wrap items-end gap-3">
-            <FieldShell label="Refund online (₹)" htmlFor="rf-amount" help={`Paid ${formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))}. Leave empty to refund in full.`}>
+            {['CANCELLED', 'RTO'].includes(o.status) && (
+              <p role="status" className="basis-full text-[12.5px] bg-rose-50 border border-rose-200 text-rose-800 px-3 py-2">
+                {o.status === 'CANCELLED' ? 'This order was cancelled after it was paid.' : 'This paid order came back to us.'} {formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))} still has to go back to the customer
+                {o.status === 'CANCELLED' ? '. An automatic refund starts when it is cancelled (see the history below); refund here if it did not start.' : ', unless you are re-sending it.'}
+              </p>
+            )}
+            <FieldShell
+              label="Refund online (₹)"
+              htmlFor="rf-amount"
+              help={`Up to ${formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))} can still be refunded${Number(o.amount_refunded ?? 0) > 0 ? ` (${formatINR(Number(o.amount_refunded))} already refunded)` : ''}. Leave empty for all of it; you can refund part now and more later.`}
+            >
               <TextInput id="rf-amount" inputMode="decimal" placeholder="Full amount" value={refundAmount} onChange={(e) => setRefundAmount(e.target.value)} className="max-w-[160px]" />
             </FieldShell>
             <Button variant="secondary" onClick={() => setRefunding(true)}>Refund to customer</Button>
@@ -335,7 +345,7 @@ export default function OrderDetailPage() {
         open={refunding}
         onOpenChange={setRefunding}
         title="Refund this order online?"
-        description={`Razorpay sends ${refundAmount ? formatINR(Number(refundAmount)) : 'the full amount'} back to the customer's payment method. One online refund per order.`}
+        description={`Razorpay sends ${refundAmount ? formatINR(Number(refundAmount)) : `the remaining ${formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))}`} back to the card, UPI or bank the customer paid with. It usually arrives in 5–7 working days.`}
         confirmLabel="Refund"
         danger
         onConfirm={async () => {

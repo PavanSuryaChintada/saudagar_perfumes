@@ -17,6 +17,7 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setError('');
     if (password.length < 8) return setError('Use at least 8 characters.');
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) return setError('Use both letters and numbers.');
     if (password !== confirm) return setError("The two passwords don't match.");
     setBusy(true);
     try {

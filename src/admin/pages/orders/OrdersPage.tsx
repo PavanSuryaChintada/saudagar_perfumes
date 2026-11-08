@@ -6,6 +6,7 @@ import { Button } from '../../ui/Button';
 import { PAGE_SIZE, useAdminOrders, useOrdersRealtime } from '../../orders/api';
 import { ORDER_STATUS_LABEL, paymentLabel, type OrderStatus } from '../../../lib/orders';
 import { formatINR } from '../../../lib/money';
+import { fetchAll } from '../../../lib/fetchAll';
 import { toFriendlyError } from '../../../lib/errors';
 import { formatOrderDateTime } from '../../../storefront/orders/useOrders';
 import { supabase } from '../../../lib/supabase';
@@ -72,19 +73,18 @@ export default function OrdersPage() {
             variant="secondary"
             onClick={async () => {
               try {
-                const rows: Record<string, unknown>[] = [];
-                for (let from = 0; ; from += 1000) {
+                const rows = await fetchAll<Record<string, unknown>>((from, to) => {
                   let q = supabase
                     .from('orders')
-                    .select('order_number, created_at, status, payment_method, payment_status, subtotal, discount, shipping_fee, total, coupon_code, customer_name, customer_email, customer_phone, ship_city, ship_state, ship_pincode, courier_name, tracking_number, samples_entitled, samples_short')
+                    .select(
+                      'order_number, created_at, status, payment_method, payment_status, subtotal, discount, shipping_fee, total, amount_refunded, coupon_code, customer_name, customer_email, customer_phone, ship_city, ship_state, ship_pincode, courier_name, tracking_number, samples_entitled, samples_short',
+                      { count: 'exact' },
+                    )
                     .order('created_at', { ascending: false })
-                    .range(from, from + 999);
+                    .order('id', { ascending: false });
                   if (status) q = q.eq('status', status);
-                  const { data, error } = await q;
-                  if (error) throw error;
-                  rows.push(...(data ?? []));
-                  if (!data || data.length < 1000) break;
-                }
+                  return q.range(from, to) as unknown as PromiseLike<{ data: Record<string, unknown>[] | null; error: unknown; count: number | null }>;
+                });
                 downloadCsv(`orders-${status || 'all'}-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(rows));
               } catch (err) {
                 toast.error(toFriendlyError(err));

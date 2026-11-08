@@ -79,11 +79,23 @@ export default function OrderPage({ orderId, theme, onToggleTheme, onNavigateHom
             <h2 className="text-[22px] sm:text-[28px] font-normal tracking-[-0.01em]">{ORDER_STATUS_LABEL[order.status] ?? order.status}</h2>
             <p className="text-[12px] text-[#777777] dark:text-[#999999] mt-0.5">Placed on {formatOrderDate(order.created_at)} · {paymentLabel(order)}</p>
           </div>
-          {canCustomerCancel(order.status) && !confirming && (
-            <button type="button" onClick={() => setConfirming(true)} className="text-[11px] uppercase tracking-[0.16em] text-rose-600 hover:text-rose-700 underline underline-offset-4 self-start sm:self-auto">
-              Cancel order
-            </button>
-          )}
+          <div className="flex flex-wrap items-center gap-4 self-start sm:self-auto">
+            {order.status !== 'CANCELLED' && (order.payment_method === 'COD' || order.payment_status !== 'PENDING') && order.payment_status !== 'FAILED' && (
+              <a
+                href={`/orders/${order.id}/invoice`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-[11px] uppercase tracking-[0.16em] underline underline-offset-4 hover:text-tk-accent dark:hover:text-tk-accent-night"
+              >
+                Download invoice
+              </a>
+            )}
+            {canCustomerCancel(order.status) && !confirming && (
+              <button type="button" onClick={() => setConfirming(true)} className="text-[11px] uppercase tracking-[0.16em] text-rose-600 hover:text-rose-700 underline underline-offset-4">
+                Cancel order
+              </button>
+            )}
+          </div>
         </div>
 
         {order.payment_method === 'ONLINE' && order.status === 'PENDING' && order.payment_status !== 'PAID' && (

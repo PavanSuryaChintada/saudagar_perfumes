@@ -41,7 +41,7 @@ describe('SETTINGS_SCHEMA', () => {
         'samples.allow_duplicates', 'payments.online_enabled', 'auth.google_enabled', 'media.transforms_enabled',
         'whatsapp.floating_number', 'analytics.ga4_id', 'analytics.gtm_id', 'inventory.low_stock_threshold', 'orders.prefix',
         'samples.bag_heading', 'samples.bag_text', 'business.legal_name', 'business.gstin', 'business.address', 'business.state',
-        'business.invoice_note',
+        'business.invoice_note', 'cod.max_order', 'cod.max_open_orders', 'payments.auto_refund_on_cancel', 'coupons.first_order_phone_check',
       ].sort(),
     );
   });

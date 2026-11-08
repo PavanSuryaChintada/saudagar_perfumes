@@ -12,10 +12,11 @@ const SHIPPING_SAC = '996812';
 const SHIPPING_GST = 18;
 
 /** Printable tax invoice (?doc=invoice) or packing slip (?doc=slip). Opens the print dialog. */
-export default function PrintOrderPage() {
+export default function PrintOrderPage({ customer = false }: { customer?: boolean }) {
   const { id } = useParams();
   const [params] = useSearchParams();
-  const doc = params.get('doc') === 'slip' ? 'slip' : 'invoice';
+  // Customers only ever get their tax invoice; the packing slip is for the store.
+  const doc = !customer && params.get('doc') === 'slip' ? 'slip' : 'invoice';
   const { data: o, isLoading } = useAdminOrder(id);
   const { data: biz } = useBusinessSettings();
   const brand = useBlock<Record<string, string>>('brand') || {};
@@ -214,7 +215,7 @@ export default function PrintOrderPage() {
 
   return (
     <div className="bg-white text-black min-h-screen">
-      {missing.length > 0 && doc === 'invoice' && (
+      {!customer && missing.length > 0 && doc === 'invoice' && (
         <p className="print:hidden px-6 py-3 bg-amber-50 border-b border-amber-200 text-[12px] text-amber-800">
           Add the {missing.join(', ')} in Admin → Settings → Business before using these invoices.
         </p>
