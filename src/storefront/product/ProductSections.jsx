@@ -1,4 +1,5 @@
 import React from 'react';
+import { useBootstrap } from '../../lib/bootstrap';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router';
 import { sanitizeHtml, hasText } from '../../lib/richText';
@@ -132,14 +133,27 @@ function DefinitionList({ rows }) {
   );
 }
 
+/** A product's own label details, with the store's (Settings → Product details) wherever the product left one empty. */
+export function withStoreDefaults(own, settings) {
+  const out = { ...own };
+  for (const [key, value] of Object.entries(settings || {})) {
+    if (!key.startsWith('product_defaults.')) continue;
+    const field = key.slice('product_defaults.'.length);
+    const mine = out[field];
+    if ((mine === null || mine === undefined || String(mine).trim() === '') && value !== null && String(value).trim() !== '') out[field] = value;
+  }
+  return out;
+}
+
 /** Scent profile, story, the legally required details, and delivery — as accordions. */
 export function ProductAccordions({ detail, selectedSize, openAccordion, onToggle, sampleCopy, etaText }) {
   const page = useBlock('product_page') || {};
+  const storeSettings = useBootstrap().data?.settings || {};
   const own = Array.isArray(detail.page_sections) ? detail.page_sections : [];
   const defaults = detail.use_default_sections === false ? [] : Array.isArray(page.default_sections) ? page.default_sections : [];
   const extra = [...own, ...defaults].filter((x) => x && (x.title || '').trim() && hasText(x.body));
   const profile = profileRows(detail.attributes);
-  const c = detail.compliance || {};
+  const c = withStoreDefaults(detail.compliance || {}, storeSettings);
   const netQty = selectedSize?.ml ? `${selectedSize.ml} ml` : null;
   const compliance = [
     ['Net quantity', netQty],

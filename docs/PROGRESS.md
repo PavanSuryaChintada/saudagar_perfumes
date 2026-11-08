@@ -194,6 +194,22 @@
 - [x] Admin button only for admins (tested both ways)
 - [x] Tests: 240 unit, 12 SQL files, 33 browser tests
 
+## Phase 14: Bulk tools, dashboards, scrolling, pagination ✅ (PR #27)
+- [x] Bulk order and product actions; spreadsheet prices/stock and product import
+- [x] Dashboard views: Today, Orders pipeline, Payments & refunds, Stock & products
+- [x] Native scrolling in the admin; pagination on every list and on the shop, notes and account orders
+
+## Phase 15: Liquid stock, simpler product editor, invoice editor ✅
+- [x] Perfume stock is the liquid (ml, L or tola); every bottle and free sample takes its ml; a size is sold out once less is left than it holds
+- [x] Sets and accessories counted in pieces; switch per product
+- [x] Stock history per product with totals for orders vs samples
+- [x] Product editor: category → name → sizes & prices (SKU fills itself) → stock → photos → scent → notes; the rest folded under More details; Copy from… on every section
+- [x] Store-wide label details (Settings → Product details) used by every product page
+- [x] Phone pictures for every page, site-content, story, category and collection image
+- [x] Invoice editor with live preview: every line on the invoice and packing slip
+- [x] Readability: sentence-case labels and headings, darker text, visible scroll bars, clearer toggles
+- [x] Tests: 263 unit, 14 SQL files, 33 browser tests
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain

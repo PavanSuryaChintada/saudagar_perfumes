@@ -20,9 +20,9 @@ export default function GuideDrawer({ open, onOpenChange }: { open: boolean; onO
           <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-[#E2E0DB]">
             <div>
               <Dialog.Title className="text-[15px] font-medium text-tk-ink">How this page works</Dialog.Title>
-              <Dialog.Description className="text-[13px] text-[#5A5A5A] mt-0.5">The steps for this part of the store.</Dialog.Description>
+              <Dialog.Description className="text-[13px] text-[#4A4A4A] mt-0.5">The steps for this part of the store.</Dialog.Description>
             </div>
-            <Dialog.Close className="p-1 text-[#5A5A5A] hover:text-tk-ink" aria-label="Close">
+            <Dialog.Close className="p-1 text-[#4A4A4A] hover:text-tk-ink" aria-label="Close">
               <X size={18} />
             </Dialog.Close>
           </div>

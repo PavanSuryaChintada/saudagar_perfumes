@@ -32,12 +32,12 @@ export function Modal({
             <div className="min-w-0">
               <Dialog.Title className="text-[15px] font-medium text-tk-ink">{title}</Dialog.Title>
               {description ? (
-                <Dialog.Description className="mt-0.5 text-[13px] text-[#5A5A5A]">{description}</Dialog.Description>
+                <Dialog.Description className="mt-0.5 text-[13px] text-[#4A4A4A]">{description}</Dialog.Description>
               ) : (
                 <Dialog.Description className="sr-only">{title}</Dialog.Description>
               )}
             </div>
-            <Dialog.Close className="p-1 text-[#5A5A5A] hover:text-tk-ink" aria-label="Close">
+            <Dialog.Close className="p-1 text-[#4A4A4A] hover:text-tk-ink" aria-label="Close">
               <X size={16} />
             </Dialog.Close>
           </div>

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { usePickMedia } from '../../cms/mobileMedia';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { toLegacyProduct } from './adapter';
@@ -86,7 +87,9 @@ export function useSimilarProducts(slug: string | undefined, limit = 4) {
 }
 
 export function useCollection(slug: string | undefined) {
+  const select = usePickMedia();
   return useQuery({
+    select,
     queryKey: ['catalog', 'collection', slug],
     enabled: !!slug,
     staleTime: FIVE_MIN,
@@ -95,7 +98,9 @@ export function useCollection(slug: string | undefined) {
 }
 
 export function useCollections() {
+  const select = usePickMedia();
   return useQuery({
+    select,
     queryKey: ['catalog', 'collections'],
     staleTime: FIVE_MIN,
     queryFn: async () => {
@@ -107,7 +112,9 @@ export function useCollections() {
 }
 
 export function useCategory(slug: string | undefined) {
+  const select = usePickMedia();
   return useQuery({
+    select,
     queryKey: ['catalog', 'category', slug],
     enabled: !!slug,
     staleTime: FIVE_MIN,

@@ -13,7 +13,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
     <nav className="flex-1 min-h-0 overflow-y-auto overscroll-contain py-4" aria-label="Admin">
       {ADMIN_NAV.map((group, gi) => (
         <div key={gi} className="mb-4">
-          {group.heading && <p className="px-5 mb-1.5 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-[#5A5A5A]">{group.heading}</p>}
+          {group.heading && <p className="px-5 mb-1.5 text-[12.5px] font-semibold uppercase tracking-[0.14em] text-[#4A4A4A]">{group.heading}</p>}
           {group.items.map((item) => (
             <NavLink
               key={item.to}
@@ -52,13 +52,13 @@ export default function AdminLayout() {
   const brand = (
     <Link to="/admin" className="block px-5 py-5 border-b border-[#E2E0DB]">
       <span className="block text-[14px] tracking-[0.3em] uppercase text-tk-ink">Saudagar</span>
-      <span className="block text-[11px] uppercase tracking-[0.18em] text-tk-accent mt-0.5">Store admin</span>
+      <span className="block text-[12px] uppercase tracking-[0.18em] text-tk-accent mt-0.5">Store admin</span>
     </Link>
   );
 
   const footer = (
     <div className="border-t border-[#E2E0DB] p-4 space-y-2">
-      <p className="text-[12px] text-[#626262] truncate" title={user?.email ?? ''}>
+      <p className="text-[12px] text-[#4F4F4F] truncate" title={user?.email ?? ''}>
         {user?.email}
       </p>
       <div className="flex gap-2">

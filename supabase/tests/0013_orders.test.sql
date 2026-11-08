@@ -22,14 +22,14 @@ set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000000e1","role":"authenticated"}', true);
 do $$ begin
   perform public.save_product('{
-    "slug": "tst-ord-oud", "name": "Order Oud", "base_price": 2000, "is_active": true, "counts_toward_samples": true,
+    "slug": "tst-ord-oud", "name": "Order Oud", "base_price": 2000, "is_active": true, "stock_unit": "piece", "counts_toward_samples": true,
     "variants": [
       {"sku": "TST-ORD-50", "kind": "retail", "size_ml": 50, "label": "50 ml", "initial_stock": 10},
       {"sku": "TST-ORD-100", "kind": "retail", "size_ml": 100, "label": "100 ml", "price": 3500, "initial_stock": 5},
       {"sku": "TST-ORD-S5", "kind": "sample", "size_ml": 5, "label": "5 ml sample", "price": 0, "initial_stock": 3, "in_sample_pool": true}
     ]}'::jsonb);
   perform public.save_product('{
-    "slug": "tst-ord-rose", "name": "Order Rose", "base_price": 1500, "is_active": true,
+    "slug": "tst-ord-rose", "name": "Order Rose", "base_price": 1500, "is_active": true, "stock_unit": "piece",
     "variants": [
       {"sku": "TST-ROSE-30", "kind": "retail", "size_ml": 30, "label": "30 ml", "initial_stock": 4},
       {"sku": "TST-ROSE-S5", "kind": "sample", "size_ml": 5, "label": "5 ml sample", "price": 0, "initial_stock": 1, "in_sample_pool": true}

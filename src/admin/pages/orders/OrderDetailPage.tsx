@@ -52,9 +52,9 @@ export default function OrderDetailPage() {
     setAdminNote(o.admin_note ?? '');
   }, [o]);
 
-  if (isLoading) return <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
+  if (isLoading) return <p className="text-[14px] text-[#4A4A4A]">Loading…</p>;
   if (error) return <p className="text-[14px] text-rose-600">{toFriendlyError(error)}</p>;
-  if (!o) return <p className="text-[14px] text-[#5A5A5A]">This order doesn't exist. <Link to="/admin/orders" className="underline">Back to orders</Link></p>;
+  if (!o) return <p className="text-[14px] text-[#4A4A4A]">This order doesn't exist. <Link to="/admin/orders" className="underline">Back to orders</Link></p>;
 
   const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['admin', 'order', id] }), qc.invalidateQueries({ queryKey: ['admin', 'orders'] })]);
   const next = allowedNextStatuses(o.status as OrderStatus, o.payment_method, o.payment_status);
@@ -102,7 +102,7 @@ export default function OrderDetailPage() {
   return (
     <div className="space-y-5">
       <div>
-        <Link to="/admin/orders" className="inline-flex items-center gap-1 text-[13px] text-[#5A5A5A] hover:text-tk-ink mb-3">
+        <Link to="/admin/orders" className="inline-flex items-center gap-1 text-[13px] text-[#4A4A4A] hover:text-tk-ink mb-3">
           <ArrowLeft size={13} /> Orders
         </Link>
         <PageHeader
@@ -124,7 +124,7 @@ export default function OrderDetailPage() {
       <Panel title="Status">
         <div className="flex flex-wrap items-center gap-3">
           <StatusBadge status={o.status} />
-          {next.length === 0 && <span className="text-[13px] text-[#5A5A5A]">No further steps.</span>}
+          {next.length === 0 && <span className="text-[13px] text-[#4A4A4A]">No further steps.</span>}
           {next.map((s) => (
             <Button
               key={s}
@@ -182,7 +182,7 @@ export default function OrderDetailPage() {
           </div>
         )}
         {(o as unknown as { shipping_status: string | null }).shipping_status && (
-          <p className="mt-2 text-[12px] text-[#626262]">Courier says: {(o as unknown as { shipping_status: string }).shipping_status}</p>
+          <p className="mt-2 text-[12px] text-[#4F4F4F]">Courier says: {(o as unknown as { shipping_status: string }).shipping_status}</p>
         )}
         {(o as unknown as { label_url: string | null }).label_url && (
           <a href={(o as unknown as { label_url: string }).label_url} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[13px] underline">Courier label (PDF)</a>
@@ -216,7 +216,7 @@ export default function OrderDetailPage() {
                   <div className="w-12 h-12 bg-[#F4F3EE] shrink-0">{i.image_url && <img src={i.image_url} alt="" className="w-full h-full object-contain" />}</div>
                   <div className="flex-1 min-w-0">
                     <p className="truncate">{i.product_name}</p>
-                    <p className="text-[12px] text-[#626262]">{i.variant_label} · SKU {(i as unknown as { sku: string }).sku}</p>
+                    <p className="text-[12px] text-[#4F4F4F]">{i.variant_label} · SKU {(i as unknown as { sku: string }).sku}</p>
                   </div>
                   <span className="text-[13px] text-[#454545] tabular-nums">{i.qty} × {formatINR(Number(i.unit_price))}</span>
                   <span className="w-24 text-right tabular-nums">{formatINR(Number(i.line_total))}</span>
@@ -232,12 +232,12 @@ export default function OrderDetailPage() {
           </Panel>
 
           <Panel title={`Free samples (${samples.length} of ${o.samples_entitled})`}>
-            {samples.length === 0 && o.samples_entitled === 0 && <p className="text-[13px] text-[#5A5A5A]">This order didn't earn samples.</p>}
+            {samples.length === 0 && o.samples_entitled === 0 && <p className="text-[13px] text-[#4A4A4A]">This order didn't earn samples.</p>}
             <ul className="space-y-1 text-[14px]">
               {samples.map((s) => (
                 <li key={s.id}>
                   {s.product_name} · {s.variant_label}
-                  <span className="text-[12px] text-[#626262]">{s.sample_auto ? ' — chosen by the store' : ' — customer’s pick'}</span>
+                  <span className="text-[12px] text-[#4F4F4F]">{s.sample_auto ? ' — chosen by the store' : ' — customer’s pick'}</span>
                 </li>
               ))}
             </ul>
@@ -250,11 +250,11 @@ export default function OrderDetailPage() {
             <ul className="space-y-2 text-[13.5px]">
               {(o.order_events ?? []).map((e) => (
                 <li key={e.id} className="flex gap-3">
-                  <span className="text-[#626262] whitespace-nowrap">{formatOrderDateTime(e.created_at)}</span>
+                  <span className="text-[#4F4F4F] whitespace-nowrap">{formatOrderDateTime(e.created_at)}</span>
                   <span>
                     {e.to_status ? ORDER_STATUS_LABEL[e.to_status as OrderStatus] ?? e.to_status : e.kind === 'tracking' ? 'Tracking added' : 'Note'}
-                    {e.message ? <span className="text-[#525252]"> — {e.message}</span> : null}
-                    {e.actor_role ? <span className="text-[#6B6B6B]"> · {e.actor_role}</span> : null}
+                    {e.message ? <span className="text-[#454545]"> — {e.message}</span> : null}
+                    {e.actor_role ? <span className="text-[#575757]"> · {e.actor_role}</span> : null}
                   </span>
                 </li>
               ))}
@@ -265,13 +265,13 @@ export default function OrderDetailPage() {
         <aside className="space-y-5">
           <Panel title="Customer">
             <p className="text-[14px]">{o.customer_name}</p>
-            <p className="text-[13px] text-[#525252]">{o.customer_email}</p>
+            <p className="text-[13px] text-[#454545]">{o.customer_email}</p>
             {o.customer_phone && (
-              <p className="text-[13px] text-[#525252]">
+              <p className="text-[13px] text-[#454545]">
                 <a href={`tel:+91${o.customer_phone}`} className="underline">{formatIndianPhone(o.customer_phone)}</a>
               </p>
             )}
-            <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mt-4 mb-1">Ship to</p>
+            <p className="text-[12px] text-[#454545] mt-4 mb-1 font-medium">Ship to</p>
             <p className="text-[13.5px] leading-relaxed text-[#444444]">
               {a.full_name}
               <br />
@@ -282,7 +282,7 @@ export default function OrderDetailPage() {
             </p>
             {o.note && (
               <>
-                <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mt-4 mb-1">Customer note</p>
+                <p className="text-[12px] text-[#454545] mt-4 mb-1 font-medium">Customer note</p>
                 <p className="text-[13.5px] text-[#444444] whitespace-pre-line">{o.note}</p>
               </>
             )}
@@ -315,7 +315,7 @@ export default function OrderDetailPage() {
         description={
           <span className="block space-y-3 text-tk-ink">
             <span className="block">
-              <label htmlFor="ship-courier" className="block text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1">Courier</label>
+              <label htmlFor="ship-courier" className="block text-[12px] text-[#454545] mb-1 font-medium">Courier</label>
               <select id="ship-courier" value={shipCourier} onChange={(e) => setShipCourier(e.target.value)} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
                 {couriers.map((c) => (
                   <option key={c.key} value={c.key}>{c.name}</option>
@@ -323,10 +323,10 @@ export default function OrderDetailPage() {
               </select>
             </span>
             <span className="block">
-              <label htmlFor="ship-awb" className="block text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1">Tracking / article number</label>
+              <label htmlFor="ship-awb" className="block text-[12px] text-[#454545] mb-1 font-medium">Tracking / article number</label>
               <input id="ship-awb" value={shipAwb} onChange={(e) => setShipAwb(e.target.value)} placeholder="e.g. EK123456789IN" className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px]" />
             </span>
-            <span className="block text-[13px] text-[#525252]">The customer sees the tracking link on their order.</span>
+            <span className="block text-[13px] text-[#454545]">The customer sees the tracking link on their order.</span>
           </span>
         }
         confirmLabel="Mark shipped"

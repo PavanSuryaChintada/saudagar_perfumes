@@ -30,7 +30,7 @@ function FieldInput({ field, value, onChange, error }: { field: SettingField; va
           <label htmlFor={id} className="text-[14px] text-tk-ink">
             {field.label}
           </label>
-          {field.help && <p className="text-[12px] text-[#626262] mt-0.5 max-w-[520px]">{field.help}</p>}
+          {field.help && <p className="text-[12px] text-[#4F4F4F] mt-0.5 max-w-[520px]">{field.help}</p>}
         </div>
         <Toggle id={id} checked={Boolean(value)} onChange={onChange} label={field.label} />
       </div>
@@ -42,7 +42,7 @@ function FieldInput({ field, value, onChange, error }: { field: SettingField; va
       <FieldShell label={field.label} help={field.help} error={error}>
         <div className="flex items-center gap-2">
           <TextInput aria-label={`${field.label} from`} inputMode="numeric" value={v.min} onChange={(e) => onChange({ ...v, min: e.target.value })} className="max-w-[90px]" invalid={!!error} />
-          <span className="text-[13px] text-[#5A5A5A]">to</span>
+          <span className="text-[13px] text-[#4A4A4A]">to</span>
           <TextInput aria-label={`${field.label} to`} inputMode="numeric" value={v.max} onChange={(e) => onChange({ ...v, max: e.target.value })} className="max-w-[90px]" invalid={!!error} />
         </div>
       </FieldShell>
@@ -51,7 +51,7 @@ function FieldInput({ field, value, onChange, error }: { field: SettingField; va
   return (
     <FieldShell label={field.label} htmlFor={id} help={field.help} error={error}>
       <div className="flex items-center gap-2">
-        {field.suffix === '₹' && <span className="text-[14px] text-[#5A5A5A]">₹</span>}
+        {field.suffix === '₹' && <span className="text-[14px] text-[#4A4A4A]">₹</span>}
         <TextInput
           id={id}
           inputMode={field.type === 'number' ? 'numeric' : field.type === 'phone' ? 'tel' : undefined}
@@ -60,7 +60,7 @@ function FieldInput({ field, value, onChange, error }: { field: SettingField; va
           invalid={!!error}
           className={field.type === 'number' ? 'max-w-[160px]' : ''}
         />
-        {field.suffix && field.suffix !== '₹' && <span className="text-[13px] text-[#5A5A5A] whitespace-nowrap">{field.suffix}</span>}
+        {field.suffix && field.suffix !== '₹' && <span className="text-[13px] text-[#4A4A4A] whitespace-nowrap">{field.suffix}</span>}
       </div>
     </FieldShell>
   );
@@ -129,7 +129,7 @@ export default function SettingsPage() {
   return (
     <div className="pb-24">
       <PageHeader title="Settings" description="Store-wide rules for delivery, cash on delivery, returns, stock alerts, free samples and integrations." />
-      {isLoading && <p className="text-[14px] text-[#5A5A5A]">Loading settings…</p>}
+      {isLoading && <p className="text-[14px] text-[#4A4A4A]">Loading settings…</p>}
       {loadError && <p className="text-[14px] text-rose-600">{toFriendlyError(loadError)}</p>}
       {initial && (
         <div className="space-y-5">

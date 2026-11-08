@@ -61,7 +61,7 @@ export default function GuidePage() {
                   <span className="block text-[14px] text-tk-ink">{s.title}</span>
                 </span>
                 <StatusPill status={s.check ? status?.[s.check] : undefined} optional={s.optional} />
-                <ChevronDown size={16} className={`shrink-0 text-[#626262] transition-transform ${isOpen ? 'rotate-180' : ''}`} aria-hidden />
+                <ChevronDown size={16} className={`shrink-0 text-[#4F4F4F] transition-transform ${isOpen ? 'rotate-180' : ''}`} aria-hidden />
               </button>
               {isOpen && (
                 <div id={`guide-body-${s.id}`} className="px-4 sm:px-5 pb-5 pt-1 border-t border-[#E9E7E2]">

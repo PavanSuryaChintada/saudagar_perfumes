@@ -100,22 +100,22 @@ export default function ScentProfilePage() {
           renderItem={(o) => (
             <div className="flex items-center gap-3 pr-2 py-2">
               <div className="min-w-0 flex-1">
-                <p className={`text-[14px] ${o.is_active ? 'text-tk-ink' : 'text-[#6B6B6B] line-through'}`}>
-                  {o.label} {o.badge && <span className="ml-1 text-[11px] px-1.5 py-0.5 bg-[#F4F3EE] text-[#5A5A5A]">{o.badge}</span>}
+                <p className={`text-[14px] ${o.is_active ? 'text-tk-ink' : 'text-[#575757] line-through'}`}>
+                  {o.label} {o.badge && <span className="ml-1 text-[12px] px-1.5 py-0.5 bg-[#F4F3EE] text-[#4A4A4A]">{o.badge}</span>}
                 </p>
-                {o.description && <p className="text-[12px] text-[#626262] truncate">{o.description}</p>}
+                {o.description && <p className="text-[12px] text-[#4F4F4F] truncate">{o.description}</p>}
               </div>
-              <button type="button" aria-label={`Edit ${o.label}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => { setError(''); setDraft({ id: o.id, kind: o.kind, label: o.label, slug: o.slug, description: o.description ?? '', badge: o.badge ?? '', is_active: o.is_active }); }}>
+              <button type="button" aria-label={`Edit ${o.label}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => { setError(''); setDraft({ id: o.id, kind: o.kind, label: o.label, slug: o.slug, description: o.description ?? '', badge: o.badge ?? '', is_active: o.is_active }); }}>
                 <Pencil size={14} />
               </button>
-              <button type="button" aria-label={`Delete ${o.label}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(o)}>
+              <button type="button" aria-label={`Delete ${o.label}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setDeleting(o)}>
                 <Trash2 size={14} />
               </button>
             </div>
           )}
         />
         <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="options" />
-        {list.length === 0 && <p className="text-[13px] text-[#626262] mb-3">No options yet.</p>}
+        {list.length === 0 && <p className="text-[13px] text-[#4F4F4F] mb-3">No options yet.</p>}
         <Button size="sm" variant="secondary" onClick={() => { setError(''); setDraft({ kind, label: '', slug: '', description: '', badge: '', is_active: true }); }}>
           <Plus size={12} /> Add option
         </Button>

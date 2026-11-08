@@ -154,8 +154,8 @@ export default function WelcomeTab() {
             return (
               <div key={t.id} className="flex items-center gap-3 px-3 py-2.5 text-[14px]">
                 <div className="min-w-0 flex-1">
-                  <p className={t.is_active ? '' : 'text-[#6B6B6B]'}>{t.label}</p>
-                  <p className="text-[12px] text-[#626262]">
+                  <p className={t.is_active ? '' : 'text-[#575757]'}>{t.label}</p>
+                  <p className="text-[12px] text-[#4F4F4F]">
                     {describeOffer({ discount_type: t.discount_type, value: t.value, max_discount: null, min_order: 0 })} · {t.is_active ? `${share}% of new customers` : 'off'} · {s.issued} issued · {s.used} used
                   </p>
                 </div>
@@ -171,7 +171,7 @@ export default function WelcomeTab() {
                     }
                   }}
                 />
-                <button type="button" aria-label={`Edit ${t.label}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => setTier({ ...t, value_text: String(t.value), weight_text: String(t.weight) })}>
+                <button type="button" aria-label={`Edit ${t.label}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => setTier({ ...t, value_text: String(t.value), weight_text: String(t.weight) })}>
                   <Pencil size={14} />
                 </button>
               </div>

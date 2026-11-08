@@ -54,13 +54,13 @@ export const STATUS_TONE: Record<string, string> = {
   SHIPPED: 'bg-indigo-50 text-indigo-800 border-indigo-200',
   OUT_FOR_DELIVERY: 'bg-indigo-50 text-indigo-800 border-indigo-200',
   DELIVERED: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-  CANCELLED: 'bg-[#F4F3EE] text-[#5A5A5A] border-[#D3D0C8]',
+  CANCELLED: 'bg-[#F4F3EE] text-[#4A4A4A] border-[#D3D0C8]',
   RTO: 'bg-rose-50 text-rose-700 border-rose-200',
 };
 
 export function StatusBadge({ status }: { status: string }) {
   return (
-    <span className={`inline-block px-2 py-0.5 border text-[11.5px] uppercase tracking-[0.06em] whitespace-nowrap ${STATUS_TONE[status] ?? ''}`}>
+    <span className={`inline-block px-2 py-0.5 border text-[12.5px] whitespace-nowrap ${STATUS_TONE[status] ?? ''} font-medium`}>
       {ORDER_STATUS_LABEL[status as OrderStatus] ?? status}
     </span>
   );
@@ -198,7 +198,7 @@ export default function OrdersPage() {
       <div className="bg-white border border-[#E2E0DB] overflow-x-auto">
         <table className="w-full text-[14px] min-w-[720px]">
           <thead>
-            <tr className="text-left text-[12px] uppercase tracking-[0.06em] text-[#5A5A5A] border-b border-[#E2E0DB]">
+            <tr className="text-left text-[12px] text-[#4A4A4A] border-b border-[#E2E0DB] font-medium">
               <th className="pl-3 py-2 w-8">
                 <RowCheck checked={allShown} onChange={(on) => setSelected(on ? new Set(rows.map((r) => r.id)) : new Set())} label="Select every order on this page" />
               </th>
@@ -212,10 +212,10 @@ export default function OrdersPage() {
           </thead>
           <tbody className="divide-y divide-[#E9E7E2]">
             {isLoading && (
-              <tr><td colSpan={7} className="px-3 py-6 text-[#5A5A5A]">Loading…</td></tr>
+              <tr><td colSpan={7} className="px-3 py-6 text-[#4A4A4A]">Loading…</td></tr>
             )}
             {!isLoading && rows.length === 0 && (
-              <tr><td colSpan={7} className="px-3 py-6 text-[#5A5A5A]">No orders {status || params.get('q') ? 'match these filters' : 'yet'}.</td></tr>
+              <tr><td colSpan={7} className="px-3 py-6 text-[#4A4A4A]">No orders {status || params.get('q') ? 'match these filters' : 'yet'}.</td></tr>
             )}
             {rows.map((o) => {
               const items = o.order_items.filter((i) => i.line_type === 'item').reduce((n, i) => n + i.qty, 0);
@@ -227,11 +227,11 @@ export default function OrdersPage() {
                   </td>
                   <td className="px-3 py-2.5">
                     <Link to={`/admin/orders/${o.id}`} className="font-medium text-tk-ink underline decoration-[#C4C1B9] underline-offset-4 hover:decoration-tk-ink">{o.order_number}</Link>
-                    <p className="text-[12px] text-[#626262]">{formatOrderDateTime(o.created_at)}</p>
+                    <p className="text-[12px] text-[#4F4F4F]">{formatOrderDateTime(o.created_at)}</p>
                   </td>
                   <td className="px-3 py-2.5">
                     <p>{o.customer_name}</p>
-                    <p className="text-[12px] text-[#626262]">{[o.ship_city, o.ship_state].filter(Boolean).join(', ')}</p>
+                    <p className="text-[12px] text-[#4F4F4F]">{[o.ship_city, o.ship_state].filter(Boolean).join(', ')}</p>
                   </td>
                   <td className="px-3 py-2.5 text-[13px] text-[#454545]">
                     {items} item{items === 1 ? '' : 's'}
@@ -322,7 +322,7 @@ export default function OrdersPage() {
                     <div key={o.id} className="grid gap-2 sm:grid-cols-[150px_1fr_1fr] items-center px-3 py-2.5">
                       <p className="text-[14px] font-medium">
                         {o.order_number}
-                        <span className="block text-[12px] font-normal text-[#5A5A5A]">{o.customer_name} · {o.ship_city}</span>
+                        <span className="block text-[12px] font-normal text-[#4A4A4A]">{o.customer_name} · {o.ship_city}</span>
                       </p>
                       <select
                         aria-label={`Courier for ${o.order_number}`}

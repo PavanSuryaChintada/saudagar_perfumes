@@ -68,7 +68,7 @@ export default function NotificationsBell() {
       <button type="button" onClick={() => setOpen(!open)} aria-label={`Notifications${unread ? `, ${unread} new` : ''}`} aria-expanded={open} className="relative p-2 text-[#454545] hover:text-tk-ink">
         <Bell size={17} />
         {unread > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-tk-accent text-white text-[11px] leading-4 text-center rounded-full tabular-nums">{unread > 9 ? '9+' : unread}</span>
+          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-tk-accent text-white text-[12px] leading-4 text-center rounded-full tabular-nums">{unread > 9 ? '9+' : unread}</span>
         )}
       </button>
       {open && (
@@ -77,7 +77,7 @@ export default function NotificationsBell() {
             <p className="text-[13px] font-medium">Notifications</p>
             {unread > 0 && <button type="button" onClick={() => markRead()} className="text-[12px] underline">Mark all read</button>}
           </div>
-          {notes.length === 0 && <p className="px-3 py-6 text-[13px] text-[#5A5A5A]">Nothing yet.</p>}
+          {notes.length === 0 && <p className="px-3 py-6 text-[13px] text-[#4A4A4A]">Nothing yet.</p>}
           <ul className="divide-y divide-[#E9E7E2]">
             {notes.map((n) => (
               <li key={n.id}>
@@ -90,8 +90,8 @@ export default function NotificationsBell() {
                   className={`block px-3 py-2.5 hover:bg-[#FAFAF7] ${n.read_at ? '' : 'bg-[#FFF9F2]'}`}
                 >
                   <p className="text-[13.5px] text-tk-ink">{n.title}</p>
-                  {n.body && <p className="text-[12.5px] text-[#525252]">{n.body}</p>}
-                  <p className="text-[11.5px] text-[#6B6B6B] mt-0.5">{formatOrderDateTime(n.created_at)}</p>
+                  {n.body && <p className="text-[12.5px] text-[#454545]">{n.body}</p>}
+                  <p className="text-[12.5px] text-[#575757] mt-0.5">{formatOrderDateTime(n.created_at)}</p>
                 </Link>
               </li>
             ))}

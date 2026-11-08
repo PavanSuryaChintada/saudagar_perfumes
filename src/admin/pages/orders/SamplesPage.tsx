@@ -12,6 +12,7 @@ import { FieldShell, TextInput, Toggle } from '../../ui/Field';
 import { Modal } from '../../ui/Modal';
 import { SortableList } from '../../ui/SortableList';
 import { SearchSelect } from '../../ui/SearchSelect';
+import { formatMl } from '../../inventory/stock';
 import { rpc, throwIf, useInvalidateCatalog } from '../../catalog/api';
 import { useProductLookup } from '../../cms/lookups';
 
@@ -23,7 +24,7 @@ interface PoolRow {
   in_sample_pool: boolean;
   is_active: boolean;
   position: number;
-  product: { id: string; name: string; is_active: boolean; archived_at: string | null } | null;
+  product: { id: string; name: string; is_active: boolean; archived_at: string | null; stock_unit: 'ml' | 'piece'; stock_ml: number } | null;
 }
 
 /** Admin → Free samples: the rule, the list customers pick from, and what was given. */
@@ -44,7 +45,7 @@ export default function SamplesPage() {
       (await throwIf(
         supabase
           .from('product_variants')
-          .select('id, label, sku, stock, in_sample_pool, is_active, position, product:products(id, name, is_active, archived_at)')
+          .select('id, label, sku, stock, in_sample_pool, is_active, position, product:products(id, name, is_active, archived_at, stock_unit, stock_ml)')
           .eq('kind', 'sample')
           .eq('is_hidden', false)
           .order('position'),
@@ -65,6 +66,11 @@ export default function SamplesPage() {
   });
 
   const { data: products = [] } = useProductLookup();
+  // Sets and accessories are counted in pieces, so their sample vials need an opening count; perfumes don't.
+  const { data: pieceIds = new Set<string>() } = useQuery({
+    queryKey: ['admin', 'catalog', 'piece-products'],
+    queryFn: async () => new Set(((await throwIf(supabase.from('products').select('id').eq('stock_unit', 'piece'))) as { id: string }[]).map((r) => r.id)),
+  });
   const withVial = useMemo(() => new Set(pool.map((p) => p.product?.id)), [pool]);
   const [adding, setAdding] = useState(false);
   const [newProduct, setNewProduct] = useState('');
@@ -130,9 +136,9 @@ export default function SamplesPage() {
         </div>
       </Panel>
 
-      <Panel title={`Sample list · ${live} available to pick`} description="Drag to set the order customers see. Vials at zero stock are hidden from customers automatically; 'Surprise me' picks favour scents with more stock.">
+      <Panel title={`Sample list · ${live} available to pick`} description="Drag to set the order customers see. A scent with too little left for a sample is hidden automatically; 'Surprise me' favours scents with more left.">
         {pool.length === 0 ? (
-          <p className="text-[14px] text-[#5A5A5A]">No sample vials yet. Add one, or switch on “Offer as a free sample” in a product.</p>
+          <p className="text-[14px] text-[#4A4A4A]">No sample vials yet. Add one, or switch on “Offer as a free sample” in a product.</p>
         ) : (
           <SortableList
             items={pool}
@@ -149,20 +155,29 @@ export default function SamplesPage() {
               <div className="flex items-center gap-3 pr-3 py-2 text-[14px]">
                 <div className="min-w-0 flex-1">
                   <Link to={`/admin/products/${r.product?.id}`} className="hover:underline">{r.product?.name}</Link>
-                  <p className="text-[12px] text-[#626262]">{r.label} · {r.sku}{r.product && !r.product.is_active ? ' · product is a draft' : ''}</p>
+                  <p className="text-[12px] text-[#4F4F4F]">{r.label} · {r.sku}{r.product && !r.product.is_active ? ' · product is a draft' : ''}</p>
                 </div>
-                <span className={`tabular-nums text-[13px] ${r.stock === 0 ? 'text-rose-600' : r.stock <= 5 ? 'text-amber-700' : 'text-[#454545]'}`}>{r.stock} in stock</span>
+                <span className={`tabular-nums text-[13px] text-right ${r.stock === 0 ? 'text-rose-600' : r.stock <= 5 ? 'text-amber-700' : 'text-[#454545]'}`}>
+                  {r.product?.stock_unit === 'ml' ? (
+                    <>
+                      {formatMl(Number(r.product.stock_ml))} left
+                      <span className="block text-[12px] text-[#4A4A4A]">enough for {r.stock} samples</span>
+                    </>
+                  ) : (
+                    `${r.stock} in stock`
+                  )}
+                </span>
                 <Toggle checked={r.in_sample_pool} onChange={(on) => setInPool(r, on)} label={`Offer ${r.product?.name ?? ''} as a free sample`} />
               </div>
             )}
           />
         )}
-        <p className="mt-2 text-[12px] text-[#626262]">Add stock to vials from Inventory → Sample vials.</p>
+        <p className="mt-2 text-[13px] text-[#4F4F4F]">Samples are poured from each perfume's own stock, so there's nothing separate to restock. Add perfume in Inventory.</p>
       </Panel>
 
       <Panel title="Given in the last 30 days">
         {(given.data ?? []).length === 0 ? (
-          <p className="text-[14px] text-[#5A5A5A]">None yet.</p>
+          <p className="text-[14px] text-[#4A4A4A]">None yet.</p>
         ) : (
           <ul className="text-[14px] divide-y divide-[#E9E7E2]">
             {(given.data ?? []).map(([name, n]) => (
@@ -198,9 +213,11 @@ export default function SamplesPage() {
               emptyText="Every product already has a sample vial."
             />
           </FieldShell>
+          {products.find((p) => p.id === newProduct) && pieceIds.has(newProduct) && (
           <FieldShell label="Opening stock (vials)" htmlFor="sv-stock">
             <TextInput id="sv-stock" inputMode="numeric" placeholder="e.g. 50" value={newStock} onChange={(e) => setNewStock(e.target.value)} />
           </FieldShell>
+          )}
         </div>
       </Modal>
     </div>

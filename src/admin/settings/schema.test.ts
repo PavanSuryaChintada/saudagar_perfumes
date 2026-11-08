@@ -42,6 +42,9 @@ describe('SETTINGS_SCHEMA', () => {
         'whatsapp.floating_number', 'analytics.ga4_id', 'analytics.gtm_id', 'inventory.low_stock_threshold', 'orders.prefix',
         'samples.bag_heading', 'samples.bag_text', 'business.legal_name', 'business.gstin', 'business.address', 'business.state',
         'business.invoice_note', 'cod.max_order', 'cod.max_open_orders', 'payments.auto_refund_on_cancel', 'coupons.first_order_phone_check',
+        'inventory.low_stock_ml', 'product_defaults.country_of_origin', 'product_defaults.manufacturer_name', 'product_defaults.manufacturer_address',
+        'product_defaults.packer_name', 'product_defaults.packer_address', 'product_defaults.importer_name', 'product_defaults.importer_address',
+        'product_defaults.consumer_care', 'product_defaults.shelf_life', 'product_defaults.caution_text', 'product_defaults.hsn_code', 'product_defaults.gst_rate',
       ].sort(),
     );
   });

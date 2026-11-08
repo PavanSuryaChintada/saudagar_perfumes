@@ -4,7 +4,7 @@ import type { GuideSection } from './guide';
 import type { CheckStatus } from './useGuideStatus';
 
 export function StatusPill({ status, optional }: { status?: CheckStatus; optional?: boolean }) {
-  if (!status) return optional ? <span className="text-[11.5px] uppercase tracking-[0.08em] text-[#6B6B6B]">Optional</span> : null;
+  if (!status) return optional ? <span className="text-[12.5px] text-[#575757] font-medium">Optional</span> : null;
   const tone =
     status.done === true
       ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
@@ -23,7 +23,7 @@ export function StatusPill({ status, optional }: { status?: CheckStatus; optiona
 export function GuideSteps({ section, onNavigate }: { section: GuideSection; onNavigate?: () => void }) {
   return (
     <div className="space-y-3">
-      <p className="text-[13.5px] text-[#525252]">{section.why}</p>
+      <p className="text-[13.5px] text-[#454545]">{section.why}</p>
       <ol className="space-y-2.5">
         {section.steps.map((step, i) => (
           <li key={i} className="flex gap-3 text-[14px] text-tk-ink">

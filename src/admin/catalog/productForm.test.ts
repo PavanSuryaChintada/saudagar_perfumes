@@ -37,7 +37,7 @@ describe('validateProductForm', () => {
   it('rejects duplicate SKUs within the product', () => {
     const f = valid();
     f.variants[1].sku = 'dc-50';
-    expect(validateProductForm(f)['variants.1.sku']).toBe('This SKU is already used above.');
+    expect(validateProductForm(f)['variants.1.sku']).toBe('This SKU is already used above. Change one of them.');
   });
   it('keeps accord strength between 1 and 100', () => {
     const f = { ...valid(), attributes: [{ option_id: 'a1', kind: 'accord', strength: 140, is_primary: false }] };
@@ -50,11 +50,24 @@ describe('validateProductForm', () => {
 
 describe('toSavePayload', () => {
   it('converts form strings to numbers and blanks to null', () => {
-    const p = toSavePayload(valid()) as Record<string, any>;
+    const p = toSavePayload({ ...valid(), stock_unit: 'piece' }) as Record<string, any>;
     expect(p.base_price).toBe(6600);
     expect(p.compare_at_price).toBeNull();
     expect(p.variants[0]).toMatchObject({ sku: 'DC-50', size_ml: 50, price: null, initial_stock: 10 });
     expect(p.variants[1]).toMatchObject({ price: 10500, initial_stock: null });
+  });
+  it('starts a new perfume with its liquid, converted to ml, and no per-size counts', () => {
+    const p = toSavePayload({ ...valid(), id: undefined, stock_unit: 'ml', liquid_amount: '1.5', liquid_unit: 'L' }) as Record<string, any>;
+    expect(p.stock_unit).toBe('ml');
+    expect(p.liquid_ml).toBe(1500);
+    expect(p.variants.every((v: any) => v.initial_stock === null)).toBe(true);
+    expect((toSavePayload({ ...valid(), id: undefined, liquid_amount: '2', liquid_unit: 'tola' }) as any).liquid_ml).toBe(23.32);
+  });
+  it('fills an empty SKU from the web address and size', () => {
+    const f = valid();
+    f.variants[0].sku = '';
+    expect(validateProductForm(f)['variants.0.sku']).toBeUndefined();
+    expect((toSavePayload(f) as any).variants[0].sku).toBe(`${f.slug.toUpperCase()}-${f.variants[0].size_ml}`);
   });
   it('links media to sizes by SKU', () => {
     const f = { ...valid(), media: [{ kind: 'image' as const, url: '/a.webp', alt: '', variant_sku: 'DC-100' }] };

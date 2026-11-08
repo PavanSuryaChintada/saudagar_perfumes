@@ -6,6 +6,7 @@ import { Copy, Archive, ArchiveRestore, FileSpreadsheet, Pencil, Plus, Trash2, E
 import { toast } from 'sonner';
 import { toFriendlyError } from '../../../lib/errors';
 import { formatINR } from '../../../lib/money';
+import { formatMl } from '../../inventory/stock';
 import { PageHeader } from '../../ui/PageHeader';
 import { useGuideStatus } from '../../guide/useGuideStatus';
 import { Button } from '../../ui/Button';
@@ -20,7 +21,7 @@ type Status = 'all' | 'active' | 'draft' | 'archived';
 const statusOf = (p: ProductListRow): Exclude<Status, 'all'> => (p.archived_at ? 'archived' : p.is_active ? 'active' : 'draft');
 const ACTION =
   'inline-flex items-center gap-1 px-2 py-1.5 text-[12.5px] text-[#3F3F3F] border border-transparent hover:border-[#C4C1B9] hover:text-tk-ink';
-const STATUS_STYLE = { active: 'bg-emerald-50 text-emerald-700', draft: 'bg-amber-50 text-amber-700', archived: 'bg-[#E9E7E2] text-[#5A5A5A]' };
+const STATUS_STYLE = { active: 'bg-emerald-50 text-emerald-700', draft: 'bg-amber-50 text-amber-700', archived: 'bg-[#E9E7E2] text-[#4A4A4A]' };
 
 export default function ProductsPage() {
   const navigate = useNavigate();
@@ -114,7 +115,7 @@ export default function ProductsPage() {
         <TextInput placeholder="Search products" value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-[280px]" aria-label="Search products" />
       </div>
 
-      {isLoading && <p className="text-[14px] text-[#5A5A5A]">Loading…</p>}
+      {isLoading && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}
       {error && <p className="text-[14px] text-rose-600">{toFriendlyError(error)}</p>}
 
       <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
@@ -141,14 +142,16 @@ export default function ProductsPage() {
               </div>
               <Link to={`/admin/products/${p.id}`} className="min-w-0 flex-1 basis-[180px] group">
                 <p className="text-[14px] font-medium text-tk-ink group-hover:text-tk-accent group-hover:underline underline-offset-4 line-clamp-2 sm:line-clamp-1">{p.name}</p>
-                <p className="text-[12px] text-[#626262] truncate">
+                <p className="text-[12px] text-[#4F4F4F] truncate">
                   /{p.slug}
                   {p.admin_note?.startsWith('SAMPLE') && <span className="ml-2 text-amber-700">· sample content</span>}
                 </p>
               </Link>
               <span className={`px-2 py-0.5 text-[12px] ${STATUS_STYLE[st]}`}>{st}</span>
               <span className="w-[140px] text-[13px] text-[#454545] tabular-nums">{price}</span>
-              <span className={`w-[80px] text-[13px] tabular-nums ${p.total_stock <= 5 ? 'text-rose-600' : 'text-[#454545]'}`}>{p.total_stock} in stock</span>
+              <span className={`w-[110px] text-[13px] tabular-nums ${p.total_stock <= 0 ? 'text-rose-600' : 'text-[#454545]'}`}>
+                {p.stock_unit === 'ml' ? `${formatMl(Number(p.stock_ml))} left` : `${p.total_stock} in stock`}
+              </span>
               <div className="flex flex-wrap gap-1 ml-auto">
                 <Link to={`/admin/products/${p.id}`} className={ACTION}>
                   <Pencil size={13} aria-hidden /> Edit
@@ -187,7 +190,7 @@ export default function ProductsPage() {
           );
         })}
         {!isLoading && rows.length === 0 && (
-          <p className="p-8 text-center text-[14px] text-[#5A5A5A]">
+          <p className="p-8 text-center text-[14px] text-[#4A4A4A]">
             {data.length === 0 ? 'No products yet. Press “Add product” to create the first one.' : 'No products match. Clear the search or pick another tab.'}
           </p>
         )}
@@ -244,7 +247,7 @@ export default function ProductsPage() {
         ) : (
           <SearchSelect options={categoryOptions(categories)} value={bulkValue} onChange={setBulkValue} placeholder="Search categories" ariaLabel="Category" />
         )}
-        {bulk === 'add_category' && <p className="mt-2 text-[13px] text-[#5A5A5A]">Products keep their main category; this adds an extra one.</p>}
+        {bulk === 'add_category' && <p className="mt-2 text-[13px] text-[#4A4A4A]">Products keep their main category; this adds an extra one.</p>}
       </Modal>
 
       <ConfirmDialog
@@ -291,10 +294,10 @@ function BeforeProducts() {
           <li key={i.key}>
             <Link to={i.to} className="flex items-center justify-between gap-3 px-4 py-2.5 text-[14px] hover:bg-[#FAFAF8]">
               <span>
-                <span className={status[i.key].done ? 'text-[#626262] line-through' : 'text-tk-ink'}>{i.label}</span>
-                <span className="text-[#626262]"> · {i.hint}</span>
+                <span className={status[i.key].done ? 'text-[#4F4F4F] line-through' : 'text-tk-ink'}>{i.label}</span>
+                <span className="text-[#4F4F4F]"> · {i.hint}</span>
               </span>
-              <span className="text-[13px] text-[#5A5A5A]">{status[i.key].done ? `✓ ${status[i.key].text}` : 'Set up →'}</span>
+              <span className="text-[13px] text-[#4A4A4A]">{status[i.key].done ? `✓ ${status[i.key].text}` : 'Set up →'}</span>
             </Link>
           </li>
         ))}

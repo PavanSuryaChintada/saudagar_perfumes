@@ -88,7 +88,7 @@ export default function NotesPage() {
             <option key={f.id} value={f.id}>{f.label}</option>
           ))}
         </select>
-        <p className="text-[13px] text-[#626262] self-center">{filtered.length} notes{canReorder ? ' · drag to reorder' : ''}</p>
+        <p className="text-[13px] text-[#4F4F4F] self-center">{filtered.length} notes{canReorder ? ' · drag to reorder' : ''}</p>
       </div>
 
       {canReorder ? (
@@ -194,13 +194,13 @@ function NoteRowView({ n, family, onEdit, onDelete }: { n: NoteRow; family?: str
         {n.image_url ? <img src={n.image_url} alt="" className="w-full h-full object-cover" /> : n.name.charAt(0)}
       </div>
       <div className="min-w-0 flex-1">
-        <p className={`text-[14px] truncate ${n.is_active ? '' : 'text-[#6B6B6B] line-through'}`}>{n.name}</p>
-        <p className="text-[12px] text-[#626262]">{family ?? 'No family'}</p>
+        <p className={`text-[14px] truncate ${n.is_active ? '' : 'text-[#575757] line-through'}`}>{n.name}</p>
+        <p className="text-[12px] text-[#4F4F4F]">{family ?? 'No family'}</p>
       </div>
-      <button type="button" aria-label={`Edit ${n.name}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={onEdit}>
+      <button type="button" aria-label={`Edit ${n.name}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={onEdit}>
         <Pencil size={14} />
       </button>
-      <button type="button" aria-label={`Delete ${n.name}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={onDelete}>
+      <button type="button" aria-label={`Delete ${n.name}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={onDelete}>
         <Trash2 size={14} />
       </button>
     </div>

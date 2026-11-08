@@ -81,9 +81,9 @@ const toLocal = (iso: string | null) => {
 
 export function couponStatus(c: Pick<CouponRow, 'is_active' | 'starts_at' | 'expires_at' | 'usage_limit'> & { used: number }): { label: string; tone: string } {
   const now = Date.now();
-  if (!c.is_active) return { label: 'Off', tone: 'bg-[#F4F3EE] text-[#5A5A5A] border-[#D3D0C8]' };
-  if (c.expires_at && new Date(c.expires_at).getTime() <= now) return { label: 'Expired', tone: 'bg-[#F4F3EE] text-[#5A5A5A] border-[#D3D0C8]' };
-  if (c.usage_limit !== null && c.used >= c.usage_limit) return { label: 'Used up', tone: 'bg-[#F4F3EE] text-[#5A5A5A] border-[#D3D0C8]' };
+  if (!c.is_active) return { label: 'Off', tone: 'bg-[#F4F3EE] text-[#4A4A4A] border-[#D3D0C8]' };
+  if (c.expires_at && new Date(c.expires_at).getTime() <= now) return { label: 'Expired', tone: 'bg-[#F4F3EE] text-[#4A4A4A] border-[#D3D0C8]' };
+  if (c.usage_limit !== null && c.used >= c.usage_limit) return { label: 'Used up', tone: 'bg-[#F4F3EE] text-[#4A4A4A] border-[#D3D0C8]' };
   if (c.starts_at && new Date(c.starts_at).getTime() > now) return { label: 'Scheduled', tone: 'bg-sky-50 text-sky-800 border-sky-200' };
   return { label: 'Live', tone: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
 }
@@ -111,7 +111,7 @@ export default function CouponsPage() {
             type="button"
             aria-selected={tab === k}
             onClick={() => setParams(k === 'coupons' ? {} : { tab: k })}
-            className={`px-3 py-2 text-[13px] -mb-px border-b-2 ${tab === k ? 'border-tk-ink text-tk-ink' : 'border-transparent text-[#5A5A5A] hover:text-tk-ink'}`}
+            className={`px-3 py-2 text-[13px] -mb-px border-b-2 ${tab === k ? 'border-tk-ink text-tk-ink' : 'border-transparent text-[#4A4A4A] hover:text-tk-ink'}`}
           >
             {l}
           </button>
@@ -236,7 +236,7 @@ function CouponsTab() {
       <div className="bg-white border border-[#E2E0DB] overflow-x-auto">
         <table className="w-full text-[14px] min-w-[680px]">
           <thead>
-            <tr className="text-left text-[12px] uppercase tracking-[0.06em] text-[#5A5A5A] border-b border-[#E2E0DB]">
+            <tr className="text-left text-[12px] text-[#4A4A4A] border-b border-[#E2E0DB] font-medium">
               <th className="px-3 py-2 font-medium">Code</th>
               <th className="px-3 py-2 font-medium">Offer</th>
               <th className="px-3 py-2 font-medium">Used</th>
@@ -245,28 +245,28 @@ function CouponsTab() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#E9E7E2]">
-            {isLoading && <tr><td colSpan={5} className="px-3 py-6 text-[#5A5A5A]">Loading…</td></tr>}
-            {!isLoading && filtered.length === 0 && <tr><td colSpan={5} className="px-3 py-6 text-[#5A5A5A]">No coupons yet.</td></tr>}
+            {isLoading && <tr><td colSpan={5} className="px-3 py-6 text-[#4A4A4A]">Loading…</td></tr>}
+            {!isLoading && filtered.length === 0 && <tr><td colSpan={5} className="px-3 py-6 text-[#4A4A4A]">No coupons yet.</td></tr>}
             {paged.rows.map((r) => {
               const st = couponStatus({ ...r, used: used(r) });
               return (
                 <tr key={r.id}>
                   <td className="px-3 py-2.5">
                     <p className="font-mono font-medium">{r.code}</p>
-                    <p className="text-[12px] text-[#626262]">
+                    <p className="text-[12px] text-[#4F4F4F]">
                       {r.assigned_user_id ? 'Personal' : r.is_listed ? 'Shown at checkout' : 'Hidden — must be typed'}
                       {r.coupon_categories.length ? ` · ${r.coupon_categories.length} categor${r.coupon_categories.length === 1 ? 'y' : 'ies'}` : ''}
                     </p>
                   </td>
                   <td className="px-3 py-2.5 text-[13.5px]">
                     {describeOffer(r)}
-                    {r.description && <p className="text-[12px] text-[#626262]">{r.description}</p>}
+                    {r.description && <p className="text-[12px] text-[#4F4F4F]">{r.description}</p>}
                   </td>
                   <td className="px-3 py-2.5 tabular-nums text-[13.5px]">{used(r)} / {r.usage_limit ?? '∞'}</td>
-                  <td className="px-3 py-2.5"><span className={`inline-block px-2 py-0.5 border text-[11.5px] uppercase tracking-[0.06em] ${st.tone}`}>{st.label}</span></td>
+                  <td className="px-3 py-2.5"><span className={`inline-block px-2 py-0.5 border text-[12.5px] ${st.tone} font-medium`}>{st.label}</span></td>
                   <td className="px-3 py-2.5 text-right whitespace-nowrap">
-                    <button type="button" aria-label={`Edit ${r.code}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => edit(r)}><Pencil size={14} /></button>
-                    <button type="button" aria-label={`Delete ${r.code}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(r)}><Trash2 size={14} /></button>
+                    <button type="button" aria-label={`Edit ${r.code}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => edit(r)}><Pencil size={14} /></button>
+                    <button type="button" aria-label={`Delete ${r.code}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setDeleting(r)}><Trash2 size={14} /></button>
                   </td>
                 </tr>
               );
@@ -335,8 +335,8 @@ function CouponsTab() {
             </div>
 
             <fieldset className="border border-[#E2E0DB] p-3 space-y-2">
-              <legend className="px-1 text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">Where it applies</legend>
-              <p className="text-[12px] text-[#626262]">No categories = the whole store. A category includes its sub-categories.</p>
+              <legend className="px-1 text-[12px] font-medium text-[#454545]">Where it applies</legend>
+              <p className="text-[12px] text-[#4F4F4F]">No categories = the whole store. A category includes its sub-categories.</p>
               <SearchMultiSelect
                 ariaLabel="Categories this code covers"
                 options={categoryOptions(categories)}
@@ -344,7 +344,7 @@ function CouponsTab() {
                 onChange={(v) => setDraft({ ...draft, category_ids: v })}
                 placeholder="Search categories, or leave empty for the whole store"
               />
-              <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] pt-2">Never applies to</p>
+              <p className="text-[12px] text-[#454545] pt-2 font-medium">Never applies to</p>
               <SearchMultiSelect
                 ariaLabel="Products this code never covers"
                 options={products.map((p) => ({ value: p.id, label: p.name }))}
@@ -355,8 +355,8 @@ function CouponsTab() {
             </fieldset>
 
             <fieldset className="border border-[#E2E0DB] p-3 space-y-2">
-              <legend className="px-1 text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">Personal code (optional)</legend>
-              <p className="text-[12px] text-[#626262]">Only this customer can use it; it shows in their account under Offers.</p>
+              <legend className="px-1 text-[12px] font-medium text-[#454545]">Personal code (optional)</legend>
+              <p className="text-[12px] text-[#4F4F4F]">Only this customer can use it; it shows in their account under Offers.</p>
               {draft.assigned_user_id ? (
                 <p className="text-[14px]">
                   {draft.assigned_label}{' '}
@@ -369,7 +369,7 @@ function CouponsTab() {
                     <div className="border border-[#E2E0DB] max-h-36 overflow-y-auto">
                       {(customers.data ?? []).map((c) => (
                         <button key={c.id} type="button" className="block w-full text-left px-3 py-1.5 text-[13.5px] hover:bg-[#FAFAF7]" onClick={() => { setDraft({ ...draft, assigned_user_id: c.id, assigned_label: `${c.full_name || 'Customer'} · ${c.email ?? ''}`, is_listed: false }); setCustSearch(''); }}>
-                          {c.full_name || 'Customer'} <span className="text-[#626262]">· {c.email}{c.phone ? ` · ${c.phone}` : ''}</span>
+                          {c.full_name || 'Customer'} <span className="text-[#4F4F4F]">· {c.email}{c.phone ? ` · ${c.phone}` : ''}</span>
                         </button>
                       ))}
                     </div>

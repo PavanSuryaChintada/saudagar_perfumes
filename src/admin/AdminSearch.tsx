@@ -97,11 +97,11 @@ export function SearchButton({ compact = false, onClick }: { compact?: boolean; 
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-2 w-full max-w-[420px] border border-[#C4C1B9] bg-white px-3 py-2 text-[14px] text-[#626262] hover:border-tk-ink"
+      className="flex items-center gap-2 w-full max-w-[420px] border border-[#C4C1B9] bg-white px-3 py-2 text-[14px] text-[#4F4F4F] hover:border-tk-ink"
     >
       <Search size={15} aria-hidden />
       <span className="flex-1 text-left">Search products, orders, customers…</span>
-      <kbd className="text-[11.5px] border border-[#D3D0C8] px-1.5 py-0.5 text-[#5A5A5A]">{isMac ? '⌘' : 'Ctrl'} K</kbd>
+      <kbd className="text-[12.5px] border border-[#D3D0C8] px-1.5 py-0.5 text-[#4A4A4A]">{isMac ? '⌘' : 'Ctrl'} K</kbd>
     </button>
   );
 }
@@ -165,7 +165,7 @@ export default function AdminSearch({ open, onOpenChange }: { open: boolean; onO
           <Dialog.Title className="sr-only">Search the admin</Dialog.Title>
           <Dialog.Description className="sr-only">Type a name, SKU, order number, phone or email, then pick a result to open it.</Dialog.Description>
           <div className="flex items-center gap-2 px-4 border-b border-[#E2E0DB]">
-            <Search size={16} className="text-[#626262]" aria-hidden />
+            <Search size={16} className="text-[#4F4F4F]" aria-hidden />
             <input
               autoFocus
               aria-label="Search the admin"
@@ -181,15 +181,15 @@ export default function AdminSearch({ open, onOpenChange }: { open: boolean; onO
                 if (e.key === 'Enter' && all[active]) { e.preventDefault(); go(all[active]); }
               }}
               placeholder="Name, SKU, order number, phone, email or a page like “refunds”"
-              className="flex-1 py-3.5 text-[14px] bg-transparent focus:outline-none placeholder:text-[#7A7A7A]"
+              className="flex-1 py-3.5 text-[14px] bg-transparent focus:outline-none placeholder:text-[#666666]"
             />
-            {busy && <span className="text-[12px] text-[#6B6B6B]">Searching…</span>}
+            {busy && <span className="text-[12px] text-[#575757]">Searching…</span>}
           </div>
           <ul id="admin-search-results" role="listbox" className="max-h-[60vh] overflow-y-auto py-1">
             {all.map((h, i) => (
               <li key={`${h.group}-${h.to}-${i}`} role="presentation">
                 {(i === 0 || all[i - 1].group !== h.group) && (
-                  <p className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-[0.12em] text-[#6B6B6B]">{h.group}</p>
+                  <p className="px-4 pt-3 pb-1 text-[12px] uppercase tracking-[0.12em] text-[#575757]">{h.group}</p>
                 )}
                 <button
                   type="button"
@@ -201,18 +201,18 @@ export default function AdminSearch({ open, onOpenChange }: { open: boolean; onO
                   className={`w-full text-left px-4 py-2 flex items-baseline justify-between gap-3 ${i === active ? 'bg-[#F4F3EE]' : ''}`}
                 >
                   <span className="text-[14px] text-tk-ink truncate">{h.label}</span>
-                  {h.hint && <span className="text-[12px] text-[#626262] truncate max-w-[45%]">{h.hint}</span>}
+                  {h.hint && <span className="text-[12px] text-[#4F4F4F] truncate max-w-[45%]">{h.hint}</span>}
                 </button>
               </li>
             ))}
-            {!busy && clean(q).length >= 2 && all.length === 0 && <li className="px-4 py-6 text-[14px] text-[#5A5A5A]">Nothing found for “{q.trim()}”.</li>}
+            {!busy && clean(q).length >= 2 && all.length === 0 && <li className="px-4 py-6 text-[14px] text-[#4A4A4A]">Nothing found for “{q.trim()}”.</li>}
             {clean(q).length < 2 && (
-              <li className="px-4 py-5 text-[13.5px] text-[#5A5A5A]">
+              <li className="px-4 py-5 text-[13.5px] text-[#4A4A4A]">
                 Type at least 2 letters. Try a product name, a SKU, an order number like SAU-1042, a phone number, or a page like “coupons”.
               </li>
             )}
           </ul>
-          <p className="px-4 py-2 border-t border-[#E2E0DB] text-[12px] text-[#6B6B6B]">↑ ↓ to move · Enter to open · Esc to close</p>
+          <p className="px-4 py-2 border-t border-[#E2E0DB] text-[12px] text-[#575757]">↑ ↓ to move · Enter to open · Esc to close</p>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

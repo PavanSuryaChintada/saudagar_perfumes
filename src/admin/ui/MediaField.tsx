@@ -79,8 +79,8 @@ export function MediaPicker({
       }
     >
       <TextInput placeholder="Search files" value={search} onChange={(e) => setSearch(e.target.value)} className="mb-4" aria-label="Search media" />
-      {isLoading && <p className="text-[13px] text-[#5A5A5A]">Loading…</p>}
-      {!isLoading && data.length === 0 && <p className="text-[13px] text-[#5A5A5A]">No files yet. Upload one first.</p>}
+      {isLoading && <p className="text-[13px] text-[#4A4A4A]">Loading…</p>}
+      {!isLoading && data.length === 0 && <p className="text-[13px] text-[#4A4A4A]">No files yet. Upload one first.</p>}
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
         {data.map((a) => {
           const on = selected.some((s) => s.id === a.id);
@@ -141,7 +141,7 @@ export function MediaField({
             <MediaPreview url={value} className="w-full h-full object-contain" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[12px] text-[#5A5A5A] break-all line-clamp-2">{value}</p>
+            <p className="text-[12px] text-[#4A4A4A] break-all line-clamp-2">{value}</p>
             <div className="flex gap-2 mt-1.5">
               <Button size="sm" variant="secondary" onClick={() => input.current?.click()} busy={busy}>
                 Replace
@@ -221,7 +221,7 @@ export function MediaGalleryInput({ onAdd }: { onAdd: (assets: { url: string; ki
       {items.map((it) => (
         <div key={it.name} className="text-[12px]">
           <span className="text-[#454545]">{it.name}</span>{' '}
-          {it.error ? <span className="text-rose-600">{it.error}</span> : <span className="text-[#626262]">{Math.round(it.progress * 100)}%</span>}
+          {it.error ? <span className="text-rose-600">{it.error}</span> : <span className="text-[#4F4F4F]">{Math.round(it.progress * 100)}%</span>}
         </div>
       ))}
       <input ref={input} type="file" multiple accept="image/*,video/mp4,video/webm,video/quicktime" className="hidden" onChange={(e) => onFiles(e.target.files)} />

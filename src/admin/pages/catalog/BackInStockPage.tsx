@@ -71,8 +71,8 @@ export default function BackInStockPage() {
           </button>
         ))}
       </div>
-      {isLoading && <p className="text-[14px] text-[#5A5A5A]">Loading…</p>}
-      {!isLoading && groups.length === 0 && <p className="bg-white border border-[#E2E0DB] px-4 py-6 text-[14px] text-[#5A5A5A]">No requests.</p>}
+      {isLoading && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}
+      {!isLoading && groups.length === 0 && <p className="bg-white border border-[#E2E0DB] px-4 py-6 text-[14px] text-[#4A4A4A]">No requests.</p>}
       <div className="space-y-4">
         {paged.rows.map((g) => {
           const open = g.rows.filter((r) => !r.notified_at);
@@ -80,9 +80,9 @@ export default function BackInStockPage() {
             <div key={g.key} className="bg-white border border-[#E2E0DB]">
               <div className="flex flex-wrap items-center gap-3 px-4 py-3 border-b border-[#E2E0DB] text-[14px]">
                 <Link to={`/admin/products/${g.productId}`} className="font-medium hover:underline">{g.name}</Link>
-                <span className="text-[#5A5A5A]">{g.label}</span>
-                <span className={`text-[12px] uppercase tracking-[0.06em] ${g.stock > 0 ? 'text-emerald-700' : 'text-[#6B6B6B]'}`}>{g.stock > 0 ? `Back · ${g.stock} in stock` : 'Still sold out'}</span>
-                <span className="text-[13px] text-[#5A5A5A]">{g.rows.length} request{g.rows.length === 1 ? '' : 's'}</span>
+                <span className="text-[#4A4A4A]">{g.label}</span>
+                <span className={`text-[12px] ${g.stock > 0 ? 'text-emerald-700' : 'text-[#575757]'} font-medium`}>{g.stock > 0 ? `Back · ${g.stock} in stock` : 'Still sold out'}</span>
+                <span className="text-[13px] text-[#4A4A4A]">{g.rows.length} request{g.rows.length === 1 ? '' : 's'}</span>
                 {open.length > 0 && (
                   <Button size="sm" variant="secondary" className="ml-auto" onClick={() => markNotified(open.map((r) => r.id))}>Mark all as told</Button>
                 )}
@@ -91,9 +91,9 @@ export default function BackInStockPage() {
                 {g.rows.map((r) => (
                   <li key={r.id} className="flex flex-wrap items-center gap-3 px-4 py-2">
                     <span>{r.email ?? '—'}</span>
-                    {r.phone && <span className="text-[#5A5A5A]">{formatIndianPhone(r.phone)}</span>}
-                    <span className="text-[12px] text-[#626262]">asked {formatOrderDateTime(r.created_at)}</span>
-                    <span className="ml-auto text-[12px] text-[#626262]">{r.notified_at ? `told ${formatOrderDateTime(r.notified_at)}` : r.back_in_stock_at ? 'ready to tell' : ''}</span>
+                    {r.phone && <span className="text-[#4A4A4A]">{formatIndianPhone(r.phone)}</span>}
+                    <span className="text-[12px] text-[#4F4F4F]">asked {formatOrderDateTime(r.created_at)}</span>
+                    <span className="ml-auto text-[12px] text-[#4F4F4F]">{r.notified_at ? `told ${formatOrderDateTime(r.notified_at)}` : r.back_in_stock_at ? 'ready to tell' : ''}</span>
                   </li>
                 ))}
               </ul>

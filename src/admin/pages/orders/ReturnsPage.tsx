@@ -97,15 +97,15 @@ export default function ReturnsPage() {
         ))}
       </div>
       <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
-        {isLoading && <p className="px-3 py-6 text-[14px] text-[#5A5A5A]">Loading…</p>}
-        {!isLoading && rows.length === 0 && <p className="px-3 py-6 text-[14px] text-[#5A5A5A]">Nothing here.</p>}
+        {isLoading && <p className="px-3 py-6 text-[14px] text-[#4A4A4A]">Loading…</p>}
+        {!isLoading && rows.length === 0 && <p className="px-3 py-6 text-[14px] text-[#4A4A4A]">Nothing here.</p>}
         {paged.rows.map((r) => (
           <button key={r.id} type="button" onClick={() => setOpenId(r.id)} className="w-full text-left flex items-center gap-3 px-3 py-3 hover:bg-[#FAFAF7] text-[14px]">
             <div className="min-w-0 flex-1">
               <p className="font-medium">{r.order.order_number} · {r.order.customer_name}</p>
-              <p className="text-[12px] text-[#626262] truncate">{REASON[r.reason]} · {formatOrderDateTime(r.created_at)}{r.details ? ` · ${r.details}` : ''}</p>
+              <p className="text-[12px] text-[#4F4F4F] truncate">{REASON[r.reason]} · {formatOrderDateTime(r.created_at)}{r.details ? ` · ${r.details}` : ''}</p>
             </div>
-            <span className="text-[11.5px] uppercase tracking-[0.06em] px-2 py-0.5 border border-[#D3D0C8] bg-[#F4F3EE]">{STATUS[r.status]}</span>
+            <span className="text-[12.5px] px-2 py-0.5 border border-[#D3D0C8] bg-[#F4F3EE] font-medium">{STATUS[r.status]}</span>
           </button>
         ))}
       </div>
@@ -150,13 +150,13 @@ function ReturnModal({ r, onClose, onChanged }: { r: ReturnRow; onClose: () => v
     <Modal open onOpenChange={(open) => !open && !busy && onClose()} title={`Return · ${o.order_number}`} description={`${REASON[r.reason]} · ${STATUS[r.status]}`} wide>
       <div className="space-y-5 text-[14px]">
         <div>
-          <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1">Items</p>
+          <p className="text-[12px] text-[#454545] mb-1 font-medium">Items</p>
           <ul className="space-y-1">
             {returned.map((x) => (
               <li key={x.order_item_id}>{x.qty} × {x.item?.product_name} · {x.item?.variant_label}</li>
             ))}
           </ul>
-          <p className="text-[13px] text-[#5A5A5A] mt-1">
+          <p className="text-[13px] text-[#4A4A4A] mt-1">
             Worth {formatINR(value)} · <Link to={`/admin/orders/${o.id}`} className="underline">open order</Link> · {o.customer_phone}
           </p>
         </div>
@@ -202,7 +202,7 @@ function ReturnModal({ r, onClose, onChanged }: { r: ReturnRow; onClose: () => v
               <Button busy={busy} onClick={() => act(() => rpc('receive_return', { p_return: r.id, p_decision: 'RESTOCK' }), 'Received and restocked.')}>Received · restock</Button>
               <Button variant="danger" disabled={busy} onClick={() => act(() => rpc('receive_return', { p_return: r.id, p_decision: 'WRITE_OFF' }), 'Received and written off.')}>Received · write off (damaged)</Button>
             </div>
-            <p className="text-[12px] text-[#626262]">A leaked or opened bottle should always be written off.</p>
+            <p className="text-[12px] text-[#4F4F4F]">A leaked or opened bottle should always be written off.</p>
           </div>
         )}
 

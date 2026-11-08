@@ -13,8 +13,11 @@ import { RichText } from '../../ui/RichText';
 import { MediaGalleryInput, MediaPreview } from '../../ui/MediaField';
 import { SortableList } from '../../ui/SortableList';
 import { SearchMultiSelect, SearchSelect, categoryOptions } from '../../ui/SearchSelect';
+import { ConfirmDialog } from '../../ui/ConfirmDialog';
+import { AdjustStockModal, StockHistoryModal, UNITS, formatMl, type StockProduct, type StockVariant } from '../../inventory/stock';
+import { useProductDefaults } from '../../catalog/useProductDefaults';
 import {
-  COMPLIANCE_FIELDS, COPY_GROUPS, copyProductDetails, emptyProductForm, emptyVariant, fromAdminProduct, slugify, toSavePayload, validateProductForm,
+  COMPLIANCE_FIELDS, COPY_GROUPS, autoSku, copyProductDetails, emptyProductForm, emptyVariant, fromAdminProduct, slugify, toSavePayload, validateProductForm,
   type AttributeLink, type CopyGroup, type NoteLink, type ProductForm, type VariantForm,
 } from '../../catalog/productForm';
 import { useSetting } from '../../../lib/bootstrap';
@@ -65,7 +68,7 @@ function NotePicker({
         renderItem={(item) => (
           <div className="flex items-center justify-between pr-2 py-1.5 text-[13.5px]">
             <span>{byId.get(item.id)?.name ?? 'Unknown note'}</span>
-            <button type="button" aria-label="Remove note" className="p-1 text-[#6B6B6B] hover:text-rose-600" onClick={() => onChange(links.filter((l) => l.note_id !== item.id))}>
+            <button type="button" aria-label="Remove note" className="p-1 text-[#575757] hover:text-rose-600" onClick={() => onChange(links.filter((l) => l.note_id !== item.id))}>
               <X size={13} />
             </button>
           </div>
@@ -203,6 +206,8 @@ export default function ProductEditorPage() {
     queryFn: () => loadAdminProduct(id!),
   });
 
+  const productDefaults = useProductDefaults();
+  const defaultsKey = JSON.stringify(productDefaults);
   const initial = useMemo(() => (isNew ? emptyProductForm() : bundle.data ? fromAdminProduct(bundle.data) : null), [isNew, bundle.data]);
   const [form, setForm] = useState<ProductForm | null>(initial);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -219,11 +224,31 @@ export default function ProductEditorPage() {
       (await throwIf(supabase.from('products').select('id, name, primary_category_id').is('archived_at', null).order('name'))) as { id: string; name: string; primary_category_id: string | null }[],
     staleTime: 30_000,
   });
+  const [adjustOpen, setAdjustOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [switchTo, setSwitchTo] = useState<'ml' | 'piece' | null>(null);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [stockDelta, setStockDelta] = useState('');
   const [stockReason, setStockReason] = useState('restock');
   const [stockNote, setStockNote] = useState('');
 
   useEffect(() => setForm(initial), [initial]);
+  // New products: the store's label details (Settings → Product details) fill only fields still at their starting
+  // value. They may load after the admin has begun typing, so this never resets the form.
+  useEffect(() => {
+    if (!isNew) return;
+    const blank = emptyProductForm();
+    setForm((f) => {
+      if (!f) return f;
+      const next = { ...f };
+      for (const [k] of COMPLIANCE_FIELDS) {
+        const d = productDefaults[k];
+        if (d && f[k] === blank[k]) next[k] = d;
+      }
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isNew, defaultsKey]);
   const dirty = !!form && !!initial && JSON.stringify(form) !== JSON.stringify(initial);
   // Closing or reloading the tab with unsaved changes asks first.
   useEffect(() => {
@@ -246,7 +271,7 @@ export default function ProductEditorPage() {
   const collectionPicks = useMemo(() => collections.map((c) => ({ value: c.id, label: c.name, tag: c.is_active ? undefined : 'hidden' })), [collections]);
 
   if (!form) {
-    return bundle.error ? <p className="text-[14px] text-rose-600">{toFriendlyError(bundle.error)}</p> : <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
+    return bundle.error ? <p className="text-[14px] text-rose-600">{toFriendlyError(bundle.error)}</p> : <p className="text-[14px] text-[#4A4A4A]">Loading…</p>;
   }
 
   const set = <K extends keyof ProductForm>(key: K, value: ProductForm[K]) => setForm((f) => (f ? { ...f, [key]: value } : f));
@@ -289,6 +314,7 @@ export default function ProductEditorPage() {
     setErrors(found);
     if (Object.keys(found).length) {
       toast.error('Please fix the highlighted fields.');
+      if (found.launch_year || COMPLIANCE_FIELDS.some(([k]) => found[k])) setMoreOpen(true);
       // Take the admin to the first problem instead of leaving them to hunt for it.
       requestAnimationFrame(() => document.querySelector('main .text-rose-600')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
       return;
@@ -352,16 +378,45 @@ export default function ProductEditorPage() {
     }
   };
   const err = (k: string) => errors[k];
+  const copyBtn = (groups: CopyGroup[]) => (
+    <button
+      type="button"
+      onClick={() => {
+        setCopyGroups(groups);
+        setCopyOpen(true);
+      }}
+      className="inline-flex items-center gap-1 px-2 py-1 text-[12.5px] text-[#3F3F3F] border border-[#C4C1B9] bg-white hover:border-tk-ink whitespace-nowrap"
+    >
+      <Copy size={12} aria-hidden /> Copy from…
+    </button>
+  );
+  const stockProduct: StockProduct | null = form.id
+    ? { id: form.id, name: form.name, stock_unit: form.stock_unit, stock_ml: form.stock_ml, product_variants: (bundle.data?.variants ?? []) as unknown as StockVariant[] }
+    : null;
+  /** After a stock change: reload the product if nothing else changed, otherwise only its stock. */
+  const refreshStock = async () => {
+    await invalidate();
+    if (!dirty) {
+      await bundle.refetch();
+      return;
+    }
+    const fresh = (await throwIf(supabase.from('products').select('stock_ml, product_variants(id, stock)').eq('id', form.id!).single())) as {
+      stock_ml: number;
+      product_variants: { id: string; stock: number }[];
+    };
+    const byId = new Map(fresh.product_variants.map((v) => [v.id, v.stock]));
+    setForm((f) => (f ? { ...f, stock_ml: Number(fresh.stock_ml), variants: f.variants.map((v) => (v.id ? { ...v, stock: byId.get(v.id) ?? v.stock } : v)) } : f));
+  };
   const sampleIdx = form.variants.findIndex((v) => v.kind === 'sample' && !v.is_hidden);
   const offersSample = sampleIdx >= 0 && form.variants[sampleIdx].in_sample_pool && form.variants[sampleIdx].is_active;
   const toggleSample = (on: boolean) => {
     if (on) {
       if (sampleIdx >= 0) setVariant(sampleIdx, { in_sample_pool: true, is_active: true });
       else {
-        const base = form.slug ? form.slug.toUpperCase().replace(/[^A-Z0-9]+/g, '').slice(0, 14) : 'SAMPLE';
+        // Same SKU rule as every size (catalog/productForm autoSku): AMBER-NOIR-S5.
         set('variants', [
           ...form.variants,
-          { ...emptyVariant(), kind: 'sample', label: `${sampleSize} ml sample`, size_ml: String(sampleSize), sku: `${base}-S${sampleSize}`, in_sample_pool: true },
+          { ...emptyVariant(), kind: 'sample', label: `${sampleSize} ml sample`, size_ml: String(sampleSize), sku: '', in_sample_pool: true },
         ]);
       }
     } else if (sampleIdx >= 0) {
@@ -376,10 +431,16 @@ export default function ProductEditorPage() {
     <div className="pb-24">
       <PageHeader
         title={isNew ? 'New product' : form.name || 'Product'}
-        description={isNew ? 'Choose the category, then the scent type and notes, then the details, sizes and photos. Save when done.' : `/product/${form.slug}`}
+        description={isNew ? 'Category, name, sizes and stock, photos: that is all a product needs. Scent and notes help customers find it; the rest is optional.' : `/product/${form.slug}`}
         actions={
           <>
-            <Button variant="secondary" onClick={() => setCopyOpen(true)}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setCopyGroups(['text', 'scent', 'notes', 'story', 'compliance', 'sections']);
+                setCopyOpen(true);
+              }}
+            >
               <Copy size={13} /> Copy details from another product
             </Button>
             {!isNew && (
@@ -396,6 +457,7 @@ export default function ProductEditorPage() {
         <div className="space-y-5 min-w-0">
           <Panel
             title="1 · Where it's listed"
+            action={copyBtn(['organisation'])}
             description="Start here. The main category is where the product lives; add more categories if it also belongs elsewhere (e.g. an oud that is also a gift). Type to search, or type a new name to create it."
           >
             <div className="grid gap-4 sm:grid-cols-2">
@@ -443,34 +505,7 @@ export default function ProductEditorPage() {
 
 {form.primary_category_id ? (
 <>
-          <Panel title="2 · Scent type" description="Every option here is also a filter on the shop pages. Manage the options under Catalog → Scent profile.">
-            {errors.attributes && <p className="text-[13px] text-rose-600 mb-2">{errors.attributes}</p>}
-            <div className="space-y-5">
-              {OPTION_KINDS.filter((k) => k.kind !== 'note_family').map((k) => (
-                <div key={k.kind}>
-                  <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1.5">{k.label}</p>
-                  {optionsOf(k.kind).length ? (
-                    <OptionChips kind={k.kind} options={optionsOf(k.kind)} attributes={form.attributes} onChange={(next) => set('attributes', next)} />
-                  ) : (
-                    <p className="text-[13px] text-[#6B6B6B]">No options yet.</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Panel>
-
-          <Panel title="3 · Notes pyramid" description="Search the notes library, or type a new note to add it. Drag to reorder within a tier.">
-            <div className="grid gap-4 md:grid-cols-3">
-              {TIERS.map((t) => (
-                <div key={t.tier}>
-                  <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1.5">{t.label}</p>
-                  <NotePicker tier={t.tier} links={form.notes} notes={notes} onChange={(next) => set('notes', next)} onCreate={createNote} />
-                </div>
-              ))}
-            </div>
-          </Panel>
-
-          <Panel title="4 · Name and description">
+          <Panel title="2 · Name and description" action={copyBtn(['text'])}>
             <div className="grid gap-4 sm:grid-cols-2">
               <FieldShell label="Name" htmlFor="p-name" error={err('name')}>
                 <TextInput
@@ -503,16 +538,7 @@ export default function ProductEditorPage() {
             </div>
           </Panel>
 
-          <Panel title="5 · Sizes, prices and stock" description="Leave a size's price empty to use the base price. Stock changes are logged; use Adjust for existing sizes.">
-            <div className="flex items-start justify-between gap-3 p-3 mb-4 bg-[#FFF7ED] border border-[#F5E3CC]">
-              <div>
-                <p className="text-[14px] text-tk-ink">Offer as a free sample</p>
-                <p className="text-[12px] text-[#5A5A5A]">
-                  Adds a {sampleSize} ml vial of this scent to the list customers choose free samples from. The vial has its own stock below; at zero it disappears from the list.
-                </p>
-              </div>
-              <Toggle checked={offersSample} onChange={toggleSample} label="Offer as a free sample" />
-            </div>
+          <Panel title="3 · Sizes and prices" description="One row per bottle size. An empty size price uses the base price; the SKU fills itself in." action={copyBtn(['sizes'])}>
             <div className="grid gap-4 sm:grid-cols-2 mb-4">
               <FieldShell label="Base price (₹, incl. GST)" htmlFor="p-price" error={err('base_price')}>
                 <TextInput id="p-price" inputMode="decimal" value={form.base_price} invalid={!!err('base_price')} onChange={(e) => set('base_price', e.target.value)} />
@@ -523,27 +549,29 @@ export default function ProductEditorPage() {
             </div>
             {err('variants') && <p className="text-[13px] text-rose-600 mb-2">{err('variants')}</p>}
             <div className="space-y-3">
-              {form.variants.map((v, i) => (
+              {form.variants.map((v, i) => v.kind === 'sample' ? null : (
                 <div key={v.id ?? `new-${i}`} className={`border p-3 ${v.is_hidden ? 'border-dashed border-[#C4C1B9] opacity-70' : 'border-[#E2E0DB]'}`}>
                   <div className="flex flex-wrap items-center gap-2 mb-3">
-                    <span className={`px-2 py-0.5 text-[12px] ${v.kind === 'sample' ? 'bg-[#FFF7ED] text-tk-accent' : 'bg-[#F4F3EE] text-[#454545]'}`}>
-                      {v.kind === 'sample' ? 'Free sample vial' : 'Bottle size'}
-                    </span>
-                    {v.is_hidden && <span className="text-[12px] text-[#5A5A5A]">Hidden</span>}
+                    <span className="px-2 py-0.5 text-[12.5px] bg-[#F4F3EE] text-[#3F3F3F]">{v.label || 'New size'}</span>
+                    {v.is_hidden && <span className="text-[12px] text-[#4A4A4A]">Hidden</span>}
                     <span className="flex-1" />
                     {v.id && (
                       <span className="text-[13px] text-[#454545] tabular-nums">
-                        Stock: <strong className={(v.stock ?? 0) <= 5 ? 'text-rose-600' : ''}>{v.stock ?? 0}</strong>
+                        {form.stock_unit === 'ml' ? (
+                          <>Enough for <strong>{v.stock ?? 0}</strong></>
+                        ) : (
+                          <>Stock: <strong className={(v.stock ?? 0) <= 5 ? 'text-rose-600' : ''}>{v.stock ?? 0}</strong></>
+                        )}
                       </span>
                     )}
-                    {v.id && (
+                    {v.id && form.stock_unit === 'piece' && (
                       <Button size="sm" variant="secondary" onClick={() => setStockModal(v)}>
                         Adjust stock
                       </Button>
                     )}
                     <button
                       type="button"
-                      className="p-1.5 text-[#6B6B6B] hover:text-rose-600"
+                      className="p-1.5 text-[#575757] hover:text-rose-600"
                       aria-label="Remove size"
                       title={v.units_sold ? 'Sold before: it will be hidden, not deleted' : 'Remove'}
                       onClick={() => set('variants', form.variants.filter((_, j) => j !== i))}
@@ -551,48 +579,53 @@ export default function ProductEditorPage() {
                       <Trash2 size={14} />
                     </button>
                   </div>
-                  <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
+                  <div className="grid gap-3 grid-cols-2 sm:grid-cols-5">
+                    <FieldShell label="Size (ml)" error={err(`variants.${i}.size_ml`)}>
+                      <TextInput
+                        inputMode="decimal"
+                        value={v.size_ml}
+                        placeholder="50"
+                        onChange={(e) => {
+                          const ml = e.target.value;
+                          const autoLabel = !v.label || v.label === `${v.size_ml} ml`;
+                          setVariant(i, { size_ml: ml, ...(autoLabel ? { label: ml ? `${ml} ml` : '' } : {}) });
+                        }}
+                        aria-label="Size in ml"
+                      />
+                    </FieldShell>
                     <FieldShell label="Label" error={err(`variants.${i}.label`)}>
                       <TextInput value={v.label} placeholder="50 ml" onChange={(e) => setVariant(i, { label: e.target.value })} aria-label="Size label" />
                     </FieldShell>
-                    <FieldShell label="Size (ml)" error={err(`variants.${i}.size_ml`)}>
-                      <TextInput inputMode="decimal" value={v.size_ml} onChange={(e) => setVariant(i, { size_ml: e.target.value })} aria-label="Size in ml" />
+                    <FieldShell label="Price (₹)" error={err(`variants.${i}.price`)}>
+                      <TextInput inputMode="decimal" value={v.price} placeholder={form.base_price ? `${form.base_price} (base)` : 'base price'} onChange={(e) => setVariant(i, { price: e.target.value })} aria-label="Size price" />
+                    </FieldShell>
+                    <FieldShell label="MRP (₹)" error={err(`variants.${i}.compare_at_price`)}>
+                      <TextInput inputMode="decimal" value={v.compare_at_price} placeholder="optional" onChange={(e) => setVariant(i, { compare_at_price: e.target.value })} aria-label="Size MRP" />
                     </FieldShell>
                     <FieldShell label="SKU" error={err(`variants.${i}.sku`)}>
-                      <TextInput value={v.sku} onChange={(e) => setVariant(i, { sku: e.target.value.toUpperCase() })} aria-label="SKU" />
+                      <TextInput value={v.sku} placeholder={autoSku(form.slug, v)} onChange={(e) => setVariant(i, { sku: e.target.value.toUpperCase() })} aria-label="SKU" />
                     </FieldShell>
-                    {v.id ? (
-                      <FieldShell label="Weight (g)">
-                        <TextInput inputMode="numeric" value={v.weight_g} onChange={(e) => setVariant(i, { weight_g: e.target.value })} aria-label="Weight in grams" />
-                      </FieldShell>
-                    ) : (
+                    {!v.id && form.stock_unit === 'piece' && (
                       <FieldShell label="Opening stock" error={err(`variants.${i}.initial_stock`)}>
-                        <TextInput inputMode="numeric" value={v.initial_stock} onChange={(e) => setVariant(i, { initial_stock: e.target.value })} aria-label="Opening stock" />
+                        <TextInput inputMode="numeric" value={v.initial_stock} placeholder="e.g. 10" onChange={(e) => setVariant(i, { initial_stock: e.target.value })} aria-label="Opening stock" />
                       </FieldShell>
                     )}
-                    {v.kind === 'retail' && (
-                      <>
-                        <FieldShell label="Price (₹)" error={err(`variants.${i}.price`)}>
-                          <TextInput inputMode="decimal" value={v.price} placeholder={form.base_price || 'base'} onChange={(e) => setVariant(i, { price: e.target.value })} aria-label="Size price" />
-                        </FieldShell>
-                        <FieldShell label="MRP (₹)" error={err(`variants.${i}.compare_at_price`)}>
-                          <TextInput inputMode="decimal" value={v.compare_at_price} onChange={(e) => setVariant(i, { compare_at_price: e.target.value })} aria-label="Size MRP" />
-                        </FieldShell>
-                      </>
-                    )}
-                    {!v.id && (
+                  </div>
+                  <details className="mt-2 text-[13px]">
+                    <summary className="cursor-pointer text-[#4F4F4F] hover:text-tk-ink">Parcel weight and box size (optional, for couriers)</summary>
+                    <div className="grid gap-3 grid-cols-2 sm:grid-cols-4 mt-2">
                       <FieldShell label="Weight (g)">
                         <TextInput inputMode="numeric" value={v.weight_g} onChange={(e) => setVariant(i, { weight_g: e.target.value })} aria-label="Weight in grams" />
                       </FieldShell>
-                    )}
-                    <FieldShell label="Box L × W × H (mm)">
-                      <div className="flex gap-1">
-                        {(['length_mm', 'width_mm', 'height_mm'] as const).map((k) => (
-                          <TextInput key={k} inputMode="numeric" value={v[k]} onChange={(e) => setVariant(i, { [k]: e.target.value })} aria-label={k} className="px-1.5" />
-                        ))}
-                      </div>
-                    </FieldShell>
-                  </div>
+                      <FieldShell label="Box L × W × H (mm)">
+                        <div className="flex gap-1">
+                          {(['length_mm', 'width_mm', 'height_mm'] as const).map((k) => (
+                            <TextInput key={k} inputMode="numeric" value={v[k]} onChange={(e) => setVariant(i, { [k]: e.target.value })} aria-label={k} className="px-1.5" />
+                          ))}
+                        </div>
+                      </FieldShell>
+                    </div>
+                  </details>
                   <div className="flex flex-wrap gap-5 mt-3 text-[13px]">
                     <label className="flex items-center gap-2">
                       <Toggle checked={v.is_active} onChange={(on) => setVariant(i, { is_active: on })} label="Available" /> Available
@@ -608,10 +641,105 @@ export default function ProductEditorPage() {
               <Button size="sm" variant="secondary" onClick={() => set('variants', [...form.variants, emptyVariant()])}>
                 <Plus size={12} /> Add bottle size
               </Button>
+              <span className="self-center text-[13px] text-[#4F4F4F] ml-2">Quick add:</span>
+              {['30', '50', '100'].filter((ml) => !form.variants.some((v) => v.kind === 'retail' && v.size_ml === ml)).map((ml) => (
+                <button
+                  key={ml}
+                  type="button"
+                  onClick={() => set('variants', [...form.variants, { ...emptyVariant(), size_ml: ml, label: `${ml} ml` }])}
+                  className="px-2.5 py-1 text-[13px] border border-[#C4C1B9] bg-white hover:border-tk-ink"
+                >
+                  {ml} ml
+                </button>
+              ))}
             </div>
           </Panel>
 
-          <Panel title="6 · Photos and videos" description="Drag to reorder. The first image is the main photo. Tie a photo to a size to show it when that size is picked.">
+          <Panel
+            title="4 · Stock"
+            description={form.stock_unit === 'ml' ? 'Kept as liquid: every bottle and free sample sold takes its ml from here.' : 'Counted in pieces: each size has its own count.'}
+          >
+            {isNew ? (
+              <div className="space-y-4">
+                <div role="radiogroup" aria-label="How stock is kept" className="grid sm:grid-cols-2 gap-2">
+                  {([
+                    ['ml', 'Liquid (ml)', 'Perfume, attar or oil: bottles and samples are poured from one stock'],
+                    ['piece', 'Pieces', 'Gift sets, discovery boxes, accessories'],
+                  ] as const).map(([v, l, h]) => (
+                    <button
+                      key={v}
+                      type="button"
+                      role="radio"
+                      aria-checked={form.stock_unit === v}
+                      onClick={() => set('stock_unit', v)}
+                      className={`text-left px-3 py-2.5 border ${form.stock_unit === v ? 'border-tk-ink bg-[#F4F3EE]' : 'border-[#C4C1B9] bg-white hover:border-tk-ink'}`}
+                    >
+                      <span className="block text-[14px] font-medium">{l}</span>
+                      <span className="block text-[12.5px] text-[#4F4F4F]">{h}</span>
+                    </button>
+                  ))}
+                </div>
+                {form.stock_unit === 'ml' ? (
+                  <FieldShell label="Liquid in stock" htmlFor="p-liquid" error={err('liquid_amount')} help="What you have of this perfume now, e.g. 1 L or 500 ml. Add more later in Inventory.">
+                    <div className="flex gap-2 max-w-[380px]">
+                      <TextInput id="p-liquid" inputMode="decimal" placeholder="e.g. 1" value={form.liquid_amount} onChange={(e) => set('liquid_amount', e.target.value)} />
+                      <select
+                        aria-label="Unit"
+                        value={form.liquid_unit}
+                        onChange={(e) => set('liquid_unit', e.target.value as ProductForm['liquid_unit'])}
+                        className="border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white"
+                      >
+                        {UNITS.map((u) => (
+                          <option key={u.value} value={u.value}>{u.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </FieldShell>
+                ) : (
+                  <p className="text-[13.5px] text-[#4F4F4F]">Enter each size's opening stock in the sizes above.</p>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-wrap items-center gap-3">
+                {form.stock_unit === 'ml' ? (
+                  <div className="mr-2">
+                    <p className="text-[22px] leading-tight tabular-nums">{formatMl(form.stock_ml)}</p>
+                    <p className="text-[13px] text-[#4F4F4F]">left</p>
+                  </div>
+                ) : (
+                  <p className="text-[14px] text-[#3F3F3F] mr-2">Each size has its own count; use Adjust stock on a size above.</p>
+                )}
+                {form.stock_unit === 'ml' && (
+                  <Button variant="secondary" onClick={() => setAdjustOpen(true)}>
+                    Add or remove stock
+                  </Button>
+                )}
+                <Button variant="secondary" onClick={() => setHistoryOpen(true)}>
+                  History
+                </Button>
+                <button
+                  type="button"
+                  className="text-[13px] underline underline-offset-4 text-[#4F4F4F] hover:text-tk-ink"
+                  onClick={() => setSwitchTo(form.stock_unit === 'ml' ? 'piece' : 'ml')}
+                >
+                  {form.stock_unit === 'ml' ? 'Count in pieces instead' : 'Keep as liquid (ml) instead'}
+                </button>
+              </div>
+            )}
+            <div className="flex items-start justify-between gap-3 p-3 mt-4 bg-[#FFF7ED] border border-[#F5E3CC]">
+              <div>
+                <p className="text-[14px] text-tk-ink">Offer as a free sample</p>
+                <p className="text-[12.5px] text-[#4F4F4F]">
+                  {form.stock_unit === 'ml'
+                    ? `Customers can pick this scent as a free ${sampleSize} ml sample; each one takes ${sampleSize} ml from the stock above.`
+                    : 'Customers can pick this as a free sample.'}
+                </p>
+              </div>
+              <Toggle checked={offersSample} onChange={toggleSample} label="Offer as a free sample" />
+            </div>
+          </Panel>
+
+          <Panel title="5 · Photos and videos" description="Drag to reorder. The first image is the main photo. Tie a photo to a size to show it when that size is picked.">
             <SortableList
               items={form.media.map((m, i) => ({ id: `${i}:${m.url}`, m, i }))}
               onReorder={(ids) => {
@@ -641,7 +769,7 @@ export default function ProductEditorPage() {
                       <option key={v.sku} value={v.sku.toUpperCase()}>{v.label || v.sku}</option>
                     ))}
                   </select>
-                  <button type="button" className="p-2 text-[#6B6B6B] hover:text-rose-600" aria-label="Remove media" onClick={() => set('media', form.media.filter((_, j) => j !== i))}>
+                  <button type="button" className="p-2 text-[#575757] hover:text-rose-600" aria-label="Remove media" onClick={() => set('media', form.media.filter((_, j) => j !== i))}>
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -650,7 +778,44 @@ export default function ProductEditorPage() {
             <MediaGalleryInput onAdd={(added) => set('media', [...form.media, ...added.map((a) => ({ kind: a.kind, url: a.url, alt: '', variant_sku: '' }))])} />
           </Panel>
 
-          <Panel title="7 · The story">
+          <Panel title="6 · Scent type" description="Tap what fits. Each choice is also a filter on the shop pages." action={copyBtn(['scent'])}>
+            {errors.attributes && <p className="text-[13px] text-rose-600 mb-2">{errors.attributes}</p>}
+            <div className="space-y-5">
+              {OPTION_KINDS.filter((k) => k.kind !== 'note_family').map((k) => (
+                <div key={k.kind}>
+                  <p className="text-[12px] text-[#454545] mb-1.5 font-medium">{k.label}</p>
+                  {optionsOf(k.kind).length ? (
+                    <OptionChips kind={k.kind} options={optionsOf(k.kind)} attributes={form.attributes} onChange={(next) => set('attributes', next)} />
+                  ) : (
+                    <p className="text-[13px] text-[#575757]">No options yet.</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Panel>
+
+          <Panel title="7 · Notes" description="Search the notes library, or type a new note to add it. Drag to reorder." action={copyBtn(['notes'])}>
+            <div className="grid gap-4 md:grid-cols-3">
+              {TIERS.map((t) => (
+                <div key={t.tier}>
+                  <p className="text-[12px] text-[#454545] mb-1.5 font-medium">{t.label}</p>
+                  <NotePicker tier={t.tier} links={form.notes} notes={notes} onChange={(next) => set('notes', next)} onCreate={createNote} />
+                </div>
+              ))}
+            </div>
+          </Panel>
+
+          <details
+            className="border border-[#E2E0DB] bg-white"
+            open={moreOpen}
+            onToggle={(e) => setMoreOpen((e.target as HTMLDetailsElement).open)}
+          >
+            <summary className="cursor-pointer px-4 sm:px-5 py-3.5 flex flex-wrap items-baseline justify-between gap-2">
+              <span className="text-[15px] font-semibold">More details (optional)</span>
+              <span className="text-[13px] text-[#4F4F4F]">Story, extra page sections, label details</span>
+            </summary>
+            <div className="p-3 sm:p-4 space-y-5 border-t border-[#E2E0DB] bg-[#FAFAF8]">
+          <Panel title="The story" action={copyBtn(['story'])}>
             <div className="grid gap-4 sm:grid-cols-2">
               <FieldShell label="Perfumer / nose" htmlFor="p-nose">
                 <TextInput id="p-nose" value={form.perfumer} onChange={(e) => set('perfumer', e.target.value)} />
@@ -669,11 +834,11 @@ export default function ProductEditorPage() {
             </div>
           </Panel>
 
-          <Panel title="8 · Product page sections" description="Extra drop-down sections on this product's page, e.g. a ritual, gifting or care section.">
+          <Panel title="Extra sections on the product page" description="Drop-down sections such as a ritual, gifting or care section." action={copyBtn(['sections'])}>
             <label className="flex items-center gap-2 text-[14px] mb-4">
               <Toggle checked={form.use_default_sections} onChange={(on) => set('use_default_sections', on)} label="Also show the store's default sections" />
               Also show the store's default sections
-              <span className="text-[12px] text-[#626262]">— edit them in Site content → Product page</span>
+              <span className="text-[12px] text-[#4F4F4F]">— edit them in Site content → Product page</span>
             </label>
             <FieldInput
               field={{ key: 'page_sections', label: 'This product’s own sections', type: 'list', itemLabel: 'Section', fields: [
@@ -685,22 +850,24 @@ export default function ProductEditorPage() {
             />
           </Panel>
 
-          <Panel title="9 · Details & compliance" description="Shown in the product page's compliance section. Confirm HSN and GST with your CA.">
+          <Panel title="Label details" description="Empty fields use the store's details from Settings → Product details. Fill one only when this product is different." action={copyBtn(['compliance'])}>
             <div className="grid gap-4 sm:grid-cols-2">
               {COMPLIANCE_FIELDS.map(([key, label]) => (
                 <FieldShell key={key} label={label} htmlFor={`c-${key}`} error={err(key)}>
                   {key.endsWith('address') || key === 'ingredients' || key === 'caution_text' ? (
-                    <TextArea id={`c-${key}`} rows={2} value={form[key]} onChange={(e) => set(key, e.target.value)} />
+                    <TextArea id={`c-${key}`} rows={2} value={form[key]} placeholder={productDefaults[key] || undefined} onChange={(e) => set(key, e.target.value)} />
                   ) : (
-                    <TextInput id={`c-${key}`} value={form[key]} onChange={(e) => set(key, e.target.value)} />
+                    <TextInput id={`c-${key}`} value={form[key]} placeholder={productDefaults[key] || undefined} onChange={(e) => set(key, e.target.value)} />
                   )}
                 </FieldShell>
               ))}
             </div>
           </Panel>
+            </div>
+          </details>
 </>
 ) : (
-          <p className="px-4 py-6 border border-dashed border-[#C4C1B9] text-[14px] text-[#5A5A5A] bg-white">Choose a category above to continue. Then pick the scent type and notes, and add the details, sizes and photos.</p>
+          <p className="px-4 py-6 border border-dashed border-[#C4C1B9] text-[14px] text-[#4A4A4A] bg-white">Choose a category above to continue. Then pick the scent type and notes, and add the details, sizes and photos.</p>
 )}
 
 
@@ -722,7 +889,7 @@ export default function ProductEditorPage() {
                 <div key={key} className="flex items-start justify-between gap-3">
                   <div>
                     <p>{label}</p>
-                    <p className="text-[12px] text-[#626262]">{help}</p>
+                    <p className="text-[12px] text-[#4F4F4F]">{help}</p>
                   </div>
                   <Toggle checked={form[key]} onChange={(on) => set(key, on)} label={label} />
                 </div>
@@ -748,8 +915,8 @@ export default function ProductEditorPage() {
         </aside>
       </div>
 
-      <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#E2E0DB] px-4 sm:px-8 py-3 flex items-center justify-between gap-3">
-        <p className="text-[13px] text-[#454545]">{dirty ? 'Unsaved changes' : isNew ? 'New product' : 'All changes saved'}</p>
+      <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#E2E0DB] px-4 sm:px-8 py-2.5 sm:py-3 flex items-center justify-end sm:justify-between gap-2 sm:gap-3">
+        <p className="hidden sm:block text-[13px] text-[#454545]">{dirty ? 'Unsaved changes' : isNew ? 'New product' : 'All changes saved'}</p>
         <div className="flex gap-2">
           <Button
             variant="secondary"
@@ -758,10 +925,10 @@ export default function ProductEditorPage() {
               navigate('/admin/products');
             }}
           >
-            Back to products
+            <span className="whitespace-nowrap">Back to products</span>
           </Button>
           <Button onClick={save} busy={saving} disabled={!dirty && !isNew}>
-            Save product
+            <span className="whitespace-nowrap">{dirty ? 'Save product' : isNew ? 'Save product' : 'Saved'}</span>
           </Button>
         </div>
       </div>
@@ -796,7 +963,7 @@ export default function ProductEditorPage() {
             />
           </FieldShell>
           <fieldset className="space-y-1.5">
-            <legend className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545] mb-1">What to copy</legend>
+            <legend className="text-[12px] font-medium text-[#454545] mb-1">What to copy</legend>
             {COPY_GROUPS.map((g) => (
               <label key={g.key} className="flex items-center gap-2 text-[14px]">
                 <input
@@ -808,7 +975,7 @@ export default function ProductEditorPage() {
               </label>
             ))}
           </fieldset>
-          <p className="text-[12px] text-[#626262]">Name, link, prices, sizes, stock and photos are never copied.</p>
+          <p className="text-[12px] text-[#4F4F4F]">Name, link, prices, sizes, stock and photos are never copied.</p>
         </div>
       </Modal>
 
@@ -842,6 +1009,35 @@ export default function ProductEditorPage() {
           </FieldShell>
         </div>
       </Modal>
+      <AdjustStockModal product={adjustOpen ? stockProduct : null} onClose={() => setAdjustOpen(false)} onDone={refreshStock} />
+      <StockHistoryModal product={historyOpen ? stockProduct : null} onClose={() => setHistoryOpen(false)} />
+      <ConfirmDialog
+        open={!!switchTo}
+        onOpenChange={(o) => !o && setSwitchTo(null)}
+        title={switchTo === 'piece' ? 'Count this product in pieces?' : 'Keep this product as liquid (ml)?'}
+        description={
+          switchTo === 'piece'
+            ? 'Each size keeps the count it has now and is counted on its own from then on. Use this for sets and accessories.'
+            : 'The bottles in stock are added up into ml (e.g. 4 × 50 ml = 200 ml), and every size and sample is poured from that.'
+        }
+        confirmLabel="Switch"
+        onConfirm={async () => {
+          if (!form.id || !switchTo) return;
+          if (dirty) {
+            toast.error('Save your other changes first, then switch.');
+            return;
+          }
+          try {
+            await rpc('set_stock_mode', { p_product: form.id, p_unit: switchTo });
+            await Promise.all([invalidate(), bundle.refetch()]);
+            toast.success('Stock mode changed.');
+          } catch (e) {
+            toast.error(toFriendlyError(e));
+          } finally {
+            setSwitchTo(null);
+          }
+        }}
+      />
     </div>
   );
 }

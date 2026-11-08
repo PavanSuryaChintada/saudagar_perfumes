@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { columnToMobile, mobileToColumn } from '../../../cms/mobileMedia';
+import { wantsPhoneVersion } from '../../cms/SchemaForm';
 import { useParams } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
@@ -21,7 +23,8 @@ type Row = Record<string, any> & { id: string };
 
 // Form values that are stored differently in the table.
 function toForm(type: ContentType, row: Row): Record<string, unknown> {
-  const out: Record<string, unknown> = { ...row };
+  const out: Record<string, unknown> = { ...row, ...columnToMobile(row) };
+  delete out.mobile_media;
   if (type.table === 'stories') out.duration_ms = Math.round((row.duration_ms ?? 5000) / 1000);
   if (type.linksProducts) out.product_ids = (row.reel_products ?? []).sort((a: any, b: any) => a.position - b.position).map((p: any) => p.product_id);
   delete out.reel_products;
@@ -38,13 +41,16 @@ function toRow(type: ContentType, form: Record<string, unknown>): Record<string,
     if (f.key === 'link' && v && typeof v === 'object' && !(v as { value?: string }).value) v = null;
     row[f.key] = v === undefined ? null : v;
   }
+  // Only tables with pictures have a mobile_media column (stories, reels, testimonials, boutiques).
+  const pictures = type.fields.filter((f) => wantsPhoneVersion(f, type.fields)).map((f) => f.key);
+  if (pictures.length) row.mobile_media = mobileToColumn(form, pictures);
   return row;
 }
 
 export default function ContentListPage() {
   const { kind = '' } = useParams();
   const type = CONTENT_TYPES[kind];
-  if (!type) return <p className="text-[14px] text-[#5A5A5A]">Unknown content list.</p>;
+  if (!type) return <p className="text-[14px] text-[#4A4A4A]">Unknown content list.</p>;
   return <ContentList key={kind} type={type} />;
 }
 
@@ -114,7 +120,7 @@ function ContentList({ type }: { type: ContentType }) {
         }
       />
       {rows.length === 0 ? (
-        <p className="bg-white border border-[#E2E0DB] px-4 py-6 text-[14px] text-[#5A5A5A]">No {type.label.toLowerCase()} yet.</p>
+        <p className="bg-white border border-[#E2E0DB] px-4 py-6 text-[14px] text-[#4A4A4A]">No {type.label.toLowerCase()} yet.</p>
       ) : (
         <SortableList
           items={rows}
@@ -133,14 +139,14 @@ function ContentList({ type }: { type: ContentType }) {
                 <div className="w-10 h-10 bg-[#F4F3EE] overflow-hidden shrink-0">{r[type.thumbField] && <MediaPreview url={r[type.thumbField]} />}</div>
               )}
               <div className="min-w-0 flex-1">
-                <p className={`text-[14px] truncate ${r.is_active ? '' : 'text-[#6B6B6B]'}`}>{String(r[type.titleField] ?? '')}</p>
-                {type.subtitle?.(r) && <p className="text-[12px] text-[#626262] truncate">{type.subtitle(r)}</p>}
+                <p className={`text-[14px] truncate ${r.is_active ? '' : 'text-[#575757]'}`}>{String(r[type.titleField] ?? '')}</p>
+                {type.subtitle?.(r) && <p className="text-[12px] text-[#4F4F4F] truncate">{type.subtitle(r)}</p>}
               </div>
               <Toggle checked={Boolean(r.is_active)} onChange={(on) => setActive(r, on)} label={`Show ${String(r[type.titleField] ?? '')}`} />
-              <button type="button" aria-label={`Edit ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => { setError(''); setDraft({ id: r.id, form: toForm(type, r) }); }}>
+              <button type="button" aria-label={`Edit ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => { setError(''); setDraft({ id: r.id, form: toForm(type, r) }); }}>
                 <Pencil size={14} />
               </button>
-              <button type="button" aria-label={`Delete ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(r)}>
+              <button type="button" aria-label={`Delete ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setDeleting(r)}>
                 <Trash2 size={14} />
               </button>
             </div>
