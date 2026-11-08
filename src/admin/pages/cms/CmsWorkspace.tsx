@@ -132,8 +132,8 @@ export default function CmsWorkspace() {
 
 function TwoPane({ left, right }: { left: ReactNode; right: ReactNode }) {
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(280px,340px)_minmax(0,1fr)] items-start">
-      <div className="lg:sticky lg:top-20 bg-white border border-[#E0DBD1] shadow-[0_1px_2px_rgba(20,20,20,0.05)] flex flex-col lg:max-h-[calc(100vh-104px)]">{left}</div>
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(280px,340px)_minmax(0,1fr)] items-start">
+      <div className="min-w-0 lg:sticky lg:top-20 bg-white border border-[#E0DBD1] shadow-[0_1px_2px_rgba(20,20,20,0.05)] flex flex-col lg:max-h-[calc(100vh-104px)]">{left}</div>
       <div className="min-w-0 bg-white border border-[#E0DBD1] shadow-[0_1px_2px_rgba(20,20,20,0.05)]">{right}</div>
     </div>
   );
