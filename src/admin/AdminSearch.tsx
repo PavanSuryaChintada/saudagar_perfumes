@@ -74,7 +74,7 @@ async function searchAll(q: string): Promise<Hit[]> {
   for (const o of options.data ?? []) hits.push({ group: 'Scent profile', label: o.label, hint: o.kind.replace(/_/g, ' '), to: `/admin/scent-profile?edit=${o.id}` });
   for (const c of collections.data ?? []) hits.push({ group: 'Collections', label: c.name, to: `/admin/collections?edit=${c.id}` });
   for (const c of coupons.data ?? []) hits.push({ group: 'Coupons', label: c.code, hint: c.kind === 'general' ? undefined : `${c.kind} code`, to: `/admin/coupons?edit=${c.id}` });
-  for (const p of pages.data ?? []) hits.push({ group: 'Pages', label: p.title, hint: `/${p.slug === 'home' ? '' : p.slug}`, to: `/admin/pages/${p.id}` });
+  for (const p of pages.data ?? []) hits.push({ group: 'Pages', label: p.title, hint: `/${p.slug === 'home' ? '' : p.slug}`, to: `/admin/cms?tab=pages&page=${encodeURIComponent(p.slug)}` });
   return hits;
 }
 

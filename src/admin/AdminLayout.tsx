@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router';
+import { Link, Outlet, useLocation } from 'react-router';
 import { CircleHelp, ExternalLink, LogOut, Menu, X } from 'lucide-react';
 import NotificationsBell from './NotificationsBell';
 import AdminSearch, { SearchButton } from './AdminSearch';
@@ -8,7 +8,28 @@ import { GuideContext } from './guide/GuideContext';
 import { useAuth } from '../lib/auth';
 import { ADMIN_NAV } from './nav';
 
+/** Several menu items open the same screen with different tabs; only the one matching the address lights up. */
+function useActiveItem() {
+  const { pathname, search } = useLocation();
+  const params = new URLSearchParams(search);
+  const all = ADMIN_NAV.flatMap((g) => g.items);
+  const matches = (to: string, end?: boolean) => {
+    const [path, query] = to.split('?');
+    const pathOk = end ? pathname === path : pathname === path || pathname.startsWith(`${path}/`);
+    if (!pathOk) return false;
+    if (!query) return true;
+    return [...new URLSearchParams(query)].every(([k, v]) => params.get(k) === v);
+  };
+  return (to: string, end?: boolean) => {
+    if (!matches(to, end)) return false;
+    if (to.includes('?')) return true;
+    // A plain item gives way to a more specific item for the same screen.
+    return !all.some((i) => i.to !== to && i.to.startsWith(`${to}?`) && matches(i.to, i.end));
+  };
+}
+
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
+  const isActive = useActiveItem();
   return (
     <nav className="admin-nav flex-1 min-h-0 overflow-y-auto overscroll-contain py-3" aria-label="Admin">
       {ADMIN_NAV.map((group, gi) => (
@@ -17,20 +38,20 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
             <p className="px-5 mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-tk-accent-night">{group.heading}</p>
           )}
           {group.items.map((item) => (
-            <NavLink
+            <Link
               key={item.to}
               to={item.to}
-              end={item.end}
               onClick={onNavigate}
-              className={({ isActive }) =>
+              aria-current={isActive(item.to, item.end) ? 'page' : undefined}
+              className={
                 `flex items-center gap-2.5 mx-2 px-3 py-[7px] text-[13.5px] border-l-[3px] transition-colors ${
-                  isActive ? 'border-tk-accent-night bg-white/[0.10] text-white font-semibold' : 'border-transparent text-[#D6D3CC] hover:text-white hover:bg-white/[0.06]'
+                  isActive(item.to, item.end) ? 'border-tk-accent-night bg-white/[0.10] text-white font-semibold' : 'border-transparent text-[#D6D3CC] hover:text-white hover:bg-white/[0.06]'
                 }`
               }
             >
               <item.icon size={16} strokeWidth={1.75} aria-hidden />
               {item.label}
-            </NavLink>
+            </Link>
           ))}
         </div>
       ))}

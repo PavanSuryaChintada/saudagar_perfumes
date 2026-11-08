@@ -37,7 +37,7 @@ export default function SiteContentPage() {
   );
 }
 
-function BlockEditor({ blockKey }: { blockKey: string }) {
+export function BlockEditor({ blockKey, embedded = false, onDirty }: { blockKey: string; embedded?: boolean; onDirty?: (dirty: boolean) => void }) {
   const def = BLOCK_SCHEMAS[blockKey];
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({
@@ -53,6 +53,10 @@ function BlockEditor({ blockKey }: { blockKey: string }) {
     if (data) setValue(data);
   }, [data]);
   const dirty = value !== null && JSON.stringify(value) !== JSON.stringify(data ?? {});
+  useEffect(() => {
+    onDirty?.(dirty);
+  }, [dirty, onDirty]);
+  useEffect(() => () => onDirty?.(false), [onDirty]);
 
   const save = async () => {
     if (!value) return;
@@ -68,7 +72,25 @@ function BlockEditor({ blockKey }: { blockKey: string }) {
     }
   };
 
-  if (isLoading || value === null) return <p className="text-[14px] text-[#4A4A4A]">Loading…</p>;
+  if (isLoading || value === null) return <p className="p-5 text-[14px] text-[#4A4A4A]">Loading…</p>;
+  if (embedded) {
+    return (
+      <div>
+        <div className="px-5 py-4 border-b border-[#E0DBD1]">
+          <p className="text-[11px] uppercase tracking-[0.14em] text-[#6B6B6B]">Site settings</p>
+          <h2 className="text-[20px] font-semibold text-[#141414]">{def.label}</h2>
+          <p className="mt-1 text-[13.5px] text-[#3F3F3F]">{def.description}</p>
+        </div>
+        <div className="p-5">
+          <SchemaForm fields={def.fields} value={value} onChange={setValue} />
+        </div>
+        <div className="sticky bottom-0 px-5 py-3 bg-white border-t border-[#E0DBD1] flex items-center gap-3">
+          <Button onClick={save} busy={busy} disabled={!dirty}>Save {def.label.toLowerCase()}</Button>
+          {dirty ? <Button variant="ghost" onClick={() => setValue(data ?? {})}>Discard changes</Button> : <span className="text-[13px] text-[#4F4F4F]">All changes saved.</span>}
+        </div>
+      </div>
+    );
+  }
   return (
     <Panel title={def.label} description={def.description}>
       <SchemaForm fields={def.fields} value={value} onChange={setValue} />

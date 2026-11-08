@@ -21,7 +21,7 @@ test.describe('360 px phones', () => {
   test('admin pages fit', async ({ page }) => {
     test.setTimeout(120_000);
     await adminLogin(page, '/admin');
-    for (const path of ['/admin', '/admin/orders', '/admin/products', '/admin/pages', '/admin/coupons', '/admin/inventory']) {
+    for (const path of ['/admin', '/admin/orders', '/admin/products', '/admin/cms', '/admin/cms?tab=content', '/admin/cms?tab=site', '/admin/coupons', '/admin/inventory']) {
       await page.goto(path);
       await page.waitForLoadState('networkidle');
       await noSideScroll(page);

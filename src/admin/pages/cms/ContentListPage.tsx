@@ -20,10 +20,10 @@ import { SchemaForm } from '../../cms/SchemaForm';
 import { CONTENT_TYPES, type ContentType } from '../../cms/contentTypes';
 import { emptyItem } from '../../../cms/schema';
 
-type Row = Record<string, any> & { id: string };
+export type Row = Record<string, any> & { id: string };
 
 // Form values that are stored differently in the table.
-function toForm(type: ContentType, row: Row): Record<string, unknown> {
+export function toForm(type: ContentType, row: Row): Record<string, unknown> {
   const out: Record<string, unknown> = { ...row, ...columnToMobile(row) };
   delete out.mobile_media;
   if (type.table === 'stories') out.duration_ms = Math.round((row.duration_ms ?? 5000) / 1000);
@@ -32,7 +32,7 @@ function toForm(type: ContentType, row: Row): Record<string, unknown> {
   return out;
 }
 
-function toRow(type: ContentType, form: Record<string, unknown>): Record<string, unknown> {
+export function toRow(type: ContentType, form: Record<string, unknown>): Record<string, unknown> {
   const row: Record<string, unknown> = {};
   for (const f of type.fields) {
     if (f.key === 'product_ids') continue;

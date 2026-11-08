@@ -8,12 +8,13 @@ test('admin creates and publishes a text page, and it shows on the site', async 
   const title = `E2E Gifting Guide ${stamp}`;
   const slug = `e2e-gifting-guide-${stamp}`;
 
-  await adminLogin(page, '/admin/pages');
+  await adminLogin(page, '/admin/cms');
   await page.getByRole('button', { name: 'New page' }).click();
-  await page.getByLabel('Title').fill(title);
-  await expect(page.getByLabel('Link')).toHaveValue(slug);
-  await page.getByRole('button', { name: 'Create page' }).click();
-  await expect(page).toHaveURL(/\/admin\/pages\/[0-9a-f-]{36}$/);
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel('Title').fill(title);
+  await expect(dialog.getByLabel('Link')).toHaveValue(slug);
+  await dialog.getByRole('button', { name: 'Create page' }).click();
+  await expect(page).toHaveURL(new RegExp(`page=${slug}`));
 
   await page.locator('.ProseMirror').first().click();
   await page.keyboard.type('Wrap it in our signature box.');
@@ -30,10 +31,13 @@ test('admin adds an announcement and the bar appears on the store', async ({ pag
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 1400, height: 950 });
   const text = `E2E Free gift wrap this week ${Date.now()}`;
-  await adminLogin(page, '/admin/content/announcements');
+  await adminLogin(page, '/admin/cms');
+  // Old addresses forward to the Website screen.
+  await page.goto('/admin/content/announcements');
+  await expect(page).toHaveURL(/tab=content&kind=announcements/);
   await page.getByRole('button', { name: 'Add announcement' }).click();
   await page.getByLabel('Message').fill(text);
-  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await page.getByRole('button', { name: 'Save announcement' }).click();
   await expect(page.getByText('Announcement saved.')).toBeVisible();
 
   await page.goto('/');
@@ -43,9 +47,8 @@ test('admin adds an announcement and the bar appears on the store', async ({ pag
 test('admin home section edits reach the store', async ({ page }) => {
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 1400, height: 950 });
-  await adminLogin(page, '/admin/pages');
-  await page.getByRole('link', { name: 'Home' }).first().click();
-  await expect(page.getByText('Sections', { exact: true }).first()).toBeVisible();
+  await adminLogin(page, '/admin/cms');
+  await expect(page.getByLabel('Page', { exact: true })).toHaveValue('home');
   // Hide the second ribbon, check it is gone, then show it again. The real home page is always restored.
   try {
     await page.getByRole('button', { name: 'Hide Ribbon (reverse)' }).click();

@@ -45,9 +45,17 @@ describe('SchemaForm', () => {
     const spy = vi.fn();
     const fields: FieldDef[] = [{ key: 'tiles', label: 'Tiles', type: 'list', itemLabel: 'Tile', fields: [{ key: 'title', label: 'Title', type: 'text' }] }];
     render(<Harness fields={fields} initial={{ tiles: [{ title: 'One' }, { title: 'Two' }] }} spy={spy} />);
-    fireEvent.click(screen.getByRole('button', { name: /Two/ }));
+    // Short lists start open, like cards.
     fireEvent.change(screen.getByDisplayValue('Two'), { target: { value: 'Second' } });
     expect(spy).toHaveBeenLastCalledWith({ tiles: [{ title: 'One' }, { title: 'Second' }] });
+  });
+
+  it('long lists start folded and open when their strip is clicked', () => {
+    const fields: FieldDef[] = [{ key: 'tiles', label: 'Tiles', type: 'list', itemLabel: 'Tile', fields: [{ key: 'title', label: 'Title', type: 'text' }] }];
+    render(<Harness fields={fields} initial={{ tiles: ['A', 'B', 'C', 'D', 'E'].map((title) => ({ title })) }} spy={vi.fn()} />);
+    expect(screen.queryByDisplayValue('E')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Tile 5/ }));
+    expect(screen.getByDisplayValue('E')).toBeTruthy();
   });
 
   it('adds, moves and removes list items', () => {

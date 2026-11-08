@@ -236,6 +236,14 @@
 - [x] Each product can hand-pick its “You may also appreciate” products; automatic when none are picked
 - [x] Clearer section names; “Products I pick” is the first choice in every products section
 
+## Phase 18: One Website screen ✅
+- [x] Admin → Website (CMS): tabs Pages, Content, Site settings, Media
+- [x] Pick a page, click a section on the left (numbered, eye to show/hide, arrows to move), edit it on the right with Shown on site, View on site, copy, delete and save
+- [x] Content (announcements, stories, reels, testimonials, FAQs, boutiques) and Site settings (theme, brand, menus, footer, shop words, SEO) work the same way
+- [x] Lists inside a section are cards (Tile 1, Tile 2 …) with move, copy and remove; text lists are numbered
+- [x] Leaving with unsaved changes asks first; old admin addresses forward to the new screen
+- [x] Tests: 302 unit, 16 SQL files, 33 browser tests
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain
