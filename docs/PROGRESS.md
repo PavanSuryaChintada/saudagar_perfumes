@@ -224,6 +224,18 @@
 - [x] Fixed: removing a sold size of a perfume no longer pours its liquid away
 - [x] Tests: 284 unit, 15 SQL files, 33 browser tests
 
+## Phase 17: Professional admin, shop words, CMS everywhere ✅
+- [x] Admin look: dark sidebar with clear section headings, fixed top bar, panels with header strips, ₹ amounts
+- [x] Column headings on every admin list; labelled Edit / Delete buttons; coloured Shown / Hidden / stock labels
+- [x] Gift pack words are plain sentences; the numbers show automatically from the rules (no codes)
+- [x] Site content → Shop words: bag, buttons, empty pages, checkout, wishlist, notes page and page-not-found wording
+- [x] Every category and collection page opens with its own picture or film (phone picture optional)
+- [x] Product page in the CMS (Pages → Product page): composition, reviews, “You may also appreciate”, recently viewed, plus any section; reorder, hide, add
+- [x] Category & collection pages in the CMS (Pages → Category & collection pages): add sections above or below the banner and products
+- [x] Ready-made sections: Best sellers, New arrivals, Gift ideas, Trending now; search and pick the products
+- [x] Each product can hand-pick its “You may also appreciate” products; automatic when none are picked
+- [x] Clearer section names; “Products I pick” is the first choice in every products section
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain

@@ -38,9 +38,17 @@ export function SectionList({ sections }: { sections: { id: string; type: string
   );
 }
 
-/** Renders a section-built page by slug. Shows nothing while loading. */
-export function CmsSections({ slug }: { slug: string }) {
+type SectionItem = { id: string; type: string; config: Record<string, any> };
+
+/** Renders a section-built page by slug. While loading (or if it can't load) it shows `fallback`, if given. */
+export function CmsSections({ slug, fallback, ensure }: { slug: string; fallback?: SectionItem[]; ensure?: string[] }) {
   const { data } = usePageContent(slug);
-  if (!data) return null;
-  return <SectionList sections={data.sections} />;
+  const sections = useMemo(() => {
+    const list = (data?.sections as SectionItem[] | undefined) ?? fallback ?? [];
+    // Sections the page can't do without are added at the end if somehow missing.
+    const missing = (ensure ?? []).filter((t) => !list.some((s) => s.type === t));
+    return missing.length ? [...list, ...missing.map((t) => ({ id: `ensure-${t}`, type: t, config: {} }))] : list;
+  }, [data, fallback, ensure]);
+  if (!data && !fallback) return null;
+  return <SectionList sections={sections} />;
 }

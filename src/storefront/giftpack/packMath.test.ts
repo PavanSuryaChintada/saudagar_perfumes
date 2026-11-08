@@ -40,3 +40,11 @@ describe('gift pack maths', () => {
     expect(fillPackText(undefined, opts)).toBe('');
   });
 });
+
+describe('pack facts', () => {
+  it('turns the rules into short lines customers read, without any codes in the admin words', async () => {
+    const { packFacts } = await import('./packMath');
+    expect(packFacts({ count: 5, size_ml: 20, sample_ml: 10, discount_percent: 10 })).toEqual(['5 perfumes of your choice', '20 ml each', 'Free 10 ml sample', '10% off']);
+    expect(packFacts({ count: 1, size_ml: 20, sample_ml: 0, discount_percent: 0 })).toEqual(['1 perfume of your choice', '20 ml each']);
+  });
+});

@@ -157,6 +157,9 @@ export const GUIDE: GuideSection[] = [
     check: 'website',
     steps: [
       { text: 'Pages → Home: each block is a section. Edit it, drag to reorder, or hide it.', link: { to: '/admin/pages', label: 'Pages' } },
+      { text: 'Add section → Best sellers, New arrivals, Gift ideas or Trending now, then search and pick the products to show.' },
+      { text: 'Pages → Product page: the part of every product page below the photos (composition, reviews, “You may also appreciate”, recently viewed). Pages → Category & collection pages: add sections above or below the products.', link: { to: '/admin/pages', label: 'Pages' } },
+      { text: 'Site content → Shop words: the wording of the bag, buttons, empty pages and checkout.', link: { to: '/admin/site', label: 'Site content' } },
       { text: 'Every button and link asks what it should open: a product, category, note, collection, page or another website. Search and pick.' },
       { text: 'Site content: menu, footer, logo, colours, fonts and search-engine text.', link: { to: '/admin/site', label: 'Site content' } },
       { text: 'Announcements: the thin bar at the top of the site.', link: { to: '/admin/content/announcements', label: 'Announcements' } },

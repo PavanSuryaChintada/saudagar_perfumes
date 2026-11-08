@@ -1,3 +1,4 @@
+import { ListHead } from '../../ui/ListHead';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -99,7 +100,14 @@ export default function InventoryPage() {
       {isLoading && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}
       {error && <p className="text-[14px] text-rose-600">{toFriendlyError(error)}</p>}
 
-      <ul className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
+      <div className="bg-white border border-[#E2E0DB]">
+      <ListHead from="lg">
+        <span className="w-[30%]">Product</span>
+        <span className="w-[22%]">Stock left</span>
+        <span className="flex-1">Bottles you can still sell, per size</span>
+        <span className="pr-1">Status and actions</span>
+      </ListHead>
+      <ul className="divide-y divide-[#E9E7E2]">
         {paged.rows.map((p) => {
           const st = stateOf(p);
           const liquid = p.stock_unit === 'ml';
@@ -112,8 +120,8 @@ export default function InventoryPage() {
               <div className="lg:w-[22%]">
                 {liquid ? (
                   <>
-                    <p className="text-[18px] tabular-nums text-tk-ink">{formatMl(Number(p.stock_ml))}</p>
-                    <p className="text-[12.5px] text-[#4A4A4A]">left</p>
+                    <p className="text-[17px] font-medium tabular-nums text-tk-ink">{formatMl(Number(p.stock_ml))}</p>
+                    <p className="text-[12.5px] text-[#4A4A4A] lg:hidden">left</p>
                   </>
                 ) : (
                   <p className="text-[14px] text-[#3F3F3F]">Each size has its own count</p>
@@ -130,11 +138,13 @@ export default function InventoryPage() {
                 ))}
               </ul>
               <div className="flex items-center gap-2">
-                {st !== 'ok' && (
-                  <span className={`px-2 py-0.5 text-[12px] border ${st === 'out' ? 'bg-rose-50 text-rose-800 border-rose-200' : 'bg-amber-50 text-amber-800 border-amber-200'}`}>
-                    {st === 'out' ? 'Sold out' : 'Running low'}
-                  </span>
-                )}
+                <span
+                  className={`px-2 py-0.5 text-[12px] font-medium border ${
+                    st === 'out' ? 'bg-rose-50 text-rose-800 border-rose-200' : st === 'low' ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  }`}
+                >
+                  {st === 'out' ? 'Sold out' : st === 'low' ? 'Running low' : 'In stock'}
+                </span>
                 <button type="button" className={ACTION} onClick={() => setAdjusting(p)}>
                   <PackagePlus size={14} aria-hidden /> Adjust
                 </button>
@@ -147,6 +157,7 @@ export default function InventoryPage() {
         })}
         {!isLoading && paged.rows.length === 0 && <li className="px-4 py-8 text-center text-[14px] text-[#4A4A4A]">Nothing matches.</li>}
       </ul>
+      </div>
       <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="products" />
 
       <AdjustStockModal product={adjusting} onClose={() => setAdjusting(null)} onDone={refresh} />

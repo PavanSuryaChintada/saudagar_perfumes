@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, Circle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
-import { formatINR } from '../../lib/money';
+import { formatRupees as formatINR } from '../../lib/money';
 import { toFriendlyError } from '../../lib/errors';
 import { PageHeader, Panel } from '../ui/PageHeader';
 import { OrdersView, PaymentsView, StockView, TodayView, type Insights } from './dashboard/InsightViews';

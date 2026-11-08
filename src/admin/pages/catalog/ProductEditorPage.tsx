@@ -500,6 +500,20 @@ export default function ProductEditorPage() {
                   emptyText="No collections yet. Type a name to create one."
                 />
               </FieldShell>
+              <FieldShell
+                label="You may also appreciate (optional)"
+                htmlFor="p-related"
+                help="Search and pick the products shown under this one, in this order. Leave empty to show similar scents automatically."
+              >
+                <SearchMultiSelect
+                  id="p-related"
+                  options={(productList.data ?? []).filter((x) => x.id !== form.id).map((x) => ({ value: x.id, label: x.name }))}
+                  values={form.related_product_ids}
+                  onChange={(v) => set('related_product_ids', v)}
+                  placeholder="Search products"
+                  emptyText="No other products yet."
+                />
+              </FieldShell>
             </div>
           </Panel>
 

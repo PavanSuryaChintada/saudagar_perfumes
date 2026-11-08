@@ -18,12 +18,19 @@ import BluorngFooterAccordions from '../components/BluorngFooterAccordions.jsx';
 import BluorngStores from '../components/BluorngStores.jsx';
 import { StoryClosing, StoryHero, StorySplit, StoryTenets, StoryTimeline } from '../storefront/sections/StorySections.jsx';
 import { FaqSection, NewsletterSection, PromiseStrip, PromoBanner, PROMISE_ICONS, RichTextSection, ShopByNote } from '../storefront/sections/ExtraSections.jsx';
+import {
+  ListingGridSection, ListingHeaderSection, ProductCompositionSection, ProductRecentSection, ProductReviewsSection, ProductSimilarSection,
+} from '../storefront/sections/PageSections.jsx';
 
 export interface SectionDef {
   label: string;
   description: string;
   component: ComponentType<any>;
   fields: FieldDef[];
+  /** Only offered on this page (the product page or the category/collection pages). */
+  only?: 'product-page' | 'listing-page';
+  /** Can be moved but not removed or hidden (the page needs it). */
+  required?: boolean;
 }
 
 const t = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: 'text', help });
@@ -41,7 +48,7 @@ function KineticMarqueeSection({ config = {} }: { config?: Record<string, any> }
 
 export const SECTION_TYPES: Record<string, SectionDef> = {
   hero_video_carousel: {
-    label: 'Video hero',
+    label: 'Big film at the top',
     description: 'Full-screen films with a film switcher, sound toggle and one button.',
     component: BluorngHero,
     fields: [
@@ -77,20 +84,20 @@ export const SECTION_TYPES: Record<string, SectionDef> = {
     ],
   },
   product_carousel: {
-    label: 'Product row (latest drop)',
-    description: 'A heading with a grid of products from a collection, category or hand-picked list.',
+    label: 'Products row',
+    description: 'A heading and a row of products. Pick the products by hand, or let them fill from best sellers, newest, a collection or a category.',
     component: BluorngFeaturedCollection,
     fields: [...header, t('side_label', 'Side label'), t('cta_label', 'Button text'), link('cta_link', 'Button link'), { key: 'source', label: 'Products', type: 'product_source' }],
   },
   product_showcase: {
-    label: 'Product showcase (coffrets)',
-    description: 'A dark showcase of products, e.g. discovery sets.',
+    label: 'Products showcase (dark)',
+    description: 'Products on a dark background, e.g. gift sets. Pick them by hand or let them fill automatically.',
     component: BluorngCustomExclusive,
     fields: [...header, t('side_label', 'Side label'), t('cta_label', 'Button text'), link('cta_link', 'Button link'), { key: 'source', label: 'Products', type: 'product_source' }],
   },
   product_grid_tabs: {
-    label: 'Product grid with tabs',
-    description: 'Products with filter tabs; each tab has its own product source.',
+    label: 'Products with tabs',
+    description: 'Products under tabs (e.g. For him, For her); each tab has its own products.',
     component: BluorngSignatureCollection,
     fields: [...header, { key: 'tabs', label: 'Tabs', type: 'list', itemLabel: 'Tab', fields: [t('label', 'Tab name'), { key: 'source', label: 'Products', type: 'product_source' }] }],
   },
@@ -105,13 +112,13 @@ export const SECTION_TYPES: Record<string, SectionDef> = {
     ],
   },
   gallery_tiles: {
-    label: 'Three editorial tiles',
+    label: 'Three picture tiles',
     description: 'Three large image tiles that link anywhere.',
     component: BluorngGalleryHero,
     fields: [...header, t('side_label', 'Side label'), { key: 'tiles', label: 'Tiles', type: 'list', itemLabel: 'Tile', max: 3, fields: [t('kicker', 'Small label'), t('title', 'Title'), t('subtitle', 'Caption'), media('image', 'Image', 'image'), link('link', 'Link')] }],
   },
   editorial_story: {
-    label: 'Brand statement & bento',
+    label: 'Brand statement with picture tiles',
     description: 'A large statement, four bento tiles and three collection entry cards.',
     component: BluorngEditorial,
     fields: [
@@ -224,4 +231,90 @@ export const SECTION_TYPES: Record<string, SectionDef> = {
     component: NewsletterSection,
     fields: [t('heading', 'Heading'), ta('text', 'Text'), t('placeholder', 'Email placeholder'), t('button_label', 'Button text'), t('success', 'Thank-you message')],
   },
+  product_composition: {
+    label: 'Product: composition and details',
+    description: 'The notes pyramid, accords and the details of the product being viewed.',
+    component: ProductCompositionSection,
+    only: 'product-page',
+    fields: [
+      t('eyebrow', 'Small heading', 'e.g. Atelier Specifications'),
+      t('heading', 'Heading', 'e.g. Craft & Olfactory Composition'),
+      { key: 'show_notes', label: 'Show the notes pyramid', type: 'boolean' },
+      { key: 'show_accords', label: 'Show the accords', type: 'boolean' },
+    ],
+  },
+  product_reviews: {
+    label: 'Product: reviews',
+    description: 'Customer reviews of the product being viewed.',
+    component: ProductReviewsSection,
+    only: 'product-page',
+    fields: [],
+  },
+  product_similar: {
+    label: 'Product: you may also appreciate',
+    description: 'Products picked in each product’s editor, or similar scents found automatically when none are picked.',
+    component: ProductSimilarSection,
+    only: 'product-page',
+    fields: [t('eyebrow', 'Small heading', 'e.g. Similar Scents'), t('heading', 'Heading', 'e.g. You May Also Appreciate'), { key: 'limit', label: 'How many (when automatic)', type: 'number', min: 1, max: 12 }],
+  },
+  product_recent: {
+    label: 'Product: recently viewed',
+    description: 'The products this visitor looked at recently.',
+    component: ProductRecentSection,
+    only: 'product-page',
+    fields: [t('eyebrow', 'Small heading', 'e.g. Your Journey'), t('heading', 'Heading', 'e.g. Recently Viewed')],
+  },
+  listing_header: {
+    label: 'Top picture and title',
+    description: 'Each category or collection’s own top picture, film and description (set in Categories and Collections).',
+    component: ListingHeaderSection,
+    only: 'listing-page',
+    required: true,
+    fields: [],
+  },
+  listing_grid: {
+    label: 'Products with filters',
+    description: 'The products of the category or collection, with filters and sorting.',
+    component: ListingGridSection,
+    only: 'listing-page',
+    required: true,
+    fields: [],
+  },
 };
+
+/** Ready-made sections: a named products row where the admin searches and picks the products shown. */
+export const SECTION_PRESETS: { key: string; label: string; description: string; type: string; config: Record<string, unknown> }[] = [
+  {
+    key: 'best_sellers',
+    label: 'Best sellers',
+    description: 'A “Best sellers” row. Search and pick the products to show.',
+    type: 'product_carousel',
+    config: { eyebrow: 'Most loved', heading: 'Best sellers', source: { mode: 'manual', products: [], limit: 8 } },
+  },
+  {
+    key: 'new_arrivals',
+    label: 'New arrivals',
+    description: 'A “New arrivals” row. Search and pick the products to show.',
+    type: 'product_carousel',
+    config: { eyebrow: 'Just in', heading: 'New arrivals', source: { mode: 'manual', products: [], limit: 8 } },
+  },
+  {
+    key: 'gift_ideas',
+    label: 'Gift ideas',
+    description: 'A “Gift ideas” row. Search and pick the products to show.',
+    type: 'product_carousel',
+    config: { eyebrow: 'For someone special', heading: 'Gift ideas', source: { mode: 'manual', products: [], limit: 8 } },
+  },
+  {
+    key: 'trending',
+    label: 'Trending now',
+    description: 'A “Trending now” row. Search and pick the products to show.',
+    type: 'product_carousel',
+    config: { eyebrow: 'This season', heading: 'Trending now', source: { mode: 'manual', products: [], limit: 8 } },
+  },
+];
+
+/** Section types the “Add section” list offers on a page. */
+export function sectionTypesFor(pageSlug: string) {
+  return Object.entries(SECTION_TYPES).filter(([, def]) => !def.only || def.only === pageSlug);
+}

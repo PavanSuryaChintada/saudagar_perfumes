@@ -1,3 +1,4 @@
+import { ListHead, RowAction, ShownPill } from '../../ui/ListHead';
 import { useMemo, useState } from 'react';
 import { usePaged } from '../../../lib/paging';
 import { Pager } from '../../ui/Pager';
@@ -129,25 +130,29 @@ export default function CategoriesPage() {
         }
       />
       <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
+        {paged.rows.length > 0 && (
+          <ListHead className="!px-3">
+            <span className="flex-1">Category (sub-categories are indented)</span>
+            <span className="w-[80px]">On the site</span>
+            <span className="w-[76px]">Order</span>
+            <span className="w-[150px] text-right pr-1">Actions</span>
+          </ListHead>
+        )}
         {paged.rows.map(({ row, depth }) => (
-          <div key={row.id} className="flex items-center gap-2 px-3 py-2" style={{ paddingLeft: 12 + depth * 22 }}>
+          <div key={row.id} className="flex flex-wrap sm:flex-nowrap items-center gap-2 px-3 py-2 hover:bg-[#FAF8F4]" style={{ paddingLeft: 12 + depth * 22 }}>
             <div className="min-w-0 flex-1">
-              <p className={`text-[14px] ${row.is_active ? '' : 'text-[#575757] line-through'}`}>{row.name}</p>
+              <p className="text-[14px] font-medium text-tk-ink">{depth > 0 && <span className="text-[#8A8A8A] mr-1">↳</span>}{row.name}</p>
               <p className="text-[12px] text-[#4F4F4F]">/categories/{row.slug}</p>
             </div>
-            <button type="button" aria-label="Move up" className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => move(row, -1)}><ArrowUp size={14} /></button>
-            <button type="button" aria-label="Move down" className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => move(row, 1)}><ArrowDown size={14} /></button>
-            <button
-              type="button"
-              aria-label={`Edit ${row.name}`}
-              className="p-1.5 text-[#4A4A4A] hover:text-tk-ink"
-              onClick={() => edit(row)}
-            >
-              <Pencil size={14} />
-            </button>
-            <button type="button" aria-label={`Delete ${row.name}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setDeleting(row)}>
-              <Trash2 size={14} />
-            </button>
+            <span className="sm:w-[80px]"><ShownPill on={row.is_active} /></span>
+            <span className="sm:w-[76px] flex">
+              <button type="button" aria-label="Move up" title="Move up" className="p-1.5 border border-transparent text-[#4A4A4A] hover:text-tk-ink hover:border-[#C4C1B9]" onClick={() => move(row, -1)}><ArrowUp size={14} /></button>
+              <button type="button" aria-label="Move down" title="Move down" className="p-1.5 border border-transparent text-[#4A4A4A] hover:text-tk-ink hover:border-[#C4C1B9]" onClick={() => move(row, 1)}><ArrowDown size={14} /></button>
+            </span>
+            <span className="sm:w-[150px] flex justify-end">
+              <RowAction icon={Pencil} label={`Edit ${row.name}`} onClick={() => edit(row)}>Edit</RowAction>
+              <RowAction icon={Trash2} label={`Delete ${row.name}`} danger onClick={() => setDeleting(row)}>Delete</RowAction>
+            </span>
           </div>
         ))}
         {tree.length === 0 && <p className="p-8 text-center text-[14px] text-[#4A4A4A]">No categories yet.</p>}
@@ -187,14 +192,14 @@ export default function CategoriesPage() {
             <FieldShell label="Description" htmlFor="c-desc">
               <TextArea id="c-desc" rows={2} value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
             </FieldShell>
-            <FieldShell label="Image">
-              <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload image" />
+            <FieldShell label="Top picture of the category page" help="Shown full width at the top of this category’s page, with its name over it. Use a wide photo, e.g. 2400 × 1000. Without one, the page starts with a plain heading.">
+              <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload picture" />
             </FieldShell>
-            <FieldShell label="Image: phone version (optional)" help="Shown on phones. Leave empty to use the picture above everywhere.">
+            <FieldShell label="Top picture on phones (optional)" help="A taller photo for phones, e.g. 1080 × 1350. Leave empty to use the picture above on phones too.">
               <MediaField value={draft.mobile.image_url ?? ''} onChange={(url) => setDraft({ ...draft, mobile: { ...draft.mobile, image_url: url } })} kind="image" label="Upload phone picture" />
             </FieldShell>
-            <FieldShell label="Video (optional)">
-              <MediaField value={draft.video_url} onChange={(url) => setDraft({ ...draft, video_url: url })} kind="video" label="Upload video" />
+            <FieldShell label="Top film (optional)" help="Plays at the top instead of the picture. Keep it short and silent; the picture shows while it loads.">
+              <MediaField value={draft.video_url} onChange={(url) => setDraft({ ...draft, video_url: url })} kind="video" label="Upload film" />
             </FieldShell>
             <FieldShell label="SEO title" htmlFor="c-seot">
               <TextInput id="c-seot" value={draft.seo_title} onChange={(e) => setDraft({ ...draft, seo_title: e.target.value })} />

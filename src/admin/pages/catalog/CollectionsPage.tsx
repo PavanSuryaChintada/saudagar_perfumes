@@ -1,3 +1,4 @@
+import { ListHead, RowAction, ShownPill } from '../../ui/ListHead';
 import { useEffect, useMemo, useState } from 'react';
 import { usePaged, spliceOrder } from '../../../lib/paging';
 import { Pager } from '../../ui/Pager';
@@ -163,6 +164,15 @@ export default function CollectionsPage() {
           </Button>
         }
       />
+      {paged.rows.length > 0 && (
+        <ListHead className="border border-b-0 border-[#E2E0DB]">
+          <span className="w-4" aria-hidden />
+          <span className="w-10" aria-hidden />
+          <span className="flex-1">Collection (drag ⋮⋮ to reorder)</span>
+          <span className="w-[80px]">On the site</span>
+          <span className="w-[210px] text-right pr-1">Actions</span>
+        </ListHead>
+      )}
       <SortableList
         items={paged.rows}
         className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]"
@@ -178,21 +188,20 @@ export default function CollectionsPage() {
           <div className="flex items-center gap-3 pr-2 py-2">
             <div className="w-10 h-10 bg-[#F4F3EE] overflow-hidden shrink-0">{c.image_url && <img src={c.image_url} alt="" className="w-full h-full object-cover" />}</div>
             <div className="min-w-0 flex-1">
-              <p className={`text-[14px] ${c.is_active ? '' : 'text-[#575757] line-through'}`}>{c.name}</p>
+              <p className="text-[14px] font-medium text-tk-ink">{c.name}</p>
               <p className="text-[12px] text-[#4F4F4F] truncate">
                 /collections/{c.slug}
                 {c.aliases.length > 0 && ` · old links: ${c.aliases.join(', ')}`}
               </p>
             </div>
-            <a href={`/collections/${c.slug}`} target="_blank" rel="noreferrer" className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" aria-label="View on site">
-              <ExternalLink size={14} />
-            </a>
-            <button type="button" aria-label={`Edit ${c.name}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => { setError(''); setDraft(toDraft(c)); }}>
-              <Pencil size={14} />
-            </button>
-            <button type="button" aria-label={`Delete ${c.name}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setDeleting(c)}>
-              <Trash2 size={14} />
-            </button>
+            <span className="sm:w-[80px]"><ShownPill on={c.is_active} /></span>
+            <span className="sm:w-[210px] flex justify-end">
+              <a href={`/collections/${c.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 px-2 py-1.5 text-[12.5px] text-[#3F3F3F] border border-transparent hover:border-[#C4C1B9] hover:text-tk-ink">
+                <ExternalLink size={13} aria-hidden /> View
+              </a>
+              <RowAction icon={Pencil} label={`Edit ${c.name}`} onClick={() => { setError(''); setDraft(toDraft(c)); }}>Edit</RowAction>
+              <RowAction icon={Trash2} label={`Delete ${c.name}`} danger onClick={() => setDeleting(c)}>Delete</RowAction>
+            </span>
           </div>
         )}
       />
@@ -228,7 +237,7 @@ export default function CollectionsPage() {
               {field('tagline', 'Tagline')}
               {field('descriptor', 'Description', undefined, true)}
               {field('notes_subtitle', 'Notes line', 'e.g. Taif rose · wild Assam oud · saffron')}
-              <FieldShell label="Card image">
+              <FieldShell label="Card image" help="Shown on collection cards, and full width at the top of the collection page when it has no hero film.">
                 <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload image" />
               </FieldShell>
               <FieldShell label="Card image: phone version (optional)" help="Shown on phones. Leave empty to use the picture above everywhere.">

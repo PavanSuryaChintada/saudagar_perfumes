@@ -9,10 +9,11 @@ export function PageHeader({ title, description, actions }: { title: string; des
   const { pathname } = useLocation();
   const hasHelp = !!guide && sectionsFor(pathname).length > 0;
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-6">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-6 pb-5 border-b border-[#E0DBD1]">
       <div className="min-w-0">
         <div className="flex items-center gap-3 flex-wrap">
-          <h1 className="text-[24px] font-semibold tracking-[-0.01em] text-tk-ink">{title}</h1>
+          <span className="w-1 h-7 bg-tk-accent shrink-0" aria-hidden />
+          <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-[#141414]">{title}</h1>
           {hasHelp && (
             <button
               type="button"
@@ -23,7 +24,7 @@ export function PageHeader({ title, description, actions }: { title: string; des
             </button>
           )}
         </div>
-        {description && <p className="mt-1 text-[14.5px] text-[#3F3F3F] max-w-[680px]">{description}</p>}
+        {description && <p className="mt-1.5 text-[14.5px] text-[#3F3F3F] max-w-[680px]">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
     </div>
@@ -32,11 +33,11 @@ export function PageHeader({ title, description, actions }: { title: string; des
 
 export function Panel({ title, description, children, action, id }: { title?: string; description?: string; children: ReactNode; action?: ReactNode; id?: string }) {
   return (
-    <section id={id} className="border border-[#E2E0DB] bg-white scroll-mt-6">
+    <section id={id} className="border border-[#E0DBD1] bg-white scroll-mt-20 shadow-[0_1px_2px_rgba(20,20,20,0.05)]">
       {title && (
-        <header className="px-4 sm:px-5 py-3.5 border-b border-[#E2E0DB] flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+        <header className="px-4 sm:px-5 py-3.5 bg-[#FAF8F4] border-b border-[#E0DBD1] flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
           <div className="min-w-0">
-            <h2 className="text-[15px] font-semibold text-tk-ink normal-case tracking-normal">{title}</h2>
+            <h2 className="text-[15.5px] font-semibold text-[#141414] normal-case tracking-normal">{title}</h2>
             {description && <p className="mt-0.5 text-[13px] text-[#4F4F4F]">{description}</p>}
           </div>
           {action && <div className="shrink-0">{action}</div>}

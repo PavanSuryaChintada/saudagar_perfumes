@@ -12,7 +12,10 @@ export default function CmsPage({ slug, onNavigateHome, onNavigateCollection }) 
   useSEO(page ? { title: page.seo_title || page.title, description: page.seo_description, image: page.og_image, noindex: !page.is_published } : { title: null });
 
   if (isLoading) return <div className="min-h-[60vh]" aria-busy="true" />;
-  if (!page) return <NotFoundPage onNavigateHome={onNavigateHome} onNavigateCollection={onNavigateCollection} />;
+  // The product-page and category-page layouts are not pages of their own.
+  if (!page || slug === 'product-page' || slug === 'listing-page') {
+    return <NotFoundPage onNavigateHome={onNavigateHome} onNavigateCollection={onNavigateCollection} />;
+  }
 
   if (page.layout === 'sections') {
     return (

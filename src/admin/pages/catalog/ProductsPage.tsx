@@ -1,3 +1,4 @@
+import { ListHead, StockText } from '../../ui/ListHead';
 import { useMemo, useState } from 'react';
 import { usePaged } from '../../../lib/paging';
 import { Pager } from '../../ui/Pager';
@@ -5,7 +6,7 @@ import { Link, useNavigate } from 'react-router';
 import { Copy, Archive, ArchiveRestore, FileSpreadsheet, Pencil, Plus, Trash2, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import { toFriendlyError } from '../../../lib/errors';
-import { formatINR } from '../../../lib/money';
+import { formatRupees as formatINR } from '../../../lib/money';
 import { formatMl } from '../../inventory/stock';
 import { PageHeader } from '../../ui/PageHeader';
 import { useGuideStatus } from '../../guide/useGuideStatus';
@@ -120,14 +121,29 @@ export default function ProductsPage() {
 
       <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
         {paged.rows.length > 0 && (
-          <label className="flex items-center gap-3 px-3 sm:px-4 py-2.5 bg-[#F8F7F5] text-[13px] text-[#454545] cursor-pointer">
-            <RowCheck
-              checked={allShown}
-              onChange={(on) => setSelected(on ? new Set(paged.rows.map((r) => r.id)) : new Set())}
-              label="Select every product shown"
-            />
-            {allShown ? `All ${paged.rows.length} on this page are selected` : `Select all ${paged.rows.length} on this page`}
-          </label>
+          <>
+            <label className="sm:hidden flex items-center gap-3 px-3 py-2.5 bg-[#ECE8DF] text-[13px] font-medium text-[#222222] cursor-pointer">
+              <RowCheck
+                checked={allShown}
+                onChange={(on) => setSelected(on ? new Set(paged.rows.map((r) => r.id)) : new Set())}
+                label="Select every product shown"
+              />
+              {allShown ? `All ${paged.rows.length} on this page are selected` : `Select all ${paged.rows.length} on this page`}
+            </label>
+            <ListHead>
+              <RowCheck
+                checked={allShown}
+                onChange={(on) => setSelected(on ? new Set(paged.rows.map((r) => r.id)) : new Set())}
+                label="Select every product shown"
+              />
+              <span className="w-12 shrink-0" aria-hidden />
+              <span className="flex-1 basis-[160px] min-w-0">Product</span>
+              <span className="w-[72px]">Status</span>
+              <span className="w-[140px]">Price</span>
+              <span className="w-[120px]">Stock left</span>
+              <span className="w-[350px] text-right pr-2">Actions</span>
+            </ListHead>
+          </>
         )}
         {paged.rows.map((p) => {
           const st = statusOf(p);
@@ -140,19 +156,23 @@ export default function ProductsPage() {
               <div className="w-12 h-12 bg-[#F4F3EE] shrink-0 overflow-hidden">
                 {p.image && <img src={p.image} alt="" className="w-full h-full object-contain" loading="lazy" />}
               </div>
-              <Link to={`/admin/products/${p.id}`} className="min-w-0 flex-1 basis-[180px] group">
+              <Link to={`/admin/products/${p.id}`} className="min-w-0 flex-1 basis-[160px] group">
                 <p className="text-[14px] font-medium text-tk-ink group-hover:text-tk-accent group-hover:underline underline-offset-4 line-clamp-2 sm:line-clamp-1">{p.name}</p>
                 <p className="text-[12px] text-[#4F4F4F] truncate">
                   /{p.slug}
                   {p.admin_note?.startsWith('SAMPLE') && <span className="ml-2 text-amber-700">· sample content</span>}
                 </p>
               </Link>
-              <span className={`px-2 py-0.5 text-[12px] ${STATUS_STYLE[st]}`}>{st}</span>
-              <span className="w-[140px] text-[13px] text-[#454545] tabular-nums">{price}</span>
-              <span className={`w-[110px] text-[13px] tabular-nums ${p.total_stock <= 0 ? 'text-rose-600' : 'text-[#454545]'}`}>
-                {p.stock_unit === 'ml' ? `${formatMl(Number(p.stock_ml))} left` : `${p.total_stock} in stock`}
+              <span className="sm:w-[72px]">
+                <span className={`inline-block px-2 py-0.5 text-[12px] font-medium capitalize ${STATUS_STYLE[st]}`}>{st}</span>
               </span>
-              <div className="flex flex-wrap gap-1 ml-auto">
+              <span className="sm:w-[140px] text-[13.5px] font-medium text-[#1F1F1F] tabular-nums">{price}</span>
+              <span className="sm:w-[120px] text-[13px] tabular-nums">
+                <StockText level={p.total_stock <= 0 ? 'out' : p.stock_unit === 'piece' && p.total_stock <= 5 ? 'low' : 'ok'}>
+                  {p.stock_unit === 'ml' ? `${formatMl(Number(p.stock_ml))}` : `${p.total_stock} pieces`}
+                </StockText>
+              </span>
+              <div className="flex flex-wrap sm:flex-nowrap justify-end gap-0.5 ml-auto sm:ml-0 sm:w-[350px]">
                 <Link to={`/admin/products/${p.id}`} className={ACTION}>
                   <Pencil size={13} aria-hidden /> Edit
                 </Link>

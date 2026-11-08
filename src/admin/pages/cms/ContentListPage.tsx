@@ -1,3 +1,4 @@
+import { ListHead, RowAction } from '../../ui/ListHead';
 import { useState } from 'react';
 import { columnToMobile, mobileToColumn } from '../../../cms/mobileMedia';
 import { wantsPhoneVersion } from '../../cms/SchemaForm';
@@ -122,6 +123,14 @@ function ContentList({ type }: { type: ContentType }) {
       {rows.length === 0 ? (
         <p className="bg-white border border-[#E2E0DB] px-4 py-6 text-[14px] text-[#4A4A4A]">No {type.label.toLowerCase()} yet.</p>
       ) : (
+        <>
+        <ListHead className="border border-b-0 border-[#E2E0DB]">
+          <span className="w-4" aria-hidden />
+          {type.thumbField && <span className="w-10" aria-hidden />}
+          <span className="flex-1">{type.singular.charAt(0).toUpperCase() + type.singular.slice(1)} (drag ⋮⋮ to reorder)</span>
+          <span className="w-[120px]">Show on site</span>
+          <span className="w-[150px] text-right pr-1">Actions</span>
+        </ListHead>
         <SortableList
           items={rows}
           className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]"
@@ -139,19 +148,21 @@ function ContentList({ type }: { type: ContentType }) {
                 <div className="w-10 h-10 bg-[#F4F3EE] overflow-hidden shrink-0">{r[type.thumbField] && <MediaPreview url={r[type.thumbField]} />}</div>
               )}
               <div className="min-w-0 flex-1">
-                <p className={`text-[14px] truncate ${r.is_active ? '' : 'text-[#575757]'}`}>{String(r[type.titleField] ?? '')}</p>
+                <p className="text-[14px] font-medium text-tk-ink truncate">{String(r[type.titleField] ?? '')}</p>
                 {type.subtitle?.(r) && <p className="text-[12px] text-[#4F4F4F] truncate">{type.subtitle(r)}</p>}
               </div>
-              <Toggle checked={Boolean(r.is_active)} onChange={(on) => setActive(r, on)} label={`Show ${String(r[type.titleField] ?? '')}`} />
-              <button type="button" aria-label={`Edit ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => { setError(''); setDraft({ id: r.id, form: toForm(type, r) }); }}>
-                <Pencil size={14} />
-              </button>
-              <button type="button" aria-label={`Delete ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setDeleting(r)}>
-                <Trash2 size={14} />
-              </button>
+              <span className="sm:w-[120px] flex items-center gap-2">
+                <Toggle checked={Boolean(r.is_active)} onChange={(on) => setActive(r, on)} label={`Show ${String(r[type.titleField] ?? '')}`} />
+                <span className="text-[12px] text-[#4A4A4A]">{r.is_active ? 'Shown' : 'Hidden'}</span>
+              </span>
+              <span className="sm:w-[150px] flex justify-end">
+                <RowAction icon={Pencil} label={`Edit ${String(r[type.titleField] ?? '')}`} onClick={() => { setError(''); setDraft({ id: r.id, form: toForm(type, r) }); }}>Edit</RowAction>
+                <RowAction icon={Trash2} label={`Delete ${String(r[type.titleField] ?? '')}`} danger onClick={() => setDeleting(r)}>Delete</RowAction>
+              </span>
             </div>
           )}
         />
+        </>
       )}
 
       <Modal

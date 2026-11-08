@@ -42,3 +42,12 @@ export function fillPackText(text: string | null | undefined, opts: Pick<PackRul
     .replaceAll('{sample}', String(Number(opts.sample_ml)))
     .replaceAll('{discount}', String(Number(opts.discount_percent)));
 }
+
+/** The pack's numbers as short lines, shown next to the admin's words so those never need numbers in them. */
+export function packFacts(opts: Pick<PackRules, 'count' | 'size_ml' | 'sample_ml' | 'discount_percent'>) {
+  const count = Number(opts.count) || 0;
+  const out = [`${count} perfume${count === 1 ? '' : 's'} of your choice`, `${Number(opts.size_ml)} ml each`];
+  if (Number(opts.sample_ml) > 0) out.push(`Free ${Number(opts.sample_ml)} ml sample`);
+  if (Number(opts.discount_percent) > 0) out.push(`${Number(opts.discount_percent)}% off`);
+  return out;
+}

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useShopWords } from '../../cms/shopWords';
 import { motion } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { formatINR as formatPrice } from '../../lib/money';
@@ -59,6 +60,7 @@ export default function CheckoutPage({
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState('');
   const clientRef = useRef(newClientRef());
+  const words = useShopWords();
 
   const { data: quote, isFetching, error: quoteError } = useQuote(cart, samples, couponCode, cart.length > 0);
   const couponBlocked = !!couponCode && quote && !quote.coupon?.ok;
@@ -318,7 +320,7 @@ export default function CheckoutPage({
                     {placing ? (payment === 'ONLINE' ? 'Opening payment…' : 'Placing your order…') : `${payment === 'ONLINE' ? 'Pay' : 'Place order'} · ${quote ? formatPrice(quote.total) : ''}`}
                   </button>
                   <p className="text-[10.5px] text-[#888888] dark:text-[#A09D96]">
-                    By placing the order you agree to our terms and policies.
+                    {words.checkout_terms}
                   </p>
                 </motion.div>
               )}

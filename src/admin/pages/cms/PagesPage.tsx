@@ -1,3 +1,4 @@
+import { ListHead, ShownPill } from '../../ui/ListHead';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -26,7 +27,14 @@ export interface PageRow {
   updated_at: string;
 }
 
-export const pageHref = (slug: string) => (slug === 'home' ? '/' : slug === 'story' ? '/story' : `/pages/${slug}`);
+/** Built-in layouts used by many pages at once; they have no link of their own. */
+export const TEMPLATE_PAGES: Record<string, string> = {
+  'product-page': 'Used by every product page, below the photos and the buy button.',
+  'listing-page': 'Used by every category and collection page.',
+};
+
+export const pageHref = (slug: string) =>
+  TEMPLATE_PAGES[slug] ? '' : slug === 'home' ? '/' : slug === 'story' ? '/story' : `/pages/${slug}`;
 
 export function usePages() {
   return useQuery({
@@ -78,21 +86,29 @@ export default function PagesPage() {
         }
       />
       <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
+        {pages.length > 0 && (
+          <ListHead className="!px-3">
+            <span className="flex-1">Page</span>
+            <span className="w-[90px]">Status</span>
+            <span className="w-[70px] text-right pr-1">Open</span>
+          </ListHead>
+        )}
         {pages.map((p) => (
           <div key={p.id} className="flex items-center gap-3 px-3 py-2.5">
             <Link to={`/admin/pages/${p.id}`} className="min-w-0 flex-1">
               <p className="text-[14px] text-tk-ink truncate hover:underline">{p.title}</p>
               <p className="text-[12px] text-[#4F4F4F] truncate">
-                {pageHref(p.slug)} · {p.layout === 'sections' ? 'Sections' : 'Text'}
-                {p.is_system ? ' · Built-in' : ''}
+                {TEMPLATE_PAGES[p.slug] ?? `${pageHref(p.slug)} · ${p.layout === 'sections' ? 'Sections' : 'Text'}${p.is_system ? ' · Built-in' : ''}`}
               </p>
             </Link>
-            <span className={`text-[12px] px-2 py-0.5 border ${p.is_published ? 'border-emerald-300 text-emerald-700' : 'border-[#C4C1B9] text-[#4F4F4F]'} font-medium`}>
-              {p.is_published ? 'Published' : 'Draft'}
-            </span>
-            <a href={pageHref(p.slug)} target="_blank" rel="noreferrer" aria-label={`View ${p.title} on the site`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink">
-              <ExternalLink size={14} />
-            </a>
+            <span className="sm:w-[90px]"><ShownPill on={p.is_published} onText="Published" offText="Draft" /></span>
+            {pageHref(p.slug) ? (
+              <a href={pageHref(p.slug)} target="_blank" rel="noreferrer" aria-label={`View ${p.title} on the site`} className="sm:w-[70px] inline-flex items-center justify-end gap-1 px-2 py-1.5 text-[12.5px] text-[#3F3F3F] hover:text-tk-ink">
+                <ExternalLink size={13} aria-hidden /> View
+              </a>
+            ) : (
+              <span className="sm:w-[70px]" />
+            )}
           </div>
         ))}
       </div>

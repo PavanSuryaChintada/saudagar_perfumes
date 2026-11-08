@@ -1,4 +1,5 @@
 import React from 'react';
+import { useShopWords } from '../cms/shopWords';
 import { motion } from 'framer-motion';
 import { useProductsBySlugs } from '../storefront/catalog/hooks';
 import BluorngProductCard from './BluorngProductCard.jsx';
@@ -11,6 +12,7 @@ export default function BluorngWishlistPage({
   onNavigateCollection
 }) {
   const { products: savedProducts } = useProductsBySlugs(wishlist);
+  const words = useShopWords();
 
   const count = savedProducts.length;
 
@@ -24,7 +26,7 @@ export default function BluorngWishlistPage({
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           className="block text-[10.5px] uppercase font-medium text-tk-accent dark:text-tk-accent-night"
         >
-          Your Private Selection
+          {words.wishlist_eyebrow}
         </motion.span>
 
         <motion.h1
@@ -33,7 +35,7 @@ export default function BluorngWishlistPage({
           transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
           className="mt-5 font-serif italic text-[40px] sm:text-[60px] leading-[1.05]"
         >
-          Saved Fragrances
+          {words.wishlist_title}
         </motion.h1>
 
         <motion.p
@@ -59,17 +61,17 @@ export default function BluorngWishlistPage({
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
             </svg>
             <p className="font-serif italic text-[22px] sm:text-[26px] text-tk-ink dark:text-white">
-              Your wishlist is waiting for its first scent.
+              {words.wishlist_empty_title}
             </p>
             <p className="mt-3 max-w-[420px] text-[13px] leading-relaxed text-[#777777] dark:text-[#A09D96]">
-              Tap the bookmark on any fragrance to save it here, and return whenever you are ready to choose.
+              {words.wishlist_empty_text}
             </p>
             <button
               type="button"
               onClick={() => onNavigateCollection('all')}
               className="mt-10 px-8 py-3 rounded-sm bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] uppercase tracking-[0.14em] font-medium hover:bg-tk-accent dark:hover:bg-tk-accent-night transition-colors cursor-pointer shadow-md"
             >
-              Explore Collections
+              {words.wishlist_empty_button}
             </button>
           </motion.div>
         ) : (

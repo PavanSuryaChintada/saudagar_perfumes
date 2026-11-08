@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { ArrowRight, ChevronRight } from 'lucide-react';
-import { formatINR } from '../../../lib/money';
+import { formatRupees as formatINR } from '../../../lib/money';
 import { Panel } from '../../ui/PageHeader';
 
 export interface Insights {

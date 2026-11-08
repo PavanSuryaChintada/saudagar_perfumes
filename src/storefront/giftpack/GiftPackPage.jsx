@@ -8,16 +8,17 @@ import { formatINR } from '../../lib/money';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
 import { useGiftPackOptions } from '../bag/useQuote';
 import { newPackKey } from '../bag/bagLines';
-import { canPick, fillPackText, packEstimate } from './packMath';
+import { canPick, fillPackText, packEstimate, packFacts } from './packMath';
 
 const NO_WORDS = {};
 
+// Admin words are plain sentences; the numbers come from the rules (packFacts). Older words may still hold
+// {count}-style codes, which fillPackText turns into the numbers.
 const DEFAULT_WORDS = {
   title: 'Premium Gift Pack',
-  tagline: '{count} perfumes of your choice, {size} ml each, in one gift box.',
-  intro: 'Pick any {count} perfumes. Choose the same one more than once if you like.',
+  tagline: 'Your own selection of our perfumes, in one gift box.',
+  intro: 'Pick your favourites. You can choose the same perfume more than once.',
   add_button: 'Add the pack to bag',
-  sample_note: 'A free {sample} ml sample comes with every pack.',
 };
 
 /**
@@ -102,7 +103,14 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
       <ListingHeader eyebrow="Gift pack" title={words.title} description={words.tagline} image={block.image || undefined} />
 
       <div className="px-4 sm:px-8 lg:px-12 py-8 sm:py-10 space-y-8">
-        <p className="text-[13.5px] text-[#555555] dark:text-white/70 max-w-2xl leading-relaxed">{words.intro}</p>
+        <ul className="flex flex-wrap gap-2" aria-label="What you get">
+          {packFacts(opts).map((f) => (
+            <li key={f} className="px-3 py-1.5 border border-tk-ink/15 dark:border-white/20 bg-[#FAF9F6] dark:bg-white/[0.06] text-[12px] font-medium">
+              {f}
+            </li>
+          ))}
+        </ul>
+        {words.intro && <p className="text-[13.5px] text-[#555555] dark:text-white/70 max-w-2xl leading-relaxed">{words.intro}</p>}
 
         {/* The pack: one slot per perfume */}
         <section aria-label="Your pack">
@@ -212,7 +220,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
                 </>
               )}
             </p>
-            <p className="text-[11.5px] text-[#555555] dark:text-white/70">{words.sample_note}</p>
+            <p className="text-[11.5px] text-[#555555] dark:text-white/70">{packFacts(opts).slice(1).join(' · ')}</p>
           </div>
           <button
             type="button"

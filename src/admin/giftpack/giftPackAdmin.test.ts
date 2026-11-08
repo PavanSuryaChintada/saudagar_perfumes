@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { GIFT_PACK_RULES, GIFT_PACK_WORDS, previewPack } from './giftPackAdmin';
+import { GIFT_PACK_RULES, GIFT_PACK_WORDS, GIFT_PACK_WORD_DEFAULTS, previewPack } from './giftPackAdmin';
 import { parseSettingInput } from '../settings/schema';
 
 const perfumes = [
@@ -29,6 +29,8 @@ describe('gift pack admin', () => {
 
   it('lets the admin edit every word customers read, and the picture', () => {
     const keys = GIFT_PACK_WORDS.map((f) => f.key);
-    for (const k of ['title', 'tagline', 'intro', 'image', 'bag_heading', 'bag_text', 'bag_button', 'add_button', 'sample_note']) expect(keys).toContain(k);
+    for (const k of ['title', 'tagline', 'intro', 'image', 'bag_heading', 'bag_text', 'bag_button', 'add_button']) expect(keys).toContain(k);
+    // No codes like {count} for the admin to learn.
+    expect(JSON.stringify([GIFT_PACK_WORDS, GIFT_PACK_WORD_DEFAULTS])).not.toMatch(/\{[a-z]+\}/);
   });
 });

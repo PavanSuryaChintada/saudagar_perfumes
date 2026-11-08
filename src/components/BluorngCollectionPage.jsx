@@ -10,6 +10,15 @@ import { useCategory, useCollection, useNote } from '../storefront/catalog/hooks
 import { useListing } from '../storefront/catalog/useListing';
 import { optionLabel } from '../storefront/catalog/listing';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
+import ListingBanner from '../storefront/ListingBanner.jsx';
+import { CmsSections } from '../cms/SectionRenderer';
+import { SectionContext } from '../cms/SectionContext';
+
+const LISTING_PAGE_DEFAULT = [
+  { id: 'd1', type: 'listing_header', config: {} },
+  { id: 'd2', type: 'listing_grid', config: {} },
+];
+const LISTING_REQUIRED = ['listing_header', 'listing_grid'];
 import ListingHeader from '../storefront/ListingHeader.jsx';
 import NotFoundPage from '../storefront/NotFoundPage';
 
@@ -113,9 +122,23 @@ export default function BluorngCollectionPage({
   const header = showFilmHero ? (
     <BluorngCollectionHero activeCollectionId={isAll ? 'signature' : collection?.slug || initialCategory} onSwitchCollection={handleSwitchCollection} />
   ) : isCollection ? (
-    <ListingHeader eyebrow="Collection" title={collection?.headline || collection?.name} description={collection?.descriptor || collection?.tagline} image={collection?.image_url} />
+    collection?.image_url ? (
+      <ListingBanner eyebrow="Collection" title={collection?.headline || collection?.name} description={collection?.descriptor || collection?.tagline} image={collection.image_url} />
+    ) : (
+      <ListingHeader eyebrow="Collection" title={collection?.headline || collection?.name} description={collection?.descriptor || collection?.tagline} />
+    )
   ) : listing.kind === 'category' ? (
-    <ListingHeader eyebrow="Category" title={categoryQuery.data?.name} description={categoryQuery.data?.description} image={categoryQuery.data?.image_url} />
+    categoryQuery.data?.image_url || categoryQuery.data?.video_url ? (
+      <ListingBanner
+        eyebrow="Category"
+        title={categoryQuery.data.name}
+        description={categoryQuery.data.description}
+        image={categoryQuery.data.image_url}
+        video={categoryQuery.data.video_url}
+      />
+    ) : (
+      <ListingHeader eyebrow="Category" title={categoryQuery.data?.name} description={categoryQuery.data?.description} />
+    )
   ) : listing.kind === 'note' ? (
     <ListingHeader
       eyebrow={noteQuery.data?.family ? `Note · ${noteQuery.data.family}` : 'Note'}
@@ -133,7 +156,12 @@ export default function BluorngCollectionPage({
     <div className="w-full min-h-screen font-sans select-none pb-28 bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300">
       
       {/* ================= 1. CINEMATIC HERO (Video & Collection Identity) ================= */}
-      {header}
+      <SectionContext.Provider
+        value={{
+          listing: {
+            header,
+            grid: (
+              <>
 
       {/* ================= 2. CLEAN MINIMAL TOOLBAR ================= */}
       <div id="catalog-section" className="w-full px-4 sm:px-8 lg:px-12 pt-10 pb-4">
@@ -663,6 +691,14 @@ export default function BluorngCollectionPage({
         )}
       </AnimatePresence>
 
+              </>
+            ),
+          },
+        }}
+      >
+        {/* Admin → Pages → Category & collection pages decides what sits above and below these two. */}
+        <CmsSections slug="listing-page" fallback={LISTING_PAGE_DEFAULT} ensure={LISTING_REQUIRED} />
+      </SectionContext.Provider>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { useShopWords } from '../cms/shopWords';
+
 export default function NotFoundPage({
   onNavigateHome,
   onNavigateCollection,
@@ -5,13 +7,14 @@ export default function NotFoundPage({
   onNavigateHome: () => void;
   onNavigateCollection: (slug: string) => void;
 }) {
+  const words = useShopWords();
   return (
     <section className="min-h-[70vh] flex items-center justify-center px-4 py-24 text-center">
       <div className="max-w-[460px]">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night mb-3">Error 404</p>
-        <h1 className="text-[26px] sm:text-[32px] font-normal tracking-[-0.015em] mb-4">This page has evaporated</h1>
+        <p className="text-[10px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night mb-3">{words.notfound_eyebrow}</p>
+        <h1 className="text-[26px] sm:text-[32px] font-normal tracking-[-0.015em] mb-4">{words.notfound_title}</h1>
         <p className="text-[13px] text-[#666666] dark:text-white/60 mb-8">
-          The link may be old, or the fragrance may have moved. Let us take you somewhere familiar.
+          {words.notfound_text}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
@@ -19,14 +22,14 @@ export default function NotFoundPage({
             onClick={onNavigateHome}
             className="px-6 py-3 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors"
           >
-            Back to home
+            {words.notfound_home}
           </button>
           <button
             type="button"
             onClick={() => onNavigateCollection('signature')}
             className="px-6 py-3 border border-tk-ink dark:border-white/30 text-[11px] font-semibold uppercase tracking-[0.18em] hover:border-tk-accent hover:text-tk-accent transition-colors"
           >
-            Explore fragrances
+            {words.notfound_shop}
           </button>
         </div>
       </div>
