@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, CheckCircle2, Circle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
@@ -7,6 +7,7 @@ import { useAuth } from '../../lib/auth';
 import { formatINR } from '../../lib/money';
 import { toFriendlyError } from '../../lib/errors';
 import { PageHeader, Panel } from '../ui/PageHeader';
+import { OrdersView, PaymentsView, StockView, TodayView, type Insights } from './dashboard/InsightViews';
 
 interface Dashboard {
   days: number;
@@ -33,10 +34,10 @@ const compact = (n: number) => (n >= 100000 ? `₹${(n / 100000).toFixed(n >= 10
 
 function Kpi({ label, value, hint, to }: { label: string; value: string; hint?: string; to?: string }) {
   const body = (
-    <div className="bg-white border border-[#EAEAEA] px-4 py-3 h-full">
-      <p className="text-[11px] uppercase tracking-[0.08em] text-[#777777]">{label}</p>
+    <div className="bg-white border border-[#E2E0DB] px-4 py-3 h-full">
+      <p className="text-[12px] uppercase tracking-[0.08em] text-[#5A5A5A]">{label}</p>
       <p className="text-[22px] text-tk-ink tabular-nums mt-0.5">{value}</p>
-      {hint && <p className="text-[11px] text-[#888888]">{hint}</p>}
+      {hint && <p className="text-[12px] text-[#626262]">{hint}</p>}
     </div>
   );
   return to ? <Link to={to} className="block hover:opacity-90">{body}</Link> : body;
@@ -68,8 +69,8 @@ function RevenueChart({ series }: { series: Dashboard['series'] }) {
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label={`Revenue per day over the last ${series.length} days`}>
         {ticks.map((t) => (
           <g key={t}>
-            <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="#EEEEEE" strokeWidth={1} />
-            <text x={pad.l - 6} y={y(t) + 3} textAnchor="end" fontSize={10} fill="#888888">{compact(t)}</text>
+            <line x1={pad.l} x2={W - pad.r} y1={y(t)} y2={y(t)} stroke="#E6E4DF" strokeWidth={1} />
+            <text x={pad.l - 6} y={y(t) + 3} textAnchor="end" fontSize={11} fill="#5A5A5A">{compact(t)}</text>
           </g>
         ))}
         {series.map((d, i) => {
@@ -87,7 +88,7 @@ function RevenueChart({ series }: { series: Dashboard['series'] }) {
                 />
               )}
               {i % labelEvery === 0 && (
-                <text x={pad.l + i * step + step / 2} y={H - 6} textAnchor="middle" fontSize={10} fill="#888888">{dayLabel(d.day)}</text>
+                <text x={pad.l + i * step + step / 2} y={H - 6} textAnchor="middle" fontSize={11} fill="#5A5A5A">{dayLabel(d.day)}</text>
               )}
             </g>
           );
@@ -96,7 +97,7 @@ function RevenueChart({ series }: { series: Dashboard['series'] }) {
       </svg>
       {h && (
         <div
-          className="pointer-events-none absolute -translate-x-1/2 bg-tk-ink text-white text-[11px] px-2.5 py-1.5 shadow"
+          className="pointer-events-none absolute -translate-x-1/2 bg-tk-ink text-white text-[12px] px-2.5 py-1.5 shadow"
           style={{ left: `${((pad.l + (hover! + 0.5) * step) / W) * 100}%`, top: 0 }}
           role="status"
         >
@@ -104,15 +105,15 @@ function RevenueChart({ series }: { series: Dashboard['series'] }) {
           <p className="tabular-nums">{formatINR(h.revenue)} · {h.orders} order{h.orders === 1 ? '' : 's'}</p>
         </div>
       )}
-      <details className="mt-2 text-[12px]">
-        <summary className="cursor-pointer text-[#777777]">Show as a table</summary>
+      <details className="mt-2 text-[13px]">
+        <summary className="cursor-pointer text-[#5A5A5A]">Show as a table</summary>
         <table className="mt-2 w-full max-w-[420px]">
           <thead>
-            <tr className="text-left text-[11px] text-[#777777]"><th className="py-1 font-medium">Day</th><th className="py-1 font-medium text-right">Revenue</th><th className="py-1 font-medium text-right">Orders</th></tr>
+            <tr className="text-left text-[12px] text-[#5A5A5A]"><th className="py-1 font-medium">Day</th><th className="py-1 font-medium text-right">Revenue</th><th className="py-1 font-medium text-right">Orders</th></tr>
           </thead>
           <tbody>
             {series.filter((d) => d.orders > 0).map((d) => (
-              <tr key={d.day} className="border-t border-[#F0F0F0]"><td className="py-1">{dayLabel(d.day)}</td><td className="py-1 text-right tabular-nums">{formatINR(d.revenue)}</td><td className="py-1 text-right tabular-nums">{d.orders}</td></tr>
+              <tr key={d.day} className="border-t border-[#E9E7E2]"><td className="py-1">{dayLabel(d.day)}</td><td className="py-1 text-right tabular-nums">{formatINR(d.revenue)}</td><td className="py-1 text-right tabular-nums">{d.orders}</td></tr>
             ))}
           </tbody>
         </table>
@@ -123,16 +124,16 @@ function RevenueChart({ series }: { series: Dashboard['series'] }) {
 
 function RankList({ rows, value, empty, link }: { rows: { label: string; revenue: number; orders?: number; units?: number; id?: string }[]; value: 'revenue'; empty: string; link?: (r: { id?: string }) => string }) {
   const max = Math.max(1, ...rows.map((r) => r[value]));
-  if (!rows.length) return <p className="text-[12px] text-[#888888]">{empty}</p>;
+  if (!rows.length) return <p className="text-[13px] text-[#626262]">{empty}</p>;
   return (
-    <ol className="space-y-2 text-[12.5px]">
+    <ol className="space-y-2 text-[13.5px]">
       {rows.map((r) => (
         <li key={r.label}>
           <div className="flex justify-between gap-3">
             {link && r.id ? <Link to={link(r)} className="truncate hover:underline">{r.label}</Link> : <span className="truncate">{r.label}</span>}
-            <span className="tabular-nums text-[#555555] shrink-0">{formatINR(r.revenue)}{r.orders !== undefined ? ` · ${r.orders}` : r.units !== undefined ? ` · ${r.units} sold` : ''}</span>
+            <span className="tabular-nums text-[#454545] shrink-0">{formatINR(r.revenue)}{r.orders !== undefined ? ` · ${r.orders}` : r.units !== undefined ? ` · ${r.units} sold` : ''}</span>
           </div>
-          <span className="block h-1 mt-1 bg-[#F0F0F0]"><span className="block h-full bg-tk-accent" style={{ width: `${(r[value] / max) * 100}%` }} /></span>
+          <span className="block h-1 mt-1 bg-[#E9E7E2]"><span className="block h-full bg-tk-accent" style={{ width: `${(r[value] / max) * 100}%` }} /></span>
         </li>
       ))}
     </ol>
@@ -156,6 +157,18 @@ export default function DashboardPage() {
   const setup = data?.setup ?? [];
   const setupDone = setup.filter((s) => s.done).length;
   const setupLeft = setup.length - setupDone;
+  const [params, setParams] = useSearchParams();
+  const view = (['overview', 'orders', 'payments', 'stock'] as const).find((v) => v === params.get('view')) ?? 'overview';
+  const insights = useQuery({
+    queryKey: ['admin', 'insights', days],
+    queryFn: async () => {
+      const { data: d, error: e } = await supabase.rpc('admin_insights', { p_days: days });
+      if (e) throw e;
+      return d as unknown as Insights;
+    },
+    refetchInterval: 60_000,
+  });
+  const ins = insights.data;
 
   return (
     <div className="space-y-5">
@@ -165,31 +178,31 @@ export default function DashboardPage() {
         actions={
           <div className="flex gap-1" role="group" aria-label="Period">
             {[7, 30, 90].map((d) => (
-              <button key={d} type="button" onClick={() => setDays(d)} aria-pressed={days === d} className={`px-3 py-1.5 text-[12px] border ${days === d ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#D5D3CC] text-[#555555] hover:border-tk-ink'}`}>
+              <button key={d} type="button" onClick={() => setDays(d)} aria-pressed={days === d} className={`px-3 py-1.5 text-[13px] border ${days === d ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#C4C1B9] text-[#454545] hover:border-tk-ink'}`}>
                 {d} days
               </button>
             ))}
           </div>
         }
       />
-      {error && <p className="text-[13px] text-rose-600">{toFriendlyError(error)}</p>}
+      {error && <p className="text-[14px] text-rose-600">{toFriendlyError(error)}</p>}
 
       {(data?.warnings ?? []).map((w) => (
-        <Link key={w.text} to={w.link} className={`flex items-center gap-2 px-3 py-2 border text-[12.5px] ${w.level === 'critical' ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-amber-50 border-amber-200 text-amber-800'}`}>
+        <Link key={w.text} to={w.link} className={`flex items-center gap-2 px-3 py-2 border text-[13.5px] ${w.level === 'critical' ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-amber-50 border-amber-200 text-amber-800'}`}>
           <AlertTriangle size={14} aria-hidden /> <span className="font-medium">{w.level === 'critical' ? 'Critical' : 'Attention'}:</span> {w.text}
         </Link>
       ))}
 
       {setupLeft > 0 && (
         <Panel title={`Get your store ready · ${setupDone} of ${setup.length} done`} description="Each step opens the page that finishes it. This card disappears when everything is done.">
-          <ul className="divide-y divide-[#F0F0F0]">
+          <ul className="divide-y divide-[#E9E7E2]">
             {setup.map((s) => (
               <li key={s.key}>
                 <Link to={s.link} className="py-2.5 flex gap-3 items-start hover:bg-[#FAFAF8] -mx-2 px-2">
-                  {s.done ? <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-700" aria-label="Done" /> : <Circle size={16} className="mt-0.5 shrink-0 text-[#AAAAAA]" aria-label="To do" />}
+                  {s.done ? <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-700" aria-label="Done" /> : <Circle size={16} className="mt-0.5 shrink-0 text-[#7A7A7A]" aria-label="To do" />}
                   <span>
-                    <span className={`block text-[13px] ${s.done ? 'text-[#888888] line-through' : 'text-tk-ink'}`}>{s.label}</span>
-                    {!s.done && <span className="block text-[12px] text-[#777777]">{s.hint}</span>}
+                    <span className={`block text-[14px] ${s.done ? 'text-[#626262] line-through' : 'text-tk-ink'}`}>{s.label}</span>
+                    {!s.done && <span className="block text-[13px] text-[#5A5A5A]">{s.hint}</span>}
                   </span>
                 </Link>
               </li>
@@ -198,6 +211,35 @@ export default function DashboardPage() {
         </Panel>
       )}
 
+      <div role="tablist" aria-label="Dashboard views" className="flex gap-1 border-b border-[#E2E0DB] overflow-x-auto">
+        {([
+          ['overview', 'Overview'],
+          ['orders', 'Orders'],
+          ['payments', 'Payments & refunds'],
+          ['stock', 'Stock & products'],
+        ] as const).map(([k, label]) => (
+          <button
+            key={k}
+            type="button"
+            role="tab"
+            aria-selected={view === k}
+            onClick={() => setParams(k === 'overview' ? {} : { view: k })}
+            className={`px-4 py-2.5 text-[14px] whitespace-nowrap border-b-2 -mb-px ${view === k ? 'border-tk-accent text-tk-ink font-semibold' : 'border-transparent text-[#454545] hover:text-tk-ink'}`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {insights.error && <p className="text-[14px] text-rose-600">{toFriendlyError(insights.error)}</p>}
+
+      {view === 'orders' && ins && <OrdersView d={ins.pipeline} days={days} />}
+      {view === 'payments' && ins && <PaymentsView d={ins.payments} days={days} />}
+      {view === 'stock' && ins && <StockView d={ins.stock} days={days} />}
+      {view !== 'overview' && !ins && !insights.error && <p className="text-[14px] text-[#5A5A5A]">Loading…</p>}
+
+      {view === 'overview' && (
+      <>
+      {ins && <TodayView d={ins.today} />}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         <Kpi label={`Revenue · ${days} days`} value={k ? formatINR(Number(k.revenue)) : '—'} hint="Excludes cancelled and unpaid online orders" />
         <Kpi label="Orders" value={k ? String(k.orders) : '—'} hint={k ? `Average ${formatINR(Number(k.aov))}` : undefined} />
@@ -210,7 +252,7 @@ export default function DashboardPage() {
       </div>
 
       <Panel title={`Revenue per day · last ${days} days`}>
-        {isLoading ? <p className="text-[13px] text-[#777777]">Loading…</p> : hasSales ? <RevenueChart series={data!.series} /> : <p className="text-[13px] text-[#777777]">No orders in this period yet.</p>}
+        {isLoading ? <p className="text-[14px] text-[#5A5A5A]">Loading…</p> : hasSales ? <RevenueChart series={data!.series} /> : <p className="text-[14px] text-[#5A5A5A]">No orders in this period yet.</p>}
       </Panel>
 
       <div className="grid gap-5 lg:grid-cols-2">
@@ -220,14 +262,17 @@ export default function DashboardPage() {
         <Panel title="Top states" description="Revenue · orders"><RankList rows={data?.states ?? []} value="revenue" empty="No sales yet." /></Panel>
       </div>
 
+      </>
+      )}
+
       <Panel title="Integrations" description="Built and switched off. Each one starts working once its keys are added (steps in the setup guide, docs/SETUP.md).">
-        <ul className="divide-y divide-[#F0F0F0]">
+        <ul className="divide-y divide-[#E9E7E2]">
           {INTEGRATIONS.map((s) => (
             <li key={s.label} className="py-3 flex gap-3">
               <span className="mt-1.5 h-2 w-2 shrink-0 bg-tk-accent" aria-hidden />
               <div>
-                <p className="text-[13px] text-tk-ink">{s.label}</p>
-                <p className="text-[12px] text-[#777777]">{s.detail}</p>
+                <p className="text-[14px] text-tk-ink">{s.label}</p>
+                <p className="text-[13px] text-[#5A5A5A]">{s.detail}</p>
               </div>
             </li>
           ))}
