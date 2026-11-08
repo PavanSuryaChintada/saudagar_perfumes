@@ -292,6 +292,16 @@
 - [x] Remaining round buttons made square; big empty gaps above the footer and at the top of listing pages trimmed
 - [x] Account: “Start shopping” when there are no orders; tab names in capitals like the rest of the site
 
+## Phase 25: Readability and phones ✅
+- [x] Measured every public page on phone (360 px), tablet and desktop, light and dark: text size, colour contrast, tap size, phone width
+- [x] Smallest text raised from 10.5 to 11.5 px (capital-letter labels only); small grey text and prices one step larger; thin weights on small text made regular
+- [x] Brand gold-brown as small text now uses a deeper shade worked out from the Theme colour (5 : 1 on white), so labels, “% off” and footer headings are easy to read; buttons with white words use it too
+- [x] Faint grey and white text in dark mode brightened; disabled buttons readable (not white on grey)
+- [x] Form fields 16 px on phones and tablets, so the screen no longer zooms in when typing
+- [x] Bigger tap areas: header icons, quantity buttons, photo dots, bag remove, back links, menu close, accordions, footer links
+- [x] Tablet: category tiles in a grid (the sliding strip only on wide screens); section headers no longer squeeze their links; phone shop toolbar fits on one row; account tabs wrap instead of hiding
+- [x] Results: tiny text 116 → 14 (all capital-letter labels), hard-to-read text 44 → 8 (all text over photos, which the scan cannot see), small tap areas 48 → 29 (inline text links); nothing wider than the screen
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain

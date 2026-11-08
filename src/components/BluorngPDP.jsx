@@ -319,11 +319,11 @@ function PDPView({
       {/* 1. Sub-label with Pill Badge & Reviews Anchor */}
       <motion.div variants={monographItemVariants} className="flex items-center justify-between gap-2 mb-2.5">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-[2px] bg-[#FFF7ED] dark:bg-tk-gold/15 text-tk-accent dark:text-tk-accent-night text-[11.5px] font-medium tracking-wider uppercase border border-tk-accent/20 dark:border-tk-gold/30">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-[2px] bg-[#FFF7ED] dark:bg-tk-gold/15 text-tk-accent-ink dark:text-tk-accent-night text-[12px] font-medium tracking-wider uppercase border border-tk-accent/20 dark:border-tk-gold/30">
             {categoryPrefix}
           </span>
           {familyLine && (
-            <span className="text-[12px] sm:text-[13px] text-[#5F5F5F] dark:text-[#999999] font-normal tracking-[0.02em]">
+            <span className="text-[12.5px] sm:text-[13px] text-[#5F5F5F] dark:text-[#999999] font-normal tracking-[0.02em]">
               {familyLine}
             </span>
           )}
@@ -341,14 +341,14 @@ function PDPView({
               }
             }
           }}
-          className="inline-flex items-center gap-1.5 text-[11px] text-tk-accent dark:text-tk-accent-night hover:underline cursor-pointer select-none"
+          className="inline-flex items-center gap-1.5 text-[12px] text-tk-accent-ink dark:text-tk-accent-night hover:underline cursor-pointer select-none"
           title="Jump to Client Reviews"
         >
           {product.reviewsCount > 0 ? (
             <>
-              <span className="tracking-tight text-[11.5px]">★★★★★</span>
+              <span className="tracking-tight text-[12px]">★★★★★</span>
               <span className="font-semibold text-tk-ink dark:text-white">{product.rating.toFixed(1)}</span>
-              <span className="text-[#666666] dark:text-white/40">({product.reviewsCount})</span>
+              <span className="text-[#666666] dark:text-white/60">({product.reviewsCount})</span>
             </>
           ) : (
             <span className="text-[#666666] dark:text-white/50">No reviews yet</span>
@@ -387,7 +387,7 @@ function PDPView({
                 }}
                 aria-pressed={isSelected}
                 title={soldOut ? 'Sold out' : undefined}
-                className={`min-w-[78px] sm:min-w-[84px] h-[38px] px-4 rounded-[2px] text-[12px] font-normal transition-all flex items-center justify-center cursor-pointer ${
+                className={`min-w-[78px] sm:min-w-[84px] h-[38px] px-4 rounded-[2px] text-[12.5px] font-normal transition-all flex items-center justify-center cursor-pointer ${
                   soldOut ? 'line-through opacity-50 ' : ''
                 }${
                   isSelected
@@ -407,18 +407,18 @@ function PDPView({
         <span className="text-[22px] font-medium tracking-[-0.01em] text-tk-ink dark:text-white">{formatPrice(currentPrice)}</span>
         {currentCompare && currentCompare > currentPrice && (
           <>
-            <span className="text-[14px] line-through text-[#6B6B6B] dark:text-white/40">{formatPrice(currentCompare)}</span>
-            <span className="text-[12px] text-tk-accent dark:text-tk-accent-night font-semibold">{Math.round((1 - currentPrice / currentCompare) * 100)}% off</span>
+            <span className="text-[14px] line-through text-[#6B6B6B] dark:text-white/60">{formatPrice(currentCompare)}</span>
+            <span className="text-[12.5px] text-tk-accent-ink dark:text-tk-accent-night font-semibold">{Math.round((1 - currentPrice / currentCompare) * 100)}% off</span>
           </>
         )}
-        <span className="ml-auto text-[12px] text-[#5F5F5F] dark:text-[#999999]">
+        <span className="ml-auto text-[12.5px] text-[#5F5F5F] dark:text-[#999999]">
           {!selectedSize ? 'Currently unavailable' : selectedSize.stock <= 0 ? words.sold_out : selectedSize.stock <= 5 ? `Only ${selectedSize.stock} left` : words.in_stock}
         </span>
       </motion.div>
 
       {/* 5. Tenet Line + Quantity Stepper Row */}
       <motion.div variants={monographItemVariants} className="flex items-center justify-between gap-4 mb-5">
-        <span className="text-[12px] sm:text-[12.5px] text-[#444444] dark:text-[#AAAAAA] font-normal tracking-wide flex items-center gap-1.5">
+        <span className="text-[12.5px] sm:text-[12.5px] text-[#444444] dark:text-[#AAAAAA] font-normal tracking-wide flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night" />
           <span>Vegan</span>
           <span className="text-tk-accent/60 dark:text-tk-accent-night/60">•</span>
@@ -426,22 +426,22 @@ function PDPView({
         </span>
 
         {/* Stepper Box */}
-        <div className="border border-[#E0D4D6] dark:border-white/25 rounded-[2px] h-[34px] flex items-center px-1 bg-white dark:bg-transparent hover:border-tk-accent/40 dark:hover:border-tk-accent-night/40 transition-colors">
+        <div className="border border-[#E0D4D6] dark:border-white/25 rounded-[2px] h-10 flex items-center px-0.5 bg-white dark:bg-transparent hover:border-tk-accent/40 dark:hover:border-tk-accent-night/40 transition-colors">
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="w-6 h-6 flex items-center justify-center text-[14px] text-[#666666] dark:text-white/60 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center text-[15px] text-[#666666] dark:text-white/60 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
             aria-label="Decrease quantity"
           >
             −
           </button>
-          <span className="w-7 text-center font-medium text-[12px] text-tk-ink dark:text-white">
+          <span className="w-7 text-center font-medium text-[12.5px] text-tk-ink dark:text-white">
             {quantity}
           </span>
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.min(maxQty, q + 1))}
-            className="w-6 h-6 flex items-center justify-center text-[14px] text-[#666666] dark:text-white/60 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center text-[15px] text-[#666666] dark:text-white/60 hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
             aria-label="Increase quantity"
           >
             +
@@ -494,7 +494,7 @@ function PDPView({
         className="mt-5 pt-4 border-t border-[#EFEDE8] dark:border-white/10 space-y-2 text-[12.5px] text-[#4F4F4F] dark:text-[#A8A8A8] leading-relaxed"
       >
         <div className="flex items-start gap-2.5">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="mt-[3px] shrink-0 text-tk-accent dark:text-tk-accent-night" aria-hidden>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="mt-[3px] shrink-0 text-tk-accent-ink dark:text-tk-accent-night" aria-hidden>
             <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z" />
             <circle cx="5.5" cy="18.5" r="2.5" />
             <circle cx="18.5" cy="18.5" r="2.5" />
@@ -503,7 +503,7 @@ function PDPView({
         </div>
         {sampleCopy && (
           <div className="flex items-start gap-2.5">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="mt-[3px] shrink-0 text-tk-accent dark:text-tk-accent-night" aria-hidden>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="mt-[3px] shrink-0 text-tk-accent-ink dark:text-tk-accent-night" aria-hidden>
               <polyline points="20 12 20 22 4 22 4 12" />
               <rect x="2" y="7" width="20" height="5" />
               <line x1="12" y1="22" x2="12" y2="7" />
@@ -582,19 +582,24 @@ function PDPView({
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: 'easeOut', delay: 0.3 }}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 select-none pointer-events-auto"
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center select-none pointer-events-auto"
               >
                 {images.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleDotClick(idx)}
-                    className={`transition-all rounded-full cursor-pointer ${
-                      activeImgIdx === idx
-                        ? 'w-6 h-1.5 bg-tk-accent dark:bg-tk-accent-night shadow-[0_0_8px_rgba(196,130,63,0.4)] dark:shadow-[0_0_8px_rgba(212,175,55,0.6)]'
-                        : 'w-1.5 h-1.5 bg-[#D8CED0] dark:bg-white/30 hover:bg-[#888888]'
-                    }`}
-                    aria-label={`View photo angle ${idx + 1}`}
-                  />
+                    className="group/dot h-8 px-2.5 flex items-center cursor-pointer"
+                    aria-label={`View photo ${idx + 1}`}
+                    aria-current={activeImgIdx === idx ? 'true' : undefined}
+                  >
+                    <span
+                      className={`block h-1.5 rounded-full transition-all ${
+                        activeImgIdx === idx
+                          ? 'w-6 bg-tk-accent dark:bg-tk-accent-night'
+                          : 'w-1.5 bg-[#C9BFC1] dark:bg-white/40 group-hover/dot:bg-[#6B6B6B]'
+                      }`}
+                    />
+                  </button>
                 ))}
               </motion.div>
             )}
@@ -671,18 +676,21 @@ function PDPView({
 
           {/* Swipe Helper & Angle Dots Indicator */}
           {images.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 select-none pointer-events-auto">
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center select-none pointer-events-auto">
               {images.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setMobileImgIdx(idx)}
-                  className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                    mobileImgIdx === idx
-                      ? 'w-6 bg-tk-accent dark:bg-tk-accent-night shadow-[0_0_8px_rgba(196,130,63,0.4)]'
-                      : 'w-1.5 bg-[#D8CED0] dark:bg-white/30'
-                  }`}
-                  aria-label={`View photo angle ${idx + 1}`}
-                />
+                  className="h-8 px-2.5 flex items-center cursor-pointer"
+                  aria-label={`View photo ${idx + 1}`}
+                  aria-current={mobileImgIdx === idx ? 'true' : undefined}
+                >
+                  <span
+                    className={`block h-1.5 rounded-full transition-all ${
+                      mobileImgIdx === idx ? 'w-6 bg-tk-accent dark:bg-tk-accent-night' : 'w-1.5 bg-[#C9BFC1] dark:bg-white/40'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           )}
@@ -711,14 +719,14 @@ function PDPView({
             className="lg:hidden fixed left-0 right-0 bottom-[64px] z-30 px-4 py-2.5 bg-white/95 dark:bg-[#0E0C10]/95 backdrop-blur-md border-t border-[#EEEEEE] dark:border-white/10 flex items-center gap-3"
           >
             <div className="min-w-0 flex-1">
-              <p className="text-[12px] text-tk-ink dark:text-white truncate">{cleanTitle}</p>
-              <p className="text-[11px] text-[#5F5F5F] dark:text-[#999999]">{selectedSize?.label} · {formatPrice(currentPrice)}</p>
+              <p className="text-[12.5px] text-tk-ink dark:text-white truncate">{cleanTitle}</p>
+              <p className="text-[12px] text-[#5F5F5F] dark:text-[#999999]">{selectedSize?.label} · {formatPrice(currentPrice)}</p>
             </div>
             <button
               type="button"
               onClick={handleAddToCartClick}
               disabled={!canBuy}
-              className="shrink-0 h-10 px-5 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[12px] font-medium rounded-[2px] disabled:opacity-50"
+              className="shrink-0 h-10 px-5 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[12.5px] font-medium rounded-[2px] disabled:opacity-50"
             >
               {canBuy ? words.add_to_bag : words.sold_out}
             </button>

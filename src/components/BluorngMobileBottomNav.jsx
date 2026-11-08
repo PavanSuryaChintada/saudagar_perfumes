@@ -18,12 +18,12 @@ function Tab({ active, id, label, onClick, badge = 0, children, ...rest }) {
         <span className="relative">
           {children}
           {badge > 0 && (
-            <span className="absolute -top-1.5 -right-2.5 min-w-4 h-4 px-1 rounded-[2px] bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[10px] font-bold leading-4 text-center">
+            <span className="absolute -top-1.5 -right-2.5 min-w-[17px] h-[17px] px-0.5 rounded-[2px] bg-tk-accent-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] font-bold leading-[17px] text-center">
               {badge}
             </span>
           )}
         </span>
-        <span className={`text-[10.5px] tracking-[0.08em] uppercase ${active === id ? 'font-semibold' : 'font-medium'}`}>{label}</span>
+        <span className={`text-[11.5px] tracking-[0.08em] uppercase ${active === id ? 'font-semibold' : 'font-medium'}`}>{label}</span>
         {active === id && <span className="absolute -top-2 left-1/2 -translate-x-1/2 w-6 h-[2px] bg-tk-accent dark:bg-tk-accent-night" aria-hidden />}
       </button>
     </li>

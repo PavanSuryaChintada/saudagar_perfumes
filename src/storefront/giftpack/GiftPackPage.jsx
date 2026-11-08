@@ -90,7 +90,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
           <p className="text-[14px] text-[#555555] dark:text-white/70">
             {error ? 'We couldn’t load the gift pack. Check your connection and try again.' : 'The gift pack isn’t available right now. Please check back soon.'}
           </p>
-          <button type="button" onClick={() => onNavigateCollection?.()} className="px-6 py-3 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] uppercase tracking-[0.16em]">
+          <button type="button" onClick={() => onNavigateCollection?.()} className="px-6 py-3 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[12px] uppercase tracking-[0.16em]">
             Shop perfumes
           </button>
         </div>
@@ -105,7 +105,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
       <div className="px-4 sm:px-8 lg:px-12 py-8 sm:py-10 space-y-8">
         <ul className="flex flex-wrap gap-2" aria-label="What you get">
           {packFacts(opts).map((f) => (
-            <li key={f} className="px-3 py-1.5 border border-tk-ink/15 dark:border-white/20 bg-[#FAF9F6] dark:bg-white/[0.06] text-[12px] font-medium">
+            <li key={f} className="px-3 py-1.5 border border-tk-ink/15 dark:border-white/20 bg-[#FAF9F6] dark:bg-white/[0.06] text-[12.5px] font-medium">
               {f}
             </li>
           ))}
@@ -115,11 +115,11 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
         {/* The pack: one slot per perfume */}
         <section aria-label="Your pack">
           <div className="flex items-baseline justify-between gap-3 mb-3">
-            <h2 className="text-[11px] uppercase tracking-[0.18em] text-tk-accent dark:text-tk-accent-night">
+            <h2 className="text-[12px] uppercase tracking-[0.18em] text-tk-accent-ink dark:text-tk-accent-night">
               Your pack · {picks.length} of {count} chosen
             </h2>
             {picks.length > 0 && (
-              <button type="button" onClick={() => setPicks([])} className="text-[11.5px] underline underline-offset-2 text-[#555555] dark:text-white/70 hover:text-tk-ink dark:hover:text-white">
+              <button type="button" onClick={() => setPicks([])} className="text-[12px] underline underline-offset-2 text-[#555555] dark:text-white/70 hover:text-tk-ink dark:hover:text-white">
                 Start again
               </button>
             )}
@@ -129,17 +129,17 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
               const p = byId.get(picks[i]);
               return (
                 <li key={i} className={`flex items-center gap-2.5 p-2.5 border min-h-[64px] ${p ? 'border-tk-ink/30 dark:border-white/25' : 'border-dashed border-[#C9C6BE] dark:border-white/20'}`}>
-                  <span className="text-[11px] text-[#5F5F5F] dark:text-white/50 w-4 shrink-0">{i + 1}</span>
+                  <span className="text-[12px] text-[#5F5F5F] dark:text-white/50 w-4 shrink-0">{i + 1}</span>
                   {p ? (
                     <>
                       <img src={p.image || PLACEHOLDER_IMAGE} alt="" className="w-10 h-10 object-contain bg-[#F7F7F6] dark:bg-[#18171C] shrink-0" />
-                      <span className="min-w-0 flex-1 text-[12px] font-semibold uppercase tracking-wide leading-tight line-clamp-2">{p.name}</span>
+                      <span className="min-w-0 flex-1 text-[12.5px] font-semibold uppercase tracking-wide leading-tight line-clamp-2">{p.name}</span>
                       <button type="button" onClick={() => removeAt(i)} aria-label={`Remove ${p.name}`} className="text-[#5F5F5F] dark:text-white/50 hover:text-rose-600 px-1">
                         ✕
                       </button>
                     </>
                   ) : (
-                    <span className="text-[12px] text-[#5F5F5F] dark:text-white/50">Choose a perfume</span>
+                    <span className="text-[12.5px] text-[#5F5F5F] dark:text-white/50">Choose a perfume</span>
                   )}
                 </li>
               );
@@ -150,7 +150,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
         {/* Perfumes to choose from */}
         <section aria-label="Choose perfumes" className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-            <h2 className="text-[11px] uppercase tracking-[0.18em] text-tk-accent dark:text-tk-accent-night">
+            <h2 className="text-[12px] uppercase tracking-[0.18em] text-tk-accent-ink dark:text-tk-accent-night">
               Perfumes · {Number(opts.size_ml)} ml each
             </h2>
             <input
@@ -177,8 +177,8 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
                     <img src={p.image || PLACEHOLDER_IMAGE} alt={p.name} className="w-full h-full object-contain" loading="lazy" />
                   </Link>
                   <div className="p-3 flex-1 flex flex-col gap-2">
-                    <p className="text-[12px] font-semibold uppercase tracking-wide leading-[1.35] min-h-[2.7em] line-clamp-2">{p.name}</p>
-                    <p className="text-[12px] text-[#555555] dark:text-white/70">
+                    <p className="text-[12.5px] font-semibold uppercase tracking-wide leading-[1.35] min-h-[2.7em] line-clamp-2">{p.name}</p>
+                    <p className="text-[12.5px] text-[#555555] dark:text-white/70">
                       {formatINR(p.price)} for {Number(opts.size_ml)} ml
                     </p>
                     <div className="mt-auto flex items-center gap-2">
@@ -192,7 +192,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
                         type="button"
                         onClick={() => add(p.product_id)}
                         disabled={!ok}
-                        className="flex-1 h-9 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] uppercase tracking-[0.14em] disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex-1 h-9 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[12px] uppercase tracking-[0.14em] disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         {soldOut ? 'No more left' : n > 0 ? 'Add another' : 'Add'}
                       </button>
@@ -220,13 +220,13 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
                 </>
               )}
             </p>
-            <p className="text-[11.5px] text-[#555555] dark:text-white/70">{packFacts(opts).slice(1).join(' · ')}</p>
+            <p className="text-[12px] text-[#555555] dark:text-white/70">{packFacts(opts).slice(1).join(' · ')}</p>
           </div>
           <button
             type="button"
             onClick={addToBag}
             disabled={!full}
-            className="w-full sm:w-auto h-12 px-8 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] font-bold uppercase tracking-[0.12em] rounded-[2px] transition-colors disabled:bg-[#9A9A9A] disabled:hover:bg-[#9A9A9A] dark:disabled:bg-white/20 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto h-12 px-8 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[12px] font-bold uppercase tracking-[0.12em] rounded-[2px] transition-colors disabled:bg-[#E6E4DF] disabled:text-[#555555] disabled:shadow-none disabled:hover:bg-[#E6E4DF] dark:disabled:bg-white/10 dark:disabled:text-white/70 disabled:cursor-not-allowed"
           >
             {full ? words.add_button : `Choose ${count - picks.length} more`}
           </button>

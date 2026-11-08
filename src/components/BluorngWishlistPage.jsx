@@ -34,7 +34,7 @@ export default function BluorngWishlistPage({
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center text-center py-12 sm:py-16"
           >
-            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="mb-6 text-tk-accent dark:text-tk-accent-night">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="mb-6 text-tk-accent-ink dark:text-tk-accent-night">
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
             </svg>
             <p className="text-[17px] sm:text-[19px] uppercase tracking-[0.04em] text-tk-ink dark:text-white">
@@ -46,7 +46,7 @@ export default function BluorngWishlistPage({
             <button
               type="button"
               onClick={() => onNavigateCollection('all')}
-              className="mt-8 h-11 px-8 rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] uppercase tracking-[0.16em] font-semibold hover:bg-tk-accent dark:hover:bg-tk-accent-night transition-colors cursor-pointer"
+              className="mt-8 h-11 px-8 rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[12px] uppercase tracking-[0.16em] font-semibold hover:bg-tk-accent dark:hover:bg-tk-accent-night transition-colors cursor-pointer"
             >
               {words.wishlist_empty_button}
             </button>
@@ -86,7 +86,7 @@ export default function BluorngWishlistPage({
             <button
               type="button"
               onClick={() => onNavigateCollection('all')}
-              className="text-[11px] uppercase tracking-[0.16em] font-medium text-tk-ink dark:text-white border-b border-tk-ink/30 dark:border-white/30 pb-1 hover:text-tk-accent dark:hover:text-tk-accent-night hover:border-tk-accent dark:hover:border-tk-accent-night transition-colors cursor-pointer"
+              className="text-[12px] uppercase tracking-[0.16em] font-medium text-tk-ink dark:text-white border-b border-tk-ink/30 dark:border-white/30 pb-1 hover:text-tk-accent dark:hover:text-tk-accent-night hover:border-tk-accent dark:hover:border-tk-accent-night transition-colors cursor-pointer"
             >
               Continue Exploring
             </button>

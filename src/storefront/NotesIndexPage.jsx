@@ -42,7 +42,7 @@ export default function NotesIndexPage() {
         {isLoading && <p className="text-[12.5px] text-[#666666]">Loading notes…</p>}
         {pageGroups.map((g) => (
           <section key={g.label}>
-            <h2 className="text-[11px] uppercase tracking-[0.18em] text-tk-accent dark:text-tk-accent-night mb-4">{g.label}</h2>
+            <h2 className="text-[12px] uppercase tracking-[0.18em] text-tk-accent-ink dark:text-tk-accent-night mb-4">{g.label}</h2>
             <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-3">
               {g.notes.map((n) => (
                 <li key={n.slug}>
@@ -50,7 +50,7 @@ export default function NotesIndexPage() {
                     {n.image ? (
                       <img src={n.image} alt="" className="w-8 h-8 rounded-full object-cover bg-[#F4F3EE] dark:bg-white/5" loading="lazy" />
                     ) : (
-                      <span className="w-8 h-8 rounded-full bg-[#F4F3EE] dark:bg-white/5 flex items-center justify-center text-[11px] text-tk-accent dark:text-tk-accent-night shrink-0">
+                      <span className="w-8 h-8 rounded-full bg-[#F4F3EE] dark:bg-white/5 flex items-center justify-center text-[12px] text-tk-accent-ink dark:text-tk-accent-night shrink-0">
                         {n.name.charAt(0)}
                       </span>
                     )}

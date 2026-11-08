@@ -23,6 +23,7 @@ export default {
       colors: {
         // Theme tokens: set at runtime from Admin → Site content → Theme (src/cms/ThemeRuntime.tsx)
         'tk-accent': 'rgb(var(--c-accent) / <alpha-value>)',
+        'tk-accent-ink': 'rgb(var(--c-accent-ink) / <alpha-value>)',
         'tk-accent-night': 'rgb(var(--c-accent-night) / <alpha-value>)',
         'tk-gold': 'rgb(var(--c-gold) / <alpha-value>)',
         'tk-ink': 'rgb(var(--c-ink) / <alpha-value>)',

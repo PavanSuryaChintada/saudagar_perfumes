@@ -147,14 +147,14 @@ export default function BluorngStoryViewer({
           {/* User profile / Tag & Close button */}
           <div className="flex items-center justify-between text-white">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night p-0.5 border border-white/40 overflow-hidden flex items-center justify-center text-[11px] font-bold text-white">
+              <div className="w-8 h-8 rounded-full bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night p-0.5 border border-white/40 overflow-hidden flex items-center justify-center text-[12px] font-bold text-white">
                 S
               </div>
               <div>
-                <p className="text-[12px] font-bold tracking-wider uppercase leading-none">
+                <p className="text-[12.5px] font-bold tracking-wider uppercase leading-none">
                   Saudagar Parfumerie
                 </p>
-                <span className="text-[11px] text-white/70 tracking-widest uppercase">
+                <span className="text-[12px] text-white/70 tracking-widest uppercase">
                   {currentStory.tag}
                 </span>
               </div>
@@ -199,7 +199,7 @@ export default function BluorngStoryViewer({
             <h3 className="text-white text-[18px] sm:text-[20px] font-bold uppercase tracking-[0.02em] leading-tight drop-shadow-md">
               {currentStory.title}
             </h3>
-            <p className="text-white/80 text-[12px] tracking-wide mt-1">
+            <p className="text-white/80 text-[12.5px] tracking-wide mt-1">
               {currentStory.subtitle}
             </p>
           </div>
@@ -213,7 +213,7 @@ export default function BluorngStoryViewer({
                 onSelectProduct(currentStory.productId);
               }
             }}
-            className="w-full py-3 bg-[#FFFFFF] hover:bg-tk-accent dark:hover:bg-tk-gold dark:hover:text-tk-night hover:text-white text-tk-ink text-[11.5px] font-bold uppercase tracking-[0.04em] rounded-sm transition-all duration-300 shadow-xl flex items-center justify-center gap-2"
+            className="w-full py-3 bg-[#FFFFFF] hover:bg-tk-accent dark:hover:bg-tk-gold dark:hover:text-tk-night hover:text-white text-tk-ink text-[12px] font-bold uppercase tracking-[0.04em] rounded-sm transition-all duration-300 shadow-xl flex items-center justify-center gap-2"
           >
             <span>{copy.cta_label || 'Shop This Fragrance'}</span>
             <span>→</span>

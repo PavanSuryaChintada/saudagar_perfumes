@@ -33,7 +33,7 @@ export default function CmsPage({ slug, onNavigateHome, onNavigateCollection }) 
     <article className="w-full min-h-[70vh] bg-white dark:bg-tk-night text-tk-ink dark:text-white">
       <div className="max-w-3xl mx-auto px-6 sm:px-10 pt-28 sm:pt-32 pb-24">
         {!page.is_published && (
-          <p className="mb-6 px-3 py-2 text-[12px] bg-amber-50 text-amber-800 border border-amber-200">Preview: this page is not published yet.</p>
+          <p className="mb-6 px-3 py-2 text-[12.5px] bg-amber-50 text-amber-800 border border-amber-200">Preview: this page is not published yet.</p>
         )}
         <h1 className="text-[30px] sm:text-[40px] font-normal tracking-[-0.015em] mb-8">{page.title}</h1>
         <div

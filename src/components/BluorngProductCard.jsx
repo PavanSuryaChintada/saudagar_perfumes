@@ -77,7 +77,7 @@ export default function BluorngProductCard({
 
         {/* Minimal Discrete Badge (Top-Left) */}
         {product.badge && (
-          <span className="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 text-[10.5px] uppercase tracking-wider font-medium rounded-[2px] bg-black/5 dark:bg-white/10 text-[#555555] dark:text-white/90">
+          <span className="absolute top-2.5 left-2.5 z-20 max-w-[calc(100%-3.75rem)] truncate px-2 py-0.5 text-[11.5px] uppercase tracking-wider font-medium rounded-[2px] bg-black/5 dark:bg-white/10 text-[#555555] dark:text-white/90">
             {product.badge}
           </span>
         )}
@@ -98,7 +98,7 @@ export default function BluorngProductCard({
             width="13"
             height="13"
             viewBox="0 0 24 24"
-            className={isWishlisted ? 'text-tk-accent dark:text-tk-accent-night' : 'text-tk-ink dark:text-white'}
+            className={isWishlisted ? 'text-tk-accent-ink dark:text-tk-accent-night' : 'text-tk-ink dark:text-white'}
             fill={isWishlisted ? 'currentColor' : 'none'}
             stroke="currentColor"
             strokeWidth="1.8"
@@ -135,7 +135,7 @@ export default function BluorngProductCard({
               e.stopPropagation();
               onQuickBuy && onQuickBuy(product);
             }}
-            className="w-full py-2.5 text-[11.5px] uppercase tracking-[0.14em] font-medium rounded-[2px] shadow-md transition-colors cursor-pointer bg-tk-ink text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night"
+            className="w-full py-2.5 text-[12px] uppercase tracking-[0.14em] font-medium rounded-[2px] shadow-md transition-colors cursor-pointer bg-tk-ink text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night"
           >
             + Quick Add
           </button>
@@ -144,18 +144,18 @@ export default function BluorngProductCard({
 
       {/* Name on up to two lines (never cut short on one line), the kind of perfume, then the price */}
       <div className="pt-3 pb-1 flex flex-col">
-        <h3 className="text-[12.5px] sm:text-[13px] leading-[1.4] min-h-[2.8em] font-normal uppercase tracking-[0.04em] line-clamp-2 transition-colors text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night">
+        <h3 className="text-[13px] sm:text-[13.5px] leading-[1.4] min-h-[2.8em] font-normal uppercase tracking-[0.04em] line-clamp-2 transition-colors text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night">
           {product.name}
         </h3>
-        <p className="mt-1 text-[11px] sm:text-[11.5px] font-normal tracking-wide truncate text-[#666666] dark:text-white/55">
+        <p className="mt-1 text-[12px] sm:text-[12px] font-normal tracking-wide truncate text-[#666666] dark:text-white/55">
           {product.category || 'Extrait de Parfum'}
         </p>
         <div className="mt-1.5 flex items-baseline flex-wrap gap-x-2 gap-y-0.5">
           <span className="text-[13px] sm:text-[13.5px] font-medium text-tk-ink dark:text-white">{formatPrice(product.price)}</span>
           {hasDiscount && (
             <>
-              <span className="text-[11.5px] line-through text-[#707070] dark:text-white/40">{formatPrice(product.compareAtPrice)}</span>
-              <span className="text-[11px] font-medium text-tk-accent dark:text-tk-accent-night">{discountPct}% off</span>
+              <span className="text-[12px] line-through text-[#707070] dark:text-white/60">{formatPrice(product.compareAtPrice)}</span>
+              <span className="text-[12px] font-medium text-tk-accent-ink dark:text-tk-accent-night">{discountPct}% off</span>
             </>
           )}
         </div>

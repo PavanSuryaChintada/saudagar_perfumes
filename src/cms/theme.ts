@@ -19,6 +19,27 @@ export function hexToChannels(hex: string): string | null {
   return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)).join(' ');
 }
 
+const luminance = (rgb: number[]) => {
+  const [r, g, b] = rgb.map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+
+/**
+ * The accent as small text on a light page: the same colour, darkened just enough to be easy to read (about 5 : 1
+ * on white). Buttons and lines keep the accent itself.
+ */
+export function accentInk(channels: string, min = 5): string {
+  const rgb = channels.split(' ').map(Number);
+  for (let k = 1; k >= 0.2; k -= 0.02) {
+    const c = rgb.map((v) => Math.round(v * k));
+    if (1.05 / (luminance(c) + 0.05) >= min) return c.join(' ');
+  }
+  return '17 17 17';
+}
+
 export function themeVariables(theme: Record<string, unknown> | null | undefined): Record<string, string> {
   const out: Record<string, string> = {};
   if (!theme) return out;
@@ -26,6 +47,7 @@ export function themeVariables(theme: Record<string, unknown> | null | undefined
     const channels = typeof theme[key] === 'string' ? hexToChannels(theme[key] as string) : null;
     if (channels) out[cssVar] = channels;
   }
+  if (out['--c-accent']) out['--c-accent-ink'] = accentInk(out['--c-accent']);
   const safeFont = (v: unknown) => (typeof v === 'string' && /^[A-Za-z0-9 ]{2,40}$/.test(v) ? `"${v}"` : null);
   const body = safeFont(theme.font_body);
   const display = safeFont(theme.font_display);

@@ -12,8 +12,8 @@ import { useAuth } from '../lib/auth';
 
 const inputClass =
   'w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-tk-ink dark:focus:border-white';
-const labelClass = 'block text-[11.5px] uppercase tracking-wider text-[#5F5F5F] mb-1';
-const errorClass = 'text-[11.5px] text-rose-600 dark:text-rose-400 mt-1';
+const labelClass = 'block text-[12px] uppercase tracking-wider text-[#5F5F5F] mb-1';
+const errorClass = 'text-[12px] text-rose-600 dark:text-rose-400 mt-1';
 
 const TABS = ['orders', 'offers', 'addresses', 'details'];
 
@@ -111,7 +111,7 @@ export default function BluorngAccountPage({ onNavigateHome }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             role="status"
-            className="fixed top-6 right-6 left-6 sm:left-auto z-50 bg-tk-ink dark:bg-white text-white dark:text-tk-night px-4 py-2.5 rounded-[2px] text-[11.5px] tracking-wide shadow-md"
+            className="fixed top-6 right-6 left-6 sm:left-auto z-50 bg-tk-ink dark:bg-white text-white dark:text-tk-night px-4 py-2.5 rounded-[2px] text-[12px] tracking-wide shadow-md"
           >
             {toastMessage}
           </motion.div>
@@ -124,32 +124,32 @@ export default function BluorngAccountPage({ onNavigateHome }) {
           <div className="min-w-0">
             <span className="sf-eyebrow">Your account</span>
             <h1 className="text-[28px] sm:text-[36px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white leading-tight break-words">{displayName}</h1>
-            <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#999999] mt-1 font-light break-all">
+            <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#999999] mt-1 font-normal break-all">
               {[user?.email, profile?.phone ? formatIndianPhone(profile.phone) : null].filter(Boolean).join(' · ')}
             </p>
             {!profile?.full_name && (
               <button
                 onClick={() => setActiveTab('details')}
-                className="mt-3 text-[11px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night underline underline-offset-4 cursor-pointer"
+                className="mt-3 text-[12px] uppercase tracking-[0.14em] text-tk-accent-ink dark:text-tk-accent-night underline underline-offset-4 cursor-pointer"
               >
                 Add your name, phone and birthday
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-6 text-[12px] text-[#5F5F5F] dark:text-[#888888]">
+          <div className="flex items-center gap-6 text-[12.5px] text-[#5F5F5F] dark:text-[#888888]">
             {isAdmin && (
               <button
                 type="button"
                 onClick={() => navigate('/admin')}
-                className="px-4 py-2 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[11px] uppercase tracking-[0.16em] rounded-[2px] transition-colors cursor-pointer"
+                className="px-4 py-2 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[12px] uppercase tracking-[0.16em] rounded-[2px] transition-colors cursor-pointer"
               >
                 Admin panel
               </button>
             )}
             <button
               onClick={handleSignOut}
-              className="text-[11px] uppercase tracking-[0.16em] text-[#6B6B6B] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
+              className="text-[12px] uppercase tracking-[0.16em] text-[#6B6B6B] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
             >
               Sign out
             </button>
@@ -157,7 +157,7 @@ export default function BluorngAccountPage({ onNavigateHome }) {
         </div>
 
         {/* Minimal Underline Tabs */}
-        <nav className="flex items-center gap-8 text-[11.5px] pt-4 overflow-x-auto scrollbar-none border-b border-[#F0F0F0] dark:border-white/10">
+        <nav className="flex flex-wrap items-center gap-x-6 sm:gap-x-8 text-[12px] pt-4 border-b border-[#F0F0F0] dark:border-white/10">
           {[
             { id: 'orders', label: 'Orders' },
             { id: 'offers', label: 'Offers' },
@@ -170,7 +170,7 @@ export default function BluorngAccountPage({ onNavigateHome }) {
               className={`pb-4 relative uppercase tracking-[0.16em] transition-colors cursor-pointer whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'text-tk-ink dark:text-white font-medium'
-                  : 'text-[#666666] hover:text-tk-ink dark:text-[#777777] dark:hover:text-white font-normal'
+                  : 'text-[#666666] hover:text-tk-ink dark:text-[#9A9A9A] dark:hover:text-white font-normal'
               }`}
             >
               {tab.label}
@@ -193,8 +193,8 @@ export default function BluorngAccountPage({ onNavigateHome }) {
         {activeTab === 'addresses' && (
           <div className="space-y-8">
             <div className="flex items-center justify-between pb-3 border-b border-[#F0F0F0] dark:border-white/10">
-              <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] font-medium">Saved Addresses ({addressList.length})</span>
-              <button onClick={openNewAddress} className="text-[11px] uppercase tracking-[0.16em] text-tk-ink dark:text-white hover:underline cursor-pointer font-medium">
+              <span className="text-[12px] uppercase tracking-[0.16em] text-[#666666] font-medium">Saved Addresses ({addressList.length})</span>
+              <button onClick={openNewAddress} className="text-[12px] uppercase tracking-[0.16em] text-tk-ink dark:text-white hover:underline cursor-pointer font-medium">
                 + Add Address
               </button>
             </div>
@@ -211,12 +211,12 @@ export default function BluorngAccountPage({ onNavigateHome }) {
                   key={a.id}
                   className={`p-6 rounded-[2px] border transition-colors ${a.is_default ? 'border-tk-ink dark:border-white/30' : 'border-[#EEEEEE] dark:border-white/10'}`}
                 >
-                  <div className="flex items-center justify-between mb-3 text-[11px]">
+                  <div className="flex items-center justify-between mb-3 text-[12px]">
                     <span className="uppercase tracking-widest text-[#666666] font-medium">{a.label}</span>
-                    {a.is_default && <span className="text-[11px] uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-semibold">Default</span>}
+                    {a.is_default && <span className="text-[12px] uppercase tracking-wider text-tk-accent-ink dark:text-tk-accent-night font-semibold">Default</span>}
                   </div>
                   <p className="text-[13.5px] font-medium text-tk-ink dark:text-white">{a.full_name}</p>
-                  <p className="text-[12.5px] text-[#666666] dark:text-[#AAAAAA] mt-1 leading-relaxed font-light">
+                  <p className="text-[12.5px] text-[#666666] dark:text-[#AAAAAA] mt-1 leading-relaxed font-normal">
                     {a.line1}
                     {a.line2 ? <>, {a.line2}</> : null}
                     <br />
@@ -228,18 +228,18 @@ export default function BluorngAccountPage({ onNavigateHome }) {
                     ) : null}
                     {a.city}, {a.state} {a.pincode}
                   </p>
-                  <p className="text-[11.5px] text-[#666666] mt-2 font-mono">{formatIndianPhone(a.phone)}</p>
+                  <p className="text-[12px] text-[#666666] mt-2 font-mono">{formatIndianPhone(a.phone)}</p>
 
                   <div className="mt-4 pt-3 border-t border-[#F0F0F0] dark:border-white/10 flex flex-wrap gap-4">
-                    <button onClick={() => openEditAddress(a)} className="text-[11px] uppercase tracking-wider text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer">
+                    <button onClick={() => openEditAddress(a)} className="text-[12px] uppercase tracking-wider text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer">
                       Edit
                     </button>
                     {!a.is_default && (
-                      <button onClick={() => handleSetDefault(a.id)} className="text-[11px] uppercase tracking-wider text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer">
+                      <button onClick={() => handleSetDefault(a.id)} className="text-[12px] uppercase tracking-wider text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer">
                         Make Default
                       </button>
                     )}
-                    <button onClick={() => handleRemoveAddress(a.id)} className="text-[11px] uppercase tracking-wider text-red-500 hover:text-red-700 cursor-pointer">
+                    <button onClick={() => handleRemoveAddress(a.id)} className="text-[12px] uppercase tracking-wider text-red-500 hover:text-red-700 cursor-pointer">
                       Remove
                     </button>
                   </div>
@@ -293,7 +293,7 @@ export default function BluorngAccountPage({ onNavigateHome }) {
                     <p id="pd-dob" className="px-3 py-2 border border-[#F0F0F0] dark:border-white/10 rounded-[2px] text-tk-ink dark:text-white">
                       {formatBirthday(profile.date_of_birth)}
                     </p>
-                    <p className="text-[11.5px] text-[#666666] mt-1">Your birthday is saved. Contact us if it needs correcting.</p>
+                    <p className="text-[12px] text-[#666666] mt-1">Your birthday is saved. Contact us if it needs correcting.</p>
                   </>
                 ) : (
                   <>
@@ -305,7 +305,7 @@ export default function BluorngAccountPage({ onNavigateHome }) {
                       onChange={(e) => setDetails((d) => ({ ...d, date_of_birth: e.target.value }))}
                       className={inputClass}
                     />
-                    <p className="text-[11.5px] text-[#666666] mt-1">We send a birthday gift every year. It can only be set once.</p>
+                    <p className="text-[12px] text-[#666666] mt-1">We send a birthday gift every year. It can only be set once.</p>
                   </>
                 )}
                 {detailErrors.date_of_birth && <p className={errorClass}>{detailErrors.date_of_birth}</p>}
@@ -325,7 +325,7 @@ export default function BluorngAccountPage({ onNavigateHome }) {
                 <button
                   type="submit"
                   disabled={saveProfile.isPending}
-                  className="px-6 py-2.5 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[11px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium hover:opacity-90 transition-opacity disabled:opacity-60"
+                  className="px-6 py-2.5 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[12px] uppercase tracking-wider rounded-[2px] cursor-pointer font-medium hover:opacity-90 transition-opacity disabled:opacity-60"
                 >
                   {saveProfile.isPending ? 'Saving…' : 'Save Changes'}
                 </button>

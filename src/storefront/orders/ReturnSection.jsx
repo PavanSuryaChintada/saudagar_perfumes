@@ -58,7 +58,7 @@ export default function ReturnSection({ order }) {
   if (ret) {
     return (
       <div className="p-5 border border-[#EEEEEE] dark:border-white/10 space-y-2 text-[12.5px]">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-tk-accent dark:text-tk-accent-night font-medium">Return</p>
+        <p className="text-[12px] uppercase tracking-[0.2em] text-tk-accent-ink dark:text-tk-accent-night font-medium">Return</p>
         <p className="font-medium">{RETURN_STATUS_LABEL[ret.status] ?? ret.status}</p>
         {ret.customer_note && <p className="text-[#666666] dark:text-[#AAAAAA]">{ret.customer_note}</p>}
         {ret.status === 'APPROVED' && ret.return_method === 'PICKUP' && <p className="text-[#666666] dark:text-[#AAAAAA]">Our courier partner will contact you to collect it.</p>}
@@ -78,8 +78,8 @@ export default function ReturnSection({ order }) {
               <input className={input} aria-label="Courier" value={tracking.courier} onChange={(e) => setTracking({ ...tracking, courier: e.target.value })} />
               <input className={input} aria-label="Tracking number" placeholder="e.g. EK123456789IN" value={tracking.number} onChange={(e) => setTracking({ ...tracking, number: e.target.value })} />
             </div>
-            {error && <p className="text-rose-600 text-[11.5px]">{error}</p>}
-            <button type="submit" className="px-4 py-2 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[11px] uppercase tracking-wider rounded-[2px]">Save tracking number</button>
+            {error && <p className="text-rose-600 text-[12px]">{error}</p>}
+            <button type="submit" className="px-4 py-2 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[12px] uppercase tracking-wider rounded-[2px]">Save tracking number</button>
           </form>
         )}
         {ret.return_tracking && <p className="text-[#666666]">Return tracking: {ret.return_courier} · {ret.return_tracking}</p>}
@@ -89,7 +89,7 @@ export default function ReturnSection({ order }) {
 
   if (!canRequest) {
     if (order.status === 'DELIVERED' && deliveredAt) {
-      return <p className="text-[11.5px] text-[#666666]">Returns closed on {formatOrderDate(new Date(closesAt).toISOString())}.</p>;
+      return <p className="text-[12px] text-[#666666]">Returns closed on {formatOrderDate(new Date(closesAt).toISOString())}.</p>;
     }
     return null;
   }
@@ -97,10 +97,10 @@ export default function ReturnSection({ order }) {
   if (!open) {
     return (
       <div className="text-[12.5px]">
-        <button type="button" onClick={() => setOpen(true)} className="text-[11px] uppercase tracking-[0.16em] underline underline-offset-4">
+        <button type="button" onClick={() => setOpen(true)} className="text-[12px] uppercase tracking-[0.16em] underline underline-offset-4">
           Problem with your order? Request a return
         </button>
-        <p className="text-[11px] text-[#666666] mt-1">Open until {formatOrderDate(new Date(closesAt).toISOString())}.</p>
+        <p className="text-[12px] text-[#666666] mt-1">Open until {formatOrderDate(new Date(closesAt).toISOString())}.</p>
       </div>
     );
   }
@@ -137,7 +137,7 @@ export default function ReturnSection({ order }) {
       <p className="font-medium">Request a return</p>
       {policy && <p className="text-[#666666] dark:text-[#AAAAAA]">{policy}</p>}
       <div>
-        <label htmlFor="ret-reason" className="block text-[11.5px] uppercase tracking-wider text-[#5F5F5F] mb-1">What went wrong?</label>
+        <label htmlFor="ret-reason" className="block text-[12px] uppercase tracking-wider text-[#5F5F5F] mb-1">What went wrong?</label>
         <select id="ret-reason" value={reason} onChange={(e) => setReason(e.target.value)} className={`${input} dark:bg-[#141318]`}>
           {RETURN_REASONS.map((r) => (
             <option key={r.value} value={r.value}>{r.label}</option>
@@ -145,7 +145,7 @@ export default function ReturnSection({ order }) {
         </select>
       </div>
       <fieldset className="space-y-2">
-        <legend className="block text-[11.5px] uppercase tracking-wider text-[#5F5F5F] mb-1">Which items?</legend>
+        <legend className="block text-[12px] uppercase tracking-wider text-[#5F5F5F] mb-1">Which items?</legend>
         {items.map((i) => (
           <label key={i.id} className="flex items-center gap-3">
             <select
@@ -163,20 +163,20 @@ export default function ReturnSection({ order }) {
         ))}
       </fieldset>
       <div>
-        <label htmlFor="ret-details" className="block text-[11.5px] uppercase tracking-wider text-[#5F5F5F] mb-1">Tell us more</label>
+        <label htmlFor="ret-details" className="block text-[12px] uppercase tracking-wider text-[#5F5F5F] mb-1">Tell us more</label>
         <textarea id="ret-details" rows={3} maxLength={1000} value={details} onChange={(e) => setDetails(e.target.value)} className={input} placeholder="e.g. The cap was cracked and the box was wet." />
       </div>
       <div>
-        <label htmlFor="ret-files" className="block text-[11.5px] uppercase tracking-wider text-[#5F5F5F] mb-1">Photos or videos (up to 3)</label>
+        <label htmlFor="ret-files" className="block text-[12px] uppercase tracking-wider text-[#5F5F5F] mb-1">Photos or videos (up to 3)</label>
         <input id="ret-files" type="file" accept="image/*,video/mp4,video/webm,video/quicktime" multiple onChange={(e) => setFiles([...(e.target.files ?? [])].slice(0, 3))} />
-        {files.length > 0 && <p className="text-[11px] text-[#666666] mt-1">{files.map((f) => f.name).join(', ')}</p>}
+        {files.length > 0 && <p className="text-[12px] text-[#666666] mt-1">{files.map((f) => f.name).join(', ')}</p>}
       </div>
-      {error && <p className="text-rose-600 text-[11.5px]">{error}</p>}
+      {error && <p className="text-rose-600 text-[12px]">{error}</p>}
       <div className="flex gap-4">
-        <button type="submit" disabled={busy} className="px-5 py-2 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[11px] uppercase tracking-wider rounded-[2px] disabled:opacity-60">
+        <button type="submit" disabled={busy} className="px-5 py-2 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[12px] uppercase tracking-wider rounded-[2px] disabled:opacity-60">
           {busy ? 'Sending…' : 'Send request'}
         </button>
-        <button type="button" onClick={() => setOpen(false)} className="text-[11px] uppercase tracking-wider text-[#5F5F5F]">Cancel</button>
+        <button type="button" onClick={() => setOpen(false)} className="text-[12px] uppercase tracking-wider text-[#5F5F5F]">Cancel</button>
       </div>
     </form>
   );

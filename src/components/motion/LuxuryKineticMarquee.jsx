@@ -41,10 +41,10 @@ export default function LuxuryKineticMarquee({
         <div className="flex items-center shrink-0">
           {unitList.map((text, idx) => (
             <div key={`a-${idx}`} className="inline-flex items-center shrink-0 pr-8 sm:pr-12">
-              <span className="text-[11px] sm:text-[12.5px] font-sans font-medium uppercase tracking-[0.22em] text-tk-ink dark:text-[#EFECE6] transition-colors hover:text-tk-accent dark:hover:text-tk-accent-night">
+              <span className="text-[12px] sm:text-[12.5px] font-sans font-medium uppercase tracking-[0.22em] text-tk-ink dark:text-[#EFECE6] transition-colors hover:text-tk-accent dark:hover:text-tk-accent-night">
                 {text}
               </span>
-              <span className="pl-8 sm:pl-12 text-[10.5px] text-tk-accent dark:text-tk-accent-night opacity-90 select-none">
+              <span className="pl-8 sm:pl-12 text-[11.5px] text-tk-accent-ink dark:text-tk-accent-night opacity-90 select-none">
                 ✦
               </span>
             </div>
@@ -55,10 +55,10 @@ export default function LuxuryKineticMarquee({
         <div className="flex items-center shrink-0" aria-hidden="true">
           {unitList.map((text, idx) => (
             <div key={`b-${idx}`} className="inline-flex items-center shrink-0 pr-8 sm:pr-12">
-              <span className="text-[11px] sm:text-[12.5px] font-sans font-medium uppercase tracking-[0.22em] text-tk-ink dark:text-[#EFECE6] transition-colors hover:text-tk-accent dark:hover:text-tk-accent-night">
+              <span className="text-[12px] sm:text-[12.5px] font-sans font-medium uppercase tracking-[0.22em] text-tk-ink dark:text-[#EFECE6] transition-colors hover:text-tk-accent dark:hover:text-tk-accent-night">
                 {text}
               </span>
-              <span className="pl-8 sm:pl-12 text-[10.5px] text-tk-accent dark:text-tk-accent-night opacity-90 select-none">
+              <span className="pl-8 sm:pl-12 text-[11.5px] text-tk-accent-ink dark:text-tk-accent-night opacity-90 select-none">
                 ✦
               </span>
             </div>

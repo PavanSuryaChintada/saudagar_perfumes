@@ -177,7 +177,7 @@ export default function BluorngCollectionPage({
 
       {/* ================= 2. CLEAN MINIMAL TOOLBAR ================= */}
       <div id="catalog-section" className="w-full px-4 sm:px-8 lg:px-12 pt-10 pb-4">
-        <div className="flex flex-wrap items-center justify-between gap-4 text-[12px] pb-3 border-b border-[#EAEAEA] dark:border-white/10">
+        <div className="flex flex-wrap items-center justify-between gap-4 text-[12.5px] pb-3 border-b border-[#EAEAEA] dark:border-white/10">
           
           {/* Left: Product Count & Filter Sidebar Toggle */}
           <div className="flex flex-wrap items-center gap-3">
@@ -207,7 +207,7 @@ export default function BluorngCollectionPage({
                     animate={{ scale: [1.25, 1], opacity: 1 }}
                     exit={{ scale: 0.5, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="min-w-[20px] h-5 px-1 rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] font-bold flex items-center justify-center"
+                    className="min-w-[20px] h-5 px-1 rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[12px] font-bold flex items-center justify-center"
                   >
                     {filterCount}
                   </motion.span>
@@ -233,7 +233,7 @@ export default function BluorngCollectionPage({
                     animate={{ scale: [1.25, 1], opacity: 1 }}
                     exit={{ scale: 0.5, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="min-w-[20px] h-5 px-1 rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] font-bold flex items-center justify-center"
+                    className="min-w-[20px] h-5 px-1 rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[12px] font-bold flex items-center justify-center"
                   >
                     {filterCount}
                   </motion.span>
@@ -284,7 +284,7 @@ export default function BluorngCollectionPage({
               <button
                 type="button"
                 onClick={browseAll}
-                className="hidden md:inline-block text-[13px] font-medium text-tk-accent dark:text-tk-accent-night hover:underline underline-offset-4 cursor-pointer"
+                className="hidden md:inline-block text-[13px] font-medium text-tk-accent-ink dark:text-tk-accent-night hover:underline underline-offset-4 cursor-pointer"
               >
                 See all perfumes →
               </button>
@@ -294,14 +294,14 @@ export default function BluorngCollectionPage({
             <SortMenu value={sort} onChange={setSort} />
 
             {/* Subtle Divider */}
-            <span className="inline-block w-[1px] h-4 bg-[#E0DDD5] dark:bg-white/15" />
+            <span className="hidden md:inline-block w-[1px] h-4 bg-[#E0DDD5] dark:bg-white/15" />
 
-            {/* Grid Density Switcher (2, 3, or 4 Products per row) */}
-            <div className="flex items-center gap-1 bg-[#F5F4F0] dark:bg-[#1A1820] p-0.5 sm:p-1 rounded-md border border-[#E0DDD5] dark:border-white/10 select-none">
+            {/* Grid Density Switcher (2, 3, or 4 Products per row); phones always show two per row */}
+            <div className="hidden md:flex items-center gap-1 bg-[#F5F4F0] dark:bg-[#1A1820] p-0.5 sm:p-1 rounded-md border border-[#E0DDD5] dark:border-white/10 select-none">
               <button
                 type="button"
                 onClick={() => handleSwitchGrid(2)}
-                className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 h-8 px-2.5 rounded-[2px] text-[12px] font-medium transition-all cursor-pointer ${
                   gridCols === 2
                     ? 'bg-white dark:bg-[#25222E] text-tk-ink dark:text-tk-accent-night shadow-xs'
                     : 'text-[#666666] dark:text-[#88857F] hover:text-tk-ink dark:hover:text-white'
@@ -313,13 +313,13 @@ export default function BluorngCollectionPage({
                   <rect x="2" y="2" width="5" height="12" rx="0.5" fill={gridCols === 2 ? 'currentColor' : 'none'} />
                   <rect x="9" y="2" width="5" height="12" rx="0.5" fill={gridCols === 2 ? 'currentColor' : 'none'} />
                 </svg>
-                <span className="font-mono text-[11.5px]">2</span>
+                <span className="font-mono text-[12px]">2</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleSwitchGrid(3)}
-                className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 h-8 px-2.5 rounded-[2px] text-[12px] font-medium transition-all cursor-pointer ${
                   gridCols === 3
                     ? 'bg-white dark:bg-[#25222E] text-tk-ink dark:text-tk-accent-night shadow-xs'
                     : 'text-[#666666] dark:text-[#88857F] hover:text-tk-ink dark:hover:text-white'
@@ -332,13 +332,13 @@ export default function BluorngCollectionPage({
                   <rect x="6.75" y="2" width="3.5" height="12" rx="0.4" fill={gridCols === 3 ? 'currentColor' : 'none'} />
                   <rect x="12" y="2" width="3.5" height="12" rx="0.4" fill={gridCols === 3 ? 'currentColor' : 'none'} />
                 </svg>
-                <span className="font-mono text-[11.5px]">3</span>
+                <span className="font-mono text-[12px]">3</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => handleSwitchGrid(4)}
-                className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 h-8 px-2.5 rounded-[2px] text-[12px] font-medium transition-all cursor-pointer ${
                   gridCols === 4
                     ? 'bg-white dark:bg-[#25222E] text-tk-ink dark:text-tk-accent-night shadow-xs'
                     : 'text-[#666666] dark:text-[#88857F] hover:text-tk-ink dark:hover:text-white'
@@ -352,7 +352,7 @@ export default function BluorngCollectionPage({
                   <rect x="9.8" y="2" width="2.8" height="12" rx="0.4" fill={gridCols === 4 ? 'currentColor' : 'none'} />
                   <rect x="14.2" y="2" width="2.8" height="12" rx="0.4" fill={gridCols === 4 ? 'currentColor' : 'none'} />
                 </svg>
-                <span className="font-mono text-[11.5px]">4</span>
+                <span className="font-mono text-[12px]">4</span>
               </button>
             </div>
           </div>
@@ -403,7 +403,7 @@ export default function BluorngCollectionPage({
                         title={`Remove ${label}`}
                       >
                         <span>{label}</span>
-                        <span className="text-[12px] font-bold text-[#666666] group-hover:text-tk-ink dark:group-hover:text-white leading-none transition-transform group-hover:rotate-90 duration-200">
+                        <span className="text-[12.5px] font-bold text-[#666666] group-hover:text-tk-ink dark:group-hover:text-white leading-none transition-transform group-hover:rotate-90 duration-200">
                           ×
                         </span>
                       </motion.button>
@@ -418,7 +418,7 @@ export default function BluorngCollectionPage({
                 whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={clear}
-                className="text-[12.5px] font-semibold text-tk-accent dark:text-tk-accent-night underline underline-offset-4 hover:opacity-80 transition-opacity ml-2 cursor-pointer"
+                className="text-[12.5px] font-semibold text-tk-accent-ink dark:text-tk-accent-night underline underline-offset-4 hover:opacity-80 transition-opacity ml-2 cursor-pointer"
               >
                 Clear all
               </motion.button>
@@ -466,7 +466,7 @@ export default function BluorngCollectionPage({
                   <p className="font-serif text-[19px] sm:text-[22px] text-tk-ink dark:text-white">
                     {totalActive > 0 ? 'No flacons match your refined filter combination.' : 'Nothing here yet.'}
                   </p>
-                  <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#A09D96] mt-2 max-w-md mx-auto font-light leading-relaxed">
+                  <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#A09D96] mt-2 max-w-md mx-auto font-normal leading-relaxed">
                     {totalActive > 0
                       ? 'Try unchecking some notes, intensity levels or occasions to see more of the collection.'
                       : 'New fragrances are added here regularly. Explore the full collection in the meantime.'}
@@ -475,7 +475,7 @@ export default function BluorngCollectionPage({
                     <button
                       type="button"
                       onClick={clear}
-                      className="px-6 py-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] rounded-sm bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night hover:bg-tk-accent dark:hover:bg-tk-accent-night transition-colors cursor-pointer shadow-sm"
+                      className="px-6 py-2.5 text-[12px] font-semibold uppercase tracking-[0.14em] rounded-sm bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night hover:bg-tk-accent dark:hover:bg-tk-accent-night transition-colors cursor-pointer shadow-sm"
                     >
                       Reset All Filters
                     </button>
@@ -483,7 +483,7 @@ export default function BluorngCollectionPage({
                       <button
                         type="button"
                         onClick={browseAll}
-                        className="px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] rounded-sm border border-[#CCCCCC] dark:border-white/20 text-tk-ink dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                        className="px-5 py-2.5 text-[12px] font-semibold uppercase tracking-[0.14em] rounded-sm border border-[#CCCCCC] dark:border-white/20 text-tk-ink dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
                       >
                         Search All Collections
                       </button>
@@ -496,7 +496,7 @@ export default function BluorngCollectionPage({
                   key={`product-grid-${gridCols}`}
                   className={`grid gap-4 sm:gap-6 lg:gap-7 transition-all duration-300 ${
                     gridCols === 2
-                      ? 'grid-cols-1 sm:grid-cols-2'
+                      ? 'grid-cols-2'
                       : gridCols === 3
                       ? isDesktopFilterOpen
                         ? 'grid-cols-2 md:grid-cols-2 lg:grid-cols-3'
@@ -541,12 +541,12 @@ export default function BluorngCollectionPage({
                         >
                           {/* Flacon Pedestal Stage (Consistent Soft Stage #F8F7F5 / Dark #141318) */}
                           <div className={`w-full aspect-square rounded-[2px] relative flex items-center justify-center overflow-hidden bg-[#F8F7F5] dark:bg-[#141318] group-hover:bg-[#F2EFEA] dark:group-hover:bg-[#1C1A22] transition-all duration-400 group-hover:scale-[1.01] ${
-                            gridCols === 2 ? 'p-8 sm:p-14' : gridCols === 3 ? 'p-6 sm:p-10' : 'p-6 sm:p-8'
+                            gridCols === 2 ? 'p-5 sm:p-14' : gridCols === 3 ? 'p-6 sm:p-10' : 'p-6 sm:p-8'
                           }`}>
                             {/* Badge */}
                             {(isSale || prod.badge) && (
                               <div className="absolute top-3 left-3 z-10">
-                                <span className="text-[10.5px] font-medium tracking-wider uppercase px-2 py-0.5 rounded-[2px] bg-white/85 dark:bg-white/10 text-[#666666] dark:text-white/80">
+                                <span className="text-[11.5px] font-medium tracking-wider uppercase px-2 py-0.5 rounded-[2px] bg-white/85 dark:bg-white/10 text-[#666666] dark:text-white/80">
                                   {isSale ? 'Sale' : prod.badge}
                                 </span>
                               </div>
@@ -560,7 +560,7 @@ export default function BluorngCollectionPage({
                                 onToggleWishlist && onToggleWishlist(prod.id);
                               }}
                               className={`absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-[2px] flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-tk-ink dark:text-white ${
-                                isWish ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#707070]'
+                                isWish ? 'text-tk-accent-ink dark:text-tk-accent-night' : 'text-[#707070]'
                               }`}
                               title={isWish ? 'Remove from wishlist' : 'Save to wishlist'}
                               aria-label="Wishlist"
@@ -569,7 +569,7 @@ export default function BluorngCollectionPage({
                                 width="13"
                                 height="13"
                                 viewBox="0 0 24 24"
-                                className={isWish ? 'text-tk-accent dark:text-tk-accent-night' : 'text-tk-ink dark:text-white'}
+                                className={isWish ? 'text-tk-accent-ink dark:text-tk-accent-night' : 'text-tk-ink dark:text-white'}
                                 fill={isWish ? 'currentColor' : 'none'}
                                 stroke="currentColor"
                                 strokeWidth="1.8"
@@ -598,7 +598,7 @@ export default function BluorngCollectionPage({
                                   e.stopPropagation();
                                   onQuickBuy(prod);
                                 }}
-                                className="w-full py-2.5 text-[11.5px] uppercase tracking-[0.16em] font-medium rounded-[2px] shadow-lg transition-all duration-300 cursor-pointer bg-tk-ink/95 text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night backdrop-blur-md flex items-center justify-center gap-1.5"
+                                className="w-full py-2.5 text-[12px] uppercase tracking-[0.16em] font-medium rounded-[2px] shadow-lg transition-all duration-300 cursor-pointer bg-tk-ink/95 text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night backdrop-blur-md flex items-center justify-center gap-1.5"
                               >
                                 <span>+ Quick Add</span>
                               </button>
@@ -618,7 +618,7 @@ export default function BluorngCollectionPage({
                             </h3>
 
                             <p className={`mt-0.5 line-clamp-1 font-normal text-[#666666] dark:text-[#A09D96] ${
-                              gridCols === 2 ? 'text-[12px] sm:text-[12.5px]' : gridCols === 3 ? 'text-[11.5px]' : 'text-[11px]'
+                              gridCols === 2 ? 'text-[12.5px] sm:text-[12.5px]' : gridCols === 3 ? 'text-[12px]' : 'text-[12px]'
                             }`}>
                               {gridCols === 2 && prod.notes
                                 ? [ ...(prod.notes?.heart || []), ...(prod.notes?.top || []) ].slice(0, 3).join(' · ') || (prod.category || 'Extrait de Parfum')
@@ -639,14 +639,14 @@ export default function BluorngCollectionPage({
                                 {formatPrice(prod.price)}
                               </span>
                               {hasDiscount && (
-                                <span className={`line-through text-[#707070] dark:text-white/40 ${
-                                  gridCols === 2 ? 'text-[12px]' : gridCols === 3 ? 'text-[11.5px]' : 'text-[11px]'
+                                <span className={`line-through text-[#707070] dark:text-white/60 ${
+                                  gridCols === 2 ? 'text-[12.5px]' : gridCols === 3 ? 'text-[12px]' : 'text-[12px]'
                                 }`}>
                                   {formatPrice(prod.compareAtPrice)}
                                 </span>
                               )}
                               {hasDiscount && (
-                                <span className="text-[11px] font-medium text-tk-accent dark:text-tk-accent-night">
+                                <span className="text-[12px] font-medium text-tk-accent-ink dark:text-tk-accent-night">
                                   {Math.round((1 - prod.price / prod.compareAtPrice) * 100)}% off
                                 </span>
                               )}
