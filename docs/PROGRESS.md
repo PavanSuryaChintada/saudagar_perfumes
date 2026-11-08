@@ -184,6 +184,16 @@
 - [x] docs/SUPABASE.md: every production setting
 - [x] Full test pass: lint, typecheck, 236 unit, 12 SQL files, build, 31 browser tests
 
+## Phase 13: Admin made easy ✅
+- [x] Guide page (12 steps in the order to do them, with live progress) and "How this page works" on every page
+- [x] One search for the whole admin (Ctrl+K): products, SKUs, orders, customers, categories, notes, scent options, collections, coupons, pages, admin pages
+- [x] Searchable pickers instead of long radio/checkbox lists, with "+ Add" to create a missing category, collection or note in place
+- [x] Product: one main category + any number of "Also list under" categories, both searchable
+- [x] Menu reordered: Daily → Catalog setup (in order) → Marketing → Website → Settings; sidebar scrolls
+- [x] Products page shows what to set up before the first product; editor warns about unsaved changes and jumps to the first error
+- [x] Admin button only for admins (tested both ways)
+- [x] Tests: 240 unit, 12 SQL files, 33 browser tests
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain
