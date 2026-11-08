@@ -14,7 +14,10 @@
     "db:test": "node --env-file=.env.local scripts/db-test.mjs",
     "e2e": "playwright test",
     "db:types": "node --env-file=.env.local scripts/gen-types.mjs",
-    "functions:deploy": "node --env-file=.env.local scripts/deploy-functions.mjs"
+    "functions:deploy": "node --env-file=.env.local scripts/deploy-functions.mjs",
+    "db:audit": "node --env-file=.env.local scripts/audit-db.mjs",
+    "hook:secret": "node --env-file=.env.local scripts/set-hook-secret.mjs",
+    "auth:configure": "node --env-file=.env.local scripts/configure-auth.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

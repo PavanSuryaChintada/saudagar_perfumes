@@ -1,9 +1,0 @@
-User-agent: *
-Disallow: /admin
-Disallow: /account
-Disallow: /checkout
-Disallow: /orders/
-Disallow: /search
-Allow: /
-
-Sitemap: https://saudagarperfumes.com/sitemap.xml

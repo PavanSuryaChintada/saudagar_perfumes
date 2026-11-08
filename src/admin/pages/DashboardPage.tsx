@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Circle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import { formatINR } from '../../lib/money';
@@ -10,21 +10,22 @@ import { PageHeader, Panel } from '../ui/PageHeader';
 
 interface Dashboard {
   days: number;
-  kpis: { revenue: number; orders: number; aov: number; pending: number; to_ship: number; customers: number; new_customers: number; low_stock: number; returns_waiting: number; reviews_waiting: number };
+  kpis: { revenue: number; orders: number; aov: number; pending: number; unpaid: number; to_ship: number; customers: number; new_customers: number; low_stock: number; returns_waiting: number; reviews_waiting: number; refunds_due: number };
   series: { day: string; revenue: number; orders: number }[];
   cities: { label: string; orders: number; revenue: number }[];
   states: { label: string; orders: number; revenue: number }[];
   products: { label: string; units: number; revenue: number; id: string }[];
   notes: { label: string; revenue: number }[];
   warnings: { level: 'critical' | 'serious' | 'warning'; text: string; link: string }[];
+  setup: { key: string; label: string; hint: string; link: string; done: boolean }[];
 }
 
-const SETUP = [
-  { label: 'Razorpay keys (online payments)', detail: 'Until then the store takes cash on delivery only.' },
-  { label: 'Delhivery token and pickup location', detail: 'Until then shipments are booked manually with a tracking number.' },
-  { label: 'Email provider (SMTP)', detail: 'Needed before password-reset emails reach customers.' },
-  { label: 'Supabase Pro plan', detail: 'Needed before launch for bandwidth and image resizing.' },
-  { label: 'GSTIN, business address and policy pages', detail: 'Placeholders are in use.' },
+/** Switched off until their keys are added; nothing in the database can tell whether they are set. */
+const INTEGRATIONS = [
+  { label: 'Razorpay keys (online payments)', detail: 'Until then the store takes cash on delivery only. Turn it on in Settings → Payments and sign-in once the keys are in.' },
+  { label: 'Delhivery token and pickup location', detail: 'Until then shipments are booked by hand with a tracking number.' },
+  { label: 'Email provider (SMTP)', detail: 'Needed before sign-up confirmations and password-reset emails reach customers.' },
+  { label: 'Supabase Pro plan', detail: 'Needed before launch for backups, bandwidth and image resizing.' },
 ];
 
 const dayLabel = (iso: string) => new Date(`${iso}T00:00:00+05:30`).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata' });
@@ -152,6 +153,9 @@ export default function DashboardPage() {
   });
   const k = data?.kpis;
   const hasSales = useMemo(() => (data?.series ?? []).some((d) => d.orders > 0), [data]);
+  const setup = data?.setup ?? [];
+  const setupDone = setup.filter((s) => s.done).length;
+  const setupLeft = setup.length - setupDone;
 
   return (
     <div className="space-y-5">
@@ -176,14 +180,33 @@ export default function DashboardPage() {
         </Link>
       ))}
 
+      {setupLeft > 0 && (
+        <Panel title={`Get your store ready · ${setupDone} of ${setup.length} done`} description="Each step opens the page that finishes it. This card disappears when everything is done.">
+          <ul className="divide-y divide-[#F0F0F0]">
+            {setup.map((s) => (
+              <li key={s.key}>
+                <Link to={s.link} className="py-2.5 flex gap-3 items-start hover:bg-[#FAFAF8] -mx-2 px-2">
+                  {s.done ? <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-700" aria-label="Done" /> : <Circle size={16} className="mt-0.5 shrink-0 text-[#AAAAAA]" aria-label="To do" />}
+                  <span>
+                    <span className={`block text-[13px] ${s.done ? 'text-[#888888] line-through' : 'text-tk-ink'}`}>{s.label}</span>
+                    {!s.done && <span className="block text-[12px] text-[#777777]">{s.hint}</span>}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      )}
+
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-        <Kpi label={`Revenue · ${days} days`} value={k ? formatINR(Number(k.revenue)) : '—'} hint="Excludes cancelled orders" />
+        <Kpi label={`Revenue · ${days} days`} value={k ? formatINR(Number(k.revenue)) : '—'} hint="Excludes cancelled and unpaid online orders" />
         <Kpi label="Orders" value={k ? String(k.orders) : '—'} hint={k ? `Average ${formatINR(Number(k.aov))}` : undefined} />
-        <Kpi label="To handle" value={k ? String(k.pending) : '—'} hint={k ? `${k.to_ship} packed, waiting to ship` : undefined} to="/admin/orders?status=PENDING" />
+        <Kpi label="Ready to pack" value={k ? String(k.pending) : '—'} hint={k ? `${k.to_ship} packed, waiting to ship${k.unpaid ? ` · ${k.unpaid} awaiting online payment` : ''}` : undefined} to="/admin/orders?status=PENDING" />
         <Kpi label="Customers" value={k ? String(k.customers) : '—'} hint={k ? `${k.new_customers} new in ${days} days` : undefined} to="/admin/customers" />
         <Kpi label="Low stock" value={k ? String(k.low_stock) : '—'} hint="Sizes and sample vials" to="/admin/inventory" />
         <Kpi label="Returns waiting" value={k ? String(k.returns_waiting) : '—'} to="/admin/returns" />
         <Kpi label="Reviews waiting" value={k ? String(k.reviews_waiting) : '—'} to="/admin/reviews" />
+        <Kpi label="Refunds due" value={k ? String(k.refunds_due ?? 0) : '—'} hint="Cancelled or returned paid orders" to="/admin/refunds" />
       </div>
 
       <Panel title={`Revenue per day · last ${days} days`}>
@@ -197,9 +220,9 @@ export default function DashboardPage() {
         <Panel title="Top states" description="Revenue · orders"><RankList rows={data?.states ?? []} value="revenue" empty="No sales yet." /></Panel>
       </div>
 
-      <Panel title="Before launch" description="Integrations are built and switched off. Each one starts working when its keys are added.">
+      <Panel title="Integrations" description="Built and switched off. Each one starts working once its keys are added (steps in the setup guide, docs/SETUP.md).">
         <ul className="divide-y divide-[#F0F0F0]">
-          {SETUP.map((s) => (
+          {INTEGRATIONS.map((s) => (
             <li key={s.label} className="py-3 flex gap-3">
               <span className="mt-1.5 h-2 w-2 shrink-0 bg-tk-accent" aria-hidden />
               <div>

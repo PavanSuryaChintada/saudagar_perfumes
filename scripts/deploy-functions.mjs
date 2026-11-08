@@ -11,7 +11,8 @@ if (!ref || !process.env.SUPABASE_ACCESS_TOKEN) {
   process.exit(1);
 }
 // Webhooks and the shipping hook are called by Razorpay, couriers or the database, not a signed-in user; they check their own secrets.
-const NO_JWT = new Set(['razorpay-webhook', 'shipment-status-webhook', 'shipping', 'sitemap']);
+// These check their own callers (signature, hook secret, or admin JWT inside the function).
+const NO_JWT = new Set(['razorpay-webhook', 'razorpay-refund', 'shipment-status-webhook', 'shipping', 'sitemap']);
 const dir = path.resolve('supabase/functions');
 const all = fs.readdirSync(dir).filter((d) => !d.startsWith('_') && fs.existsSync(path.join(dir, d, 'index.ts')));
 const wanted = process.argv.slice(2).length ? process.argv.slice(2) : all;

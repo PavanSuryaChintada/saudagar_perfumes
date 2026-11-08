@@ -53,6 +53,21 @@ export const SETTINGS_SCHEMA: SettingGroup[] = [
     fields: [
       { key: 'cod.enabled', label: 'Offer cash on delivery', type: 'boolean' },
       { key: 'cod.min_order', label: 'Minimum order for COD', type: 'number', min: 0, suffix: '₹', help: '0 means no minimum.' },
+      {
+        key: 'cod.max_order',
+        label: 'Largest order for COD',
+        type: 'number',
+        min: 0,
+        suffix: '₹',
+        help: 'Bigger orders must be paid online, which cuts fake and refused COD parcels. e.g. 15000. 0 means no limit.',
+      },
+      {
+        key: 'cod.max_open_orders',
+        label: 'COD orders on the way per customer',
+        type: 'number',
+        min: 0,
+        help: 'Stops one person tying up stock with many COD orders. e.g. 3. 0 means no limit.',
+      },
     ],
   },
   {
@@ -107,6 +122,18 @@ export const SETTINGS_SCHEMA: SettingGroup[] = [
         label: 'Online payment (Razorpay)',
         type: 'boolean',
         help: 'Turn on only after the Razorpay keys are added. Until then, checkout offers cash on delivery.',
+      },
+      {
+        key: 'payments.auto_refund_on_cancel',
+        label: 'Refund automatically when a paid order is cancelled',
+        type: 'boolean',
+        help: 'Recommended. If off, cancelled paid orders wait in Refunds → Refunds due.',
+      },
+      {
+        key: 'coupons.first_order_phone_check',
+        label: 'First-order offers: check the phone number too',
+        type: 'boolean',
+        help: 'Recommended. Stops one person claiming the welcome offer again from a new account.',
       },
       { key: 'auth.google_enabled', label: 'Google sign-in', type: 'boolean', help: 'Needs a Google OAuth client set up in Supabase first.' },
     ],

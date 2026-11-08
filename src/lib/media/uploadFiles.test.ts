@@ -42,7 +42,7 @@ describe('uploadFiles', () => {
       onError: (name, msg) => (errors[name] = msg),
     });
     expect(result).toEqual([]);
-    expect(errors['x.png']).toBe('The resource already exists');
+    expect(errors['x.png']).toBe('A file with that name already exists. Rename it and try again.');
     expect(record).not.toHaveBeenCalled();
   });
 });

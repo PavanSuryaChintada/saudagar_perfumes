@@ -9,7 +9,11 @@ import { AuthButton, AuthField, AuthLayout, FormMessage } from './AuthLayout';
 // Sign-up asks only for email and password. Name, phone and birthday are added in Account → Personal details.
 export const registerSchema = z.object({
   email: z.string().trim().email('Enter a valid email address.'),
-  password: z.string().min(8, 'Use at least 8 characters.'),
+  password: z
+    .string()
+    .min(8, 'Use at least 8 characters.')
+    .regex(/[A-Za-z]/, 'Add at least one letter.')
+    .regex(/[0-9]/, 'Add at least one number.'),
 });
 
 type Errors = Partial<Record<keyof z.infer<typeof registerSchema>, string>>;

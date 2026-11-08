@@ -12,6 +12,8 @@ export interface SeoInput {
   noindex?: boolean;
 }
 
+const INDEXING = import.meta.env.VITE_ALLOW_INDEXING === 'true';
+
 function setMeta(attr: 'name' | 'property', key: string, value: string | null | undefined) {
   let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
   if (!value) {
@@ -51,7 +53,8 @@ export function useSEO(input: SeoInput) {
     const canonical = `${window.location.origin}${input.path ?? window.location.pathname}`;
     document.title = title;
     setMeta('name', 'description', description.slice(0, 300));
-    setMeta('name', 'robots', input.noindex ? 'noindex, nofollow' : null);
+    // Demo deployments stay out of search engines until VITE_ALLOW_INDEXING=true (see vite.config.js).
+    setMeta('name', 'robots', input.noindex || !INDEXING ? 'noindex, nofollow' : null);
     setLink('canonical', canonical);
     setMeta('property', 'og:site_name', siteName);
     setMeta('property', 'og:title', title);

@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from './supabase';
 import type { Database } from './database.types';
 
@@ -33,6 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [profileReady, setProfileReady] = useState(false);
   const userId = session?.user.id ?? null;
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     let active = true;
@@ -97,7 +99,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       },
       signOut: async () => {
-        await supabase.auth.signOut();
+        try {
+          const { error } = await supabase.auth.signOut();
+          if (error) throw error;
+        } catch {
+          // Offline, or the server already ended the session: still sign out on this device.
+          await supabase.auth.signOut({ scope: 'local' });
+        } finally {
+          // Nothing from the last person (orders, addresses, admin data) stays in memory.
+          queryClient.clear();
+        }
       },
       sendReset: async (email) => {
         const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
@@ -111,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       refreshProfile: () => loadProfile(userId),
     }),
-    [session, profile, isAdmin, sessionReady, profileReady, userId, loadProfile],
+    [session, profile, isAdmin, sessionReady, profileReady, userId, loadProfile, queryClient],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

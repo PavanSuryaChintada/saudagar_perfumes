@@ -11,6 +11,7 @@ import { PageHeader } from '../../ui/PageHeader';
 import { Button } from '../../ui/Button';
 import { FieldShell, TextArea } from '../../ui/Field';
 import { Modal } from '../../ui/Modal';
+import { ConfirmDialog } from '../../ui/ConfirmDialog';
 import { rpc, throwIf } from '../../catalog/api';
 
 interface RefundRow {
@@ -26,24 +27,71 @@ interface RefundRow {
   order: { order_number: string; customer_name: string | null };
 }
 
+interface DueRow {
+  order_id: string;
+  order_number: string;
+  customer_name: string | null;
+  status: 'CANCELLED' | 'RTO';
+  due: number;
+  since: string;
+}
+
 const TONE = { PROCESSING: 'bg-amber-50 text-amber-800 border-amber-200', REFUNDED: 'bg-emerald-50 text-emerald-800 border-emerald-200', FAILED: 'bg-rose-50 text-rose-700 border-rose-200' };
+const LIMIT = 300;
 
 export default function RefundsPage() {
   const qc = useQueryClient();
   const { data: rows = [], isLoading } = useQuery({
     queryKey: ['admin', 'refunds'],
     queryFn: async () =>
-      (await throwIf(supabase.from('refunds').select('*, order:orders(order_number, customer_name)').order('created_at', { ascending: false }).limit(300))) as unknown as RefundRow[],
+      (await throwIf(
+        supabase.from('refunds').select('*, order:orders(order_number, customer_name)').order('created_at', { ascending: false }).limit(LIMIT),
+      )) as unknown as RefundRow[],
+  });
+  const { data: due = [] } = useQuery({
+    queryKey: ['admin', 'refunds-due'],
+    queryFn: async () => (await rpc<DueRow[]>('refunds_due', {})) ?? [],
   });
   const [managing, setManaging] = useState<RefundRow | null>(null);
   const [status, setStatus] = useState<RefundRow['status']>('PROCESSING');
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
-  const refresh = () => qc.invalidateQueries({ queryKey: ['admin', 'refunds'] });
+  const [refundingDue, setRefundingDue] = useState<DueRow | null>(null);
+  const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['admin', 'refunds'] }), qc.invalidateQueries({ queryKey: ['admin', 'refunds-due'] })]);
+  const online = managing?.method === 'RAZORPAY';
 
   return (
     <div>
-      <PageHeader title="Refunds" description="Every refund: online refunds through Razorpay and manual UPI / bank refunds for cash orders." />
+      <PageHeader
+        title="Refunds"
+        description="Online refunds go back through Razorpay to the card, UPI or bank the customer used. Cash orders are refunded by UPI or bank transfer from the return, and recorded here."
+      />
+
+      {due.length > 0 && (
+        <section aria-labelledby="due-h" className="mb-6 bg-white border border-rose-200">
+          <div className="px-4 py-3 border-b border-rose-200 bg-rose-50">
+            <h2 id="due-h" className="text-[13px] font-semibold text-rose-800">Refunds due · {due.length}</h2>
+            <p className="text-[12px] text-rose-800/80">Paid online orders that were cancelled or came back, with money still to return.</p>
+          </div>
+          <ul className="divide-y divide-[#F0F0F0]">
+            {due.map((d) => (
+              <li key={d.order_id} className="px-4 py-3 flex flex-wrap items-center gap-3 justify-between text-[13px]">
+                <div>
+                  <Link to={`/admin/orders/${d.order_id}`} className="font-medium hover:underline">{d.order_number}</Link>
+                  <p className="text-[11px] text-[#888888]">
+                    {d.customer_name} · {d.status === 'CANCELLED' ? 'cancelled' : 'returned to us'} {formatOrderDateTime(d.since)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="tabular-nums font-medium">{formatINR(Number(d.due))}</span>
+                  <Button size="sm" onClick={() => setRefundingDue(d)}>Refund {formatINR(Number(d.due))}</Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <div className="bg-white border border-[#EAEAEA] overflow-x-auto">
         <table className="w-full text-[13px] min-w-[680px]">
           <thead>
@@ -57,7 +105,9 @@ export default function RefundsPage() {
           </thead>
           <tbody className="divide-y divide-[#F0F0F0]">
             {isLoading && <tr><td colSpan={5} className="px-3 py-6 text-[#777777]">Loading…</td></tr>}
-            {!isLoading && rows.length === 0 && <tr><td colSpan={5} className="px-3 py-6 text-[#777777]">No refunds yet.</td></tr>}
+            {!isLoading && rows.length === 0 && (
+              <tr><td colSpan={5} className="px-3 py-6 text-[#777777]">No refunds yet. Refunds you make from an order or a return appear here.</td></tr>
+            )}
             {rows.map((r) => (
               <tr key={r.id}>
                 <td className="px-3 py-2.5">
@@ -69,7 +119,10 @@ export default function RefundsPage() {
                   {r.method === 'RAZORPAY' ? 'Razorpay' : 'UPI / bank'}
                   <p className="text-[11px] text-[#888888] font-mono">{r.razorpay_refund_id ?? r.reference}</p>
                 </td>
-                <td className="px-3 py-2.5"><span className={`inline-block px-2 py-0.5 border text-[10.5px] uppercase tracking-[0.06em] ${TONE[r.status]}`}>{r.status.toLowerCase()}</span></td>
+                <td className="px-3 py-2.5">
+                  <span className={`inline-block px-2 py-0.5 border text-[10.5px] uppercase tracking-[0.06em] ${TONE[r.status]}`}>{r.status.toLowerCase()}</span>
+                  {r.status === 'FAILED' && r.note && <p className="text-[11px] text-rose-700 mt-1 max-w-[260px]">{r.note}</p>}
+                </td>
                 <td className="px-3 py-2.5 text-right">
                   <Button size="sm" variant="secondary" onClick={() => { setManaging(r); setStatus(r.status); setNote(r.note ?? ''); }}>Manage</Button>
                 </td>
@@ -77,13 +130,35 @@ export default function RefundsPage() {
             ))}
           </tbody>
         </table>
+        {rows.length >= LIMIT && (
+          <p className="px-3 py-2 text-[11.5px] text-[#777777] border-t border-[#EAEAEA]">Showing the latest {LIMIT}. Older refunds are in Data export.</p>
+        )}
       </div>
+
+      <ConfirmDialog
+        open={!!refundingDue}
+        onOpenChange={(o) => !o && setRefundingDue(null)}
+        title={`Refund ${refundingDue ? formatINR(Number(refundingDue.due)) : ''} for ${refundingDue?.order_number ?? ''}?`}
+        description="Razorpay sends the money back to the card, UPI or bank the customer paid with. It usually arrives in 5–7 working days."
+        confirmLabel="Refund now"
+        danger
+        onConfirm={async () => {
+          if (!refundingDue) return;
+          try {
+            await invokeFunction('razorpay-refund', { action: 'refund', order_id: refundingDue.order_id });
+            await refresh();
+            toast.success('Refund started.');
+          } catch (err) {
+            toast.error(toFriendlyError(err));
+          }
+        }}
+      />
 
       <Modal
         open={!!managing}
         onOpenChange={(o) => !o && !busy && setManaging(null)}
         title={`Refund · ${managing?.order.order_number ?? ''}`}
-        description={managing ? `${formatINR(Number(managing.amount))} · ${managing.method === 'RAZORPAY' ? `Razorpay ${managing.razorpay_refund_id ?? ''}` : `UPI / bank ${managing.reference ?? ''}`}` : ''}
+        description={managing ? `${formatINR(Number(managing.amount))} · ${online ? `Razorpay ${managing.razorpay_refund_id ?? ''}` : `UPI / bank ${managing.reference ?? ''}`}` : ''}
         footer={
           <>
             <Button variant="secondary" onClick={() => setManaging(null)} disabled={busy}>Close</Button>
@@ -111,35 +186,43 @@ export default function RefundsPage() {
       >
         {managing && (
           <div className="space-y-4">
-            {managing.method === 'RAZORPAY' && managing.status === 'PROCESSING' && (
-              <Button
-                variant="secondary"
-                disabled={busy}
-                onClick={async () => {
-                  setBusy(true);
-                  try {
-                    const r = await invokeFunction<{ status: RefundRow['status'] }>('razorpay-refund', { action: 'sync', order_id: managing.order_id });
-                    setStatus(r.status);
-                    await refresh();
-                    toast.success(`Razorpay says: ${r.status.toLowerCase()}.`);
-                  } catch (err) {
-                    toast.error(toFriendlyError(err));
-                  } finally {
-                    setBusy(false);
-                  }
-                }}
-              >
-                Refresh status from Razorpay
-              </Button>
+            {online ? (
+              <div className="space-y-2">
+                <p className="text-[12.5px] text-[#555555]">
+                  Razorpay sets the status of online refunds; it updates on its own. Status now: <strong>{managing.status.toLowerCase()}</strong>.
+                </p>
+                {managing.status === 'PROCESSING' && (
+                  <Button
+                    variant="secondary"
+                    disabled={busy}
+                    onClick={async () => {
+                      setBusy(true);
+                      try {
+                        const r = await invokeFunction<{ checked: number; updated: number }>('razorpay-refund', { action: 'sync', order_id: managing.order_id });
+                        await refresh();
+                        setManaging(null);
+                        toast.success(r.updated ? 'Status refreshed from Razorpay.' : 'Razorpay has no update yet.');
+                      } catch (err) {
+                        toast.error(toFriendlyError(err));
+                      } finally {
+                        setBusy(false);
+                      }
+                    }}
+                  >
+                    Check status with Razorpay
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <FieldShell label="Status" htmlFor="rf-status" help="Set this once the UPI or bank transfer has gone through.">
+                <select id="rf-status" value={status} onChange={(e) => setStatus(e.target.value as RefundRow['status'])} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+                  <option value="PROCESSING">Processing</option>
+                  <option value="REFUNDED">Refunded</option>
+                  <option value="FAILED">Failed</option>
+                </select>
+              </FieldShell>
             )}
-            <FieldShell label="Status" htmlFor="rf-status">
-              <select id="rf-status" value={status} onChange={(e) => setStatus(e.target.value as RefundRow['status'])} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
-                <option value="PROCESSING">Processing</option>
-                <option value="REFUNDED">Refunded</option>
-                <option value="FAILED">Failed</option>
-              </select>
-            </FieldShell>
-            <FieldShell label="Notes" htmlFor="rf-note">
+            <FieldShell label="Notes" htmlFor="rf-note" help="Only staff see this. e.g. UPI ref 4123 9876 sent on 12 Nov">
               <TextArea id="rf-note" rows={3} value={note} onChange={(e) => setNote(e.target.value)} />
             </FieldShell>
           </div>

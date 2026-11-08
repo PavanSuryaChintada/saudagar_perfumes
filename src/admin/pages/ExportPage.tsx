@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../lib/supabase';
+import { fetchAll } from '../../lib/fetchAll';
 import { toFriendlyError } from '../../lib/errors';
 import { PageHeader, Panel } from '../ui/PageHeader';
 import { Button } from '../ui/Button';
 import { downloadCsv, toCsv } from '../export/csv';
 
-const TABLES: { table: string; label: string; order?: string }[] = [
+// `order` keeps the CSV in a useful order; the unique key (id, or `key` for settings) keeps paging exact.
+const TABLES: { table: string; label: string; order?: string; unique?: string }[] = [
   { table: 'orders', label: 'Orders', order: 'created_at' },
   { table: 'order_items', label: 'Order lines' },
   { table: 'products', label: 'Products', order: 'created_at' },
@@ -25,25 +27,22 @@ const TABLES: { table: string; label: string; order?: string }[] = [
   { table: 'categories', label: 'Categories' },
   { table: 'collections', label: 'Collections' },
   { table: 'notes', label: 'Notes' },
-  { table: 'settings', label: 'Settings' },
+  { table: 'settings', label: 'Settings', unique: 'key' },
 ];
 
 /** Admin → Data export: a CSV of every main table, as a backup or for accounting. */
 export default function ExportPage() {
   const [busy, setBusy] = useState<string | null>(null);
 
-  const exportTable = async (table: string, order?: string) => {
+  const exportTable = async (table: string, order?: string, unique = 'id') => {
     setBusy(table);
     try {
-      const rows: Record<string, unknown>[] = [];
-      for (let from = 0; ; from += 1000) {
-        let q = supabase.from(table as never).select('*').range(from, from + 999);
+      const rows = await fetchAll<Record<string, unknown>>((from, to) => {
+        let q = supabase.from(table as never).select('*', { count: 'exact' });
         if (order) q = q.order(order as never, { ascending: true });
-        const { data, error } = await q;
-        if (error) throw error;
-        rows.push(...((data ?? []) as Record<string, unknown>[]));
-        if (!data || data.length < 1000) break;
-      }
+        q = q.order(unique as never, { ascending: true });
+        return q.range(from, to) as unknown as PromiseLike<{ data: Record<string, unknown>[] | null; error: unknown; count: number | null }>;
+      });
       downloadCsv(`${table}-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(rows));
       toast.success(`${rows.length} row${rows.length === 1 ? '' : 's'} exported.`);
     } catch (err) {
@@ -61,7 +60,7 @@ export default function ExportPage() {
           {TABLES.map((t) => (
             <li key={t.table} className="flex items-center justify-between gap-3 py-2.5 text-[13px]">
               <span>{t.label}</span>
-              <Button size="sm" variant="secondary" busy={busy === t.table} disabled={!!busy && busy !== t.table} onClick={() => exportTable(t.table, t.order)}>
+              <Button size="sm" variant="secondary" busy={busy === t.table} disabled={!!busy && busy !== t.table} onClick={() => exportTable(t.table, t.order, t.unique)}>
                 <Download size={13} /> CSV
               </Button>
             </li>

@@ -2,14 +2,14 @@
 
 Everything is built. Integrations that need the owner's accounts are **switched off** and start
 working when their keys are added. This page lists every account, key and switch, then the go-live
-checklist.
+checklist. Supabase dashboard settings for production are in [SUPABASE.md](SUPABASE.md).
 
 ## 1. Accounts
 
 | Account | Used for | Status |
 |---|---|---|
 | Supabase (project `ijwbzjwpqscekkqgiuzq`, Mumbai) | Database, auth, storage, edge functions, cron | Live (free plan) — **upgrade to Pro before launch** |
-| Vercel | Hosting the store | Connect the GitHub repo, framework = Vite |
+| Vercel | Hosting the store | Import `saudagarperfumers/saudagar_perfumers`, production branch `main`, framework Vite, build `npm run build`, output `dist`. Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`. Leave `VITE_ALLOW_INDEXING` unset while it's a demo: Google is kept out. On the real domain set `VITE_ALLOW_INDEXING=true` and `VITE_SITE_URL=https://your-domain`, then redeploy |
 | Razorpay | Online payments | Add keys (§3) |
 | Delhivery | Automatic courier booking | Optional — add token (§4) |
 | SMTP provider (e.g. Resend, Zoho, SES) | Password reset and sign-up emails | Add in Supabase → Auth → SMTP |
@@ -43,7 +43,9 @@ Scripts:
 | `npm test` / `npm run e2e` | Unit tests / Playwright tests |
 | `npm run lint` / `npm run typecheck` / `npm run build` | Checks and production build |
 | `node --env-file=.env.local scripts/create-admin.mjs` | Creates or repairs the admin user |
-| `node --env-file=.env.local scripts/configure-auth.mjs` | Auth settings (site URL, password length, email confirmation) |
+| `SITE_URL=https://… npm run auth:configure` | Auth settings (site URL, exact redirect URLs, password rules, email confirmation) |
+| `npm run hook:secret` | Creates the secret that lets the database start automatic refunds and courier bookings |
+| `npm run db:audit` | Who can call what, and Supabase's security and performance advisors |
 
 ## 3. Razorpay (online payments)
 
@@ -96,7 +98,7 @@ show the longer delivery estimate and are booked as surface with Delhivery.
 
 Supabase's built-in email is rate-limited and not for production.
 1. Add your SMTP provider in Supabase → Auth → SMTP settings.
-2. Then turn email confirmation on (`scripts/configure-auth.mjs` sets `mailer_autoconfirm`; set it to `false`).
+2. Then turn email confirmation on: `CONFIRM_EMAIL=on SITE_URL=https://your-domain npm run auth:configure`.
 
 ## 6. Domain
 
