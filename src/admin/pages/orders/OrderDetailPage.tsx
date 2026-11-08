@@ -158,7 +158,7 @@ export default function OrderDetailPage() {
           <p className="mt-3 text-[13px] text-[#454545]">
             {o.courier === 'delhivery' && delhiveryOn
               ? 'Booking with Delhivery… The tracking number (AWB), the label to print and the pickup appear here in a moment.'
-              : 'Next: book this parcel with the courier (for Delhivery, in its app or website), stick its label on the box, then press Ship and type the tracking number (AWB) printed on the label. Connect Delhivery in Shipping settings and this happens by itself when you mark an order packed.'}
+              : 'Next: book this parcel with the courier (for Delhivery, in its app or website), stick its label on the box, then press Mark shipped and type the tracking number (AWB) printed on the label. Once Delhivery is connected in Shipping settings, booking happens by itself at the packing step.'}
           </p>
         )}
         {(o as unknown as { shipping_error: string | null }).shipping_error && (
