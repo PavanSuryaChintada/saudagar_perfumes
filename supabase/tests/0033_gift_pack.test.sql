@@ -149,3 +149,42 @@ begin
   assert exists (select 1 from public.product_variants where product_id = a and purpose = 'gift_pack_fill'), 'the pour size survives a save';
   assert (select stock_ml from public.products where id = a) = 200, 'removing the 100 ml size didn''t pour the liquid away';
 end $$;
+
+-- Returns: a pack received back in good condition puts its perfumes back; a replacement pack takes them again.
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000033c1","role":"authenticated"}', true);
+do $$
+declare a uuid := (select id from t_gp where k = 'a'); b uuid := (select id from t_gp where k = 'b'); o jsonb;
+begin
+  o := public.create_order('00000000-0000-0000-0000-00000033ad01',
+    jsonb_build_array(jsonb_build_object('key', 'pk2', 'picks', jsonb_build_array(a, a, a, b, b))), null, 'COD');
+  perform set_config('test.pack_order', o ->> 'id', true);
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000033a1","role":"authenticated"}', true);
+do $$
+declare oid uuid := current_setting('test.pack_order')::uuid;
+begin
+  assert (select stock_ml from public.products where id = (select id from t_gp where k = 'a')) = 140, 'second pack poured 60 ml of Amber';
+  perform public.set_order_status(oid, 'PACKED', null);
+  perform public.ship_order(oid, 'other', 'TRK-GP', null);
+  perform public.set_order_status(oid, 'DELIVERED', null);
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000033c1","role":"authenticated"}', true);
+do $$
+declare oid uuid := current_setting('test.pack_order')::uuid; rid uuid;
+begin
+  rid := public.request_return(oid, 'WRONG_ITEM', null,
+    jsonb_build_array(jsonb_build_object('order_item_id', (select id from public.order_items where order_id = oid and line_type = 'item'), 'qty', 1)), '[]'::jsonb);
+  perform set_config('test.pack_return', rid::text, true);
+end $$;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000033a1","role":"authenticated"}', true);
+do $$
+declare rid uuid := current_setting('test.pack_return')::uuid; a uuid := (select id from t_gp where k = 'a'); nid uuid;
+begin
+  perform public.review_return(rid, true, null, 'POST');
+  perform public.receive_return(rid, 'RESTOCK');
+  assert (select stock_ml from public.products where id = a) = 200, 'the returned pack put its Amber back';
+  nid := public.create_replacement_order(rid);
+  assert (select count(*) from public.order_items where order_id = nid and line_type = 'pack_item'
+          and parent_item_id = (select id from public.order_items where order_id = nid and line_type = 'item')) = 2, 'the replacement pack lists its perfumes';
+  assert (select stock_ml from public.products where id = a) = 140, 'and pours them again';
+end $$;
