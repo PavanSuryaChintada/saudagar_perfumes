@@ -7,7 +7,7 @@ import { supabase } from '../../../lib/supabase';
 import { throwIf } from '../../catalog/api';
 import { useBlock } from '../../../cms/useSite';
 import { useInvoiceSettings, type InvoiceSettings } from '../../invoice/invoiceSettings';
-import { formatINR } from '../../../lib/money';
+import { formatRupees as formatINR } from '../../../lib/money';
 import { formatIndianPhone } from '../../../lib/phone';
 import { paymentLabel } from '../../../lib/orders';
 import { buildInvoiceLines, isIntraState, rupeesInWords } from '../../../lib/invoice';

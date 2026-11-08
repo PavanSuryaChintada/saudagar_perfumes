@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
-import { formatINR } from '../../../lib/money';
+import { formatRupees as formatINR } from '../../../lib/money';
 import { PageHeader, Panel } from '../../ui/PageHeader';
 import { Button } from '../../ui/Button';
 import { FieldShell, TextInput, Toggle } from '../../ui/Field';
@@ -13,6 +13,7 @@ import { throwIf } from '../../catalog/api';
 import { parseSettingInput, toInputValue, type SettingField } from '../../settings/schema';
 import { GIFT_PACK_RULES, GIFT_PACK_WORDS, GIFT_PACK_WORD_DEFAULTS, previewPack } from '../../giftpack/giftPackAdmin';
 import type { GiftPackOptions } from '../../../storefront/bag/useQuote';
+import { packFacts } from '../../../storefront/giftpack/packMath';
 
 type Values = Record<string, unknown>;
 
@@ -144,13 +145,32 @@ export default function GiftPackPage() {
             </div>
           </Panel>
 
-          <Panel title="Words and picture" description="What customers read on the pack page and in the bag. You can write {count}, {size}, {sample} and {discount}: they are replaced by the numbers in the rules.">
+          <Panel title="Words and picture" description="Write these in plain words. The numbers (how many perfumes, ml each, the free sample and the discount) are shown next to them automatically from the rules above, so they are always right.">
             <SchemaForm fields={GIFT_PACK_WORDS} value={words} onChange={(next) => setWords(next)} />
           </Panel>
         </div>
 
         <div className="min-w-0 space-y-5">
           <div className="xl:sticky xl:top-4 space-y-5">
+            <Panel title="How it looks in the bag">
+              <div className="flex gap-3 items-center border border-[#D6D1C6] bg-[#FAF9F6] p-3">
+                {typeof words.image === 'string' && words.image && <img src={words.image} alt="" className="w-12 h-12 object-cover shrink-0" />}
+                <div className="flex-1 min-w-0">
+                  <p className="text-[12px] font-bold uppercase tracking-wider">{String(words.bag_heading || 'Try our Premium Gift Pack')}</p>
+                  <p className="text-[12px] text-[#4A4A4A] mt-0.5">{String(words.bag_text || '')}</p>
+                  <p className="text-[11.5px] text-tk-accent font-semibold mt-1">
+                    {packFacts({
+                      count: Number(rules['giftpack.count']) || 0,
+                      size_ml: Number(rules['giftpack.size_ml']) || 0,
+                      sample_ml: Number(rules['giftpack.sample_ml']) || 0,
+                      discount_percent: Number(rules['giftpack.discount_percent']) || 0,
+                    }).join(' · ')}
+                  </p>
+                </div>
+                <span className="shrink-0 px-2.5 py-1.5 bg-tk-ink text-white text-[11px] font-semibold uppercase tracking-wider">{String(words.bag_button || 'Build your pack')}</span>
+              </div>
+            </Panel>
+
             <Panel title="Price preview">
               {preview ? (
                 <div className="space-y-2 text-[14px]">
@@ -159,7 +179,7 @@ export default function GiftPackPage() {
                     {preview.picks.map((p, i) => (
                       <li key={i} className="flex justify-between gap-3">
                         <span className="truncate">{p.name}</span>
-                        <span className="tabular-nums">{formatINR(p.price)}</span>
+                        <span className="tabular-nums whitespace-nowrap">{formatINR(p.price)}</span>
                       </li>
                     ))}
                   </ul>

@@ -1,3 +1,4 @@
+import { ListHead, RowAction, ShownPill } from '../../ui/ListHead';
 import { useMemo, useState } from 'react';
 import { usePaged, spliceOrder } from '../../../lib/paging';
 import { Pager } from '../../ui/Pager';
@@ -91,6 +92,16 @@ export default function NotesPage() {
         <p className="text-[13px] text-[#4F4F4F] self-center">{filtered.length} notes{canReorder ? ' · drag to reorder' : ''}</p>
       </div>
 
+      {paged.rows.length > 0 && (
+        <ListHead className="border border-b-0 border-[#E2E0DB]">
+          <span className={canReorder ? 'w-4' : 'w-0'} aria-hidden />
+          <span className="w-8" aria-hidden />
+          <span className="flex-1">Note{canReorder ? ' (drag ⋮⋮ to reorder)' : ''}</span>
+          <span className="w-[160px]">Note family</span>
+          <span className="w-[80px]">On the site</span>
+          <span className="w-[150px] text-right pr-1">Actions</span>
+        </ListHead>
+      )}
       {canReorder ? (
         <SortableList
           items={paged.rows}
@@ -194,15 +205,15 @@ function NoteRowView({ n, family, onEdit, onDelete }: { n: NoteRow; family?: str
         {n.image_url ? <img src={n.image_url} alt="" className="w-full h-full object-cover" /> : n.name.charAt(0)}
       </div>
       <div className="min-w-0 flex-1">
-        <p className={`text-[14px] truncate ${n.is_active ? '' : 'text-[#575757] line-through'}`}>{n.name}</p>
-        <p className="text-[12px] text-[#4F4F4F]">{family ?? 'No family'}</p>
+        <p className="text-[14px] font-medium text-tk-ink truncate">{n.name}</p>
+        <p className="text-[12px] text-[#4F4F4F] sm:hidden">{family ?? 'No family'}</p>
       </div>
-      <button type="button" aria-label={`Edit ${n.name}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={onEdit}>
-        <Pencil size={14} />
-      </button>
-      <button type="button" aria-label={`Delete ${n.name}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={onDelete}>
-        <Trash2 size={14} />
-      </button>
+      <span className="hidden sm:block w-[160px] text-[13px] text-[#3F3F3F] truncate">{family ?? 'No family'}</span>
+      <span className="sm:w-[80px]"><ShownPill on={n.is_active} /></span>
+      <span className="sm:w-[150px] flex justify-end">
+        <RowAction icon={Pencil} label={`Edit ${n.name}`} onClick={onEdit}>Edit</RowAction>
+        <RowAction icon={Trash2} label={`Delete ${n.name}`} danger onClick={onDelete}>Delete</RowAction>
+      </span>
     </div>
   );
 }

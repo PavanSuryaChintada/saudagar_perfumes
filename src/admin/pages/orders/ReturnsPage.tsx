@@ -1,3 +1,4 @@
+import { ListHead } from '../../ui/ListHead';
 import { useEffect, useState } from 'react';
 import { usePaged } from '../../../lib/paging';
 import { Pager } from '../../ui/Pager';
@@ -6,7 +7,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
-import { formatINR } from '../../../lib/money';
+import { formatRupees as formatINR } from '../../../lib/money';
 import { signedUrls } from '../../../lib/media/privateUpload';
 import { invokeFunction } from '../../../lib/razorpay';
 import { formatOrderDateTime } from '../../../storefront/orders/useOrders';
@@ -99,13 +100,25 @@ export default function ReturnsPage() {
       <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
         {isLoading && <p className="px-3 py-6 text-[14px] text-[#4A4A4A]">Loading…</p>}
         {!isLoading && rows.length === 0 && <p className="px-3 py-6 text-[14px] text-[#4A4A4A]">Nothing here.</p>}
+        {paged.rows.length > 0 && (
+          <ListHead className="!px-3">
+            <span className="flex-1">Order and customer</span>
+            <span className="w-[170px]">Reason</span>
+            <span className="w-[150px]">Asked on</span>
+            <span className="w-[150px] text-right">Status</span>
+          </ListHead>
+        )}
         {paged.rows.map((r) => (
-          <button key={r.id} type="button" onClick={() => setOpenId(r.id)} className="w-full text-left flex items-center gap-3 px-3 py-3 hover:bg-[#FAFAF7] text-[14px]">
-            <div className="min-w-0 flex-1">
-              <p className="font-medium">{r.order.order_number} · {r.order.customer_name}</p>
-              <p className="text-[12px] text-[#4F4F4F] truncate">{REASON[r.reason]} · {formatOrderDateTime(r.created_at)}{r.details ? ` · ${r.details}` : ''}</p>
+          <button key={r.id} type="button" onClick={() => setOpenId(r.id)} className="w-full text-left flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-1 px-3 py-3 hover:bg-[#FAF8F4] text-[14px]">
+            <div className="min-w-0 flex-1 basis-full sm:basis-auto">
+              <p className="font-medium text-tk-ink">{r.order.order_number} · {r.order.customer_name}</p>
+              {r.details && <p className="text-[12.5px] text-[#4F4F4F] truncate">{r.details}</p>}
             </div>
-            <span className="text-[12.5px] px-2 py-0.5 border border-[#D3D0C8] bg-[#F4F3EE] font-medium">{STATUS[r.status]}</span>
+            <span className="sm:w-[170px] text-[13px] text-[#2F2F2F]">{REASON[r.reason]}</span>
+            <span className="sm:w-[150px] text-[13px] text-[#4A4A4A]">{formatOrderDateTime(r.created_at)}</span>
+            <span className="sm:w-[150px] sm:text-right">
+              <span className="text-[12.5px] px-2 py-0.5 border border-[#D3D0C8] bg-[#F4F3EE] font-medium">{STATUS[r.status]}</span>
+            </span>
           </button>
         ))}
       </div>

@@ -23,27 +23,26 @@ export const GIFT_PACK_RULES: SettingField[] = [
 
 const t = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: 'text', help });
 
+// Plain words only. The numbers (perfumes, ml, sample, discount) are shown next to them automatically.
 export const GIFT_PACK_WORDS: FieldDef[] = [
   t('title', 'Pack name', 'e.g. Premium Gift Pack'),
-  t('tagline', 'Short line under the name', 'e.g. {count} perfumes of your choice, {size} ml each, in one gift box.'),
-  { key: 'intro', label: 'Instructions on the pack page', type: 'textarea', help: 'e.g. Pick any {count} perfumes. Choose the same one more than once if you like.' },
+  t('tagline', 'Short line under the name', 'e.g. Your own selection of our perfumes, in one gift box.'),
+  { key: 'intro', label: 'A line to help customers choose', type: 'textarea', help: 'e.g. Pick your favourites. You can choose the same perfume more than once.' },
   { key: 'image', label: 'Pack picture', type: 'media', accept: 'image', help: 'Shown on the pack page and in the bag. A square photo of the box works best.' },
   t('add_button', 'Add to bag button', 'e.g. Add the pack to bag'),
-  t('sample_note', 'Free sample line', 'e.g. A free {sample} ml sample comes with every pack.'),
-  t('bag_heading', 'Bag card heading', 'Shown in the bag until a pack is added, e.g. Try our Premium Gift Pack'),
-  t('bag_text', 'Bag card text', 'e.g. {count} perfumes of your choice, {size} ml each, in one gift box.'),
-  t('bag_button', 'Bag card button', 'e.g. Build your pack'),
+  t('bag_heading', 'Heading of the card in the bag', 'Shown in the bag until a pack is added, e.g. Try our Premium Gift Pack'),
+  t('bag_text', 'Text of the card in the bag', 'e.g. Your own selection of our perfumes, in one gift box.'),
+  t('bag_button', 'Button on the card in the bag', 'e.g. Build your pack'),
 ];
 
 export const GIFT_PACK_WORD_DEFAULTS: Record<string, string> = {
   title: 'Premium Gift Pack',
-  tagline: '{count} perfumes of your choice, {size} ml each, in one gift box.',
-  intro: 'Pick any {count} perfumes. Choose the same one more than once if you like.',
+  tagline: 'Your own selection of our perfumes, in one gift box.',
+  intro: 'Pick your favourites. You can choose the same perfume more than once.',
   image: '',
   add_button: 'Add the pack to bag',
-  sample_note: 'A free {sample} ml sample comes with every pack.',
   bag_heading: 'Try our Premium Gift Pack',
-  bag_text: '{count} perfumes of your choice, {size} ml each, in one gift box.',
+  bag_text: 'Your own selection of our perfumes, in one gift box.',
   bag_button: 'Build your pack',
 };
 

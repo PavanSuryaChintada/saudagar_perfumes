@@ -6,7 +6,7 @@ import { Download, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../lib/supabase';
 import { toFriendlyError } from '../../lib/errors';
-import { formatINR } from '../../lib/money';
+import { formatRupees as formatINR } from '../../lib/money';
 import { formatIndianPhone } from '../../lib/phone';
 import { formatOrderDate } from '../../storefront/orders/useOrders';
 import { PageHeader } from '../ui/PageHeader';

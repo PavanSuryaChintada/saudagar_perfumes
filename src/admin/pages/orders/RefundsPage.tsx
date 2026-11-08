@@ -6,7 +6,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
-import { formatINR } from '../../../lib/money';
+import { formatRupees as formatINR } from '../../../lib/money';
 import { invokeFunction } from '../../../lib/razorpay';
 import { formatOrderDateTime } from '../../../storefront/orders/useOrders';
 import { PageHeader } from '../../ui/PageHeader';

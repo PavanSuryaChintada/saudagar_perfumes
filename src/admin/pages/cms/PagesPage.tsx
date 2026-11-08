@@ -1,3 +1,4 @@
+import { ListHead, ShownPill } from '../../ui/ListHead';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
@@ -78,6 +79,13 @@ export default function PagesPage() {
         }
       />
       <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
+        {pages.length > 0 && (
+          <ListHead className="!px-3">
+            <span className="flex-1">Page</span>
+            <span className="w-[90px]">Status</span>
+            <span className="w-[70px] text-right pr-1">Open</span>
+          </ListHead>
+        )}
         {pages.map((p) => (
           <div key={p.id} className="flex items-center gap-3 px-3 py-2.5">
             <Link to={`/admin/pages/${p.id}`} className="min-w-0 flex-1">
@@ -87,11 +95,9 @@ export default function PagesPage() {
                 {p.is_system ? ' · Built-in' : ''}
               </p>
             </Link>
-            <span className={`text-[12px] px-2 py-0.5 border ${p.is_published ? 'border-emerald-300 text-emerald-700' : 'border-[#C4C1B9] text-[#4F4F4F]'} font-medium`}>
-              {p.is_published ? 'Published' : 'Draft'}
-            </span>
-            <a href={pageHref(p.slug)} target="_blank" rel="noreferrer" aria-label={`View ${p.title} on the site`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink">
-              <ExternalLink size={14} />
+            <span className="sm:w-[90px]"><ShownPill on={p.is_published} onText="Published" offText="Draft" /></span>
+            <a href={pageHref(p.slug)} target="_blank" rel="noreferrer" aria-label={`View ${p.title} on the site`} className="sm:w-[70px] inline-flex items-center justify-end gap-1 px-2 py-1.5 text-[12.5px] text-[#3F3F3F] hover:text-tk-ink">
+              <ExternalLink size={13} aria-hidden /> View
             </a>
           </div>
         ))}

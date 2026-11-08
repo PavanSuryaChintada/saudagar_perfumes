@@ -6,7 +6,7 @@ import { TextInput } from '../../ui/Field';
 import { Button } from '../../ui/Button';
 import { PAGE_SIZE, useAdminOrders, useOrdersRealtime } from '../../orders/api';
 import { ORDER_STATUS_LABEL, paymentLabel, type OrderStatus } from '../../../lib/orders';
-import { formatINR } from '../../../lib/money';
+import { formatRupees as formatINR } from '../../../lib/money';
 import { fetchAll } from '../../../lib/fetchAll';
 import { toFriendlyError } from '../../../lib/errors';
 import { formatOrderDateTime } from '../../../storefront/orders/useOrders';

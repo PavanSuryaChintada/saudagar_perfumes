@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Search } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { formatINR } from '../lib/money';
+import { formatRupees as formatINR } from '../lib/money';
 import { ADMIN_NAV } from './nav';
 
 interface Hit {

@@ -6,7 +6,7 @@ import { ArrowLeft, Printer } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
-import { formatINR } from '../../../lib/money';
+import { formatRupees as formatINR } from '../../../lib/money';
 import { formatIndianPhone } from '../../../lib/phone';
 import { ORDER_STATUS_LABEL, allowedNextStatuses, paymentLabel, type OrderStatus } from '../../../lib/orders';
 import { formatOrderDateTime } from '../../../storefront/orders/useOrders';
