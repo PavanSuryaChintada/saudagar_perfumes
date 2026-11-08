@@ -19,6 +19,10 @@ export interface ListingFilters {
   max?: number;
   sizes?: number[];
   inStock?: boolean;
+  categories?: string[];
+  collections?: string[];
+  onSale?: boolean;
+  isNew?: boolean;
 }
 
 export interface ListingContext {
@@ -58,6 +62,12 @@ export function filtersFromSearch(sp: URLSearchParams): ListingFilters {
   const sizes = (sp.get('size') ?? '').split(',').map(Number).filter((n) => Number.isFinite(n) && n > 0);
   if (sizes.length) f.sizes = sizes;
   if (sp.get('stock') === '1') f.inStock = true;
+  const cats = list(sp.get('cat'));
+  if (cats.length) f.categories = cats;
+  const cols = list(sp.get('col'));
+  if (cols.length) f.collections = cols;
+  if (sp.get('sale') === '1') f.onSale = true;
+  if (sp.get('new') === '1') f.isNew = true;
   return f;
 }
 
@@ -78,6 +88,10 @@ export function filtersToSearch(f: ListingFilters): string {
   if (f.max !== undefined) add('max', String(f.max));
   if (f.sizes?.length) add('size', f.sizes.join(','));
   if (f.inStock) add('stock', '1');
+  if (f.categories?.length) add('cat', f.categories.join(','));
+  if (f.collections?.length) add('col', f.collections.join(','));
+  if (f.onSale) add('sale', '1');
+  if (f.isNew) add('new', '1');
   return parts.join('&');
 }
 
@@ -89,7 +103,11 @@ export function activeFilterCount(f: ListingFilters): number {
     (f.min !== undefined ? 1 : 0) +
     (f.max !== undefined ? 1 : 0) +
     (f.sizes?.length ?? 0) +
-    (f.inStock ? 1 : 0)
+    (f.inStock ? 1 : 0) +
+    (f.categories?.length ?? 0) +
+    (f.collections?.length ?? 0) +
+    (f.onSale ? 1 : 0) +
+    (f.isNew ? 1 : 0)
   );
 }
 
@@ -111,6 +129,10 @@ export function toSearchPayload(f: ListingFilters, ctx: ListingContext, pageSize
   if (f.max !== undefined) payload.price_max = f.max;
   if (f.sizes?.length) payload.sizes = f.sizes;
   if (f.inStock) payload.in_stock = true;
+  if (f.categories?.length) payload.categories = f.categories;
+  if (f.collections?.length) payload.collections = f.collections;
+  if (f.onSale) payload.on_sale = true;
+  if (f.isNew) payload.new = true;
   payload.page = f.page ?? 1;
   payload.page_size = pageSize;
   payload.sort = f.sort ?? 'featured';

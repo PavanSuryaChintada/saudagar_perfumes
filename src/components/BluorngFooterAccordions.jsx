@@ -24,7 +24,7 @@ export default function BluorngFooterAccordions({ config = {} }) {
           {/* ================= LEFT: EXPANDABLE BRAND ACCORDION (7 COLS) ================= */}
           <div className="lg:col-span-7 flex flex-col justify-start">
             {config.eyebrow && (
-              <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#A09D96] font-medium block mb-1">
+              <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#A09D96] font-medium block mb-1">
                 {config.eyebrow}
               </span>
             )}
@@ -78,7 +78,7 @@ export default function BluorngFooterAccordions({ config = {} }) {
                     <button
                       onClick={() => setActiveTab(i)}
                       className={`text-[11px] font-normal tracking-wider uppercase pb-1 transition-colors relative cursor-pointer ${
-                        activeTab === i ? 'text-tk-ink dark:text-white' : 'text-[#888888] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-white'
+                        activeTab === i ? 'text-tk-ink dark:text-white' : 'text-[#666666] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-white'
                       }`}
                     >
                       {tab.label}
@@ -105,7 +105,7 @@ export default function BluorngFooterAccordions({ config = {} }) {
                         onClick={() => search(item.query || item.label)}
                         className="text-left text-[#555555] dark:text-[#B3AFA8] hover:text-tk-accent dark:hover:text-tk-accent-night hover:translate-x-1 transition-all flex items-center gap-1.5 py-0.5 cursor-pointer duration-200"
                       >
-                        <span className="text-tk-accent dark:text-tk-accent-night font-normal text-[10px]">›</span>
+                        <span className="text-tk-accent dark:text-tk-accent-night font-normal text-[11px]">›</span>
                         <span>{item.label}</span>
                       </button>
                     </li>

@@ -62,8 +62,8 @@ export default function BluorngFooter({
             {/* Left: Headline & Manifesto */}
             <div className="lg:col-span-7 flex flex-col items-start text-left">
               <div className="inline-flex items-center gap-2 mb-3">
-                <span className="text-tk-accent dark:text-tk-accent-night text-[10px]">✦</span>
-                <span className="text-[10.5px] uppercase tracking-[0.24em] text-tk-accent dark:text-tk-accent-night font-medium">
+                <span className="text-tk-accent dark:text-tk-accent-night text-[11px]">✦</span>
+                <span className="text-[11.5px] uppercase tracking-[0.24em] text-tk-accent dark:text-tk-accent-night font-medium">
                   {footer.newsletter_eyebrow}
                 </span>
               </div>
@@ -86,12 +86,12 @@ export default function BluorngFooter({
                   aria-label="Email address"
                   disabled={subscribed}
                   required
-                  className="w-full bg-black/[0.05] hover:bg-black/[0.08] focus:bg-black/[0.1] dark:bg-white/[0.07] dark:hover:bg-white/[0.10] dark:focus:bg-white/[0.12] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11.5px] tracking-[0.14em] uppercase px-5 py-4 rounded-full outline-none transition-all duration-300 pr-32"
+                  className="w-full bg-black/[0.05] hover:bg-black/[0.08] focus:bg-black/[0.1] dark:bg-white/[0.07] dark:hover:bg-white/[0.10] dark:focus:bg-white/[0.12] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11.5px] tracking-[0.14em] uppercase px-5 py-4 rounded-[2px] outline-none transition-all duration-300 pr-32"
                 />
                 <button
                   type="submit"
                   disabled={subscribed}
-                  className="absolute right-1.5 top-1.5 bottom-1.5 px-6 bg-tk-accent hover:bg-[#B57432] dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[10.5px] font-semibold uppercase tracking-[0.18em] rounded-full transition-all duration-300 cursor-pointer shadow-md shrink-0 flex items-center justify-center"
+                  className="absolute right-1.5 top-1.5 bottom-1.5 px-6 bg-tk-accent hover:bg-[#B57432] dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11.5px] font-semibold uppercase tracking-[0.18em] rounded-[2px] transition-all duration-300 cursor-pointer shadow-md shrink-0 flex items-center justify-center"
                 >
                   {subscribed ? '✓' : footer.newsletter_button}
                 </button>
@@ -100,15 +100,15 @@ export default function BluorngFooter({
 
               {/* Atelier Theme Switcher Pills */}
               {onToggleTheme && (
-                <div className="flex items-center gap-3 text-[11px] text-[#777777] dark:text-white/60">
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-[#888888] dark:text-white/50">Atelier Theme:</span>
+                <div className="flex items-center gap-3 text-[11px] text-[#5F5F5F] dark:text-white/60">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-[#666666] dark:text-white/50">Atelier Theme:</span>
                   <div className="inline-flex items-center p-0.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] transition-colors">
                     <button
                       type="button"
                       onClick={() => {
                         if (theme !== 'light') onToggleTheme();
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-[11px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                         theme === 'light'
                           ? 'bg-tk-accent text-white shadow-xs font-semibold'
                           : 'text-[#666666] dark:text-white/70 hover:text-tk-ink dark:hover:text-white'
@@ -122,7 +122,7 @@ export default function BluorngFooter({
                       onClick={() => {
                         if (theme !== 'dark') onToggleTheme();
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-[11px] font-medium uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                         theme === 'dark'
                           ? 'bg-tk-gold text-tk-night shadow-xs font-semibold'
                           : 'text-[#666666] dark:text-white/70 hover:text-tk-ink dark:hover:text-white'
@@ -184,22 +184,22 @@ export default function BluorngFooter({
           </div>
 
           {/* Atelier Creed */}
-          <p className="text-[11px] sm:text-[11.5px] uppercase tracking-[0.22em] text-[#777777] dark:text-white/40 font-light mt-1 mb-6">
+          <p className="text-[11px] sm:text-[11.5px] uppercase tracking-[0.22em] text-[#5F5F5F] dark:text-white/40 font-light mt-1 mb-6">
             {footer.creed}
           </p>
 
           {/* Floating Minimal Back to Top Pill */}
           <button
             onClick={handleBackToTop}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/[0.05] hover:bg-black/[0.1] text-[#555555] hover:text-tk-ink dark:bg-white/[0.05] dark:hover:bg-white/[0.12] dark:text-white/70 dark:hover:text-white text-[10.5px] uppercase tracking-[0.18em] transition-all duration-300 cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[2px] bg-black/[0.05] hover:bg-black/[0.1] text-[#555555] hover:text-tk-ink dark:bg-white/[0.05] dark:hover:bg-white/[0.12] dark:text-white/70 dark:hover:text-white text-[11.5px] uppercase tracking-[0.18em] transition-all duration-300 cursor-pointer"
           >
             <span>{footer.back_to_top}</span>
-            <span className="text-[10px] text-tk-accent dark:text-tk-accent-night">↑</span>
+            <span className="text-[11px] text-tk-accent dark:text-tk-accent-night">↑</span>
           </button>
         </div>
 
         {/* ================= 4. BOTTOM COPYRIGHT & PRIVILEGE ASSURANCE ================= */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[10.5px] text-[#777777] dark:text-white/45 tracking-wider uppercase">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[11.5px] text-[#5F5F5F] dark:text-white/45 tracking-wider uppercase">
           <div className="flex flex-col items-center md:items-start gap-2">
             <p>{String(footer.copyright || '').replace('{year}', String(new Date().getFullYear()))}</p>
             {(footer.legal_links || []).length > 0 && (
@@ -214,7 +214,7 @@ export default function BluorngFooter({
           </div>
 
           {/* Reassurance Badges */}
-          <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-center text-[#888888] dark:text-white/40">
+          <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-center text-[#666666] dark:text-white/40">
             {(footer.badges || []).map((badge, i) => (
               <React.Fragment key={`${badge}-${i}`}>
                 {i > 0 && <span>✦</span>}

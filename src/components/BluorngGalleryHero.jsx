@@ -9,24 +9,24 @@ export default function BluorngGalleryHero({ config = {} }) {
   const tileCurations = (config.tiles || []).map((t, i) => ({ ...t, id: `tile-${i}` }));
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-14 sm:py-20 overflow-hidden transition-colors duration-300">
+    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-12 sm:py-16 overflow-hidden transition-colors duration-300">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL GALLERY TITLE (Borderless, Minimal) ================= */}
         <ScrollReveal variant="fade-up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#A09D96] font-medium block mb-1">
+            <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#A09D96] font-medium block mb-1">
               {config.eyebrow}
             </span>
             <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
               {config.heading}
             </h2>
-            <p className="text-[12px] text-[#777777] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
+            <p className="text-[12px] text-[#5F5F5F] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
               {config.text}
             </p>
           </div>
 
-          <div className="text-[11px] font-normal text-[#888888] dark:text-[#A09D96] tracking-wider uppercase hidden md:flex items-center gap-2">
+          <div className="text-[11px] font-normal text-[#666666] dark:text-[#A09D96] tracking-wider uppercase hidden md:flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night" />
             <span>{config.side_label}</span>
           </div>
@@ -45,7 +45,7 @@ export default function BluorngGalleryHero({ config = {} }) {
                 {/* Curator Placard Above Image */}
                 <div className="px-5 py-3.5 bg-transparent flex items-center justify-between">
                   <div>
-                    <span className="text-[9.5px] font-normal tracking-[0.1em] text-tk-accent dark:text-tk-accent-night uppercase block">
+                    <span className="text-[10.5px] font-normal tracking-[0.1em] text-tk-accent dark:text-tk-accent-night uppercase block">
                       {tile.kicker}
                     </span>
                     <h3 className="text-[13px] sm:text-[14px] font-medium tracking-[0.03em] uppercase text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night transition-colors duration-200 mt-0.5">

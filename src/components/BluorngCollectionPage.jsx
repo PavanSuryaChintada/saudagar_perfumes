@@ -13,6 +13,7 @@ import { useListing } from '../storefront/catalog/useListing';
 import { optionLabel } from '../storefront/catalog/listing';
 import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 import ListingBanner from '../storefront/ListingBanner.jsx';
+import SortMenu from '../storefront/catalog/SortMenu.jsx';
 import { CmsSections } from '../cms/SectionRenderer';
 import { SectionContext } from '../cms/SectionContext';
 
@@ -24,13 +25,6 @@ const LISTING_REQUIRED = ['listing_header', 'listing_grid'];
 import ListingHeader from '../storefront/ListingHeader.jsx';
 import NotFoundPage from '../storefront/NotFoundPage';
 
-const SORT_OPTIONS = [
-  ['featured', 'Featured Atelier'],
-  ['newest', 'Newest Arrivals'],
-  ['price_asc', 'Price: Low to High'],
-  ['price_desc', 'Price: High to Low'],
-  ['best_selling', 'Best Selling'],
-];
 
 /**
  * One listing for every catalogue view: a collection (with its hero film), the whole shop, a category,
@@ -63,8 +57,13 @@ export default function BluorngCollectionPage({
 
   const {
     filters, sections, activeFilters, counts, totalActive, products, total, isLoading,
-    toggle, clear, sort, setSort, page, pageCount, setPage, setQuery
+    toggle, clear, sort, setSort, page, pageCount, setPage, setQuery, setPriceRange, priceSpan
   } = useListing(ctx);
+  // A price range typed by the shopper that isn't one of the ready-made bands also shows as a chip.
+  const customPrice = (filters.min !== undefined || filters.max !== undefined) && !(activeFilters.price?.length)
+    ? `${filters.min !== undefined ? `₹${filters.min.toLocaleString('en-IN')}` : 'Any'} – ${filters.max !== undefined ? `₹${filters.max.toLocaleString('en-IN')}` : 'any'}`
+    : null;
+  const filterCount = totalActive + (customPrice ? 1 : 0);
 
   const narrowed = isCollection ? !isAll : listing.kind !== 'shop';
   const scopeName = isCollection
@@ -186,8 +185,8 @@ export default function BluorngCollectionPage({
             <button
               type="button"
               onClick={() => setIsDesktopFilterOpen(!isDesktopFilterOpen)}
-              className="hidden lg:flex items-center gap-2 font-medium text-[11.5px] uppercase tracking-[0.14em] text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer py-1"
-              title={isDesktopFilterOpen ? 'Hide Filter Sidebar' : 'Show Filter Sidebar'}
+              className="hidden lg:inline-flex items-center gap-2 h-10 px-3.5 border border-[#D5D2CA] dark:border-white/20 bg-white dark:bg-[#141318] text-[13px] font-semibold text-tk-ink dark:text-white hover:border-tk-ink dark:hover:border-white rounded-[2px] transition-colors cursor-pointer"
+              title={isDesktopFilterOpen ? 'Hide filters' : 'Show filters'}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="4" y1="21" x2="4" y2="14" />
@@ -200,17 +199,17 @@ export default function BluorngCollectionPage({
                 <line x1="9" y1="8" x2="15" y2="8" />
                 <line x1="17" y1="16" x2="23" y2="16" />
               </svg>
-              <span>{isDesktopFilterOpen ? 'Hide Filters' : 'Show Filters'}</span>
+              <span>{isDesktopFilterOpen ? 'Hide filters' : 'Show filters'}</span>
               <AnimatePresence>
-                {totalActive > 0 && (
+                {filterCount > 0 && (
                   <motion.span
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: [1.25, 1], opacity: 1 }}
                     exit={{ scale: 0.5, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="w-4 h-4 rounded-full bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[9.5px] font-bold flex items-center justify-center"
+                    className="min-w-[20px] h-5 px-1 rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] font-bold flex items-center justify-center"
                   >
-                    {totalActive}
+                    {filterCount}
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -221,32 +220,32 @@ export default function BluorngCollectionPage({
               whileTap={{ scale: 0.96 }}
               type="button"
               onClick={() => setIsMobileFilterDrawerOpen(true)}
-              className="flex lg:hidden items-center gap-2 font-medium text-[11.5px] uppercase tracking-[0.12em] text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer px-3 py-1.5 rounded-sm bg-black/5 dark:bg-white/10"
+              className="flex lg:hidden items-center gap-2 h-10 px-3.5 border border-[#D5D2CA] dark:border-white/20 bg-white dark:bg-[#141318] text-[13px] font-semibold text-tk-ink dark:text-white rounded-[2px] cursor-pointer"
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
               </svg>
-              <span>Filter & Refine</span>
+              <span>Filters</span>
               <AnimatePresence>
-                {totalActive > 0 && (
+                {filterCount > 0 && (
                   <motion.span
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: [1.25, 1], opacity: 1 }}
                     exit={{ scale: 0.5, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="w-4 h-4 rounded-full bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[9.5px] font-bold flex items-center justify-center"
+                    className="min-w-[20px] h-5 px-1 rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] font-bold flex items-center justify-center"
                   >
-                    {totalActive}
+                    {filterCount}
                   </motion.span>
                 )}
               </AnimatePresence>
             </motion.button>
 
-            <span className="hidden sm:inline opacity-30 text-[#888888]">|</span>
+            <span className="hidden sm:inline opacity-30 text-[#666666]">|</span>
 
             {/* Animated Product Counter & Live Indicator */}
             <div className="flex items-center gap-2">
-              <div className="flex items-center font-medium text-tk-ink dark:text-white">
+              <div className="flex items-center text-[14px] font-medium text-tk-ink dark:text-white">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={total}
@@ -259,10 +258,10 @@ export default function BluorngCollectionPage({
                     {total}
                   </motion.span>
                 </AnimatePresence>
-                <span className="ml-1">Fragrance{total === 1 ? '' : 's'} Found</span>
+                <span className="ml-1">perfume{total === 1 ? '' : 's'}</span>
               </div>
               {narrowed && scopeName && (
-                <span className="text-[11px] text-[#888888] dark:text-[#88857F] hidden md:inline">
+                <span className="text-[13px] text-[#5F5F5F] dark:text-[#A09D96] hidden md:inline">
                   in {scopeName}
                 </span>
               )}
@@ -285,33 +284,14 @@ export default function BluorngCollectionPage({
               <button
                 type="button"
                 onClick={browseAll}
-                className="hidden md:inline-block text-[11.5px] font-normal text-tk-accent dark:text-tk-accent-night hover:underline cursor-pointer"
+                className="hidden md:inline-block text-[13px] font-medium text-tk-accent dark:text-tk-accent-night hover:underline underline-offset-4 cursor-pointer"
               >
-                Browse All Creations →
+                See all perfumes →
               </button>
             )}
 
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-1.5 text-[12px] text-[#666666] dark:text-[#A09D96]">
-              <span className="text-[11px] uppercase tracking-wider text-[#888888] dark:text-[#88857F]">
-                Sort:
-              </span>
-              <div className="relative">
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value)}
-                  aria-label="Sort fragrances"
-                  className="bg-transparent dark:bg-tk-night font-medium pr-4 outline-none cursor-pointer appearance-none text-[12px] text-tk-ink dark:text-white"
-                >
-                  {SORT_OPTIONS.map(([value, label]) => (
-                    <option key={value} value={value} className="dark:bg-[#141318]">{label}</option>
-                  ))}
-                </select>
-                <span className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-[9px] opacity-60">
-                  ⌄
-                </span>
-              </div>
-            </div>
+            {/* Sort */}
+            <SortMenu value={sort} onChange={setSort} />
 
             {/* Subtle Divider */}
             <span className="inline-block w-[1px] h-4 bg-[#E0DDD5] dark:bg-white/15" />
@@ -324,7 +304,7 @@ export default function BluorngCollectionPage({
                 className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer ${
                   gridCols === 2
                     ? 'bg-white dark:bg-[#25222E] text-tk-ink dark:text-tk-accent-night shadow-xs'
-                    : 'text-[#888888] dark:text-[#88857F] hover:text-tk-ink dark:hover:text-white'
+                    : 'text-[#666666] dark:text-[#88857F] hover:text-tk-ink dark:hover:text-white'
                 }`}
                 title="Two products per row (Large Editorial View)"
                 aria-label="2 Columns"
@@ -333,7 +313,7 @@ export default function BluorngCollectionPage({
                   <rect x="2" y="2" width="5" height="12" rx="0.5" fill={gridCols === 2 ? 'currentColor' : 'none'} />
                   <rect x="9" y="2" width="5" height="12" rx="0.5" fill={gridCols === 2 ? 'currentColor' : 'none'} />
                 </svg>
-                <span className="font-mono text-[10.5px]">2</span>
+                <span className="font-mono text-[11.5px]">2</span>
               </button>
 
               <button
@@ -342,7 +322,7 @@ export default function BluorngCollectionPage({
                 className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer ${
                   gridCols === 3
                     ? 'bg-white dark:bg-[#25222E] text-tk-ink dark:text-tk-accent-night shadow-xs'
-                    : 'text-[#888888] dark:text-[#88857F] hover:text-tk-ink dark:hover:text-white'
+                    : 'text-[#666666] dark:text-[#88857F] hover:text-tk-ink dark:hover:text-white'
                 }`}
                 title="Three products per row (Balanced Gallery View)"
                 aria-label="3 Columns"
@@ -352,7 +332,7 @@ export default function BluorngCollectionPage({
                   <rect x="6.75" y="2" width="3.5" height="12" rx="0.4" fill={gridCols === 3 ? 'currentColor' : 'none'} />
                   <rect x="12" y="2" width="3.5" height="12" rx="0.4" fill={gridCols === 3 ? 'currentColor' : 'none'} />
                 </svg>
-                <span className="font-mono text-[10.5px]">3</span>
+                <span className="font-mono text-[11.5px]">3</span>
               </button>
 
               <button
@@ -361,7 +341,7 @@ export default function BluorngCollectionPage({
                 className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium transition-all cursor-pointer ${
                   gridCols === 4
                     ? 'bg-white dark:bg-[#25222E] text-tk-ink dark:text-tk-accent-night shadow-xs'
-                    : 'text-[#888888] dark:text-[#88857F] hover:text-tk-ink dark:hover:text-white'
+                    : 'text-[#666666] dark:text-[#88857F] hover:text-tk-ink dark:hover:text-white'
                 }`}
                 title="Four products per row (Compact Catalog View)"
                 aria-label="4 Columns"
@@ -372,7 +352,7 @@ export default function BluorngCollectionPage({
                   <rect x="9.8" y="2" width="2.8" height="12" rx="0.4" fill={gridCols === 4 ? 'currentColor' : 'none'} />
                   <rect x="14.2" y="2" width="2.8" height="12" rx="0.4" fill={gridCols === 4 ? 'currentColor' : 'none'} />
                 </svg>
-                <span className="font-mono text-[10.5px]">4</span>
+                <span className="font-mono text-[11.5px]">4</span>
               </button>
             </div>
           </div>
@@ -381,7 +361,7 @@ export default function BluorngCollectionPage({
 
         {/* ================= ACTIVE FILTER TAGS PILL ROW (ANIMATED) ================= */}
         <AnimatePresence>
-          {totalActive > 0 && (
+          {filterCount > 0 && (
             <motion.div
               layout
               initial={{ opacity: 0, height: 0 }}
@@ -390,9 +370,20 @@ export default function BluorngCollectionPage({
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-wrap items-center gap-2 pt-3 pb-1 overflow-hidden"
             >
-              <span className="text-[10.5px] uppercase tracking-[0.14em] font-medium text-[#888888] dark:text-[#88857F] mr-1">
-                Active Filters:
+              <span className="text-[12.5px] font-semibold text-[#3F3F3F] dark:text-white/70 mr-1">
+                Filtered by:
               </span>
+              {customPrice && (
+                <button
+                  type="button"
+                  onClick={() => setPriceRange(undefined, undefined)}
+                  className="group inline-flex items-center gap-1.5 h-8 px-3 text-[12.5px] rounded-[2px] bg-[#F5F3EE] dark:bg-[#1A1820] hover:bg-[#ECE9E1] dark:hover:bg-[#25222E] text-tk-ink dark:text-white border border-[#D5D2CA] dark:border-white/15 cursor-pointer"
+                  title="Remove price range"
+                >
+                  {customPrice}
+                  <span aria-hidden className="text-[14px] leading-none">×</span>
+                </button>
+              )}
               <AnimatePresence mode="popLayout">
                 {Object.entries(activeFilters).flatMap(([sectionId, optionIds]) =>
                   optionIds.map((optId) => {
@@ -408,11 +399,11 @@ export default function BluorngCollectionPage({
                         whileTap={{ scale: 0.95 }}
                         transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                         onClick={() => toggle(sectionId, optId)}
-                        className="group inline-flex items-center gap-1.5 px-3 py-1 text-[11px] rounded-full bg-[#F5F4F0] dark:bg-[#1A1820] hover:bg-[#EAE8E2] dark:hover:bg-[#25222E] text-tk-ink dark:text-white border border-[#E0DDD5] dark:border-white/10 transition-colors cursor-pointer shadow-xs"
+                        className="group inline-flex items-center gap-1.5 h-8 px-3 text-[12.5px] rounded-[2px] bg-[#F5F3EE] dark:bg-[#1A1820] hover:bg-[#ECE9E1] dark:hover:bg-[#25222E] text-tk-ink dark:text-white border border-[#D5D2CA] dark:border-white/15 transition-colors cursor-pointer"
                         title={`Remove ${label}`}
                       >
                         <span>{label}</span>
-                        <span className="text-[12px] font-bold text-[#888888] group-hover:text-tk-ink dark:group-hover:text-white leading-none transition-transform group-hover:rotate-90 duration-200">
+                        <span className="text-[12px] font-bold text-[#666666] group-hover:text-tk-ink dark:group-hover:text-white leading-none transition-transform group-hover:rotate-90 duration-200">
                           ×
                         </span>
                       </motion.button>
@@ -427,9 +418,9 @@ export default function BluorngCollectionPage({
                 whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={clear}
-                className="text-[11px] font-medium tracking-wide uppercase text-tk-accent dark:text-tk-accent-night underline underline-offset-4 hover:opacity-80 transition-opacity ml-2 cursor-pointer"
+                className="text-[12.5px] font-semibold text-tk-accent dark:text-tk-accent-night underline underline-offset-4 hover:opacity-80 transition-opacity ml-2 cursor-pointer"
               >
-                Clear All
+                Clear all
               </motion.button>
             </motion.div>
           )}
@@ -449,6 +440,10 @@ export default function BluorngCollectionPage({
                 filterCounts={counts}
                 onToggleFilter={toggle}
                 onClearFilters={clear}
+                onSetPriceRange={setPriceRange}
+                priceMin={filters.min}
+                priceMax={filters.max}
+                priceSpan={priceSpan}
                 totalMatching={total}
               />
             </aside>
@@ -458,7 +453,7 @@ export default function BluorngCollectionPage({
           <main className="flex-1 min-w-0 w-full">
             <AnimatePresence mode="wait">
               {isLoading && products.length === 0 ? (
-                <div key="loading" className="py-24 text-center text-[12.5px] text-[#888888]" aria-busy="true">Loading fragrances…</div>
+                <div key="loading" className="py-24 text-center text-[12.5px] text-[#666666]" aria-busy="true">Loading fragrances…</div>
               ) : products.length === 0 ? (
                 <motion.div
                   key="empty-state"
@@ -471,7 +466,7 @@ export default function BluorngCollectionPage({
                   <p className="font-serif text-[19px] sm:text-[22px] text-tk-ink dark:text-white">
                     {totalActive > 0 ? 'No flacons match your refined filter combination.' : 'Nothing here yet.'}
                   </p>
-                  <p className="text-[12.5px] text-[#777777] dark:text-[#A09D96] mt-2 max-w-md mx-auto font-light leading-relaxed">
+                  <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#A09D96] mt-2 max-w-md mx-auto font-light leading-relaxed">
                     {totalActive > 0
                       ? 'Try unchecking some notes, intensity levels or occasions to see more of the collection.'
                       : 'New fragrances are added here regularly. Explore the full collection in the meantime.'}
@@ -551,7 +546,7 @@ export default function BluorngCollectionPage({
                             {/* Badge */}
                             {(isSale || prod.badge) && (
                               <div className="absolute top-3 left-3 z-10">
-                                <span className="text-[9px] font-medium tracking-wider uppercase px-2 py-0.5 rounded-sm bg-white/85 dark:bg-white/10 text-[#666666] dark:text-white/80">
+                                <span className="text-[10.5px] font-medium tracking-wider uppercase px-2 py-0.5 rounded-sm bg-white/85 dark:bg-white/10 text-[#666666] dark:text-white/80">
                                   {isSale ? 'Sale' : prod.badge}
                                 </span>
                               </div>
@@ -565,7 +560,7 @@ export default function BluorngCollectionPage({
                                 onToggleWishlist && onToggleWishlist(prod.id);
                               }}
                               className={`absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-tk-ink dark:text-white ${
-                                isWish ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#AAAAAA]'
+                                isWish ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#707070]'
                               }`}
                               title={isWish ? 'Remove from wishlist' : 'Save to wishlist'}
                               aria-label="Wishlist"
@@ -603,7 +598,7 @@ export default function BluorngCollectionPage({
                                   e.stopPropagation();
                                   onQuickBuy(prod);
                                 }}
-                                className="w-full py-2.5 text-[10.5px] uppercase tracking-[0.16em] font-medium rounded-full shadow-lg transition-all duration-300 cursor-pointer bg-tk-ink/95 text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night backdrop-blur-md flex items-center justify-center gap-1.5"
+                                className="w-full py-2.5 text-[11.5px] uppercase tracking-[0.16em] font-medium rounded-full shadow-lg transition-all duration-300 cursor-pointer bg-tk-ink/95 text-white hover:bg-tk-accent dark:bg-tk-gold dark:text-tk-night dark:hover:bg-tk-accent-night backdrop-blur-md flex items-center justify-center gap-1.5"
                               >
                                 <span>+ Quick Add</span>
                               </button>
@@ -622,7 +617,7 @@ export default function BluorngCollectionPage({
                               {prod.name}
                             </h3>
 
-                            <p className={`mt-0.5 line-clamp-1 font-normal text-[#888888] dark:text-[#A09D96] ${
+                            <p className={`mt-0.5 line-clamp-1 font-normal text-[#666666] dark:text-[#A09D96] ${
                               gridCols === 2 ? 'text-[12px] sm:text-[12.5px]' : gridCols === 3 ? 'text-[11.5px]' : 'text-[11px]'
                             }`}>
                               {gridCols === 2 && prod.notes
@@ -644,7 +639,7 @@ export default function BluorngCollectionPage({
                                 {formatPrice(prod.price)}
                               </span>
                               {hasDiscount && (
-                                <span className={`line-through text-[#AAAAAA] dark:text-white/40 ${
+                                <span className={`line-through text-[#707070] dark:text-white/40 ${
                                   gridCols === 2 ? 'text-[12px]' : gridCols === 3 ? 'text-[11.5px]' : 'text-[11px]'
                                 }`}>
                                   {formatPrice(prod.compareAtPrice)}
@@ -695,6 +690,10 @@ export default function BluorngCollectionPage({
                 filterCounts={counts}
                 onToggleFilter={toggle}
                 onClearFilters={clear}
+                onSetPriceRange={setPriceRange}
+                priceMin={filters.min}
+                priceMax={filters.max}
+                priceSpan={priceSpan}
                 totalMatching={total}
                 isMobileDrawer={true}
                 onCloseMobileDrawer={() => setIsMobileFilterDrawerOpen(false)}

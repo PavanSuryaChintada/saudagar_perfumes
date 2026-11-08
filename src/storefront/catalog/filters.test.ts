@@ -28,3 +28,14 @@ describe('listing filters in the URL', () => {
     });
   });
 });
+
+describe('more filters in the address', () => {
+  it('keeps categories, collections, on sale and new arrivals in the URL and sends them to the search', async () => {
+    const { filtersFromSearch, filtersToSearch, toSearchPayload, activeFilterCount } = await import('./filters');
+    const f = filtersFromSearch(new URLSearchParams('cat=oud,attars&col=oud-edit&sale=1&new=1'));
+    expect(f).toMatchObject({ categories: ['oud', 'attars'], collections: ['oud-edit'], onSale: true, isNew: true });
+    expect(filtersToSearch(f)).toBe('cat=oud,attars&col=oud-edit&sale=1&new=1');
+    expect(activeFilterCount(f)).toBe(5);
+    expect(toSearchPayload(f, {})).toMatchObject({ categories: ['oud', 'attars'], collections: ['oud-edit'], on_sale: true, new: true });
+  });
+});

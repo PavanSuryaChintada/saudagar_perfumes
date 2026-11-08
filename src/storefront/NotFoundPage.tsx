@@ -11,7 +11,7 @@ export default function NotFoundPage({
   return (
     <section className="min-h-[70vh] flex items-center justify-center px-4 py-24 text-center">
       <div className="max-w-[460px]">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night mb-3">{words.notfound_eyebrow}</p>
+        <p className="text-[11px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night mb-3">{words.notfound_eyebrow}</p>
         <h1 className="text-[26px] sm:text-[32px] font-normal tracking-[-0.015em] mb-4">{words.notfound_title}</h1>
         <p className="text-[13px] text-[#666666] dark:text-white/60 mb-8">
           {words.notfound_text}

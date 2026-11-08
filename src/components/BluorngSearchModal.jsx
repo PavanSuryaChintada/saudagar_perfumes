@@ -85,7 +85,7 @@ export default function BluorngSearchModal({
                   <motion.span
                     animate={{ rotate: [0, 90, 0] }}
                     transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                    className="text-tk-accent dark:text-tk-accent-night text-[10px]"
+                    className="text-tk-accent dark:text-tk-accent-night text-[11px]"
                   >
                     ✦
                   </motion.span>
@@ -95,7 +95,7 @@ export default function BluorngSearchModal({
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="hidden sm:inline-block text-[10px] text-[#888888] dark:text-[#777777] uppercase tracking-widest font-mono">
+                  <span className="hidden sm:inline-block text-[11px] text-[#666666] dark:text-[#777777] uppercase tracking-widest font-mono">
                     ESC to close
                   </span>
                   <motion.button
@@ -130,7 +130,7 @@ export default function BluorngSearchModal({
                   }}
                   transition={{ duration: 0.45 }}
                   className={`mr-3.5 transition-colors shrink-0 ${
-                    isFocused ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#888888] dark:text-[#777777]'
+                    isFocused ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#666666] dark:text-[#777777]'
                   }`}
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -164,7 +164,7 @@ export default function BluorngSearchModal({
                         setQuery('');
                         inputRef.current?.focus();
                       }}
-                      className="absolute right-4 px-3 py-1 text-[10.5px] bg-black/[0.08] dark:bg-white/10 hover:bg-black/[0.14] dark:hover:bg-white/20 text-[#444444] dark:text-[#CCCCCC] hover:text-tk-ink dark:hover:text-white uppercase tracking-wider font-bold rounded-full transition-colors cursor-pointer flex items-center gap-1.5"
+                      className="absolute right-4 px-3 py-1 text-[11.5px] bg-black/[0.08] dark:bg-white/10 hover:bg-black/[0.14] dark:hover:bg-white/20 text-[#444444] dark:text-[#CCCCCC] hover:text-tk-ink dark:hover:text-white uppercase tracking-wider font-bold rounded-[2px] transition-colors cursor-pointer flex items-center gap-1.5"
                     >
                       <span>Clear</span>
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -180,7 +180,7 @@ export default function BluorngSearchModal({
               {popularSearches.length > 0 && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-[#888888] dark:text-[#A09D96] font-semibold uppercase tracking-[0.16em]">
+                  <span className="text-[11px] text-[#666666] dark:text-[#A09D96] font-semibold uppercase tracking-[0.16em]">
                     {searchBlock.popular_heading}
                   </span>
                 </div>
@@ -210,7 +210,7 @@ export default function BluorngSearchModal({
                         setQuery(term);
                         inputRef.current?.focus();
                       }}
-                      className={`px-3.5 py-1.5 rounded-full border transition-all duration-300 font-medium tracking-wide uppercase cursor-pointer ${
+                      className={`px-3.5 py-1.5 rounded-[2px] border transition-all duration-300 font-medium tracking-wide uppercase cursor-pointer ${
                         query.toLowerCase() === term.toLowerCase()
                           ? 'bg-tk-ink text-white border-tk-ink dark:bg-tk-gold dark:text-tk-night dark:border-tk-gold shadow-sm'
                           : 'bg-[#F5F5F3] dark:bg-[#18161E] border-transparent text-[#222222] dark:text-[#D4D2CD] hover:border-tk-accent/30 dark:hover:border-tk-gold/30 hover:bg-[#FFFFFF] dark:hover:bg-[#201D28]'
@@ -232,11 +232,11 @@ export default function BluorngSearchModal({
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   className="pt-3 border-t border-[#EEEEEE] dark:border-white/10"
                 >
-                  <div className="flex items-center justify-between mb-4 text-[11.5px] text-[#777777] dark:text-[#A09D96] font-semibold uppercase tracking-wider">
+                  <div className="flex items-center justify-between mb-4 text-[11.5px] text-[#5F5F5F] dark:text-[#A09D96] font-semibold uppercase tracking-wider">
                     <span className="flex items-center gap-2">
                       Results for <span className="text-tk-ink dark:text-white font-bold">"{query}"</span>
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[10px] font-bold text-tk-accent dark:text-tk-accent-night">
+                    <span className="px-2.5 py-0.5 rounded-[2px] bg-black/5 dark:bg-white/10 text-[11px] font-bold text-tk-accent dark:text-tk-accent-night">
                       {resultCount} {resultCount === 1 ? 'Creation' : 'Creations'} Found
                     </span>
                   </div>
@@ -248,7 +248,7 @@ export default function BluorngSearchModal({
                           key={n.slug}
                           type="button"
                           onClick={() => goTo(`/notes/${n.slug}`)}
-                          className="px-3 py-1 rounded-full border border-[#E0DDD5] dark:border-white/15 hover:border-tk-accent dark:hover:border-tk-accent-night text-[#444444] dark:text-[#CCCCCC]"
+                          className="px-3 py-1 rounded-[2px] border border-[#E0DDD5] dark:border-white/15 hover:border-tk-accent dark:hover:border-tk-accent-night text-[#444444] dark:text-[#CCCCCC]"
                         >
                           Note: {n.name}
                         </button>
@@ -269,7 +269,7 @@ export default function BluorngSearchModal({
                       initial={{ opacity: 0, scale: 0.94 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                      className="py-12 sm:py-16 text-center text-[#777777] dark:text-[#A09D96] flex flex-col items-center justify-center space-y-3"
+                      className="py-12 sm:py-16 text-center text-[#5F5F5F] dark:text-[#A09D96] flex flex-col items-center justify-center space-y-3"
                     >
                       <motion.div
                         animate={{ y: [0, -6, 0] }}
@@ -348,7 +348,7 @@ export default function BluorngSearchModal({
                                 />
 
                                 {product.badge && (
-                                  <span className="absolute top-2 left-2 text-[8px] font-bold tracking-widest uppercase bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night px-2 py-0.5 rounded-full shadow-xs">
+                                  <span className="absolute top-2 left-2 text-[10.5px] font-bold tracking-widest uppercase bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night px-2 py-0.5 rounded-[2px] shadow-xs">
                                     {product.badge}
                                   </span>
                                 )}
@@ -368,7 +368,7 @@ export default function BluorngSearchModal({
                                     width="11"
                                     height="11"
                                     viewBox="0 0 24 24"
-                                    className={wishlist.includes(product.id) ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#888888] dark:text-white/60'}
+                                    className={wishlist.includes(product.id) ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#666666] dark:text-white/60'}
                                     fill={wishlist.includes(product.id) ? 'currentColor' : 'none'}
                                     stroke="currentColor"
                                     strokeWidth="1.8"
@@ -384,7 +384,7 @@ export default function BluorngSearchModal({
                               </h4>
 
                               {/* Category / Olfactory Family */}
-                              <p className="text-[10px] text-[#777777] dark:text-[#A09D96] uppercase tracking-wide mt-0.5 line-clamp-1">
+                              <p className="text-[11px] text-[#5F5F5F] dark:text-[#A09D96] uppercase tracking-wide mt-0.5 line-clamp-1">
                                 {product.category || 'Extrait de Parfum'}
                               </p>
                             </div>
@@ -394,7 +394,7 @@ export default function BluorngSearchModal({
                               <span className="text-[12px] sm:text-[12.5px] font-bold text-tk-ink dark:text-white">
                                 {formatPrice(product.price)}
                               </span>
-                              <span className="text-[10px] uppercase tracking-wider font-semibold text-tk-accent dark:text-tk-accent-night flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-300">
+                              <span className="text-[11px] uppercase tracking-wider font-semibold text-tk-accent dark:text-tk-accent-night flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-300">
                                 <span>Explore</span>
                                 <span>→</span>
                               </span>

@@ -15,7 +15,7 @@ export default function BluorngMobileBottomNav({
   const showBoutiques = !!useBlock('brand')?.show_boutiques;
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0E0C10]/95 backdrop-blur-xl px-4 py-2 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] transition-colors duration-300">
-      <ul className="flex items-center justify-around text-[#777777] dark:text-[#A09D96]">
+      <ul className="flex items-center justify-around text-[#5F5F5F] dark:text-[#A09D96]">
         
         {/* Explore Compass */}
         <li>
@@ -28,7 +28,7 @@ export default function BluorngMobileBottomNav({
               <circle cx="12" cy="12" r="10" />
               <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" />
             </svg>
-            <span className="text-[9px] font-bold tracking-wider uppercase">Explore</span>
+            <span className="text-[10.5px] font-bold tracking-wider uppercase">Explore</span>
           </button>
         </li>
 
@@ -57,7 +57,7 @@ export default function BluorngMobileBottomNav({
                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                 </svg>
               )}
-              <span className="text-[9.5px] font-medium tracking-[0.08em] uppercase">{theme === 'dark' ? 'Light' : 'Dark'}</span>
+              <span className="text-[10.5px] font-medium tracking-[0.08em] uppercase">{theme === 'dark' ? 'Light' : 'Dark'}</span>
             </button>
           </li>
         )}
@@ -74,7 +74,7 @@ export default function BluorngMobileBottomNav({
               <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
               <circle cx="12" cy="10" r="3" />
             </svg>
-            <span className="text-[9px] font-bold tracking-wider uppercase">Boutiques</span>
+            <span className="text-[10.5px] font-bold tracking-wider uppercase">Boutiques</span>
           </button>
         </li>
         )}
@@ -90,7 +90,7 @@ export default function BluorngMobileBottomNav({
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
-            <span className="text-[9px] font-bold tracking-wider uppercase">Account</span>
+            <span className="text-[10.5px] font-bold tracking-wider uppercase">Account</span>
           </button>
         </li>
 
@@ -103,7 +103,7 @@ export default function BluorngMobileBottomNav({
             aria-label={`Cart (${cartCount})`}
           >
             {cartCount > 0 && (
-              <span className="absolute top-0 right-1 w-4 h-4 rounded-xs bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[9px] font-bold flex items-center justify-center">
+              <span className="absolute top-0 right-1 w-4 h-4 rounded-xs bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[10.5px] font-bold flex items-center justify-center">
                 {cartCount}
               </span>
             )}
@@ -112,7 +112,7 @@ export default function BluorngMobileBottomNav({
               <line x1="3" y1="6" x2="21" y2="6" />
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
-            <span className="text-[9px] font-bold tracking-wider uppercase">Bag</span>
+            <span className="text-[10.5px] font-bold tracking-wider uppercase">Bag</span>
           </button>
         </li>
 

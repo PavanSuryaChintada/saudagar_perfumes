@@ -241,10 +241,10 @@ export default function LuxuryPreloader({ onComplete }) {
           transition={{ duration: 0.4, delay: 0.15, ease: 'easeOut' }}
           className="flex flex-col items-center gap-1"
         >
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.36em] text-tk-accent-night/90 font-light">
+          <span className="text-[11px] sm:text-[11px] uppercase tracking-[0.36em] text-tk-accent-night/90 font-light">
             Haute Parfumerie · Dubai · Paris
           </span>
-          <span className="text-[8px] sm:text-[8.5px] uppercase tracking-[0.26em] text-white/40 font-extralight">
+          <span className="text-[10.5px] sm:text-[10.5px] uppercase tracking-[0.26em] text-white/40 font-extralight">
             Artisanal Niche Extraits
           </span>
         </motion.div>
@@ -265,10 +265,10 @@ export default function LuxuryPreloader({ onComplete }) {
           </div>
 
           {/* Clean Monospace Progress Readout */}
-          <div className="font-mono text-[10px] tracking-[0.24em] text-tk-accent-night/80 flex items-center gap-1">
-            <span className="text-white/25 text-[9px]">[</span>
+          <div className="font-mono text-[11px] tracking-[0.24em] text-tk-accent-night/80 flex items-center gap-1">
+            <span className="text-white/25 text-[10.5px]">[</span>
             <span>{progress.toString().padStart(2, '0')}%</span>
-            <span className="text-white/25 text-[9px]">]</span>
+            <span className="text-white/25 text-[10.5px]">]</span>
           </div>
         </motion.div>
 
@@ -277,7 +277,7 @@ export default function LuxuryPreloader({ onComplete }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.35 }}
           transition={{ delay: 0.6, duration: 0.5 }}
-          className="absolute bottom-6 text-[8.5px] uppercase tracking-[0.24em] text-white/40 font-light"
+          className="absolute bottom-6 text-[10.5px] uppercase tracking-[0.24em] text-white/40 font-light"
         >
           Tap anywhere to enter
         </motion.span>

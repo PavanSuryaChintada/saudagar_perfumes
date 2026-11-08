@@ -36,7 +36,7 @@ export default function NotifyMe({ variantId, label }) {
           className="flex-1 min-w-[160px] px-3 py-2 border border-[#E0E0E0] dark:border-white/20 bg-transparent outline-none focus:border-tk-ink dark:focus:border-white"
         />
       )}
-      <button type="submit" disabled={state === 'busy'} className="px-4 py-2 border border-tk-ink dark:border-white uppercase tracking-wider text-[10.5px] disabled:opacity-60">
+      <button type="submit" disabled={state === 'busy'} className="px-4 py-2 border border-tk-ink dark:border-white uppercase tracking-wider text-[11.5px] disabled:opacity-60">
         {state === 'busy' ? 'Saving…' : "Notify me when it's back"}
       </button>
       {error && <p className="w-full text-rose-600">{error}</p>}

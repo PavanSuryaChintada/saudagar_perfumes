@@ -132,7 +132,7 @@ export default function BluorngHeader({
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.94 }}
             onClick={onOpenSearch}
-            className={`p-1.5 sm:px-2 sm:py-1 rounded-full transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`p-1.5 sm:px-2 sm:py-1 rounded-[2px] transition-all cursor-pointer flex items-center gap-1.5 ${
               isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             title="Search Fragrances (⌘K)"
@@ -142,7 +142,7 @@ export default function BluorngHeader({
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" strokeLinecap="round" />
             </svg>
-            <span className="hidden xl:inline-block text-[9px] uppercase tracking-wider font-mono opacity-60 border border-current px-1.5 py-0.5 rounded">
+            <span className="hidden xl:inline-block text-[10.5px] uppercase tracking-wider font-mono opacity-60 border border-current px-1.5 py-0.5 rounded">
               ⌘K
             </span>
           </motion.button>
@@ -248,7 +248,7 @@ export default function BluorngHeader({
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
             </svg>
             {wishlistCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 sm:top-1 sm:right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[8.5px] sm:text-[9px] font-bold rounded-xs flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-0.5 sm:top-1 sm:right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[10.5px] sm:text-[10.5px] font-bold rounded-xs flex items-center justify-center">
                 {wishlistCount}
               </span>
             )}
@@ -275,7 +275,7 @@ export default function BluorngHeader({
                   initial={{ scale: 1.45 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-                  className="absolute -top-1 -right-1 w-4 h-4 bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[9px] font-bold rounded-xs flex items-center justify-center shadow-xs"
+                  className="absolute -top-1 -right-1 w-4 h-4 bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[10.5px] font-bold rounded-xs flex items-center justify-center shadow-xs"
                 >
                   {cartCount}
                 </motion.span>

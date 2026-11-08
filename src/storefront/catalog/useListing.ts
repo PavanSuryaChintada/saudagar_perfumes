@@ -11,7 +11,7 @@ export function useListing(ctx: ListingContext, extra: Record<string, unknown> =
   const [params, setParams] = useSearchParams();
   const filters = useMemo(() => filtersFromSearch(params), [params]);
   const { data: catalog } = useCatalogFilters();
-  const sections = useMemo(() => buildFilterSections(catalog), [catalog]);
+  const sections = useMemo(() => buildFilterSections(catalog, ctx), [catalog, ctx]);
   const bands = useMemo(() => priceBands(catalog?.price?.min, catalog?.price?.max), [catalog]);
   const payload = useMemo(() => ({ ...toSearchPayload(filters, ctx, PAGE_SIZE), ...extra }), [filters, ctx, extra]);
   const result = useLegacyProducts(payload, enabled);
@@ -47,5 +47,8 @@ export function useListing(ctx: ListingContext, extra: Record<string, unknown> =
     setSort: (sort: Sort) => write({ ...filters, sort, page: undefined }),
     setPage: (page: number) => write({ ...filters, page }),
     setQuery: (q: string) => write({ ...filters, q: q || undefined, page: undefined }),
+    /** Any price range typed by the shopper (either end may be empty). */
+    setPriceRange: (min?: number, max?: number) => write({ ...filters, min, max, page: undefined }),
+    priceSpan: catalog?.price ?? null,
   };
 }

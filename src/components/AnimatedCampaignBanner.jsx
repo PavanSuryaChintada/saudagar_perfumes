@@ -122,7 +122,7 @@ export default function AnimatedCampaignBanner({ config = {} }) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="flex flex-wrap items-center gap-2 sm:gap-3 text-[10px] sm:text-[10.5px] uppercase tracking-[0.16em] text-white/75 mb-7"
+            className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-[11.5px] uppercase tracking-[0.16em] text-white/75 mb-7"
           >
             {notes.map((n, i) => (
               <React.Fragment key={`${n}-${i}`}>
@@ -159,7 +159,7 @@ export default function AnimatedCampaignBanner({ config = {} }) {
 
         {/* Right Column: Floating Palace Atelier Badge Aligned With Bottom CTAs */}
         {config.badge && (
-          <div className="hidden lg:flex items-center gap-2.5 bg-black/45 backdrop-blur-md px-4 py-2.5 rounded-full border border-white/20 text-[10px] uppercase tracking-[0.2em] text-white/85 shadow-lg shrink-0 mb-1">
+          <div className="hidden lg:flex items-center gap-2.5 bg-black/45 backdrop-blur-md px-4 py-2.5 rounded-[2px] border border-white/20 text-[11px] uppercase tracking-[0.2em] text-white/85 shadow-lg shrink-0 mb-1">
             <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night animate-pulse" />
             <span>{config.badge}</span>
           </div>

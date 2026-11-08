@@ -74,7 +74,7 @@ export default function BluorngInstagramReels({
 
         {/* Top Reel Header inside Card */}
         <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between text-white z-10 pointer-events-none">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/40 backdrop-blur-md text-[9px] uppercase tracking-wider font-medium text-white/90">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] bg-black/40 backdrop-blur-md text-[10.5px] uppercase tracking-wider font-medium text-white/90">
             <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night animate-pulse" />
             <span>Reel</span>
           </div>
@@ -94,7 +94,7 @@ export default function BluorngInstagramReels({
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-20 flex flex-col gap-2">
           {/* Audio track line */}
           {reel.audio && (
-            <div className="flex items-center gap-1.5 text-[9.5px] text-white/60 truncate font-light">
+            <div className="flex items-center gap-1.5 text-[10.5px] text-white/60 truncate font-light">
               <span className="text-tk-accent dark:text-tk-accent-night">♫</span>
               <span className="truncate">{reel.audio}</span>
             </div>
@@ -114,10 +114,10 @@ export default function BluorngInstagramReels({
             className="mt-1 flex items-center justify-between gap-2 bg-white/12 hover:bg-white/22 backdrop-blur-md rounded-lg px-3 py-2 text-white transition-all cursor-pointer shadow-sm group/btn"
             title="View Fragrance"
           >
-            <span className="text-[9.5px] sm:text-[10px] font-medium tracking-wider uppercase truncate group-hover/btn:text-tk-accent-night transition-colors">
+            <span className="text-[10.5px] sm:text-[11px] font-medium tracking-wider uppercase truncate group-hover/btn:text-tk-accent-night transition-colors">
               {reel.productName}
             </span>
-            <span className="text-[10.5px] sm:text-[11px] font-semibold text-tk-accent-night whitespace-nowrap">
+            <span className="text-[11.5px] sm:text-[11px] font-semibold text-tk-accent-night whitespace-nowrap">
               {formatPrice(reel.price)}
             </span>
           </div>}
@@ -147,7 +147,7 @@ export default function BluorngInstagramReels({
                 {config.handle}
               </span>
               {config.handle_note && (
-                <span className="text-[10px] text-[#888888] dark:text-white/40 font-normal tracking-wider uppercase hidden sm:inline">
+                <span className="text-[11px] text-[#666666] dark:text-white/40 font-normal tracking-wider uppercase hidden sm:inline">
                   · {config.handle_note}
                 </span>
               )}
@@ -167,7 +167,7 @@ export default function BluorngInstagramReels({
             {/* Auto-scroll Status Pill */}
             <button
               onClick={() => setIsPaused((prev) => !prev)}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/[0.1] dark:hover:bg-white/[0.14] text-tk-ink dark:text-white/80 text-[10.5px] uppercase tracking-wider transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[2px] bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/[0.1] dark:hover:bg-white/[0.14] text-tk-ink dark:text-white/80 text-[11.5px] uppercase tracking-wider transition-colors cursor-pointer"
               title={isPaused ? "Resume Auto-scroll" : "Pause Auto-scroll"}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${isPaused ? 'bg-tk-accent dark:bg-tk-accent-night' : 'bg-tk-accent dark:bg-tk-accent-night animate-pulse'}`} />
@@ -179,7 +179,7 @@ export default function BluorngInstagramReels({
               href={config.follow_url || '#'}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-tk-ink text-white hover:bg-tk-accent dark:bg-white dark:text-tk-ink dark:hover:bg-tk-gold dark:hover:text-tk-night text-[11px] font-semibold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer shadow-md"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-tk-ink text-white hover:bg-tk-accent dark:bg-white dark:text-tk-ink dark:hover:bg-tk-gold dark:hover:text-tk-night text-[11px] font-semibold uppercase tracking-wider rounded-[2px] transition-all duration-300 cursor-pointer shadow-md"
             >
               <span>{config.follow_label}</span>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -226,10 +226,10 @@ export default function BluorngInstagramReels({
       </div>
 
       {/* ================= 3. BOTTOM ATELIER SOCIAL & EPISODES STRIP ================= */}
-      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto mt-8 sm:mt-10 flex flex-wrap items-center justify-between gap-4 text-[11px] text-[#777777] dark:text-white/50">
+      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 max-w-[1440px] mx-auto mt-8 sm:mt-10 flex flex-wrap items-center justify-between gap-4 text-[11px] text-[#5F5F5F] dark:text-white/50">
         <div className="flex items-center gap-3">
           {config.tags_label && (
-            <span className="text-tk-ink/80 dark:text-white/80 uppercase tracking-wider text-[10px]">{config.tags_label}</span>
+            <span className="text-tk-ink/80 dark:text-white/80 uppercase tracking-wider text-[11px]">{config.tags_label}</span>
           )}
           {(config.tags || []).map((tag, i) => (
             <React.Fragment key={`${tag}-${i}`}>

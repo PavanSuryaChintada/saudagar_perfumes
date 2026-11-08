@@ -18,19 +18,19 @@ export default function BluorngSignatureCollection({
   const { products: signatureProducts } = useSourceProducts(activeTab?.source);
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">
+    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-12 sm:py-16 overflow-hidden select-none transition-colors duration-300">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
         <ScrollReveal variant="fade-up" className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-[#A09D96] font-medium block mb-1">
+            <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#A09D96] font-medium block mb-1">
               {config.eyebrow}
             </span>
             <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
               {config.heading}
             </h2>
-            <p className="text-[12px] text-[#777777] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
+            <p className="text-[12px] text-[#5F5F5F] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
               {config.text}
             </p>
           </div>
@@ -43,7 +43,7 @@ export default function BluorngSignatureCollection({
                 <button
                   key={f.value}
                   onClick={() => setSelectedFilter(f.value)}
-                  className={`px-4 py-1.5 text-[10.5px] font-normal uppercase tracking-wider transition-all duration-300 rounded-full whitespace-nowrap cursor-pointer ${
+                  className={`px-4 py-1.5 text-[11.5px] font-normal uppercase tracking-wider transition-all duration-300 rounded-[2px] whitespace-nowrap cursor-pointer ${
                     isActive
                       ? 'bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night shadow-sm font-medium'
                       : 'text-[#666666] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-tk-accent-night'

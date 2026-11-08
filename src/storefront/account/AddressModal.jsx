@@ -7,8 +7,8 @@ import { toFriendlyError } from '../../lib/errors';
 
 const inputClass =
   'w-full px-3 py-2 border border-[#E0E0E0] dark:border-white/20 rounded-[2px] bg-transparent outline-none focus:border-tk-ink dark:focus:border-white';
-const labelClass = 'block text-[10.5px] uppercase tracking-wider text-[#777777] mb-1';
-const errorClass = 'text-[10.5px] text-rose-600 dark:text-rose-400 mt-1';
+const labelClass = 'block text-[11.5px] uppercase tracking-wider text-[#5F5F5F] mb-1';
+const errorClass = 'text-[11.5px] text-rose-600 dark:text-rose-400 mt-1';
 const EMPTY_ADDRESS = { label: 'Home', full_name: '', phone: '', line1: '', line2: '', landmark: '', city: '', state: '', pincode: '' };
 
 /** Add or edit a delivery address. `address` null = new. Calls onSaved(id) after saving. */
@@ -66,7 +66,7 @@ export default function AddressModal({ open, address = null, onClose, onSaved })
               <h3 id="address-modal-title" className="text-[15px] font-medium tracking-tight">
                 {address ? 'Edit Address' : 'New Address'}
               </h3>
-              <button type="button" onClick={onClose} aria-label="Close" className="text-[#888888] hover:text-tk-ink dark:hover:text-white cursor-pointer text-sm">
+              <button type="button" onClick={onClose} aria-label="Close" className="text-[#666666] hover:text-tk-ink dark:hover:text-white cursor-pointer text-sm">
                 ✕
               </button>
             </div>
@@ -142,7 +142,7 @@ export default function AddressModal({ open, address = null, onClose, onSaved })
               </div>
 
               <div className="pt-3 border-t border-[#F0F0F0] dark:border-white/10 flex items-center justify-end gap-3">
-                <button type="button" onClick={onClose} className="text-[11px] uppercase tracking-wider text-[#777777]">
+                <button type="button" onClick={onClose} className="text-[11px] uppercase tracking-wider text-[#5F5F5F]">
                   Cancel
                 </button>
                 <button

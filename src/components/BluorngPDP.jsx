@@ -329,11 +329,11 @@ function PDPView({
       {/* 1. Sub-label with Pill Badge & Reviews Anchor */}
       <motion.div variants={monographItemVariants} className="flex items-center justify-between gap-2 mb-2.5">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#FFF7ED] dark:bg-tk-gold/15 text-tk-accent dark:text-tk-accent-night text-[10.5px] font-medium tracking-wider uppercase border border-tk-accent/20 dark:border-tk-gold/30">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-[2px] bg-[#FFF7ED] dark:bg-tk-gold/15 text-tk-accent dark:text-tk-accent-night text-[11.5px] font-medium tracking-wider uppercase border border-tk-accent/20 dark:border-tk-gold/30">
             {categoryPrefix}
           </span>
           {familyLine && (
-            <span className="text-[12px] sm:text-[13px] text-[#777777] dark:text-[#999999] font-normal tracking-[0.02em]">
+            <span className="text-[12px] sm:text-[13px] text-[#5F5F5F] dark:text-[#999999] font-normal tracking-[0.02em]">
               {familyLine}
             </span>
           )}
@@ -356,12 +356,12 @@ function PDPView({
         >
           {product.reviewsCount > 0 ? (
             <>
-              <span className="tracking-tight text-[10.5px]">★★★★★</span>
+              <span className="tracking-tight text-[11.5px]">★★★★★</span>
               <span className="font-semibold text-tk-ink dark:text-white">{product.rating.toFixed(1)}</span>
-              <span className="text-[#888888] dark:text-white/40">({product.reviewsCount})</span>
+              <span className="text-[#666666] dark:text-white/40">({product.reviewsCount})</span>
             </>
           ) : (
-            <span className="text-[#888888] dark:text-white/50">No reviews yet</span>
+            <span className="text-[#666666] dark:text-white/50">No reviews yet</span>
           )}
         </button>
       </motion.div>
@@ -417,11 +417,11 @@ function PDPView({
         <span className="font-medium text-tk-ink dark:text-white">{formatPrice(currentPrice)}</span>
         {currentCompare && currentCompare > currentPrice && (
           <>
-            <span className="line-through text-[#999999] dark:text-white/40">{formatPrice(currentCompare)}</span>
+            <span className="line-through text-[#6B6B6B] dark:text-white/40">{formatPrice(currentCompare)}</span>
             <span className="text-[11px] text-tk-accent dark:text-tk-accent-night font-medium">{Math.round((1 - currentPrice / currentCompare) * 100)}% off</span>
           </>
         )}
-        <span className="ml-auto text-[11px] text-[#777777] dark:text-[#999999]">
+        <span className="ml-auto text-[11px] text-[#5F5F5F] dark:text-[#999999]">
           {!selectedSize ? 'Currently unavailable' : selectedSize.stock <= 0 ? words.sold_out : selectedSize.stock <= 5 ? `Only ${selectedSize.stock} left` : words.in_stock}
         </span>
       </motion.div>
@@ -487,7 +487,7 @@ function PDPView({
           className={`w-[46px] h-[46px] shrink-0 rounded-[2px] border transition-all duration-300 flex items-center justify-center cursor-pointer ${
             isCurrentWishlisted
               ? 'border-tk-accent bg-[#FFF7ED] text-tk-accent dark:border-tk-accent-night dark:bg-tk-gold/15 dark:text-tk-accent-night shadow-xs'
-              : 'border-[#E0D4D6] dark:border-white/20 bg-white dark:bg-transparent text-[#777777] dark:text-white/60 hover:border-tk-accent hover:text-tk-accent dark:hover:border-tk-accent-night dark:hover:text-tk-accent-night'
+              : 'border-[#E0D4D6] dark:border-white/20 bg-white dark:bg-transparent text-[#5F5F5F] dark:text-white/60 hover:border-tk-accent hover:text-tk-accent dark:hover:border-tk-accent-night dark:hover:text-tk-accent-night'
           }`}
           title={isCurrentWishlisted ? 'Remove from saved wishlist' : 'Save to private wishlist'}
           aria-label="Wishlist"
@@ -501,7 +501,7 @@ function PDPView({
       {/* 7. Delivery & Trust Micro-lines */}
       <motion.div
         variants={monographItemVariants}
-        className="mt-5 space-y-1.5 text-[11px] text-[#777777] dark:text-[#999999] leading-relaxed"
+        className="mt-5 space-y-1.5 text-[11px] text-[#5F5F5F] dark:text-[#999999] leading-relaxed"
       >
         <div className="flex items-center gap-2">
           <span className="text-[12px] leading-none text-tk-accent dark:text-tk-accent-night">✓</span>
@@ -850,7 +850,7 @@ function PDPView({
           >
             <div className="min-w-0 flex-1">
               <p className="text-[12px] text-tk-ink dark:text-white truncate">{cleanTitle}</p>
-              <p className="text-[11px] text-[#777777] dark:text-[#999999]">{selectedSize?.label} · {formatPrice(currentPrice)}</p>
+              <p className="text-[11px] text-[#5F5F5F] dark:text-[#999999]">{selectedSize?.label} · {formatPrice(currentPrice)}</p>
             </div>
             <button
               type="button"

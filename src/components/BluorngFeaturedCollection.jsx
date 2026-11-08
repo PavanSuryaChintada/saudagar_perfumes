@@ -18,25 +18,25 @@ export default function BluorngFeaturedCollection({
   const { products: latestProducts } = useSourceProducts(config.source);
 
   return (
-    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-14 sm:py-20 overflow-hidden select-none transition-colors duration-300">
+    <section className="relative w-full bg-[#FFFFFF] dark:bg-tk-night py-12 sm:py-16 overflow-hidden select-none transition-colors duration-300">
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
         <ScrollReveal variant="fade-up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.16em] text-[#888888] dark:text-white/50 font-medium block mb-1">
+            <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-white/50 font-medium block mb-1">
               {config.eyebrow}
             </span>
             <h2 className="text-[22px] sm:text-[28px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white leading-tight">
               {config.heading}
             </h2>
-            <p className="text-[12px] text-[#777777] dark:text-white/60 tracking-wide mt-1.5 font-normal max-w-lg">
+            <p className="text-[12px] text-[#5F5F5F] dark:text-white/60 tracking-wide mt-1.5 font-normal max-w-lg">
               {config.text}
             </p>
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="text-[11px] font-normal text-[#999999] dark:text-white/40 uppercase tracking-wider hidden md:inline">
+            <span className="text-[11px] font-normal text-[#6B6B6B] dark:text-white/40 uppercase tracking-wider hidden md:inline">
               {config.side_label}
             </span>
             {config.cta_label && <button

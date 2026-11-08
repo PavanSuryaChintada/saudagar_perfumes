@@ -19,7 +19,7 @@ export default function BluorngStoryPage({
           
           <button
             onClick={onNavigateHome}
-            className="text-[11px] uppercase tracking-[0.18em] text-[#777777] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
+            className="text-[11px] uppercase tracking-[0.18em] text-[#5F5F5F] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
           >
             <span>←</span>
             <span>Boutique</span>
@@ -34,7 +34,7 @@ export default function BluorngStoryPage({
             {onToggleTheme && (
               <button
                 onClick={onToggleTheme}
-                className="text-[11px] uppercase tracking-wider text-[#777777] dark:text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
+                className="text-[11px] uppercase tracking-wider text-[#5F5F5F] dark:text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
                 title="Toggle Theme"
               >
                 {theme === 'dark' ? 'Light' : 'Dark'}

@@ -29,7 +29,7 @@ export default function BluorngStores({ config = {} }) {
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
-              <span className="px-2 py-0.5 text-[9.5px] font-bold tracking-[0.12em] uppercase bg-tk-accent/10 text-tk-accent border border-tk-accent/20 dark:bg-tk-gold/15 dark:text-tk-accent-night dark:border-tk-gold/30 rounded-xs">
+              <span className="px-2 py-0.5 text-[10.5px] font-bold tracking-[0.12em] uppercase bg-tk-accent/10 text-tk-accent border border-tk-accent/20 dark:bg-tk-gold/15 dark:text-tk-accent-night dark:border-tk-gold/30 rounded-xs">
                 {config.badge}
               </span>
               <span className="font-script text-tk-accent dark:text-tk-accent-night text-[18px] sm:text-[22px] normal-case tracking-normal">
@@ -44,7 +44,7 @@ export default function BluorngStores({ config = {} }) {
             </p>
           </div>
 
-          <div className="text-[11px] font-semibold text-[#888888] dark:text-[#A09D96] tracking-widest uppercase hidden md:flex items-center gap-2">
+          <div className="text-[11px] font-semibold text-[#666666] dark:text-[#A09D96] tracking-widest uppercase hidden md:flex items-center gap-2">
             <span>{config.side_label}</span>
             <span className="text-tk-accent dark:text-tk-accent-night">✦</span>
           </div>
@@ -72,14 +72,14 @@ export default function BluorngStores({ config = {} }) {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
                   
                   {/* Status Badge */}
-                  {store.status && <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 dark:bg-tk-night/90 backdrop-blur-md text-[9.5px] font-bold tracking-wider text-emerald-800 dark:text-emerald-400 shadow-md">
+                  {store.status && <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-[2px] bg-white/95 dark:bg-tk-night/90 backdrop-blur-md text-[10.5px] font-bold tracking-wider text-emerald-800 dark:text-emerald-400 shadow-md">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     <span>{store.status}</span>
                   </div>}
 
                   {/* Mall / Location Overlay Bar */}
                   <div className="absolute bottom-3 left-3 right-3 z-10 text-white pointer-events-none">
-                    <span className="text-[10px] font-bold tracking-widest uppercase bg-black/60 backdrop-blur-xs px-2 py-0.5 rounded-xs">
+                    <span className="text-[11px] font-bold tracking-widest uppercase bg-black/60 backdrop-blur-xs px-2 py-0.5 rounded-xs">
                       {store.mall}
                     </span>
                   </div>
