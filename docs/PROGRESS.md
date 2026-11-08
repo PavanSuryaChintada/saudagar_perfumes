@@ -251,10 +251,19 @@
 - [x] Orders: the bulk bar only offers steps the chosen orders can still take (no “Mark packed” on packed orders)
 - [x] Shipping: plain explanation of the tracking number (AWB) and what happens once Delhivery is connected
 
+## Phase 20: Ready to connect payments, couriers and tracking ✅
+- [x] Admin → Connections: Razorpay, Delhivery, India Post and tracking IDs, each with status, what to send, webhook address and a Test button (keys never shown)
+- [x] One-step setup: `npm run connect -- razorpay | delhivery | analytics | check` tests each key before saving it (see docs/INTEGRATIONS.md)
+- [x] Each order is booked only with its own courier; pick the courier when packing (before, every packed order would have gone to Delhivery)
+- [x] India Post wired in and waiting for its business API documents; works by hand meanwhile
+- [x] Meta Pixel next to Google Analytics (visits, add to bag, checkout, purchase)
+- [x] Parcel weight counts sold items only (samples and gift-pack pours ride inside)
+- [x] Catalog setup steps numbered 1–4 in the sidebar
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain
-- [ ] Razorpay keys + webhook (or stay COD only)
+- [ ] Send Razorpay, Delhivery and India Post details (see docs/INTEGRATIONS.md); GA4 / Meta Pixel IDs
 - [ ] Courier confirmation for shipping perfume; Delhivery token (optional)
 - [ ] Replace sample products, policy text, GSTIN and business details
 - [ ] Change the test admin password

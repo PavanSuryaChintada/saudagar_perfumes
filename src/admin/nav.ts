@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BellRing, BookOpen, PackagePlus, PanelTop, FileSpreadsheet, ReceiptText, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
+  BellRing, BookOpen, PackagePlus, PanelTop, PlugZap, FileSpreadsheet, ReceiptText, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -10,6 +10,8 @@ export interface AdminNavItem {
   end?: boolean;
   /** Extra words the admin search matches for this page, e.g. "cod" for Settings. */
   keywords?: string;
+  /** Catalog setup order: do step 1 first (each step needs the ones before it). */
+  step?: number;
 }
 
 export interface AdminNavGroup {
@@ -40,10 +42,10 @@ export const ADMIN_NAV: AdminNavGroup[] = [
   {
     heading: 'Catalog setup',
     items: [
-      { to: '/admin/categories', label: 'Categories', icon: FolderTree, keywords: 'menu sections type' },
-      { to: '/admin/scent-profile', label: 'Scent profile', icon: Sparkles, keywords: 'family accord longevity sillage season occasion filters' },
-      { to: '/admin/notes', label: 'Notes', icon: Leaf, keywords: 'ingredients pyramid top heart base' },
-      { to: '/admin/collections', label: 'Collections', icon: Layers, keywords: 'edit curated group' },
+      { to: '/admin/categories', label: 'Categories', icon: FolderTree, step: 1, keywords: 'menu sections type' },
+      { to: '/admin/scent-profile', label: 'Scent profile', icon: Sparkles, step: 2, keywords: 'family accord longevity sillage season occasion filters' },
+      { to: '/admin/notes', label: 'Notes', icon: Leaf, step: 3, keywords: 'ingredients pyramid top heart base' },
+      { to: '/admin/collections', label: 'Collections', icon: Layers, step: 4, keywords: 'edit curated group' },
       { to: '/admin/samples', label: 'Free samples', icon: Gift, keywords: '5 ml vials sample pool' },
       { to: '/admin/gift-pack', label: 'Gift pack', icon: PackagePlus, keywords: 'premium gift box 5 x 20 ml pack bundle' },
     ],
@@ -78,6 +80,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { to: '/admin/settings', label: 'Settings', icon: Settings, keywords: 'cod payments razorpay gst business invoice samples analytics whatsapp' },
       { to: '/admin/invoice', label: 'Invoice', icon: ReceiptText, keywords: 'gst bill tax invoice packing slip signature seller' },
       { to: '/admin/shipping', label: 'Shipping', icon: Truck, keywords: 'delivery courier pincode fee' },
+      { to: '/admin/connections', label: 'Connections', icon: PlugZap, keywords: 'razorpay delhivery india post api keys integrations payments courier analytics pixel google webhook' },
       { to: '/admin/export', label: 'Data export', icon: DatabaseBackup, keywords: 'csv excel backup download' },
     ],
   },

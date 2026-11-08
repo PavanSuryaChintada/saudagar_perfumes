@@ -2440,6 +2440,7 @@ export type Database = {
         Args: { _role: Database["public"]["Enums"]["app_role"]; _uid: string }
         Returns: boolean
       }
+      integration_readiness: { Args: never; Returns: Json }
       is_admin: { Args: never; Returns: boolean }
       jsonb_text_array: { Args: { j: Json }; Returns: string[] }
       mark_payment_failed: {
@@ -2606,6 +2607,10 @@ export type Database = {
       search_suggest: { Args: { q: string }; Returns: Json }
       set_customer_birthday: {
         Args: { p_date: string; p_user: string }
+        Returns: undefined
+      }
+      set_order_courier: {
+        Args: { p_courier: string; p_order: string }
         Returns: undefined
       }
       set_order_status: {

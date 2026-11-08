@@ -39,7 +39,7 @@ describe('SETTINGS_SCHEMA', () => {
         'store.name', 'shipping.fee', 'shipping.free_threshold', 'shipping.default_eta', 'cod.enabled', 'cod.min_order',
         'returns.window_days', 'samples.enabled', 'samples.ml_per_sample', 'samples.sample_size_ml', 'samples.max_per_order',
         'samples.allow_duplicates', 'payments.online_enabled', 'auth.google_enabled', 'media.transforms_enabled',
-        'whatsapp.floating_number', 'analytics.ga4_id', 'analytics.gtm_id', 'inventory.low_stock_threshold', 'orders.prefix',
+        'whatsapp.floating_number', 'analytics.ga4_id', 'analytics.gtm_id', 'analytics.meta_pixel_id', 'inventory.low_stock_threshold', 'orders.prefix',
         'samples.bag_heading', 'samples.bag_text', 'business.legal_name', 'business.gstin', 'business.address', 'business.state',
         'business.invoice_note', 'cod.max_order', 'cod.max_open_orders', 'payments.auto_refund_on_cancel', 'coupons.first_order_phone_check',
         'inventory.low_stock_ml', 'product_defaults.country_of_origin', 'product_defaults.manufacturer_name', 'product_defaults.manufacturer_address',

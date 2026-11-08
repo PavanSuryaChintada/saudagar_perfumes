@@ -1,14 +1,15 @@
 // Shipping actions. Callers: the "packed" database hook and the poll (x-shipping-secret), or an admin (JWT).
-//   {action: 'create', order_id}   book with Delhivery (AWB, pickup, label)
+//   {action: 'create', order_id}   book with the order's courier (Delhivery now; India Post once its API is added)
 //   {action: 'cancel', order_id}   cancel the Delhivery shipment
 //   {action: 'poll'}               refresh courier status for undelivered Delhivery orders
 //   {action: 'serviceability', pincode}  Delhivery's answer for a pincode (public)
 import { CORS, caller, fail, json, safeEqual, serviceClient } from '../_shared/razorpay.ts';
 import { codCollectable, parcel } from '../_shared/shipping/core.ts';
 import * as delhivery from '../_shared/shipping/delhivery.ts';
+import * as indiapost from '../_shared/shipping/indiapost.ts';
 
 async function settings(db: ReturnType<typeof serviceClient>) {
-  const { data } = await db.from('settings').select('key, value').or('key.like.delhivery.%,key.like.shipping.%');
+  const { data } = await db.from('settings').select('key, value').or('key.like.delhivery.%,key.like.shipping.%,key.like.indiapost.%');
   return Object.fromEntries((data ?? []).map((r) => [r.key, r.value])) as Record<string, unknown>;
 }
 
@@ -44,7 +45,8 @@ Deno.serve(async (req) => {
     const { data: isAdmin } = user ? await user.client.rpc('is_admin') : { data: false };
     if (!isAdmin) return fail('Not allowed.', 403);
   }
-  if (!enabled) return fail('Delhivery is not switched on. Book the parcel by hand and enter its tracking number.', 503);
+  const indiaPostOn = s['indiapost.enabled'] === true && indiapost.ready;
+  if (!enabled && !indiaPostOn) return fail('No courier connection is switched on. Book the parcel by hand and enter its tracking number.', 503);
 
   if (body.action === 'poll') {
     const { data: rows } = await db
@@ -87,8 +89,18 @@ Deno.serve(async (req) => {
   if (body.action === 'create') {
     if (order.status !== 'PACKED') return fail('Only packed orders can be booked.', 409);
     if (order.tracking_number) return json({ awb: order.tracking_number, already: true });
+    // Each order goes with its own courier, and only when that courier's connection is on.
+    if (order.courier === 'india_post') {
+      if (!indiaPostOn) return fail('India Post automatic booking is not connected yet. Book at the post office and type the article number.', 503);
+    } else if (order.courier !== 'delhivery') {
+      return fail('This order is set to be booked by hand. Book it with its courier and type the tracking number.', 409);
+    } else if (!enabled) {
+      return fail('Delhivery is not switched on. Book the parcel by hand and enter its tracking number.', 503);
+    }
     try {
-      const items = (order.order_items as { qty: number; product_name: string; line_type: string; variant_id: string | null; product_id: string | null }[]) ?? [];
+      const all = (order.order_items as { qty: number; product_name: string; line_type: string; variant_id: string | null; product_id: string | null }[]) ?? [];
+      // Weight comes from what is sold; free samples and a gift pack's pours ride inside its box.
+      const items = all.filter((i) => i.line_type === 'item');
       const variantIds = items.map((i) => i.variant_id).filter(Boolean) as string[];
       const { data: variants } = await db.from('product_variants').select('id, weight_g, length_mm, width_mm, height_mm').in('id', variantIds);
       const { data: products } = await db.from('products').select('id, ships_surface_only').in('id', items.map((i) => i.product_id).filter(Boolean) as string[]);
@@ -106,7 +118,7 @@ Deno.serve(async (req) => {
       );
       const a = order.shipping_address as Record<string, string>;
       const paidItems = items.filter((i) => i.line_type === 'item');
-      const booked = await delhivery.createShipment(cfg, {
+      const shipment = {
         orderNumber: order.order_number,
         name: a.full_name,
         phone: a.phone,
@@ -123,7 +135,13 @@ Deno.serve(async (req) => {
         productsDesc: paidItems.map((i) => `${i.product_name} x${i.qty}`).join(', ') || 'Perfume',
         quantity: items.reduce((n, i) => n + i.qty, 0),
         surface: (products ?? []).some((x) => x.ships_surface_only),
-      });
+      };
+      if (order.courier === 'india_post') {
+        const booked = await indiapost.createShipment({ credentials: {} }, shipment);
+        await db.rpc('save_shipment_booking', { p_order: order.id, p_awb: booked.awb, p_courier_order_id: booked.refnum, p_label_url: null, p_pickup: null, p_error: null });
+        return json({ awb: booked.awb });
+      }
+      const booked = await delhivery.createShipment(cfg, shipment);
       let pickup: Date | null = null;
       try {
         pickup = await delhivery.schedulePickup(cfg, 1);

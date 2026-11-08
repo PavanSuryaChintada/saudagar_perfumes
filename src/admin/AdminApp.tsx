@@ -30,6 +30,7 @@ import ExportPage from './pages/ExportPage';
 import GuidePage from './guide/GuidePage';
 import SpreadsheetsPage from './pages/SpreadsheetsPage';
 import InvoicePage from './pages/InvoicePage';
+import ConnectionsPage from './pages/ConnectionsPage';
 
 export default function AdminApp() {
   return (
@@ -63,6 +64,7 @@ export default function AdminApp() {
         <Route path="spreadsheets" element={<SpreadsheetsPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="invoice" element={<InvoicePage />} />
+        <Route path="connections" element={<ConnectionsPage />} />
         <Route path="media" element={<MediaLibraryPage />} />
         <Route path="products" element={<ProductsPage />} />
         <Route path="products/:id" element={<ProductEditorPage />} />
