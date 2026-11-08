@@ -188,3 +188,17 @@ begin
           and parent_item_id = (select id from public.order_items where order_id = nid and line_type = 'item')) = 2, 'the replacement pack lists its perfumes';
   assert (select stock_ml from public.products where id = a) = 140, 'and pours them again';
 end $$;
+
+-- A pack sample of 0 ml means no pack sample; the order still goes through.
+reset role;
+update public.settings set value = '0' where key = 'giftpack.sample_ml';
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-0000000033c1","role":"authenticated"}', true);
+do $$
+declare a uuid := (select id from t_gp where k = 'a'); b uuid := (select id from t_gp where k = 'b'); o jsonb;
+begin
+  o := public.create_order('00000000-0000-0000-0000-00000033ad01',
+    jsonb_build_array(jsonb_build_object('key', 'pk3', 'picks', jsonb_build_array(b, b, b, b, b))), null, 'COD');
+  assert not exists (select 1 from public.order_items where order_id = (o ->> 'id')::uuid and line_type = 'sample'), 'no pack sample when it is 0 ml';
+  assert ((public.gift_pack_options() -> 'perfumes' -> 0) ->> 'base_price') is not null, 'the preview gets base prices';
+end $$;

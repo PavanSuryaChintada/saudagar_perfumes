@@ -829,6 +829,7 @@ export type Database = {
           line_total: number
           line_type: string
           order_id: string
+          parent_item_id: string | null
           position: number
           product_id: string | null
           product_name: string
@@ -850,6 +851,7 @@ export type Database = {
           line_total?: number
           line_type?: string
           order_id: string
+          parent_item_id?: string | null
           position?: number
           product_id?: string | null
           product_name: string
@@ -871,6 +873,7 @@ export type Database = {
           line_total?: number
           line_type?: string
           order_id?: string
+          parent_item_id?: string | null
           position?: number
           product_id?: string | null
           product_name?: string
@@ -889,6 +892,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_parent_item_id_fkey"
+            columns: ["parent_item_id"]
+            isOneToOne: false
+            referencedRelation: "order_items"
             referencedColumns: ["id"]
           },
           {
@@ -1327,9 +1337,11 @@ export type Database = {
           position: number
           price: number | null
           product_id: string
+          purpose: string | null
           size_ml: number | null
           sku: string
           stock: number
+          track_stock: boolean
           units_sold: number
           updated_at: string
           weight_g: number | null
@@ -1350,9 +1362,11 @@ export type Database = {
           position?: number
           price?: number | null
           product_id: string
+          purpose?: string | null
           size_ml?: number | null
           sku: string
           stock?: number
+          track_stock?: boolean
           units_sold?: number
           updated_at?: string
           weight_g?: number | null
@@ -1373,9 +1387,11 @@ export type Database = {
           position?: number
           price?: number | null
           product_id?: string
+          purpose?: string | null
           size_ml?: number | null
           sku?: string
           stock?: number
+          track_stock?: boolean
           units_sold?: number
           updated_at?: string
           weight_g?: number | null
@@ -1424,6 +1440,7 @@ export type Database = {
           inspiration: string | null
           is_active: boolean
           is_featured: boolean
+          is_gift_pack: boolean
           launch_year: number | null
           manufacturer_address: string | null
           manufacturer_name: string | null
@@ -1477,6 +1494,7 @@ export type Database = {
           inspiration?: string | null
           is_active?: boolean
           is_featured?: boolean
+          is_gift_pack?: boolean
           launch_year?: number | null
           manufacturer_address?: string | null
           manufacturer_name?: string | null
@@ -1530,6 +1548,7 @@ export type Database = {
           inspiration?: string | null
           is_active?: boolean
           is_featured?: boolean
+          is_gift_pack?: boolean
           launch_year?: number | null
           manufacturer_address?: string | null
           manufacturer_name?: string | null
@@ -2413,6 +2432,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      gift_pack_options: { Args: never; Returns: Json }
       has_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"]; _uid: string }
         Returns: boolean
@@ -2633,6 +2653,10 @@ export type Database = {
       subscribe_newsletter: {
         Args: { p_email: string; p_source?: string }
         Returns: undefined
+      }
+      suggest_samples: {
+        Args: { p_avoid?: string[]; p_count: number }
+        Returns: Json
       }
       update_refund: {
         Args: { p_note: string; p_refund: string; p_status: string }
