@@ -22,7 +22,7 @@ export default function OrdersList() {
         <p className="mt-1.5 text-[13px] text-[#5F5F5F] dark:text-[#999999]">When you place an order, you can follow it here.</p>
         <Link
           to="/shop"
-          className="mt-6 inline-flex items-center justify-center h-11 px-7 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[11.5px] font-semibold uppercase tracking-[0.16em] rounded-[2px] transition-colors"
+          className="mt-6 inline-flex items-center justify-center h-11 px-7 bg-tk-ink hover:bg-tk-accent text-white dark:bg-tk-gold dark:text-tk-night text-[12px] font-semibold uppercase tracking-[0.16em] rounded-[2px] transition-colors"
         >
           Start shopping
         </Link>
@@ -50,9 +50,9 @@ export default function OrdersList() {
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-tk-ink dark:text-white">
                 {o.order_number}
-                <span className="ml-2 text-[11px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night">{ORDER_STATUS_LABEL[o.status] ?? o.status}</span>
+                <span className="ml-2 text-[12px] uppercase tracking-[0.14em] text-tk-accent-ink dark:text-tk-accent-night">{ORDER_STATUS_LABEL[o.status] ?? o.status}</span>
               </p>
-              <p className="text-[12px] text-[#5F5F5F] dark:text-[#999999] mt-0.5 truncate">
+              <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#999999] mt-0.5 truncate">
                 {formatOrderDate(o.created_at)} · {count} item{count === 1 ? '' : 's'} · {items.map((i) => i.product_name).join(', ')}
               </p>
             </div>

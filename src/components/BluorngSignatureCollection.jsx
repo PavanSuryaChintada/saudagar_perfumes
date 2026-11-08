@@ -43,7 +43,7 @@ export default function BluorngSignatureCollection({
                 <button
                   key={f.value}
                   onClick={() => setSelectedFilter(f.value)}
-                  className={`px-4 py-1.5 text-[11.5px] font-normal uppercase tracking-wider transition-all duration-300 rounded-[2px] whitespace-nowrap cursor-pointer ${
+                  className={`px-4 py-1.5 text-[12px] font-normal uppercase tracking-wider transition-all duration-300 rounded-[2px] whitespace-nowrap cursor-pointer ${
                     isActive
                       ? 'bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night shadow-sm font-medium'
                       : 'text-[#666666] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-tk-accent-night'

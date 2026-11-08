@@ -6,7 +6,7 @@ const AUTOPLAY_MS = 7000;
 
 function Stars({ count }) {
   return (
-    <div className="flex items-center justify-center gap-1 text-tk-accent dark:text-tk-accent-night" aria-label={`${count} out of 5 stars`}>
+    <div className="flex items-center justify-center gap-1 text-tk-accent-ink dark:text-tk-accent-night" aria-label={`${count} out of 5 stars`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill={i < count ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.6">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -41,7 +41,7 @@ export default function BluorngTestimonials() {
       onMouseLeave={() => setPaused(false)}
     >
       <div className="max-w-[880px] mx-auto text-center">
-        <span className="block text-[11.5px] uppercase tracking-[0.22em] font-medium text-tk-accent dark:text-tk-accent-night mb-8">
+        <span className="block text-[12px] uppercase tracking-[0.22em] font-medium text-tk-accent-ink dark:text-tk-accent-night mb-8">
           Words from the Atelier
         </span>
 
@@ -61,10 +61,10 @@ export default function BluorngTestimonials() {
               </blockquote>
 
               <figcaption className="mt-8 flex flex-col items-center gap-1">
-                <span className="text-[12px] uppercase tracking-[0.16em] font-semibold text-tk-ink dark:text-white">
+                <span className="text-[12.5px] uppercase tracking-[0.16em] font-semibold text-tk-ink dark:text-white">
                   {current.name}
                 </span>
-                <span className="text-[11px] uppercase tracking-[0.12em] text-[#666666] dark:text-[#A09D96]">
+                <span className="text-[12px] uppercase tracking-[0.12em] text-[#666666] dark:text-[#A09D96]">
                   {current.location}
                   {current.product ? ` · ${current.product}` : ''}
                 </span>

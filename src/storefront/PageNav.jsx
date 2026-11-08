@@ -4,7 +4,7 @@ import { pageWindow } from '../lib/paging';
 export default function PageNav({ page, pageCount, onPage, label = 'Pages' }) {
   if (pageCount <= 1) return null;
   const cell =
-    'min-w-[40px] h-10 px-3 inline-flex items-center justify-center border text-[12px] tabular-nums transition-colors';
+    'min-w-[40px] h-10 px-3 inline-flex items-center justify-center border text-[12.5px] tabular-nums transition-colors';
   const idle =
     'border-[#D3D0C8] dark:border-white/20 hover:border-tk-ink dark:hover:border-white text-tk-ink dark:text-white';
   return (

@@ -31,7 +31,7 @@ export default function ListingHeader({ eyebrow, title, description, image, sear
                 aria-label="Search fragrances"
                 className="flex-1 min-w-0 px-4 py-2.5 border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[13px] outline-none focus:border-tk-ink dark:focus:border-tk-accent-night"
               />
-              <button type="submit" className="px-5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[11px] uppercase tracking-[0.16em] transition-colors">
+              <button type="submit" className="px-5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[12px] uppercase tracking-[0.16em] transition-colors">
                 Search
               </button>
             </form>

@@ -110,14 +110,14 @@ export default function BluorngCartDrawer({
               <h2 className="text-[14px] font-bold tracking-[0.04em] uppercase text-tk-ink dark:text-white">
                 {words.bag_title}
               </h2>
-              <span className="text-[12px] text-[#5F5F5F] dark:text-white/60 font-medium">
+              <span className="text-[12.5px] text-[#5F5F5F] dark:text-white/60 font-medium">
                 ({bagCount(cart)})
               </span>
             </div>
 
             <button
               onClick={onClose}
-              className="p-1.5 text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
+              className="-mr-2 w-10 h-10 flex items-center justify-center text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
               aria-label="Close cart"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -129,7 +129,7 @@ export default function BluorngCartDrawer({
 
           {/* ================= FREE SHIPPING PROGRESS BAR ================= */}
           {cart.length > 0 && threshold && quote && (
-          <div className="shrink-0 bg-[#FAF9F6] dark:bg-[#141318] p-3.5 text-[11px] text-tk-ink dark:text-white border-b border-black/[0.06] dark:border-white/[0.08] transition-colors">
+          <div className="shrink-0 bg-[#FAF9F6] dark:bg-[#141318] p-3.5 text-[12px] text-tk-ink dark:text-white border-b border-black/[0.06] dark:border-white/[0.08] transition-colors">
             <div className="flex items-center justify-between font-semibold tracking-wider uppercase mb-1.5">
               {remaining > 0 ? (
                 <span>Add {formatPrice(remaining)} more for free delivery</span>
@@ -166,12 +166,12 @@ export default function BluorngCartDrawer({
                 <p className="text-[13px] font-bold tracking-wider uppercase text-tk-ink">
                   {words.bag_empty_title}
                 </p>
-                <p className="text-[11.5px] text-[#5F5F5F] max-w-xs">
+                <p className="text-[12px] text-[#5F5F5F] max-w-xs">
                   {words.bag_empty_text}
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-3 px-6 py-2.5 bg-tk-ink hover:bg-tk-accent dark:hover:bg-tk-gold dark:hover:text-tk-night text-white text-[11px] font-bold uppercase tracking-wide transition-colors"
+                  className="mt-3 px-6 py-2.5 bg-tk-ink hover:bg-tk-accent dark:hover:bg-tk-gold dark:hover:text-tk-night text-white text-[12px] font-bold uppercase tracking-wide transition-colors"
                 >
                   {words.bag_empty_button}
                 </button>
@@ -204,7 +204,7 @@ export default function BluorngCartDrawer({
                     </div>
 
                     {/* Details */}
-                    <div className="flex-1 flex flex-col justify-between text-[11.5px]">
+                    <div className="flex-1 flex flex-col justify-between text-[12px]">
                       <div>
                         <div className="flex items-start justify-between gap-2">
                           <h4 className="font-bold uppercase tracking-wider text-tk-ink dark:text-white leading-tight">
@@ -212,7 +212,7 @@ export default function BluorngCartDrawer({
                           </h4>
                           <button
                             onClick={() => onRemoveItem(index)}
-                            className="text-[#6B6B6B] dark:text-white/40 hover:text-rose-500 transition-colors cursor-pointer"
+                            className="-mt-2 -mr-2 w-9 h-9 shrink-0 flex items-center justify-center text-[#6B6B6B] dark:text-white/60 hover:text-rose-500 transition-colors cursor-pointer"
                             title="Remove item"
                             aria-label="Remove item"
                           >
@@ -220,11 +220,11 @@ export default function BluorngCartDrawer({
                           </button>
                         </div>
 
-                        <p className="text-[11px] text-[#5F5F5F] dark:text-white/60 uppercase tracking-wider mt-1">
+                        <p className="text-[12px] text-[#5F5F5F] dark:text-white/60 uppercase tracking-wider mt-1">
                           Size: <span className="text-tk-ink dark:text-white font-semibold">{line?.label || item.size}</span>
                         </p>
                         {problem && (
-                          <p role="alert" className="text-[11.5px] text-rose-600 dark:text-rose-400 mt-1 font-semibold">{problem.message}</p>
+                          <p role="alert" className="text-[12px] text-rose-600 dark:text-rose-400 mt-1 font-semibold">{problem.message}</p>
                         )}
 
                       </div>
@@ -234,18 +234,18 @@ export default function BluorngCartDrawer({
                         <div className="flex items-center bg-black/[0.05] dark:bg-white/10 rounded-[2px] overflow-hidden">
                           <button
                             onClick={() => onUpdateQuantity(index, -1)}
-                            className="w-6 h-6 flex items-center justify-center text-xs hover:bg-black/[0.08] dark:hover:bg-white/20 transition-colors cursor-pointer"
+                            className="w-8 h-8 flex items-center justify-center text-[14px] hover:bg-black/[0.08] dark:hover:bg-white/20 transition-colors cursor-pointer"
                             aria-label="Decrease quantity"
                           >
                             −
                           </button>
-                          <span className="w-8 text-center text-xs font-bold text-tk-ink dark:text-white">
+                          <span className="w-8 text-center text-[13px] font-bold text-tk-ink dark:text-white">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => onUpdateQuantity(index, 1)}
                             disabled={atMax}
-                            className="disabled:opacity-30 disabled:cursor-not-allowed w-6 h-6 flex items-center justify-center text-xs hover:bg-black/[0.08] dark:hover:bg-white/20 transition-colors cursor-pointer"
+                            className="disabled:opacity-30 disabled:cursor-not-allowed w-8 h-8 flex items-center justify-center text-[14px] hover:bg-black/[0.08] dark:hover:bg-white/20 transition-colors cursor-pointer"
                             aria-label="Increase quantity"
                           >
                             +
@@ -261,7 +261,7 @@ export default function BluorngCartDrawer({
                 );
               })}
               {otherProblems.length > 0 && (
-                <div role="alert" className="text-[11px] text-rose-700 dark:text-rose-300 font-semibold space-y-1 border border-rose-200 dark:border-rose-400/30 bg-rose-50 dark:bg-rose-950/30 p-3 rounded-xs">
+                <div role="alert" className="text-[12px] text-rose-700 dark:text-rose-300 font-semibold space-y-1 border border-rose-200 dark:border-rose-400/30 bg-rose-50 dark:bg-rose-950/30 p-3 rounded-xs">
                   {otherProblems.map((p, i) => <p key={i}>{p.message}</p>)}
                 </div>
               )}
@@ -279,7 +279,7 @@ export default function BluorngCartDrawer({
               <div>
                 <button
                   onClick={() => setIsNoteOpen(!isNoteOpen)}
-                  className="text-[11.5px] font-semibold tracking-wider uppercase text-[#5F5F5F] dark:text-white/60 hover:text-tk-ink dark:hover:text-white flex items-center gap-1 cursor-pointer"
+                  className="text-[12px] font-semibold tracking-wider uppercase text-[#5F5F5F] dark:text-white/60 hover:text-tk-ink dark:hover:text-white flex items-center gap-1 cursor-pointer"
                 >
                   <span>{isNoteOpen ? '− Hide note' : `+ ${words.bag_note_button}`}</span>
                 </button>
@@ -291,7 +291,7 @@ export default function BluorngCartDrawer({
                     onChange={(e) => onNoteChange && onNoteChange(e.target.value)}
                     placeholder="Anything we should know about your order (optional)"
                     aria-label="Note for us"
-                    className="w-full mt-2 p-2.5 bg-black/[0.05] dark:bg-white/[0.07] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[11px] rounded-xs outline-none"
+                    className="w-full mt-2 p-2.5 bg-black/[0.05] dark:bg-white/[0.07] text-tk-ink dark:text-white placeholder:text-[#888888] dark:placeholder:text-white/40 text-[12px] rounded-xs outline-none"
                   />
                 )}
               </div>
@@ -299,8 +299,8 @@ export default function BluorngCartDrawer({
               <CouponRow quote={quote} couponCode={couponCode} cart={cart} onApply={(c) => onCouponChange && onCouponChange(c)} onRemove={() => onCouponChange && onCouponChange('')} />
 
               {/* Totals Summary (from the server) */}
-              <div className={`space-y-1.5 text-[11.5px] pt-1 transition-opacity ${isFetching ? 'opacity-60' : ''}`} aria-busy={isFetching}>
-                {quoteError && <p className="text-[11.5px] text-rose-600">We couldn't update the prices. Check your connection.</p>}
+              <div className={`space-y-1.5 text-[12px] pt-1 transition-opacity ${isFetching ? 'opacity-60' : ''}`} aria-busy={isFetching}>
+                {quoteError && <p className="text-[12px] text-rose-600">We couldn't update the prices. Check your connection.</p>}
                 <div className="flex justify-between text-[#5F5F5F] dark:text-white/60">
                   <span>Subtotal</span>
                   <span>{quote ? formatPrice(quote.subtotal) : '—'}</span>
@@ -322,7 +322,7 @@ export default function BluorngCartDrawer({
                   <span className="uppercase tracking-wider">Total</span>
                   <span>{quote ? formatPrice(quote.total) : '—'}</span>
                 </div>
-                <p className="text-[10.5px] text-[#5F5F5F] dark:text-white/50">{words.bag_small_print}</p>
+                <p className="text-[11.5px] text-[#5F5F5F] dark:text-white/50">{words.bag_small_print}</p>
               </div>
 
               {/* Checkout Button */}
@@ -332,7 +332,7 @@ export default function BluorngCartDrawer({
                   onProceedToCheckout();
                 }}
                 disabled={!quote || hasProblems}
-                className="disabled:opacity-50 disabled:cursor-not-allowed w-full py-3.5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[12px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
+                className="disabled:opacity-50 disabled:cursor-not-allowed w-full py-3.5 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[12.5px] font-bold uppercase tracking-[0.04em] rounded-xs transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
               >
                 <span>{hasProblems ? 'Fix your bag to continue' : words.bag_checkout_button}</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>

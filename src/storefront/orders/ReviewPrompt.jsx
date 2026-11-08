@@ -79,12 +79,12 @@ export default function ReviewPrompt({ order }) {
 
   return (
     <div className="p-5 border border-[#EEEEEE] dark:border-white/10 space-y-3 text-[12.5px]">
-      <p className="text-[11px] uppercase tracking-[0.2em] text-tk-accent dark:text-tk-accent-night font-medium">Your reviews</p>
+      <p className="text-[12px] uppercase tracking-[0.2em] text-tk-accent-ink dark:text-tk-accent-night font-medium">Your reviews</p>
       {thanks && <p className="text-emerald-700 dark:text-emerald-400">Thank you! Your review will appear once we've checked it.</p>}
       {mine.map((i) => (
         <div key={i.order_item_id} className="flex items-center justify-between gap-3">
           <span>{i.product_name}</span>
-          <button type="button" onClick={() => start(i)} className="text-[11px] uppercase tracking-[0.14em] underline underline-offset-4">Write a review</button>
+          <button type="button" onClick={() => start(i)} className="text-[12px] uppercase tracking-[0.14em] underline underline-offset-4">Write a review</button>
         </div>
       ))}
 
@@ -108,7 +108,7 @@ export default function ReviewPrompt({ order }) {
               </div>
               <div role="radiogroup" aria-label="Your rating" className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <button key={s} type="button" role="radio" aria-checked={form.rating === s} aria-label={`${s} star${s === 1 ? '' : 's'}`} onClick={() => setForm({ ...form, rating: s })} className={`text-[26px] leading-none ${s <= form.rating ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#DDDDDD] dark:text-white/20'}`}>
+                  <button key={s} type="button" role="radio" aria-checked={form.rating === s} aria-label={`${s} star${s === 1 ? '' : 's'}`} onClick={() => setForm({ ...form, rating: s })} className={`text-[26px] leading-none ${s <= form.rating ? 'text-tk-accent-ink dark:text-tk-accent-night' : 'text-[#DDDDDD] dark:text-white/20'}`}>
                     ★
                   </button>
                 ))}
@@ -130,14 +130,14 @@ export default function ReviewPrompt({ order }) {
                 <input className={input} maxLength={60} placeholder="City" aria-label="City" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
               </div>
               <div>
-                <label htmlFor="rv-files" className="block text-[11.5px] uppercase tracking-wider text-[#5F5F5F] mb-1">Photos (up to 4)</label>
+                <label htmlFor="rv-files" className="block text-[12px] uppercase tracking-wider text-[#5F5F5F] mb-1">Photos (up to 4)</label>
                 <input id="rv-files" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(e) => setFiles([...(e.target.files ?? [])].slice(0, 4))} />
               </div>
-              {error && <p className="text-rose-600 text-[11.5px]">{error}</p>}
-              <button type="submit" disabled={busy} className="w-full py-2.5 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[11px] uppercase tracking-wider rounded-[2px] disabled:opacity-60">
+              {error && <p className="text-rose-600 text-[12px]">{error}</p>}
+              <button type="submit" disabled={busy} className="w-full py-2.5 bg-tk-ink text-white dark:bg-white dark:text-tk-night text-[12px] uppercase tracking-wider rounded-[2px] disabled:opacity-60">
                 {busy ? 'Sending…' : 'Submit review'}
               </button>
-              <p className="text-[11.5px] text-[#666666]">Reviews show after a quick check. Please keep them about the fragrance.</p>
+              <p className="text-[12px] text-[#666666]">Reviews show after a quick check. Please keep them about the fragrance.</p>
             </motion.form>
           </div>
         )}

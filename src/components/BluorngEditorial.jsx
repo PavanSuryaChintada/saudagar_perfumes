@@ -36,7 +36,7 @@ export default function BluorngEditorial({ config = {} }) {
           viewport={{ once: true, amount: 0.4 }}
           className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end"
         >
-          <span className="lg:col-span-3 text-[11.5px] uppercase tracking-[0.22em] font-medium text-tk-accent dark:text-tk-accent-night">
+          <span className="lg:col-span-3 text-[12px] uppercase tracking-[0.22em] font-medium text-tk-accent-ink dark:text-tk-accent-night">
             {config.eyebrow}
           </span>
 
@@ -79,7 +79,7 @@ export default function BluorngEditorial({ config = {} }) {
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 sm:bottom-8 sm:left-8">
-              <span className="block text-[11px] uppercase tracking-[0.22em] text-white/75">{atelier.kicker}</span>
+              <span className="block text-[12px] uppercase tracking-[0.22em] text-white/75">{atelier.kicker}</span>
               <h3 className="mt-2 font-serif italic text-[28px] sm:text-[38px] leading-tight text-white">
                 {atelier.title}
               </h3>
@@ -95,10 +95,10 @@ export default function BluorngEditorial({ config = {} }) {
             custom={1}
             className="md:col-span-3 lg:col-span-5 flex flex-col justify-between rounded-sm bg-tk-ink dark:bg-[#17151B] text-white p-7 sm:p-9"
           >
-            <span className="text-[11px] uppercase tracking-[0.22em] text-tk-accent-night">{stat.kicker}</span>
+            <span className="text-[12px] uppercase tracking-[0.22em] text-tk-accent-night">{stat.kicker}</span>
             <div>
               <p className="font-serif text-[52px] sm:text-[72px] leading-none">{stat.number}</p>
-              <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-white/60">{stat.caption}</p>
+              <p className="mt-2 text-[12px] uppercase tracking-[0.18em] text-white/60">{stat.caption}</p>
             </div>
           </motion.div>
 
@@ -123,7 +123,7 @@ export default function BluorngEditorial({ config = {} }) {
               </div>
             )}
             <div className="relative">
-              <span className="block text-[11px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night">{sourcing.kicker}</span>
+              <span className="block text-[12px] uppercase tracking-[0.22em] text-tk-accent-ink dark:text-tk-accent-night">{sourcing.kicker}</span>
               <p className="mt-2 font-serif italic text-[24px] sm:text-[30px] leading-tight">{sourcing.title}</p>
             </div>
           </motion.div>
@@ -137,7 +137,7 @@ export default function BluorngEditorial({ config = {} }) {
             custom={3}
             className="md:col-span-6 lg:col-span-12 relative overflow-hidden rounded-sm bg-[#EDE8DF] dark:bg-[#1A1820] p-7 sm:p-9 lg:px-12 min-h-[220px] flex flex-col lg:flex-row lg:items-center justify-between gap-6"
           >
-            <span className="text-[11px] uppercase tracking-[0.22em] text-[#666666] dark:text-[#A09D96] lg:self-start">{craft.kicker}</span>
+            <span className="text-[12px] uppercase tracking-[0.22em] text-[#666666] dark:text-[#A09D96] lg:self-start">{craft.kicker}</span>
             <p className="font-serif text-[24px] sm:text-[32px] lg:text-[40px] leading-[1.15] max-w-[420px] lg:max-w-[760px] lg:text-right">
               <Emphasis text={craft.text} />
             </p>
@@ -151,7 +151,7 @@ export default function BluorngEditorial({ config = {} }) {
             {config.view_all_label && <button
               type="button"
               onClick={() => go(config.view_all_link)}
-              className="shrink-0 text-[11px] uppercase tracking-[0.18em] font-medium hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
+              className="shrink-0 text-[12px] uppercase tracking-[0.18em] font-medium hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors cursor-pointer"
             >
               {config.view_all_label}
             </button>}
@@ -179,7 +179,7 @@ export default function BluorngEditorial({ config = {} }) {
                 />}
                 <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-7 flex items-end justify-between">
                   <div>
-                    <span className="block text-[11px] uppercase tracking-[0.2em] text-[#666666] dark:text-[#A09D96]">{entry.note}</span>
+                    <span className="block text-[12px] uppercase tracking-[0.2em] text-[#666666] dark:text-[#A09D96]">{entry.note}</span>
                     <span className="mt-1 block font-serif text-[26px] sm:text-[30px] leading-none">{entry.title}</span>
                   </div>
                   <span className="text-[18px] transition-transform duration-500 group-hover:translate-x-1">→</span>

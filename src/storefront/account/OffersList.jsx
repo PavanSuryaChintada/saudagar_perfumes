@@ -40,12 +40,12 @@ export default function OffersList() {
         const value = c.discount_type === 'PERCENT' ? `${Number(c.value)}% off` : `${formatINR(Number(c.value))} off`;
         return (
           <div key={c.id} className={`p-6 rounded-[2px] border ${usable ? 'border-tk-ink dark:border-white/30' : 'border-[#EEEEEE] dark:border-white/10 opacity-70'}`}>
-            <p className="text-[11px] uppercase tracking-[0.2em] text-tk-accent dark:text-tk-accent-night font-medium">
+            <p className="text-[12px] uppercase tracking-[0.2em] text-tk-accent-ink dark:text-tk-accent-night font-medium">
               {c.kind === 'welcome' ? 'Welcome gift' : c.kind === 'birthday' ? 'Birthday gift' : 'Just for you'}
             </p>
             <p className="text-[22px] font-normal tracking-tight mt-1">{value}</p>
             {c.description && <p className="text-[12.5px] text-[#666666] dark:text-[#AAAAAA] mt-0.5">{c.description}</p>}
-            <p className="text-[11.5px] text-[#666666] mt-1">
+            <p className="text-[12px] text-[#666666] mt-1">
               {[c.min_order > 0 && `On orders of ${formatINR(Number(c.min_order))}+`, c.max_discount && `up to ${formatINR(Number(c.max_discount))}`, c.first_order_only && 'first order only']
                 .filter(Boolean)
                 .join(' · ')}
@@ -64,13 +64,13 @@ export default function OffersList() {
                       // clipboard blocked: the code is visible to copy by hand
                     }
                   }}
-                  className="text-[11px] uppercase tracking-wider text-tk-ink dark:text-white underline underline-offset-4"
+                  className="text-[12px] uppercase tracking-wider text-tk-ink dark:text-white underline underline-offset-4"
                 >
                   {copied === c.code ? 'Copied' : 'Copy code'}
                 </button>
               ) : null}
             </div>
-            <p className="text-[11.5px] uppercase tracking-wider text-[#6B6B6B] mt-2">{state}</p>
+            <p className="text-[12px] uppercase tracking-wider text-[#6B6B6B] mt-2">{state}</p>
           </div>
         );
       })}

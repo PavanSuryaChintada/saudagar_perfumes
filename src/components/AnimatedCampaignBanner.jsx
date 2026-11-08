@@ -57,8 +57,8 @@ export default function AnimatedCampaignBanner({ config = {} }) {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex items-center gap-2 mb-3.5"
           >
-            <span className="text-tk-accent dark:text-tk-accent-night text-[11px]">✦</span>
-            <span className="text-[11px] sm:text-[12px] font-medium uppercase tracking-[0.24em] text-white/80">
+            <span className="text-tk-accent-ink dark:text-tk-accent-night text-[12px]">✦</span>
+            <span className="text-[12px] sm:text-[12.5px] font-medium uppercase tracking-[0.24em] text-white/80">
               {config.kicker}
             </span>
           </motion.div>
@@ -102,7 +102,7 @@ export default function AnimatedCampaignBanner({ config = {} }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[12px] sm:text-[13px] uppercase tracking-[0.18em] text-white/95 font-semibold mb-2.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
+            className="text-[12.5px] sm:text-[13px] uppercase tracking-[0.18em] text-white/95 font-semibold mb-2.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
           >
             {config.subheading}
           </motion.p>
@@ -112,7 +112,7 @@ export default function AnimatedCampaignBanner({ config = {} }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[13px] sm:text-[14px] text-white/80 font-light leading-relaxed max-w-xl mb-5 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]"
+            className="text-[13px] sm:text-[14px] text-white/80 font-normal leading-relaxed max-w-xl mb-5 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.5)]"
           >
             {config.text}
           </motion.p>
@@ -123,11 +123,11 @@ export default function AnimatedCampaignBanner({ config = {} }) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.45 }}
-            className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-[11.5px] uppercase tracking-[0.16em] text-white/75 mb-7"
+            className="flex flex-wrap items-center gap-2 sm:gap-3 text-[12px] sm:text-[12px] uppercase tracking-[0.16em] text-white/75 mb-7"
           >
             {notes.map((n, i) => (
               <React.Fragment key={`${n}-${i}`}>
-                {i > 0 && <span className="text-tk-accent dark:text-tk-accent-night">✦</span>}
+                {i > 0 && <span className="text-tk-accent-ink dark:text-tk-accent-night">✦</span>}
                 <span className="text-white font-medium">{n}</span>
               </React.Fragment>
             ))}
@@ -143,14 +143,14 @@ export default function AnimatedCampaignBanner({ config = {} }) {
           >
             {config.primary_cta?.label && <button
               onClick={() => go(config.primary_cta.link)}
-              className="px-8 py-3.5 sm:py-4 bg-tk-accent hover:bg-[#B57432] dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[11px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.3)] cursor-pointer hover:shadow-xl"
+              className="px-8 py-3.5 sm:py-4 bg-tk-accent-ink hover:bg-tk-ink dark:bg-tk-gold dark:hover:bg-tk-accent-night text-white dark:text-tk-night text-[12px] font-semibold uppercase tracking-[0.18em] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.3)] cursor-pointer hover:shadow-xl"
             >
               {config.primary_cta.label}
             </button>}
 
             {config.secondary_cta?.label && <button
               onClick={() => go(config.secondary_cta.link)}
-              className="px-7 py-3.5 sm:py-4 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/25 text-[11px] font-medium uppercase tracking-[0.18em] transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
+              className="px-7 py-3.5 sm:py-4 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/25 text-[12px] font-medium uppercase tracking-[0.18em] transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md"
             >
               {config.secondary_cta.label}
             </button>}
@@ -160,7 +160,7 @@ export default function AnimatedCampaignBanner({ config = {} }) {
 
         {/* Right Column: Floating Palace Atelier Badge Aligned With Bottom CTAs */}
         {config.badge && (
-          <div className="hidden lg:flex items-center gap-2.5 bg-black/45 backdrop-blur-md px-4 py-2.5 rounded-[2px] border border-white/20 text-[11px] uppercase tracking-[0.2em] text-white/85 shadow-lg shrink-0 mb-1">
+          <div className="hidden lg:flex items-center gap-2.5 bg-black/60 backdrop-blur-md px-4 py-2.5 rounded-[2px] border border-white/20 text-[12px] uppercase tracking-[0.2em] text-white/85 shadow-lg shrink-0 mb-1">
             <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night animate-pulse" />
             <span>{config.badge}</span>
           </div>

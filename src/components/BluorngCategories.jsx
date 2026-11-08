@@ -29,7 +29,7 @@ export default function BluorngCategories({ config = {} }) {
 
           <button
             onClick={() => onSelectCategory(config.view_all_link)}
-            className="text-[11px] uppercase tracking-[0.12em] text-[#666666] hover:text-tk-ink dark:text-[#88857F] dark:hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer font-normal"
+            className="text-[12px] uppercase tracking-[0.12em] text-[#666666] hover:text-tk-ink dark:text-[#88857F] dark:hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer font-normal"
           >
             <span>{config.view_all_label}</span>
             <span className="text-[13px]">→</span>
@@ -37,7 +37,7 @@ export default function BluorngCategories({ config = {} }) {
         </div>
 
         {/* ================= DESKTOP: MINIMAL EXPANDING PAVILION ================= */}
-        <div className="hidden md:flex h-[350px] w-full rounded-[2px] bg-[#F8F7F4] dark:bg-[#141318] overflow-hidden p-1.5 gap-1.5 transition-colors duration-300">
+        <div className="hidden xl:flex h-[350px] w-full rounded-[2px] bg-[#F8F7F4] dark:bg-[#141318] overflow-hidden p-1.5 gap-1.5 transition-colors duration-300">
           {CATEGORY_ITEMS.map((item, idx) => {
             const isExpanded = activeIdx === idx;
 
@@ -62,10 +62,10 @@ export default function BluorngCategories({ config = {} }) {
               >
                 {/* Numeral and count top row */}
                 <div className="px-4 py-3 flex items-center justify-between text-[#666666] dark:text-white/50">
-                  <span className={`text-[11px] font-mono tracking-wider transition-colors ${isExpanded ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#707070] dark:text-white/40'}`}>
+                  <span className={`text-[12px] font-mono tracking-wider transition-colors ${isExpanded ? 'text-tk-accent-ink dark:text-tk-accent-night' : 'text-[#707070] dark:text-white/60'}`}>
                     {item.numeral}
                   </span>
-                  <span className="text-[10.5px] uppercase tracking-wider text-[#6B6B6B] dark:text-white/40">
+                  <span className="text-[11.5px] uppercase tracking-wider text-[#6B6B6B] dark:text-white/60">
                     {(item.count_label || '').split(' ')[0]}
                   </span>
                 </div>
@@ -82,20 +82,20 @@ export default function BluorngCategories({ config = {} }) {
                     {/* Left: Details */}
                     <div className="flex-1 min-w-0 flex flex-col justify-between h-full py-1">
                       <div>
-                        <span className="text-[10.5px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night font-medium block mb-0.5">
+                        <span className="text-[11.5px] uppercase tracking-[0.14em] text-tk-accent-ink dark:text-tk-accent-night font-medium block mb-0.5">
                           {item.concentration}
                         </span>
                         <h3 className="text-[22px] sm:text-[25px] font-normal uppercase tracking-tight text-tk-ink dark:text-white leading-tight">
                           {item.title}
                         </h3>
-                        <p className="text-[11px] text-[#5F5F5F] dark:text-white/60 mt-0.5">
+                        <p className="text-[12px] text-[#5F5F5F] dark:text-white/60 mt-0.5">
                           {item.subtitle}
                         </p>
-                        <p className="text-[11.5px] text-[#555555] dark:text-white/70 leading-relaxed mt-1.5 line-clamp-2 max-w-sm font-normal">
+                        <p className="text-[12px] text-[#555555] dark:text-white/70 leading-relaxed mt-1.5 line-clamp-2 max-w-sm font-normal">
                           {item.description}
                         </p>
 
-                        <p className="text-[11px] uppercase tracking-wider text-[#666666] dark:text-white/50 mt-2.5">
+                        <p className="text-[12px] uppercase tracking-wider text-[#666666] dark:text-white/50 mt-2.5">
                           {config.notes_label} <span className="text-[#333333] dark:text-white/90 font-medium">{item.notes}</span>
                         </p>
                       </div>
@@ -107,12 +107,12 @@ export default function BluorngCategories({ config = {} }) {
                             e.stopPropagation();
                             onSelectCategory(item.link);
                           }}
-                          className="text-[11.5px] uppercase tracking-[0.12em] text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 font-medium cursor-pointer whitespace-nowrap border-b border-current pb-0.5"
+                          className="text-[12px] uppercase tracking-[0.12em] text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 font-medium cursor-pointer whitespace-nowrap border-b border-current pb-0.5"
                         >
                           <span>{config.cta_label}</span>
-                          <span className="text-[12px]">→</span>
+                          <span className="text-[12.5px]">→</span>
                         </button>
-                        <span className="text-[10.5px] uppercase tracking-wider text-[#6B6B6B] dark:text-white/40 whitespace-nowrap">
+                        <span className="text-[11.5px] uppercase tracking-wider text-[#6B6B6B] dark:text-white/60 whitespace-nowrap">
                           {item.count_label}
                         </span>
                       </div>
@@ -144,7 +144,7 @@ export default function BluorngCategories({ config = {} }) {
 
                     {/* Vertical Category Title */}
                     <div className="py-3 flex flex-col items-center justify-center gap-1 min-h-0">
-                      <span className="text-[11.5px] font-normal uppercase tracking-[0.14em] text-[#444444] dark:text-white/70 group-hover:text-tk-ink dark:group-hover:text-white whitespace-nowrap [writing-mode:vertical-rl] rotate-180 max-h-[210px] overflow-hidden text-ellipsis block transition-colors">
+                      <span className="text-[12px] font-normal uppercase tracking-[0.14em] text-[#444444] dark:text-white/70 group-hover:text-tk-ink dark:group-hover:text-white whitespace-nowrap [writing-mode:vertical-rl] rotate-180 max-h-[210px] overflow-hidden text-ellipsis block transition-colors">
                         {item.title}
                       </span>
                     </div>
@@ -159,7 +159,7 @@ export default function BluorngCategories({ config = {} }) {
         </div>
 
         {/* ================= MOBILE: PURE ULTRA-MINIMAL 2-COLUMN FLACON GRID ================= */}
-        <div className="grid grid-cols-2 gap-x-3.5 gap-y-6 md:hidden">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-3.5 sm:gap-x-5 gap-y-6 xl:hidden">
           {CATEGORY_ITEMS.map((item) => (
             <div
               key={item.id}
@@ -178,10 +178,10 @@ export default function BluorngCategories({ config = {} }) {
 
               {/* Minimal Clean Typography: Title & Count */}
               <div className="pt-2 text-center flex flex-col items-center">
-                <h3 className="text-[12px] font-medium uppercase tracking-[0.1em] text-tk-ink dark:text-white line-clamp-1">
+                <h3 className="text-[12.5px] font-medium uppercase tracking-[0.1em] text-tk-ink dark:text-white line-clamp-1">
                   {item.title}
                 </h3>
-                <span className="text-[11px] tracking-wider uppercase text-[#666666] dark:text-[#88857F] mt-0.5">
+                <span className="text-[12px] tracking-wider uppercase text-[#666666] dark:text-[#88857F] mt-0.5">
                   {item.count_label}
                 </span>
               </div>

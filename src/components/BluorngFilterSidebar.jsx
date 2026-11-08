@@ -34,7 +34,7 @@ function Check({ on }) {
 }
 
 function CountTag({ n }) {
-  return <span className="shrink-0 min-w-[26px] px-1.5 py-[1px] text-center text-[11.5px] tabular-nums text-[#4A4A4A] dark:text-white/60 bg-[#F2F0EB] dark:bg-white/[0.08] rounded-[2px]">{n}</span>;
+  return <span className="shrink-0 min-w-[26px] px-1.5 py-[1px] text-center text-[12px] tabular-nums text-[#4A4A4A] dark:text-white/60 bg-[#F2F0EB] dark:bg-white/[0.08] rounded-[2px]">{n}</span>;
 }
 
 /** A custom price range: either end may be left empty. */
@@ -97,9 +97,9 @@ function Section({ section, chosen, counts, onToggle, startOpen, extra }) {
         <span className="min-w-0">
           <span className="flex items-center gap-2">
             <span className="text-[12.5px] font-semibold tracking-[0.1em] uppercase text-[#1A1A1A] dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night transition-colors">{section.title}</span>
-            {chosen.length > 0 && <span className="px-1.5 text-[11.5px] font-semibold rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night">{chosen.length}</span>}
+            {chosen.length > 0 && <span className="px-1.5 text-[12px] font-semibold rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night">{chosen.length}</span>}
           </span>
-          {section.subtitle && <span className="block text-[12px] text-[#5F5F5F] dark:text-white/55 mt-0.5">{section.subtitle}</span>}
+          {section.subtitle && <span className="block text-[12.5px] text-[#5F5F5F] dark:text-white/55 mt-0.5">{section.subtitle}</span>}
         </span>
         <span className="text-[#4A4A4A] dark:text-white/60 group-hover:text-tk-ink dark:group-hover:text-white">
           <Chevron open={open} />
@@ -145,7 +145,7 @@ function Section({ section, chosen, counts, onToggle, startOpen, extra }) {
                         }`}
                       >
                         {o.label}
-                        {typeof n === 'number' && <span className={`text-[11.5px] tabular-nums ${on ? 'opacity-80' : 'text-[#6B6B6B] dark:text-white/50'}`}>{n}</span>}
+                        {typeof n === 'number' && <span className={`text-[12px] tabular-nums ${on ? 'opacity-80' : 'text-[#6B6B6B] dark:text-white/50'}`}>{n}</span>}
                       </button>
                     );
                   })}
@@ -162,8 +162,8 @@ function Section({ section, chosen, counts, onToggle, startOpen, extra }) {
                           <Check on={on} />
                           <span className="flex-1 min-w-0">
                             <span className={`block text-[13.5px] leading-snug ${on ? 'text-tk-ink dark:text-white font-semibold' : 'text-[#2A2A2A] dark:text-white/85'}`}>{o.label}</span>
-                            {o.badge && <span className="inline-block mt-1 text-[11px] uppercase tracking-[0.1em] font-medium px-1.5 rounded-[2px] bg-[#F2F0EB] dark:bg-white/10 text-[#4A4A4A] dark:text-white/70">{o.badge}</span>}
-                            {o.desc && <span className="block mt-0.5 text-[12px] leading-snug text-[#5F5F5F] dark:text-white/55">{o.desc}</span>}
+                            {o.badge && <span className="inline-block mt-1 text-[12px] uppercase tracking-[0.1em] font-medium px-1.5 rounded-[2px] bg-[#F2F0EB] dark:bg-white/10 text-[#4A4A4A] dark:text-white/70">{o.badge}</span>}
+                            {o.desc && <span className="block mt-0.5 text-[12.5px] leading-snug text-[#5F5F5F] dark:text-white/55">{o.desc}</span>}
                           </span>
                           {typeof n === 'number' && <CountTag n={n} />}
                         </label>
@@ -175,7 +175,7 @@ function Section({ section, chosen, counts, onToggle, startOpen, extra }) {
 
               {q && matched.length === 0 && <p className="text-[12.5px] text-[#5F5F5F] py-1">Nothing matches “{term}”.</p>}
               {long && !q && matched.length > SHORT_LIST && (
-                <button type="button" onClick={() => setAll(!all)} className="mt-2 text-[12.5px] font-semibold text-tk-accent dark:text-tk-accent-night underline underline-offset-4 cursor-pointer">
+                <button type="button" onClick={() => setAll(!all)} className="mt-2 text-[12.5px] font-semibold text-tk-accent-ink dark:text-tk-accent-night underline underline-offset-4 cursor-pointer">
                   {all ? 'Show fewer' : `Show all ${matched.length}`}
                 </button>
               )}
@@ -210,11 +210,11 @@ export default function BluorngFilterSidebar({
       <div className={`flex items-center justify-between gap-3 border-b border-[#E3E0D8] dark:border-white/10 ${isMobileDrawer ? 'px-5 py-4' : 'pb-4'}`}>
         <div className="flex items-center gap-2">
           <span className="text-[15px] font-semibold text-tk-ink dark:text-white">Filters</span>
-          {activeCount > 0 && <span className="min-w-[22px] h-[22px] px-1.5 flex items-center justify-center text-[12px] font-bold rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night">{activeCount}</span>}
+          {activeCount > 0 && <span className="min-w-[22px] h-[22px] px-1.5 flex items-center justify-center text-[12.5px] font-bold rounded-[2px] bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night">{activeCount}</span>}
         </div>
         <div className="flex items-center gap-3">
           {activeCount > 0 && (
-            <button type="button" onClick={onClearFilters} className="text-[12.5px] font-semibold text-tk-accent dark:text-tk-accent-night underline underline-offset-4 cursor-pointer">
+            <button type="button" onClick={onClearFilters} className="text-[12.5px] font-semibold text-tk-accent-ink dark:text-tk-accent-night underline underline-offset-4 cursor-pointer">
               Clear all
             </button>
           )}

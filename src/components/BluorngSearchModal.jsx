@@ -85,17 +85,17 @@ export default function BluorngSearchModal({
                   <motion.span
                     animate={{ rotate: [0, 90, 0] }}
                     transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                    className="text-tk-accent dark:text-tk-accent-night text-[11px]"
+                    className="text-tk-accent-ink dark:text-tk-accent-night text-[12px]"
                   >
                     ✦
                   </motion.span>
-                  <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-tk-accent dark:text-tk-accent-night">
+                  <span className="text-[12px] font-bold tracking-[0.16em] uppercase text-tk-accent-ink dark:text-tk-accent-night">
                     Search Saudagar Haute Parfumerie
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="hidden sm:inline-block text-[11px] text-[#666666] dark:text-[#777777] uppercase tracking-widest font-mono">
+                  <span className="hidden sm:inline-block text-[12px] text-[#666666] dark:text-[#9A9A9A] uppercase tracking-widest font-mono">
                     ESC to close
                   </span>
                   <motion.button
@@ -130,7 +130,7 @@ export default function BluorngSearchModal({
                   }}
                   transition={{ duration: 0.45 }}
                   className={`mr-3.5 transition-colors shrink-0 ${
-                    isFocused ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#666666] dark:text-[#777777]'
+                    isFocused ? 'text-tk-accent-ink dark:text-tk-accent-night' : 'text-[#666666] dark:text-[#9A9A9A]'
                   }`}
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -164,7 +164,7 @@ export default function BluorngSearchModal({
                         setQuery('');
                         inputRef.current?.focus();
                       }}
-                      className="absolute right-4 px-3 py-1 text-[11.5px] bg-black/[0.08] dark:bg-white/10 hover:bg-black/[0.14] dark:hover:bg-white/20 text-[#444444] dark:text-[#CCCCCC] hover:text-tk-ink dark:hover:text-white uppercase tracking-wider font-bold rounded-[2px] transition-colors cursor-pointer flex items-center gap-1.5"
+                      className="absolute right-4 px-3 py-1 text-[12px] bg-black/[0.08] dark:bg-white/10 hover:bg-black/[0.14] dark:hover:bg-white/20 text-[#444444] dark:text-[#CCCCCC] hover:text-tk-ink dark:hover:text-white uppercase tracking-wider font-bold rounded-[2px] transition-colors cursor-pointer flex items-center gap-1.5"
                     >
                       <span>Clear</span>
                       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -180,7 +180,7 @@ export default function BluorngSearchModal({
               {popularSearches.length > 0 && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-[#666666] dark:text-[#A09D96] font-semibold uppercase tracking-[0.16em]">
+                  <span className="text-[12px] text-[#666666] dark:text-[#A09D96] font-semibold uppercase tracking-[0.16em]">
                     {searchBlock.popular_heading}
                   </span>
                 </div>
@@ -195,7 +195,7 @@ export default function BluorngSearchModal({
                       transition: { staggerChildren: 0.035, delayChildren: 0.08 }
                     }
                   }}
-                  className="flex items-center gap-2 flex-wrap text-[11px]"
+                  className="flex items-center gap-2 flex-wrap text-[12px]"
                 >
                   {popularSearches.map((term) => (
                     <motion.button
@@ -232,17 +232,17 @@ export default function BluorngSearchModal({
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   className="pt-3 border-t border-[#EEEEEE] dark:border-white/10"
                 >
-                  <div className="flex items-center justify-between mb-4 text-[11.5px] text-[#5F5F5F] dark:text-[#A09D96] font-semibold uppercase tracking-wider">
+                  <div className="flex items-center justify-between mb-4 text-[12px] text-[#5F5F5F] dark:text-[#A09D96] font-semibold uppercase tracking-wider">
                     <span className="flex items-center gap-2">
                       Results for <span className="text-tk-ink dark:text-white font-bold">"{query}"</span>
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-[2px] bg-black/5 dark:bg-white/10 text-[11px] font-bold text-tk-accent dark:text-tk-accent-night">
+                    <span className="px-2.5 py-0.5 rounded-[2px] bg-black/5 dark:bg-white/10 text-[12px] font-bold text-tk-accent-ink dark:text-tk-accent-night">
                       {resultCount} {resultCount === 1 ? 'Creation' : 'Creations'} Found
                     </span>
                   </div>
 
                   {(noteMatches.length > 0 || resultCount > searchResults.length) && (
-                    <div className="flex flex-wrap items-center gap-2 mb-4 text-[11px]">
+                    <div className="flex flex-wrap items-center gap-2 mb-4 text-[12px]">
                       {noteMatches.map((n) => (
                         <button
                           key={n.slug}
@@ -256,7 +256,7 @@ export default function BluorngSearchModal({
                       <button
                         type="button"
                         onClick={() => goTo(`/search?q=${encodeURIComponent(term)}`)}
-                        className="ml-auto text-tk-accent dark:text-tk-accent-night hover:underline"
+                        className="ml-auto text-tk-accent-ink dark:text-tk-accent-night hover:underline"
                       >
                         See all results →
                       </button>
@@ -274,7 +274,7 @@ export default function BluorngSearchModal({
                       <motion.div
                         animate={{ y: [0, -6, 0] }}
                         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                        className="w-14 h-14 rounded-full bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center text-tk-accent dark:text-tk-accent-night mb-1"
+                        className="w-14 h-14 rounded-full bg-black/[0.04] dark:bg-white/[0.06] flex items-center justify-center text-tk-accent-ink dark:text-tk-accent-night mb-1"
                       >
                         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                           <circle cx="11" cy="11" r="8" />
@@ -284,27 +284,27 @@ export default function BluorngSearchModal({
                       <p className="text-[14px] font-bold text-tk-ink dark:text-white uppercase tracking-wider">
                         No matching fragrances found
                       </p>
-                      <p className="text-[12px] max-w-md font-light leading-relaxed">
+                      <p className="text-[12.5px] max-w-md font-normal leading-relaxed">
                         We could not find an exact match for <span className="font-medium text-tk-ink dark:text-white">"{query}"</span>. Explore our signature agarwood compositions or hydro-distilled floral extraits.
                       </p>
                       <div className="pt-2 flex items-center gap-2">
                         <button
                           onClick={() => setQuery('Oud')}
-                          className="text-[11px] underline uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-medium hover:opacity-80 cursor-pointer"
+                          className="text-[12px] underline uppercase tracking-wider text-tk-accent-ink dark:text-tk-accent-night font-medium hover:opacity-80 cursor-pointer"
                         >
                           Try "Oud"
                         </button>
                         <span>·</span>
                         <button
                           onClick={() => setQuery('Rose')}
-                          className="text-[11px] underline uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-medium hover:opacity-80 cursor-pointer"
+                          className="text-[12px] underline uppercase tracking-wider text-tk-accent-ink dark:text-tk-accent-night font-medium hover:opacity-80 cursor-pointer"
                         >
                           Try "Rose"
                         </button>
                         <span>·</span>
                         <button
                           onClick={() => setQuery('Extrait')}
-                          className="text-[11px] underline uppercase tracking-wider text-tk-accent dark:text-tk-accent-night font-medium hover:opacity-80 cursor-pointer"
+                          className="text-[12px] underline uppercase tracking-wider text-tk-accent-ink dark:text-tk-accent-night font-medium hover:opacity-80 cursor-pointer"
                         >
                           Try "Extrait"
                         </button>
@@ -348,7 +348,7 @@ export default function BluorngSearchModal({
                                 />
 
                                 {product.badge && (
-                                  <span className="absolute top-2 left-2 text-[10.5px] font-bold tracking-widest uppercase bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night px-2 py-0.5 rounded-[2px] shadow-xs">
+                                  <span className="absolute top-2 left-2 text-[11.5px] font-bold tracking-widest uppercase bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night px-2 py-0.5 rounded-[2px] shadow-xs">
                                     {product.badge}
                                   </span>
                                 )}
@@ -368,7 +368,7 @@ export default function BluorngSearchModal({
                                     width="11"
                                     height="11"
                                     viewBox="0 0 24 24"
-                                    className={wishlist.includes(product.id) ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#666666] dark:text-white/60'}
+                                    className={wishlist.includes(product.id) ? 'text-tk-accent-ink dark:text-tk-accent-night' : 'text-[#666666] dark:text-white/60'}
                                     fill={wishlist.includes(product.id) ? 'currentColor' : 'none'}
                                     stroke="currentColor"
                                     strokeWidth="1.8"
@@ -379,22 +379,22 @@ export default function BluorngSearchModal({
                               </div>
 
                               {/* Title with Gold Hover Transition */}
-                              <h4 className="text-[11.5px] sm:text-[12px] font-bold uppercase tracking-wider text-tk-ink dark:text-white line-clamp-1 group-hover:text-tk-accent dark:group-hover:text-tk-accent-night transition-colors">
+                              <h4 className="text-[12px] sm:text-[12.5px] font-bold uppercase tracking-wider text-tk-ink dark:text-white line-clamp-1 group-hover:text-tk-accent dark:group-hover:text-tk-accent-night transition-colors">
                                 {product.name}
                               </h4>
 
                               {/* Category / Olfactory Family */}
-                              <p className="text-[11px] text-[#5F5F5F] dark:text-[#A09D96] uppercase tracking-wide mt-0.5 line-clamp-1">
+                              <p className="text-[12px] text-[#5F5F5F] dark:text-[#A09D96] uppercase tracking-wide mt-0.5 line-clamp-1">
                                 {product.category || 'Extrait de Parfum'}
                               </p>
                             </div>
 
                             {/* Price & View Arrow Row */}
                             <div className="mt-2.5 pt-2 border-t border-[#F0F0F0] dark:border-white/5 flex items-center justify-between">
-                              <span className="text-[12px] sm:text-[12.5px] font-bold text-tk-ink dark:text-white">
+                              <span className="text-[12.5px] sm:text-[12.5px] font-bold text-tk-ink dark:text-white">
                                 {formatPrice(product.price)}
                               </span>
-                              <span className="text-[11px] uppercase tracking-wider font-semibold text-tk-accent dark:text-tk-accent-night flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-300">
+                              <span className="text-[12px] uppercase tracking-wider font-semibold text-tk-accent-ink dark:text-tk-accent-night flex items-center gap-1 group-hover:translate-x-1 transition-transform duration-300">
                                 <span>Explore</span>
                                 <span>→</span>
                               </span>

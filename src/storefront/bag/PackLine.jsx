@@ -14,7 +14,7 @@ export default function PackLine({ item, line, problem, onRemove, compact = fals
       <div className={`${compact ? 'w-14' : 'w-20'} aspect-[4/5] bg-[#F7F7F6] dark:bg-[#18171C] flex items-center justify-center p-1.5 overflow-hidden rounded-xs shrink-0`}>
         <img src={image} alt={name} className="w-full h-full object-contain" />
       </div>
-      <div className="flex-1 min-w-0 text-[11.5px]">
+      <div className="flex-1 min-w-0 text-[12px]">
         <div className="flex items-start justify-between gap-2">
           <h4 className="font-bold uppercase tracking-wider text-tk-ink dark:text-white leading-tight">{name}</h4>
           {onRemove && (
@@ -23,9 +23,9 @@ export default function PackLine({ item, line, problem, onRemove, compact = fals
             </button>
           )}
         </div>
-        {line?.label && <p className="text-[11.5px] text-[#666666] dark:text-white/60 uppercase tracking-wider mt-1">{line.label}</p>}
+        {line?.label && <p className="text-[12px] text-[#666666] dark:text-white/60 uppercase tracking-wider mt-1">{line.label}</p>}
         {contents.length > 0 && (
-          <ul className="mt-1.5 space-y-0.5 text-[11px] text-[#444444] dark:text-white/75">
+          <ul className="mt-1.5 space-y-0.5 text-[12px] text-[#444444] dark:text-white/75">
             {contents.map((c) => (
               <li key={c.product_id}>
                 {c.name}
@@ -35,12 +35,12 @@ export default function PackLine({ item, line, problem, onRemove, compact = fals
           </ul>
         )}
         {line?.sample_ml > 0 && (
-          <p className="mt-1.5 text-[11.5px] text-tk-accent dark:text-tk-accent-night font-semibold">
+          <p className="mt-1.5 text-[12px] text-tk-accent-ink dark:text-tk-accent-night font-semibold">
             + Free {Number(line.sample_ml)} ml sample, chosen for you
           </p>
         )}
         {problem && (
-          <p role="alert" className="text-[11.5px] text-rose-600 dark:text-rose-400 mt-1 font-semibold">
+          <p role="alert" className="text-[12px] text-rose-600 dark:text-rose-400 mt-1 font-semibold">
             {problem.message}
           </p>
         )}

@@ -10,7 +10,7 @@ export default function MinimalHeader({ backLabel = 'Continue shopping', onBack,
         <button
           type="button"
           onClick={onBack}
-          className="justify-self-start text-[11px] uppercase tracking-[0.18em] text-[#5F5F5F] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
+          className="justify-self-start h-10 min-w-10 -ml-2 px-2 text-[12px] uppercase tracking-[0.18em] text-[#5F5F5F] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
           aria-label={backLabel}
         >
           <span aria-hidden>←</span>
@@ -22,7 +22,7 @@ export default function MinimalHeader({ backLabel = 'Continue shopping', onBack,
           {brand.logo_dark_bg && <img src={brand.logo_dark_bg} alt={brand.name || ''} className="h-6 sm:h-7 w-auto object-contain hidden dark:block" />}
         </button>
 
-        <span className="justify-self-end inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.16em] text-[#5F5F5F] dark:text-[#999999]">
+        <span className="justify-self-end inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.16em] text-[#5F5F5F] dark:text-[#999999]">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <rect x="4" y="11" width="16" height="10" />
             <path d="M8 11V7a4 4 0 0 1 8 0v4" />

@@ -35,7 +35,7 @@ export function PromiseStrip({ config = {} }) {
                 </svg>
               </div>
               <h4 className="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase text-white mb-2 font-sans">{item.title}</h4>
-              {item.text && <p className="text-[11px] sm:text-xs text-white/65 font-light max-w-xs leading-relaxed">{item.text}</p>}
+              {item.text && <p className="text-[12px] sm:text-xs text-white/65 font-normal max-w-xs leading-relaxed">{item.text}</p>}
             </div>
           ))}
         </div>
@@ -57,9 +57,9 @@ export function PromoBanner({ config = {} }) {
         </div>
       )}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
-        {config.eyebrow && <p className="text-[11px] sm:text-xs tracking-[0.3em] uppercase text-tk-gold font-semibold mb-3">{config.eyebrow}</p>}
+        {config.eyebrow && <p className="text-[12px] sm:text-xs tracking-[0.3em] uppercase text-tk-gold font-semibold mb-3">{config.eyebrow}</p>}
         {config.heading && <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[0.2em] uppercase text-white mb-6 font-sans">{config.heading}</h2>}
-        {config.text && <p className="text-xs sm:text-sm text-white/80 font-light leading-relaxed max-w-xl mx-auto mb-8 tracking-[0.06em]">{config.text}</p>}
+        {config.text && <p className="text-xs sm:text-sm text-white/80 font-normal leading-relaxed max-w-xl mx-auto mb-8 tracking-[0.06em]">{config.text}</p>}
         {config.cta?.label && (
           <button
             onClick={() => go(config.cta.link)}
@@ -88,7 +88,7 @@ export function ShopByNote({ config = {} }) {
             {config.eyebrow && <span className="sf-eyebrow">{config.eyebrow}</span>}
             {config.heading && <h2 className="sf-title">{config.heading}</h2>}
           </div>
-          <Link to="/notes" className="text-[11px] uppercase tracking-[0.12em] text-[#666666] hover:text-tk-ink dark:hover:text-white">
+          <Link to="/notes" className="text-[12px] uppercase tracking-[0.12em] text-[#666666] hover:text-tk-ink dark:hover:text-white">
             {config.all_label || 'All notes'} →
           </Link>
         </div>
@@ -99,10 +99,10 @@ export function ShopByNote({ config = {} }) {
                 {n.image ? (
                   <img src={n.image} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
-                  <span className="text-[22px] text-tk-accent dark:text-tk-accent-night">{n.name.charAt(0)}</span>
+                  <span className="text-[22px] text-tk-accent-ink dark:text-tk-accent-night">{n.name.charAt(0)}</span>
                 )}
               </div>
-              <span className="text-[11.5px] uppercase tracking-[0.08em] text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night">{n.name}</span>
+              <span className="text-[12px] uppercase tracking-[0.08em] text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night">{n.name}</span>
             </Link>
           ))}
         </div>
@@ -130,7 +130,7 @@ export function FaqSection({ config = {} }) {
               className="w-full flex items-center justify-between gap-4 text-left text-[14px] text-tk-ink dark:text-white"
             >
               <span>{f.question}</span>
-              <span className="text-[16px] font-light">{open === f.id ? '−' : '+'}</span>
+              <span className="text-[16px] font-normal">{open === f.id ? '−' : '+'}</span>
             </button>
             <AnimatePresence>
               {open === f.id && (
@@ -193,12 +193,12 @@ export function NewsletterSection({ config = {} }) {
               aria-label="Email address"
               className="flex-1 min-w-0 px-4 py-3 border border-[#D5D3CC] dark:border-white/15 bg-white dark:bg-[#141318] text-[13px] outline-none focus:border-tk-ink dark:focus:border-tk-accent-night"
             />
-            <button type="submit" className="px-6 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] uppercase tracking-[0.16em]">
+            <button type="submit" className="px-6 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[12px] uppercase tracking-[0.16em]">
               {config.button_label || 'Subscribe'}
             </button>
           </form>
         )}
-        {state === 'error' && <p className="mt-2 text-[11px] text-rose-600" role="alert">Enter a valid email address.</p>}
+        {state === 'error' && <p className="mt-2 text-[12px] text-rose-600" role="alert">Enter a valid email address.</p>}
       </div>
     </section>
   );

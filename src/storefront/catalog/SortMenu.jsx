@@ -33,7 +33,7 @@ export default function SortMenu({ value, onChange, align = 'right' }) {
         onClick={() => setOpen(!open)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex items-center gap-2 h-10 px-3.5 border border-[#D5D2CA] dark:border-white/20 bg-white dark:bg-[#141318] text-[13px] text-tk-ink dark:text-white hover:border-tk-ink dark:hover:border-white rounded-[2px] transition-colors cursor-pointer"
+        className="inline-flex items-center gap-2 h-10 px-3.5 whitespace-nowrap border border-[#D5D2CA] dark:border-white/20 bg-white dark:bg-[#141318] text-[13px] text-tk-ink dark:text-white hover:border-tk-ink dark:hover:border-white rounded-[2px] transition-colors cursor-pointer"
       >
         <span className="text-[#5F5F5F] dark:text-white/60">Sort by:</span>
         <span className="font-semibold">{current}</span>
@@ -63,7 +63,7 @@ export default function SortMenu({ value, onChange, align = 'right' }) {
                 >
                   {label}
                   {on && (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" className="text-tk-accent dark:text-tk-accent-night" aria-hidden>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" className="text-tk-accent-ink dark:text-tk-accent-night" aria-hidden>
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   )}

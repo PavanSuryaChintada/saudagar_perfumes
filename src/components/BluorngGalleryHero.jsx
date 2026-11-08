@@ -13,7 +13,7 @@ export default function BluorngGalleryHero({ config = {} }) {
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL GALLERY TITLE (Borderless, Minimal) ================= */}
-        <ScrollReveal variant="fade-up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
+        <ScrollReveal variant="fade-up" className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-8 mb-8 sm:mb-12">
           <div>
             <span className="sf-eyebrow">
               {config.eyebrow}
@@ -26,7 +26,7 @@ export default function BluorngGalleryHero({ config = {} }) {
             </p>
           </div>
 
-          <div className="text-[11px] font-normal text-[#666666] dark:text-[#A09D96] tracking-wider uppercase hidden md:flex items-center gap-2">
+          <div className="text-[12px] font-normal text-[#666666] dark:text-[#A09D96] tracking-wider uppercase hidden md:flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night" />
             <span>{config.side_label}</span>
           </div>
@@ -45,7 +45,7 @@ export default function BluorngGalleryHero({ config = {} }) {
                 {/* Curator Placard Above Image */}
                 <div className="px-5 py-3.5 bg-transparent flex items-center justify-between">
                   <div>
-                    <span className="text-[10.5px] font-normal tracking-[0.1em] text-tk-accent dark:text-tk-accent-night uppercase block">
+                    <span className="text-[11.5px] font-normal tracking-[0.1em] text-tk-accent-ink dark:text-tk-accent-night uppercase block">
                       {tile.kicker}
                     </span>
                     <h3 className="text-[13px] sm:text-[14px] font-medium tracking-[0.03em] uppercase text-tk-ink dark:text-white group-hover:text-tk-accent dark:group-hover:text-tk-accent-night transition-colors duration-200 mt-0.5">
@@ -53,7 +53,7 @@ export default function BluorngGalleryHero({ config = {} }) {
                     </h3>
                   </div>
 
-                  <div className="w-7 h-7 rounded-[2px] bg-white/80 dark:bg-white/10 group-hover:bg-tk-ink dark:group-hover:bg-tk-gold dark:group-hover:text-tk-night text-tk-ink dark:text-white group-hover:text-white flex items-center justify-center text-[12px] transition-all duration-200 shadow-xs">
+                  <div className="w-7 h-7 rounded-[2px] bg-white/80 dark:bg-white/10 group-hover:bg-tk-ink dark:group-hover:bg-tk-gold dark:group-hover:text-tk-night text-tk-ink dark:text-white group-hover:text-white flex items-center justify-center text-[12.5px] transition-all duration-200 shadow-xs">
                     ↗
                   </div>
                 </div>
@@ -72,7 +72,7 @@ export default function BluorngGalleryHero({ config = {} }) {
 
                   {/* Curatorial Subtitle */}
                   <div className="absolute bottom-4 left-4 right-4 z-20 pointer-events-none">
-                    <p className="text-[11px] font-normal text-white/90 uppercase tracking-widest drop-shadow-sm">
+                    <p className="text-[12px] font-normal text-white/90 uppercase tracking-widest drop-shadow-sm">
                       {tile.subtitle}
                     </p>
                   </div>

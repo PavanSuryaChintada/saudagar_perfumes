@@ -17,7 +17,7 @@ function Stars({ value, size = 12 }) {
   return (
     <span className="inline-flex gap-0.5" aria-label={`${value} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map((s) => (
-        <svg key={s} width={size} height={size} viewBox="0 0 24 24" className={s <= Math.round(value) ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#DDDDDD] dark:text-white/15'} fill="currentColor" aria-hidden="true">
+        <svg key={s} width={size} height={size} viewBox="0 0 24 24" className={s <= Math.round(value) ? 'text-tk-accent-ink dark:text-tk-accent-night' : 'text-[#DDDDDD] dark:text-white/15'} fill="currentColor" aria-hidden="true">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
         </svg>
       ))}
@@ -70,7 +70,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="inline-block w-2 h-2 rounded-full bg-tk-accent dark:bg-tk-accent-night" />
-              <span className="text-[11px] uppercase tracking-[0.18em] font-medium text-tk-accent dark:text-tk-accent-night">Customer Reviews</span>
+              <span className="text-[12px] uppercase tracking-[0.18em] font-medium text-tk-accent-ink dark:text-tk-accent-night">Customer Reviews</span>
             </div>
             <h2 className="text-[26px] sm:text-[34px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white">Client Experiences & Ratings</h2>
             <p className="text-[13px] text-[#666666] dark:text-[#999999] mt-1 max-w-xl">Reviews of {productName} from customers who bought it.</p>
@@ -79,7 +79,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
             <div className="text-right">
               <p className="text-[32px] font-light text-tk-ink dark:text-white leading-none">{Number(first.average).toFixed(1)}</p>
               <div className="mt-1.5 flex justify-end"><Stars value={Number(first.average)} /></div>
-              <p className="text-[11px] text-[#5F5F5F] dark:text-[#999999] mt-1">{count} review{count === 1 ? '' : 's'}</p>
+              <p className="text-[12px] text-[#5F5F5F] dark:text-[#999999] mt-1">{count} review{count === 1 ? '' : 's'}</p>
             </div>
           )}
         </div>
@@ -95,7 +95,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
 
         {count > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pt-10">
-            <aside className="lg:col-span-4 space-y-6 text-[12px]">
+            <aside className="lg:col-span-4 space-y-6 text-[12.5px]">
               <div className="space-y-1.5">
                 {[5, 4, 3, 2, 1].map((s) => {
                   const n = Number(first.distribution?.[s] ?? 0);
@@ -113,7 +113,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
               {[['Longevity', first.longevity], ['Sillage', first.sillage]].map(([label, rows]) =>
                 rows?.length ? (
                   <div key={label}>
-                    <p className="text-[11.5px] uppercase tracking-[0.16em] text-[#666666] mb-1.5">{label}, as buyers felt it</p>
+                    <p className="text-[12px] uppercase tracking-[0.16em] text-[#666666] mb-1.5">{label}, as buyers felt it</p>
                     <ul className="space-y-1">
                       {rows.map((r) => (
                         <li key={r.label} className="flex justify-between"><span>{r.label}</span><span className="text-[#5F5F5F] tabular-nums">{r.count}</span></li>
@@ -126,14 +126,14 @@ export default function BluorngProductReviews({ productSlug, productName }) {
 
             <div className="lg:col-span-8">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[11px] uppercase tracking-[0.16em] text-[#666666]">{count} review{count === 1 ? '' : 's'}</p>
-                <select value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort reviews" className="text-[12px] border border-[#E0E0E0] dark:border-white/20 bg-transparent dark:bg-tk-night px-2 py-1">
+                <p className="text-[12px] uppercase tracking-[0.16em] text-[#666666]">{count} review{count === 1 ? '' : 's'}</p>
+                <select value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort reviews" className="text-[12.5px] border border-[#E0E0E0] dark:border-white/20 bg-transparent dark:bg-tk-night px-2 py-1">
                   {SORTS.map(([v, l]) => (
                     <option key={v} value={v}>{l}</option>
                   ))}
                 </select>
               </div>
-              {error && <p className="text-[11.5px] text-rose-600 mb-3">{error}</p>}
+              {error && <p className="text-[12px] text-rose-600 mb-3">{error}</p>}
               <ul className="divide-y divide-[#F0F0F0] dark:divide-white/10">
                 {reviews.map((r) => (
                   <li key={r.id} className="py-6 space-y-2">
@@ -143,7 +143,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
                     </div>
                     {r.body && <p className="text-[13px] leading-relaxed text-[#444444] dark:text-[#CCCCCC] whitespace-pre-line">{r.body}</p>}
                     {(r.longevity || r.sillage) && (
-                      <p className="text-[11px] text-[#666666]">{[r.longevity && `Longevity: ${r.longevity}`, r.sillage && `Sillage: ${r.sillage}`].filter(Boolean).join(' · ')}</p>
+                      <p className="text-[12px] text-[#666666]">{[r.longevity && `Longevity: ${r.longevity}`, r.sillage && `Sillage: ${r.sillage}`].filter(Boolean).join(' · ')}</p>
                     )}
                     {r.media?.length > 0 && (
                       <div className="flex gap-2 pt-1">
@@ -157,7 +157,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
                         })}
                       </div>
                     )}
-                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#666666] pt-1">
+                    <div className="flex flex-wrap items-center gap-3 text-[12px] text-[#666666] pt-1">
                       <span className="text-tk-ink dark:text-white">{r.display_name}</span>
                       {r.city && <span>{r.city}</span>}
                       {r.verified && <span className="text-emerald-700 dark:text-emerald-400">Verified buyer</span>}
@@ -172,7 +172,7 @@ export default function BluorngProductReviews({ productSlug, productName }) {
                 ))}
               </ul>
               {query.hasNextPage && (
-                <button type="button" onClick={() => query.fetchNextPage()} disabled={query.isFetchingNextPage} className="mt-4 text-[11px] uppercase tracking-[0.16em] underline underline-offset-4">
+                <button type="button" onClick={() => query.fetchNextPage()} disabled={query.isFetchingNextPage} className="mt-4 text-[12px] uppercase tracking-[0.16em] underline underline-offset-4">
                   {query.isFetchingNextPage ? 'Loading…' : 'Show more reviews'}
                 </button>
               )}

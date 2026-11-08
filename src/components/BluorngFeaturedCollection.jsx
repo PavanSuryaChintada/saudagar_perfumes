@@ -22,7 +22,7 @@ export default function BluorngFeaturedCollection({
       <div className="relative z-10 w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
         
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
-        <ScrollReveal variant="fade-up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
+        <ScrollReveal variant="fade-up" className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-8 mb-8 sm:mb-12">
           <div>
             <span className="sf-eyebrow">
               {config.eyebrow}
@@ -35,13 +35,13 @@ export default function BluorngFeaturedCollection({
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-[11px] font-normal text-[#6B6B6B] dark:text-white/40 uppercase tracking-wider hidden md:inline">
+          <div className="flex items-center gap-4 shrink-0 whitespace-nowrap">
+            <span className="text-[12px] font-normal text-[#6B6B6B] dark:text-white/60 uppercase tracking-wider hidden md:inline">
               {config.side_label}
             </span>
             {config.cta_label && <button
               onClick={onDiscoverMore}
-              className="text-[11px] sm:text-[12px] font-normal tracking-[0.08em] uppercase text-tk-ink dark:text-white hover:text-[#B8860B] dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 group cursor-pointer"
+              className="text-[12px] sm:text-[12.5px] font-normal tracking-[0.08em] uppercase text-tk-ink dark:text-white hover:text-[#B8860B] dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 group cursor-pointer"
             >
               <span>{config.cta_label}</span>
               <span className="group-hover:translate-x-1.5 transition-transform duration-300 text-[13px]">→</span>

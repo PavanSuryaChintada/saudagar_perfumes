@@ -21,8 +21,8 @@ export function NotePyramid({ notes }) {
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-10">
       {tiers.map((t) => (
         <div key={t.key}>
-          <p className="text-[11.5px] uppercase tracking-[0.16em] text-tk-accent dark:text-tk-accent-night font-medium">{t.label}</p>
-          <p className="text-[11px] text-[#6B6B6B] dark:text-white/40 mb-3">{t.hint}</p>
+          <p className="text-[12px] uppercase tracking-[0.16em] text-tk-accent-ink dark:text-tk-accent-night font-medium">{t.label}</p>
+          <p className="text-[12px] text-[#6B6B6B] dark:text-white/60 mb-3">{t.hint}</p>
           <ul className="space-y-2.5">
             {notes[t.key].map((n) => (
               <li key={n.slug}>
@@ -30,7 +30,7 @@ export function NotePyramid({ notes }) {
                   {n.image ? (
                     <img src={n.image} alt="" loading="lazy" className="w-9 h-9 object-cover rounded-full bg-[#F4F3EE] dark:bg-white/5 shrink-0" />
                   ) : (
-                    <span className="w-9 h-9 rounded-full bg-[#F4F3EE] dark:bg-white/5 shrink-0 flex items-center justify-center text-[11px] text-tk-accent dark:text-tk-accent-night">
+                    <span className="w-9 h-9 rounded-full bg-[#F4F3EE] dark:bg-white/5 shrink-0 flex items-center justify-center text-[12px] text-tk-accent-ink dark:text-tk-accent-night">
                       {n.name.charAt(0)}
                     </span>
                   )}
@@ -50,11 +50,11 @@ export function AccordBars({ accords }) {
   if (!accords || accords.length === 0) return null;
   return (
     <div className="mb-10">
-      <p className="text-[11.5px] uppercase tracking-[0.16em] text-[#5F5F5F] dark:text-[#999999] mb-3">Main Accords</p>
+      <p className="text-[12px] uppercase tracking-[0.16em] text-[#5F5F5F] dark:text-[#999999] mb-3">Main Accords</p>
       <div className="space-y-2">
         {accords.map((a) => (
           <div key={a.slug} className="flex items-center gap-3">
-            <span className="w-24 shrink-0 text-[12px] text-[#333333] dark:text-[#CCCCCC]">{a.label}</span>
+            <span className="w-24 shrink-0 text-[12.5px] text-[#333333] dark:text-[#CCCCCC]">{a.label}</span>
             <div className="flex-1 h-[6px] bg-[#F0EEEA] dark:bg-white/10">
               <motion.div
                 initial={{ width: 0 }}
@@ -93,15 +93,15 @@ export function profileRows(attributes) {
 
 function Accordion({ id, title, open, onToggle, children }) {
   return (
-    <div className="py-4">
+    <div className="py-1.5">
       <button
         type="button"
         onClick={() => onToggle(id)}
         aria-expanded={open}
-        className="w-full flex items-center justify-between text-tk-ink dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
+        className="w-full min-h-11 flex items-center justify-between text-tk-ink dark:text-white font-normal hover:opacity-75 transition-opacity cursor-pointer text-left"
       >
-        <span className="tracking-[0.02em] text-[13px]">{title}</span>
-        <span className="text-[16px] font-light">{open ? '−' : '+'}</span>
+        <span className="tracking-[0.02em] text-[14px]">{title}</span>
+        <span className="text-[16px] font-normal">{open ? '−' : '+'}</span>
       </button>
       <AnimatePresence>
         {open && (
@@ -110,7 +110,7 @@ function Accordion({ id, title, open, onToggle, children }) {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden pt-3 pb-1 space-y-2 text-[#555555] dark:text-[#A09D96] text-[12px] leading-relaxed"
+            className="overflow-hidden pt-3 pb-1 space-y-2 text-[#555555] dark:text-[#A09D96] text-[12.5px] leading-relaxed"
           >
             {children}
           </motion.div>
@@ -179,11 +179,11 @@ export function ProductAccordions({ detail, selectedSize, openAccordion, onToggl
   const hasStory = story.length > 0 || hasText(detail.inspiration) || hasText(detail.how_to_wear);
 
   return (
-    <div className="divide-y divide-[#EAEAEA] dark:divide-white/10 text-[12px]">
+    <div className="divide-y divide-[#EAEAEA] dark:divide-white/10 text-[12.5px]">
       {profile.length > 0 && (
         <Accordion id="profile" title={page.profile_title || 'Scent Profile'} open={openAccordion === 'profile'} onToggle={onToggle}>
           <DefinitionList rows={profile.map((r) => ({ label: r.label, value: r.value }))} />
-          {page.profile_note && <p className="pt-2 text-[11px] text-[#6B6B6B] dark:text-white/40">{page.profile_note}</p>}
+          {page.profile_note && <p className="pt-2 text-[12px] text-[#6B6B6B] dark:text-white/60">{page.profile_note}</p>}
         </Accordion>
       )}
       {hasStory && (
@@ -194,7 +194,7 @@ export function ProductAccordions({ detail, selectedSize, openAccordion, onToggl
           )}
           {hasText(detail.how_to_wear) && (
             <div className="pt-1">
-              <p className="text-tk-accent dark:text-tk-accent-night font-medium mb-1">How to wear</p>
+              <p className="text-tk-accent-ink dark:text-tk-accent-night font-medium mb-1">How to wear</p>
               <div className="[&_p]:mb-2" dangerouslySetInnerHTML={{ __html: sanitizeHtml(detail.how_to_wear) }} />
             </div>
           )}
@@ -202,7 +202,7 @@ export function ProductAccordions({ detail, selectedSize, openAccordion, onToggl
       )}
       <Accordion id="compliance" title={page.compliance_title || 'Details & Compliance'} open={openAccordion === 'compliance'} onToggle={onToggle}>
         <DefinitionList rows={compliance} />
-        {c.caution_text && <p className="pt-2 text-[11px]">{c.caution_text}</p>}
+        {c.caution_text && <p className="pt-2 text-[12px]">{c.caution_text}</p>}
       </Accordion>
       <Accordion id="shipping" title={page.delivery_title || 'Delivery & Free Samples'} open={openAccordion === 'shipping'} onToggle={onToggle}>
         <PincodeCheck surface={!!detail.ships_surface_only} />

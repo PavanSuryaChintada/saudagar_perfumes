@@ -140,7 +140,7 @@ export default function BluorngFullscreenMegaNav({
             </div>
 
             {/* Right: Minimal Actions + Theme Toggle + Close */}
-            <div className="flex items-center gap-4 sm:gap-6 text-[11.5px] uppercase tracking-[0.12em]">
+            <div className="flex items-center gap-4 sm:gap-6 text-[12px] uppercase tracking-[0.12em]">
               <button
                 onClick={() => {
                   onClose();
@@ -173,7 +173,7 @@ export default function BluorngFullscreenMegaNav({
                     onClick={() => {
                       if (theme !== 'light') onToggleTheme();
                     }}
-                    className={`flex items-center justify-center w-6 h-6 rounded-[2px] transition-all duration-200 cursor-pointer ${
+                    className={`flex items-center justify-center w-8 h-8 rounded-[2px] transition-all duration-200 cursor-pointer ${
                       theme === 'light'
                         ? 'bg-tk-accent text-white shadow-xs'
                         : 'text-tk-ink/50 dark:text-white/50 hover:text-tk-ink dark:hover:text-white'
@@ -198,7 +198,7 @@ export default function BluorngFullscreenMegaNav({
                     onClick={() => {
                       if (theme !== 'dark') onToggleTheme();
                     }}
-                    className={`flex items-center justify-center w-6 h-6 rounded-[2px] transition-all duration-200 cursor-pointer ${
+                    className={`flex items-center justify-center w-8 h-8 rounded-[2px] transition-all duration-200 cursor-pointer ${
                       theme === 'dark'
                         ? 'bg-tk-gold text-tk-night font-medium shadow-xs'
                         : 'text-tk-ink/50 dark:text-white/50 hover:text-tk-ink dark:hover:text-white'
@@ -216,7 +216,7 @@ export default function BluorngFullscreenMegaNav({
               {/* Minimal Close Button */}
               <button
                 onClick={onClose}
-                className="flex items-center gap-2 text-tk-ink hover:text-tk-accent dark:text-white dark:hover:text-tk-accent-night transition-colors font-medium cursor-pointer"
+                className="h-10 -mr-2 px-2 flex items-center gap-2 text-tk-ink hover:text-tk-accent dark:text-white dark:hover:text-tk-accent-night transition-colors font-medium cursor-pointer"
                 aria-label="Close menu"
               >
                 <span>Close</span>
@@ -245,8 +245,8 @@ export default function BluorngFullscreenMegaNav({
                         <div className="flex items-baseline gap-3 sm:gap-5">
                           {/* Numeral */}
                           <span
-                            className={`text-[11.5px] sm:text-[12px] font-mono tracking-widest transition-colors duration-200 ${
-                              isHovered ? 'text-tk-accent dark:text-tk-accent-night' : 'text-[#707070] dark:text-white/40'
+                            className={`text-[12px] sm:text-[12.5px] font-mono tracking-widest transition-colors duration-200 ${
+                              isHovered ? 'text-tk-accent-ink dark:text-tk-accent-night' : 'text-[#707070] dark:text-white/60'
                             }`}
                           >
                             {cat.numeral}
@@ -266,7 +266,7 @@ export default function BluorngFullscreenMegaNav({
 
                         {/* Minimal count indicator on hover */}
                         <span
-                          className={`text-[11px] tracking-wider text-tk-accent dark:text-tk-accent-night transition-opacity duration-200 hidden sm:inline ${
+                          className={`text-[12px] tracking-wider text-tk-accent-ink dark:text-tk-accent-night transition-opacity duration-200 hidden sm:inline ${
                             isHovered ? 'opacity-100' : 'opacity-0'
                           }`}
                         >
@@ -281,7 +281,7 @@ export default function BluorngFullscreenMegaNav({
                 {(nav.accords || []).length > 0 && (
                   <div className="mt-5 pt-4 border-t border-black/[0.08] dark:border-white/[0.08]">
                     {nav.accords_heading && (
-                      <p className="text-[10.5px] uppercase tracking-[0.2em] font-medium text-tk-accent dark:text-tk-accent-night mb-2.5">
+                      <p className="text-[11.5px] uppercase tracking-[0.2em] font-medium text-tk-accent-ink dark:text-tk-accent-night mb-2.5">
                         {nav.accords_heading}
                       </p>
                     )}
@@ -290,7 +290,7 @@ export default function BluorngFullscreenMegaNav({
                         <button
                           key={`${note.label}-${i}`}
                           onClick={() => handleSelect(note.link)}
-                          className="px-2.5 py-1 rounded-md bg-black/[0.04] hover:bg-tk-accent dark:bg-white/[0.06] dark:hover:bg-tk-accent-night text-[11.5px] text-[#444444] hover:text-white dark:text-white/80 dark:hover:text-tk-night transition-all cursor-pointer border border-black/[0.04] dark:border-white/[0.06]"
+                          className="px-2.5 py-1 rounded-md bg-black/[0.04] hover:bg-tk-accent dark:bg-white/[0.06] dark:hover:bg-tk-accent-night text-[12px] text-[#444444] hover:text-white dark:text-white/80 dark:hover:text-tk-night transition-all cursor-pointer border border-black/[0.04] dark:border-white/[0.06]"
                         >
                           {note.label}
                         </button>
@@ -308,12 +308,12 @@ export default function BluorngFullscreenMegaNav({
                         onClick={() => handleSelect(card.link)}
                         className="p-2.5 rounded-md bg-black/[0.02] dark:bg-white/[0.03] hover:bg-black/[0.05] dark:hover:bg-white/[0.07] border border-black/[0.06] dark:border-white/[0.08] cursor-pointer transition-all group"
                       >
-                        <div className="flex items-center justify-between text-tk-accent dark:text-tk-accent-night text-[10.5px] font-mono uppercase">
+                        <div className="flex items-center justify-between text-tk-accent-ink dark:text-tk-accent-night text-[11.5px] font-mono uppercase">
                           <span>{card.kicker}</span>
                           <span className="group-hover:translate-x-1 transition-transform">→</span>
                         </div>
-                        <p className="text-[11.5px] font-medium text-tk-ink dark:text-white mt-0.5">{card.title}</p>
-                        {card.subtitle && <p className="text-[10.5px] text-[#5F5F5F] dark:text-white/50">{card.subtitle}</p>}
+                        <p className="text-[12px] font-medium text-tk-ink dark:text-white mt-0.5">{card.title}</p>
+                        {card.subtitle && <p className="text-[12.5px] text-[#5F5F5F] dark:text-white/60">{card.subtitle}</p>}
                       </div>
                     ))}
                   </div>
@@ -321,7 +321,7 @@ export default function BluorngFullscreenMegaNav({
 
                 {/* Secondary Editorial Links */}
                 {(nav.secondary_links || []).length > 0 && (
-                  <div className="mt-4 pt-3 flex flex-wrap items-center gap-5 text-[11.5px] uppercase tracking-[0.14em] text-[#5F5F5F] dark:text-white/60">
+                  <div className="mt-4 pt-3 flex flex-wrap items-center gap-5 text-[12px] uppercase tracking-[0.14em] text-[#5F5F5F] dark:text-white/60">
                     {nav.secondary_links.map((l, i) => (
                       <button
                         key={`${l.label}-${i}`}
@@ -390,12 +390,12 @@ export default function BluorngFullscreenMegaNav({
 
                   {/* Minimal Floating Top Badges */}
                   <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none z-30">
-                    <div className="px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md text-[10.5px] uppercase tracking-[0.16em] text-white/90 flex items-center gap-1.5 border border-white/15">
+                    <div className="px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md text-[11.5px] uppercase tracking-[0.16em] text-white/90 flex items-center gap-1.5 border border-white/15">
                       <span className="w-1.5 h-1.5 rounded-full bg-tk-accent-night animate-pulse" />
                       <span>{activeItem.video ? nav.feature_badge_video : nav.feature_badge_image}</span>
                     </div>
                     {activeItem.count_label && (
-                      <span className="text-[10.5px] uppercase tracking-wider text-white/85 bg-black/55 backdrop-blur-md px-2.5 py-0.5 rounded-md border border-white/10">
+                      <span className="text-[11.5px] uppercase tracking-wider text-white/85 bg-black/55 backdrop-blur-md px-2.5 py-0.5 rounded-md border border-white/10">
                         {activeItem.count_label}
                       </span>
                     )}
@@ -405,18 +405,18 @@ export default function BluorngFullscreenMegaNav({
                   <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 bg-gradient-to-t from-black/95 via-black/55 to-transparent z-30 flex flex-col justify-end pointer-events-auto">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10.5px] uppercase tracking-[0.2em] text-tk-accent-night font-semibold">
+                        <span className="text-[11.5px] uppercase tracking-[0.2em] text-tk-accent-night font-semibold">
                           {activeItem.count_label}
                         </span>
-                        <span className="text-white/40 text-[10.5px]">•</span>
-                        <span className="text-[10.5px] uppercase tracking-wider text-white/70">
+                        <span className="text-white/60 text-[11.5px]">•</span>
+                        <span className="text-[11.5px] uppercase tracking-wider text-white/70">
                           {activeItem.concentration}
                         </span>
                       </div>
                       <h4 className="text-[18px] font-normal tracking-wide text-white">
                         {activeItem.title}
                       </h4>
-                      <p className="text-[11px] text-white/75 mt-0.5 line-clamp-1">
+                      <p className="text-[12px] text-white/75 mt-0.5 line-clamp-1">
                         {activeItem.subtitle}
                       </p>
                     </div>
@@ -428,7 +428,7 @@ export default function BluorngFullscreenMegaNav({
                           e.stopPropagation();
                           handleSelect(activeItem.link);
                         }}
-                        className="flex-1 py-2 px-3 rounded-md bg-tk-accent hover:bg-tk-accent-night text-tk-night font-medium text-[11px] uppercase tracking-[0.16em] transition-all duration-200 text-center shadow-sm cursor-pointer whitespace-nowrap"
+                        className="flex-1 py-2 px-3 rounded-md bg-tk-accent hover:bg-tk-accent-night text-tk-night font-medium text-[12px] uppercase tracking-[0.16em] transition-all duration-200 text-center shadow-sm cursor-pointer whitespace-nowrap"
                       >
                         {[nav.feature_cta_prefix, (activeItem.title || '').replace(/^the\s+/i, '')].filter(Boolean).join(' ')} →
                       </button>
@@ -438,7 +438,7 @@ export default function BluorngFullscreenMegaNav({
                             e.stopPropagation();
                             handleSelect(nav.feature_secondary_cta.link);
                           }}
-                          className="py-2 px-2.5 rounded-md bg-white/15 hover:bg-white/25 backdrop-blur-md text-white text-[10.5px] uppercase tracking-[0.14em] transition-all cursor-pointer whitespace-nowrap"
+                          className="py-2 px-2.5 rounded-md bg-white/15 hover:bg-white/25 backdrop-blur-md text-white text-[11.5px] uppercase tracking-[0.14em] transition-all cursor-pointer whitespace-nowrap"
                         >
                           {nav.feature_secondary_cta.label}
                         </button>
@@ -473,7 +473,7 @@ export default function BluorngFullscreenMegaNav({
 
                       {cell.badge && (
                         <div className="absolute top-3 left-3 pointer-events-none z-10">
-                          <span className="px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-[10.5px] uppercase tracking-[0.14em] text-white/90 border border-white/15 flex items-center gap-1.5">
+                          <span className="px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-[11.5px] uppercase tracking-[0.14em] text-white/90 border border-white/15 flex items-center gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-tk-accent-night" />
                             <span>{cell.badge}</span>
                           </span>
@@ -485,7 +485,7 @@ export default function BluorngFullscreenMegaNav({
                           <h5 className="text-[13.5px] font-normal tracking-wide text-white group-hover:text-tk-accent-night transition-colors truncate">
                             {cell.title}
                           </h5>
-                          {cell.subtitle && <p className="text-[11px] text-white/75 mt-0.5 line-clamp-1">{cell.subtitle}</p>}
+                          {cell.subtitle && <p className="text-[12px] text-white/75 mt-0.5 line-clamp-1">{cell.subtitle}</p>}
                         </div>
                         {cell.cta_label && (
                           <button
@@ -493,7 +493,7 @@ export default function BluorngFullscreenMegaNav({
                               e.stopPropagation();
                               handleSelect(cell.link);
                             }}
-                            className="px-2.5 py-1.5 rounded-md bg-white/20 hover:bg-tk-accent text-white text-[10.5px] uppercase tracking-[0.14em] font-medium transition-all shrink-0 cursor-pointer backdrop-blur-xs whitespace-nowrap"
+                            className="px-2.5 py-1.5 rounded-md bg-white/20 hover:bg-tk-accent text-white text-[11.5px] uppercase tracking-[0.14em] font-medium transition-all shrink-0 cursor-pointer backdrop-blur-xs whitespace-nowrap"
                           >
                             {cell.cta_label}
                           </button>
@@ -510,9 +510,9 @@ export default function BluorngFullscreenMegaNav({
           </main>
 
           {/* ================= 3. MINIMAL FOOTER ================= */}
-          <footer className="relative z-10 w-full px-6 sm:px-12 lg:px-16 py-5 flex items-center justify-between text-[11.5px] text-[#666666] dark:text-white/50 uppercase tracking-[0.14em]">
+          <footer className="relative z-10 w-full px-6 sm:px-12 lg:px-16 py-5 flex items-center justify-between text-[12px] text-[#666666] dark:text-white/50 uppercase tracking-[0.14em]">
             <span>{nav.footer_text}</span>
-            <span className="hidden sm:inline text-[#707070] dark:text-white/40">Esc to close</span>
+            <span className="hidden sm:inline text-[#707070] dark:text-white/60">Esc to close</span>
           </footer>
         </motion.div>
       )}

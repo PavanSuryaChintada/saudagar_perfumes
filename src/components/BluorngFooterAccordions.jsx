@@ -55,7 +55,7 @@ export default function BluorngFooterAccordions({ config = {} }) {
               <div className="mt-4">
                 <button
                   onClick={() => setIsReadMoreOpen(!isReadMoreOpen)}
-                  className="text-[11.5px] font-normal tracking-[0.08em] uppercase text-tk-ink dark:text-[#EFECE6] hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                  className="text-[12px] font-normal tracking-[0.08em] uppercase text-tk-ink dark:text-[#EFECE6] hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>{isReadMoreOpen ? config.read_less_label : config.read_more_label}</span>
                   <span>{isReadMoreOpen ? '↑' : '↓'}</span>
@@ -77,7 +77,7 @@ export default function BluorngFooterAccordions({ config = {} }) {
                     {i > 0 && <span className="text-[#CCCCCC] dark:text-white/20">/</span>}
                     <button
                       onClick={() => setActiveTab(i)}
-                      className={`text-[11px] font-normal tracking-wider uppercase pb-1 transition-colors relative cursor-pointer ${
+                      className={`text-[12px] font-normal tracking-wider uppercase pb-1 transition-colors relative cursor-pointer ${
                         activeTab === i ? 'text-tk-ink dark:text-white' : 'text-[#666666] dark:text-[#A09D96] hover:text-tk-ink dark:hover:text-white'
                       }`}
                     >
@@ -97,7 +97,7 @@ export default function BluorngFooterAccordions({ config = {} }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -6 }}
                   transition={{ duration: 0.25 }}
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[12px]"
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[12.5px]"
                 >
                   {(current?.terms || []).map((item, idx) => (
                     <li key={idx}>
@@ -105,7 +105,7 @@ export default function BluorngFooterAccordions({ config = {} }) {
                         onClick={() => search(item.query || item.label)}
                         className="text-left text-[#555555] dark:text-[#B3AFA8] hover:text-tk-accent dark:hover:text-tk-accent-night hover:translate-x-1 transition-all flex items-center gap-1.5 py-0.5 cursor-pointer duration-200"
                       >
-                        <span className="text-tk-accent dark:text-tk-accent-night font-normal text-[11px]">›</span>
+                        <span className="text-tk-accent-ink dark:text-tk-accent-night font-normal text-[12px]">›</span>
                         <span>{item.label}</span>
                       </button>
                     </li>

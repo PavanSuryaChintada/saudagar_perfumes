@@ -135,7 +135,7 @@ export default function BluorngHeader({
         </div>
 
         {/* ================= RIGHT ZONE: ACTION ICONS ================= */}
-        <div className={`flex items-center gap-1.5 sm:gap-3 md:gap-4 z-10 transition-colors duration-300 ${
+        <div className={`flex items-center gap-0 sm:gap-2 md:gap-3 z-10 transition-colors duration-300 ${
           isTransparent ? 'text-white' : 'text-tk-ink dark:text-white'
         }`}>
           
@@ -144,7 +144,7 @@ export default function BluorngHeader({
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.94 }}
             onClick={onOpenSearch}
-            className={`p-1.5 sm:px-2 sm:py-1 rounded-[2px] transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-[2px] transition-all cursor-pointer flex items-center justify-center ${
               isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             title="Search"
@@ -232,7 +232,7 @@ export default function BluorngHeader({
           {/* Account Profile Button */}
           <button
             onClick={onOpenAccount}
-            className={`hidden sm:flex p-2 rounded-xs transition-all cursor-pointer ${
+            className={`hidden sm:flex w-10 h-10 items-center justify-center rounded-[2px] transition-all cursor-pointer ${
               isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             title="Customer Account"
@@ -247,7 +247,7 @@ export default function BluorngHeader({
           {/* Wishlist Bookmark Button with Badge */}
           <button
             onClick={() => onNavigateCollection('wishlist')}
-            className={`relative p-1.5 sm:p-2 rounded-xs transition-all cursor-pointer ${
+            className={`relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-[2px] transition-all cursor-pointer ${
               isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             title="Wishlist"
@@ -257,7 +257,7 @@ export default function BluorngHeader({
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
             </svg>
             {wishlistCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 sm:top-1 sm:right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[10.5px] sm:text-[10.5px] font-bold rounded-xs flex items-center justify-center">
+              <span className="absolute top-0.5 right-0 min-w-[17px] h-[17px] px-0.5 bg-tk-accent-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] leading-none font-bold rounded-[2px] flex items-center justify-center">
                 {wishlistCount}
               </span>
             )}
@@ -267,7 +267,7 @@ export default function BluorngHeader({
           <button
             data-cart-target
             onClick={onOpenCart}
-            className={`flex items-center gap-1.5 p-1.5 sm:p-2 rounded-xs transition-all cursor-pointer ${
+            className={`flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-[2px] transition-all cursor-pointer ${
               isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
             aria-label={`Shopping Cart (${cartCount})`}
@@ -284,7 +284,7 @@ export default function BluorngHeader({
                   initial={{ scale: 1.45 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 500, damping: 15 }}
-                  className="absolute -top-1 -right-1 w-4 h-4 bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[10.5px] font-bold rounded-xs flex items-center justify-center shadow-xs"
+                  className="absolute -top-1.5 -right-2 min-w-[17px] h-[17px] px-0.5 bg-tk-accent-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] leading-none font-bold rounded-[2px] flex items-center justify-center shadow-xs"
                 >
                   {cartCount}
                 </motion.span>
