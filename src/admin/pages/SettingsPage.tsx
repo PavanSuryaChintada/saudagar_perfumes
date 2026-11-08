@@ -5,6 +5,9 @@ import { supabase } from '../../lib/supabase';
 import { toFriendlyError } from '../../lib/errors';
 import { parseSettingInput, SETTINGS_SCHEMA, toInputValue, type SettingField } from '../settings/schema';
 import { PageHeader, Panel } from '../ui/PageHeader';
+import { Part, PartsLayout, usePart, type PartDef } from '../ui/Parts';
+
+const partId = (group: string) => group.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 import { Button } from '../ui/Button';
 import { FieldShell, TextInput, Toggle } from '../ui/Field';
 
@@ -84,6 +87,15 @@ export default function SettingsPage() {
     if (initial) setForm(initial);
   }, [initial]);
 
+  // One part per group of settings; a part shows how many unsaved changes or problems it has.
+  const parts: PartDef[] = SETTINGS_SCHEMA.map((g) => {
+    const keys = g.fields.map((f) => f.key);
+    const bad = keys.some((k) => errors[k]);
+    const changed = keys.filter((k) => initial && JSON.stringify(form[k]) !== JSON.stringify(initial[k])).length;
+    return { id: partId(g.group), label: g.group, hint: bad ? 'Needs fixing' : changed ? `${changed} unsaved change${changed === 1 ? '' : 's'}` : undefined, status: bad ? 'error' : null };
+  });
+  const [part, setPart] = usePart(parts);
+
   const dirtyKeys = initial ? Object.keys(form).filter((k) => JSON.stringify(form[k]) !== JSON.stringify(initial[k])) : [];
   const dirty = dirtyKeys.length > 0;
 
@@ -108,6 +120,8 @@ export default function SettingsPage() {
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) {
       toast.error('Some settings need fixing before they can be saved.');
+      const bad = SETTINGS_SCHEMA.find((g) => g.fields.some((f) => nextErrors[f.key]));
+      if (bad) setPart(partId(bad.group));
       return;
     }
     setSaving(true);
@@ -132,9 +146,10 @@ export default function SettingsPage() {
       {isLoading && <p className="text-[14px] text-[#4A4A4A]">Loading settings…</p>}
       {loadError && <p className="text-[14px] text-rose-600">{toFriendlyError(loadError)}</p>}
       {initial && (
-        <div className="space-y-5">
+        <PartsLayout parts={parts} current={part} onSelect={setPart}>
           {SETTINGS_SCHEMA.map((g) => (
-            <Panel key={g.group} title={g.group} description={g.description}>
+            <Part key={g.group} id={partId(g.group)}>
+            <Panel title={g.group} description={g.description}>
               <div className="grid gap-5 md:grid-cols-2">
                 {g.fields.map((f) => (
                   <div key={f.key} className={f.type === 'boolean' ? 'md:col-span-2' : ''}>
@@ -143,8 +158,9 @@ export default function SettingsPage() {
                 ))}
               </div>
             </Panel>
+            </Part>
           ))}
-        </div>
+        </PartsLayout>
       )}
       {dirty && (
         <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#E2E0DB] px-4 sm:px-8 py-3 flex items-center justify-between gap-3">
