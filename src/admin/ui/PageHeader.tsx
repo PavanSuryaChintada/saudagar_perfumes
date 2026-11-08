@@ -1,10 +1,28 @@
 import type { ReactNode } from 'react';
+import { useLocation } from 'react-router';
+import { CircleHelp } from 'lucide-react';
+import { useGuidePanel } from '../guide/GuideContext';
+import { sectionsFor } from '../guide/guide';
 
 export function PageHeader({ title, description, actions }: { title: string; description?: ReactNode; actions?: ReactNode }) {
+  const guide = useGuidePanel();
+  const { pathname } = useLocation();
+  const hasHelp = !!guide && sectionsFor(pathname).length > 0;
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-6">
       <div className="min-w-0">
-        <h1 className="text-[22px] font-normal tracking-[-0.01em] text-tk-ink">{title}</h1>
+        <div className="flex items-center gap-3 flex-wrap">
+          <h1 className="text-[22px] font-normal tracking-[-0.01em] text-tk-ink">{title}</h1>
+          {hasHelp && (
+            <button
+              type="button"
+              onClick={guide!.openHelp}
+              className="inline-flex items-center gap-1 text-[12px] text-[#777777] hover:text-tk-ink border border-[#E0DDD5] bg-white px-2 py-1"
+            >
+              <CircleHelp size={14} aria-hidden /> How this page works
+            </button>
+          )}
+        </div>
         {description && <p className="mt-1 text-[13px] text-[#666666] max-w-[640px]">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}

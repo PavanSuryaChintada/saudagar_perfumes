@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
-import { ExternalLink, LogOut, Menu, X } from 'lucide-react';
+import { CircleHelp, ExternalLink, LogOut, Menu, X } from 'lucide-react';
 import NotificationsBell from './NotificationsBell';
+import AdminSearch, { SearchButton } from './AdminSearch';
+import GuideDrawer from './guide/GuideDrawer';
+import { GuideContext } from './guide/GuideContext';
 import { useAuth } from '../lib/auth';
 import { ADMIN_NAV } from './nav';
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <nav className="flex-1 overflow-y-auto py-4">
+    <nav className="flex-1 min-h-0 overflow-y-auto overscroll-contain py-4" aria-label="Admin">
       {ADMIN_NAV.map((group, gi) => (
         <div key={gi} className="mb-4">
           {group.heading && <p className="px-5 mb-1.5 text-[10px] uppercase tracking-[0.14em] text-[#999999]">{group.heading}</p>}
@@ -36,9 +39,15 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
 export default function AdminLayout() {
   const { user, signOut } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
+  const guide = useMemo(() => ({ openHelp: () => setHelpOpen(true) }), []);
 
-  useEffect(() => setDrawerOpen(false), [location.pathname]);
+  useEffect(() => {
+    setDrawerOpen(false);
+    setHelpOpen(false);
+  }, [location.pathname]);
 
   const brand = (
     <Link to="/admin" className="block px-5 py-5 border-b border-[#EAEAEA]">
@@ -64,6 +73,7 @@ export default function AdminLayout() {
   );
 
   return (
+    <GuideContext.Provider value={guide}>
     <div className="min-h-screen bg-[#F8F7F5] text-tk-ink font-sans">
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex fixed inset-y-0 left-0 w-[240px] flex-col bg-white border-r border-[#EAEAEA]">
@@ -78,7 +88,13 @@ export default function AdminLayout() {
           <Menu size={20} />
         </button>
         <span className="text-[13px] tracking-[0.3em] uppercase">Saudagar</span>
-        <NotificationsBell />
+        <div className="flex items-center">
+          <SearchButton compact onClick={() => setSearchOpen(true)} />
+          <button type="button" aria-label="How this page works" onClick={() => setHelpOpen(true)} className="p-2 text-[#555555] hover:text-tk-ink">
+            <CircleHelp size={18} />
+          </button>
+          <NotificationsBell />
+        </div>
       </header>
       {drawerOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
@@ -95,13 +111,26 @@ export default function AdminLayout() {
       )}
 
       <main className="lg:pl-[240px]">
-        <div className="hidden lg:flex justify-end mx-auto max-w-[1200px] px-8 pt-4 -mb-4">
+        <div className="hidden lg:flex items-center gap-3 mx-auto max-w-[1200px] px-8 pt-4 -mb-2">
+          <div className="flex-1">
+            <SearchButton onClick={() => setSearchOpen(true)} />
+          </div>
+          <button
+            type="button"
+            onClick={() => setHelpOpen(true)}
+            className="inline-flex items-center gap-1.5 border border-[#D5D3CC] bg-white px-3 py-2 text-[12.5px] text-[#555555] hover:border-tk-ink hover:text-tk-ink"
+          >
+            <CircleHelp size={15} aria-hidden /> Help
+          </button>
           <NotificationsBell />
         </div>
         <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <Outlet />
         </div>
       </main>
+      <GuideDrawer open={helpOpen} onOpenChange={setHelpOpen} />
+      <AdminSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </div>
+    </GuideContext.Provider>
   );
 }

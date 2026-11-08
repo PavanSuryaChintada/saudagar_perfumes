@@ -12,6 +12,7 @@ import { Modal } from '../../ui/Modal';
 import { RichText } from '../../ui/RichText';
 import { MediaGalleryInput, MediaPreview } from '../../ui/MediaField';
 import { SortableList } from '../../ui/SortableList';
+import { SearchMultiSelect, SearchSelect, categoryOptions } from '../../ui/SearchSelect';
 import {
   COMPLIANCE_FIELDS, COPY_GROUPS, copyProductDetails, emptyProductForm, emptyVariant, fromAdminProduct, slugify, toSavePayload, validateProductForm,
   type AttributeLink, type CopyGroup, type NoteLink, type ProductForm, type VariantForm,
@@ -114,9 +115,27 @@ function OptionChips({
     if (has) onChange(attributes.filter((a) => a.option_id !== o.id));
     else onChange([...attributes, { option_id: o.id, kind, strength: isAccord ? 70 : null, is_primary: isFamily && mine.length === 0 }]);
   };
+  // A handful of options reads best as buttons; a long list gets a search box instead.
+  const many = options.length > 12;
+  const pickMany = (vals: string[]) => {
+    const keep = attributes.filter((a) => a.kind !== kind || vals.includes(a.option_id));
+    const added = vals
+      .filter((v) => !mine.some((m) => m.option_id === v))
+      .map((v, i) => ({ option_id: v, kind, strength: isAccord ? 70 : null, is_primary: isFamily && i === 0 && !keep.some((a) => a.kind === kind) }));
+    onChange([...keep, ...added]);
+  };
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap gap-1.5">
+      {many && (
+        <SearchMultiSelect
+          options={options.map((o) => ({ value: o.id, label: o.label, tag: o.is_active ? undefined : 'hidden' }))}
+          values={mine.map((a) => a.option_id)}
+          onChange={pickMany}
+          placeholder="Search to add"
+          ariaLabel={`Choose ${kind}`}
+        />
+      )}
+      <div className={many ? 'hidden' : 'flex flex-wrap gap-1.5'}>
         {options.map((o) => {
           const on = mine.some((a) => a.option_id === o.id);
           return (
@@ -174,25 +193,9 @@ export default function ProductEditorPage() {
   const invalidate = useInvalidateCatalog();
   const { data: options = [] } = useOptions();
   const { data: notes = [], refetch: refetchNotes } = useNotes();
-  const { data: categories = [] } = useCategories();
-  const { data: collections = [] } = useCollectionsAdmin();
+  const { data: categories = [], refetch: refetchCategories } = useCategories();
+  const { data: collections = [], refetch: refetchCollections } = useCollectionsAdmin();
   const sampleSize = Number(useSetting('samples.sample_size_ml', 5)) || 5;
-  const categoryTree = useMemo(() => {
-    const byParent = new Map<string | null, typeof categories>();
-    for (const c of categories) {
-      const k = c.parent_id && categories.some((x) => x.id === c.parent_id) ? c.parent_id : null;
-      byParent.set(k, [...(byParent.get(k) ?? []), c]);
-    }
-    const out: { c: (typeof categories)[number]; depth: number }[] = [];
-    const walk = (parent: string | null, depth: number) => {
-      for (const c of byParent.get(parent) ?? []) {
-        out.push({ c, depth });
-        if (depth < 6) walk(c.id, depth + 1);
-      }
-    };
-    walk(null, 0);
-    return out;
-  }, [categories]);
 
   const bundle = useQuery({
     queryKey: ['admin', 'catalog', 'product', id],
@@ -222,12 +225,25 @@ export default function ProductEditorPage() {
 
   useEffect(() => setForm(initial), [initial]);
   const dirty = !!form && !!initial && JSON.stringify(form) !== JSON.stringify(initial);
+  // Closing or reloading the tab with unsaved changes asks first.
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [dirty]);
   useEffect(() => {
     if (!dirty) return undefined;
     const warn = (e: BeforeUnloadEvent) => e.preventDefault();
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
   }, [dirty]);
+
+  const categoryPicks = useMemo(() => categoryOptions(categories), [categories]);
+  const collectionPicks = useMemo(() => collections.map((c) => ({ value: c.id, label: c.name, tag: c.is_active ? undefined : 'hidden' })), [collections]);
 
   if (!form) {
     return bundle.error ? <p className="text-[13px] text-rose-600">{toFriendlyError(bundle.error)}</p> : <p className="text-[13px] text-[#777777]">Loading…</p>;
@@ -237,6 +253,24 @@ export default function ProductEditorPage() {
   const setVariant = (i: number, patch: Partial<VariantForm>) =>
     setForm((f) => (f ? { ...f, variants: f.variants.map((v, j) => (j === i ? { ...v, ...patch } : v)) } : f));
   const optionsOf = (kind: string) => options.filter((o) => o.kind === kind);
+
+  const freeSlug = (name: string, taken: { slug: string }[]) => {
+    const base = slugify(name) || 'item';
+    const used = new Set(taken.map((t) => t.slug));
+    let slug = base;
+    for (let i = 2; used.has(slug); i += 1) slug = `${base}-${i}`;
+    return slug;
+  };
+  const createCategory = async (name: string) => {
+    const row = (await throwIf(supabase.from('categories').insert({ name, slug: freeSlug(name, categories) }).select('id').single())) as { id: string };
+    await refetchCategories();
+    return row.id;
+  };
+  const createCollection = async (name: string) => {
+    const row = (await throwIf(supabase.from('collections').insert({ name, slug: freeSlug(name, collections) }).select('id').single())) as { id: string };
+    await refetchCollections();
+    return row.id;
+  };
 
   const createNote = async (name: string) => {
     try {
@@ -255,6 +289,8 @@ export default function ProductEditorPage() {
     setErrors(found);
     if (Object.keys(found).length) {
       toast.error('Please fix the highlighted fields.');
+      // Take the admin to the first problem instead of leaving them to hunt for it.
+      requestAnimationFrame(() => document.querySelector('main .text-rose-600')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
       return;
     }
     setSaving(true);
@@ -358,63 +394,51 @@ export default function ProductEditorPage() {
 
       <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
         <div className="space-y-5 min-w-0">
-          <Panel title="1 · Category" description="Start here. The category decides where the product is listed; the scent type and notes come next.">
-            {err('primary_category_id') && <p className="text-[12px] text-rose-600 mb-2">{err('primary_category_id')}</p>}
-            {categories.length === 0 ? (
-              <p className="text-[12px] text-[#777777]">No categories yet. Add them under Catalog → Categories first.</p>
-            ) : (
-              <div role="radiogroup" aria-label="Main category" className="border border-[#EAEAEA] divide-y divide-[#F0F0F0] max-h-72 overflow-y-auto">
-                {categoryTree.map(({ c, depth }) => (
-                  <label key={c.id} className={`flex items-center gap-2 py-2 pr-3 text-[13px] cursor-pointer hover:bg-[#FAFAF7] ${form.primary_category_id === c.id ? 'bg-[#F4F3EE]' : ''}`} style={{ paddingLeft: 12 + depth * 18 }}>
-                    <input
-                      type="radio"
-                      name="p-primary-category"
-                      checked={form.primary_category_id === c.id}
-                      onChange={() => {
-                        set('primary_category_id', c.id);
-                        set('category_ids', form.category_ids.filter((x) => x !== c.id));
-                      }}
-                    />
-                    <span className={depth === 0 ? 'font-medium' : ''}>{c.name}</span>
-                    {!c.is_active && <span className="text-[10px] uppercase tracking-wider text-[#999999]">hidden</span>}
-                  </label>
-                ))}
-              </div>
-            )}
-            {form.primary_category_id && (
-              <div className="grid gap-4 sm:grid-cols-2 mt-4">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">Also list it in</p>
-                  <div className="space-y-1 max-h-40 overflow-y-auto">
-                    {categoryTree.filter(({ c }) => c.id !== form.primary_category_id).map(({ c, depth }) => (
-                      <label key={c.id} className="flex items-center gap-2 text-[12.5px]" style={{ paddingLeft: depth * 14 }}>
-                        <input
-                          type="checkbox"
-                          checked={form.category_ids.includes(c.id)}
-                          onChange={(e) => set('category_ids', e.target.checked ? [...form.category_ids, c.id] : form.category_ids.filter((x) => x !== c.id))}
-                        />
-                        {c.name}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">Collections</p>
-                  <div className="space-y-1 max-h-40 overflow-y-auto">
-                    {collections.map((c) => (
-                      <label key={c.id} className="flex items-center gap-2 text-[12.5px]">
-                        <input
-                          type="checkbox"
-                          checked={form.collection_ids.includes(c.id)}
-                          onChange={(e) => set('collection_ids', e.target.checked ? [...form.collection_ids, c.id] : form.collection_ids.filter((x) => x !== c.id))}
-                        />
-                        {c.name}
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
+          <Panel
+            title="1 · Where it's listed"
+            description="Start here. The main category is where the product lives; add more categories if it also belongs elsewhere (e.g. an oud that is also a gift). Type to search, or type a new name to create it."
+          >
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FieldShell label="Main category" htmlFor="p-primary-category" error={err('primary_category_id')} help="Used for the breadcrumb, related products and coupons.">
+                <SearchSelect
+                  id="p-primary-category"
+                  options={categoryPicks}
+                  value={form.primary_category_id || null}
+                  onChange={(v) => {
+                    set('primary_category_id', v ?? '');
+                    if (v) set('category_ids', form.category_ids.filter((x) => x !== v));
+                  }}
+                  placeholder="Search categories, e.g. Oud"
+                  onCreate={createCategory}
+                  createNoun="category"
+                  emptyText="No categories yet. Type a name to create the first one."
+                />
+              </FieldShell>
+              <FieldShell label="Also list under" htmlFor="p-more-categories" help="Any number of extra categories. Optional.">
+                <SearchMultiSelect
+                  id="p-more-categories"
+                  options={categoryPicks.filter((o) => o.value !== form.primary_category_id)}
+                  values={form.category_ids}
+                  onChange={(v) => set('category_ids', v)}
+                  placeholder="Search to add another category"
+                  onCreate={createCategory}
+                  createNoun="category"
+                  disabled={!form.primary_category_id}
+                />
+              </FieldShell>
+              <FieldShell label="Collections" htmlFor="p-collections" help="Curated groups such as The Oud Edit. Optional.">
+                <SearchMultiSelect
+                  id="p-collections"
+                  options={collectionPicks}
+                  values={form.collection_ids}
+                  onChange={(v) => set('collection_ids', v)}
+                  placeholder="Search collections"
+                  onCreate={createCollection}
+                  createNoun="collection"
+                  emptyText="No collections yet. Type a name to create one."
+                />
+              </FieldShell>
+            </div>
           </Panel>
 
 {form.primary_category_id ? (
@@ -727,7 +751,13 @@ export default function ProductEditorPage() {
       <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#EAEAEA] px-4 sm:px-8 py-3 flex items-center justify-between gap-3">
         <p className="text-[12px] text-[#555555]">{dirty ? 'Unsaved changes' : isNew ? 'New product' : 'All changes saved'}</p>
         <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => navigate('/admin/products')}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              if (dirty && !window.confirm('Leave without saving? Your changes to this product will be lost.')) return;
+              navigate('/admin/products');
+            }}
+          >
             Back to products
           </Button>
           <Button onClick={save} busy={saving} disabled={!dirty && !isNew}>
@@ -750,18 +780,20 @@ export default function ProductEditorPage() {
       >
         <div className="space-y-4">
           <FieldShell label="Copy from" htmlFor="copy-from" help={form.primary_category_id ? 'Products in the same category are listed first.' : undefined}>
-            <select id="copy-from" value={copyFrom} onChange={(e) => setCopyFrom(e.target.value)} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
-              <option value="">Choose a product…</option>
-              {[...(productList.data ?? [])]
+            <SearchSelect
+              id="copy-from"
+              value={copyFrom || null}
+              onChange={(v) => setCopyFrom(v ?? '')}
+              placeholder="Search products"
+              options={[...(productList.data ?? [])]
                 .filter((p) => p.id !== form.id)
                 .sort((x, y) => Number(y.primary_category_id === form.primary_category_id) - Number(x.primary_category_id === form.primary_category_id))
-                .map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                    {form.primary_category_id && p.primary_category_id === form.primary_category_id ? ' · same category' : ''}
-                  </option>
-                ))}
-            </select>
+                .map((p) => ({
+                  value: p.id,
+                  label: p.name,
+                  tag: form.primary_category_id && p.primary_category_id === form.primary_category_id ? 'same category' : undefined,
+                }))}
+            />
           </FieldShell>
           <fieldset className="space-y-1.5">
             <legend className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555] mb-1">What to copy</legend>

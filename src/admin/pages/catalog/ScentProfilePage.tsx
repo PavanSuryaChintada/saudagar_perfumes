@@ -3,6 +3,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
+import { useEditParam } from '../../ui/useEditParam';
 import { PageHeader, Panel } from '../../ui/PageHeader';
 import { Button } from '../../ui/Button';
 import { FieldShell, TextArea, TextInput, Toggle } from '../../ui/Field';
@@ -21,6 +22,11 @@ export default function ScentProfilePage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState<OptionRow | null>(null);
+  useEditParam(options, (o) => {
+    setKind(o.kind);
+    setError('');
+    setDraft({ id: o.id, kind: o.kind, label: o.label, slug: o.slug, description: o.description ?? '', badge: o.badge ?? '', is_active: o.is_active });
+  });
   const meta = OPTION_KINDS.find((k) => k.kind === kind)!;
   const list = options.filter((o) => o.kind === kind);
 

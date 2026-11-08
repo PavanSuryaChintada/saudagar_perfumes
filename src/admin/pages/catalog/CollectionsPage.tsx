@@ -3,6 +3,7 @@ import { ExternalLink, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
+import { useEditParam } from '../../ui/useEditParam';
 import { PageHeader } from '../../ui/PageHeader';
 import { Button } from '../../ui/Button';
 import { FieldShell, TextArea, TextInput, Toggle } from '../../ui/Field';
@@ -103,6 +104,7 @@ export default function CollectionsPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState<CollectionRow | null>(null);
+  useEditParam(rows, (c) => { setError(''); setDraft(toDraft(c)); });
 
   const refresh = async () => {
     await refetch();

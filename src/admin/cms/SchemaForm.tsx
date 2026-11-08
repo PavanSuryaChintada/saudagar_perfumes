@@ -6,6 +6,7 @@ import type { LinkType, LinkValue } from '../../cms/links';
 import type { ProductSource, SourceMode } from '../../cms/sources';
 import { FieldShell, TextArea, TextInput, Toggle } from '../ui/Field';
 import { MediaField } from '../ui/MediaField';
+import { SearchMultiSelect, SearchSelect } from '../ui/SearchSelect';
 import { RichText } from '../ui/RichText';
 import {
   useCategoryLookup,
@@ -304,18 +305,16 @@ function LookupSelect({
   by: 'slug' | 'id';
 }) {
   const items = useLookupFor(kind);
+  const options = items.map((x) => ({ value: x[by], label: x.name }));
+  if (value && !options.some((o) => o.value === value)) options.unshift({ value, label: `${value} (missing)` });
   return (
     <FieldShell label={label} htmlFor={id} help={help}>
-      <select id={id} className={selectCls} value={value} onChange={(e) => onChange(e.target.value || (by === 'id' ? null : ''))}>
-        <option value="">—</option>
-        {value && !items.some((x) => x[by] === value) && <option value={value}>{value}</option>}
-        {items.map((x) => (
-          <option key={x.id} value={x[by]}>{x.name}</option>
-        ))}
-      </select>
+      <SearchSelect id={id} options={options} value={value || null} onChange={(v) => onChange(v || (by === 'id' ? null : ''))} allowClear placeholder={`Search ${LOOKUP_PLURAL[kind]}`} />
     </FieldShell>
   );
 }
+
+const LOOKUP_PLURAL: Record<LookupKind, string> = { product: 'products', collection: 'collections', category: 'categories', note: 'notes', page: 'pages' };
 
 function MultiPick({ label, help, value, onChange, by }: { label: string; help?: string; value: string[]; onChange: (v: unknown) => void; by: 'slug' | 'id' }) {
   const items = useLookupFor('product');
@@ -335,12 +334,13 @@ function MultiPick({ label, help, value, onChange, by }: { label: string; help?:
             </button>
           </div>
         ))}
-        <select id={id} className={selectCls} value="" onChange={(e) => e.target.value && onChange([...value, e.target.value])}>
-          <option value="">Add a product…</option>
-          {items.filter((x) => !value.includes(x[by])).map((x) => (
-            <option key={x.id} value={x[by]}>{x.name}</option>
-          ))}
-        </select>
+        <SearchSelect
+          id={id}
+          options={items.filter((x) => !value.includes(x[by])).map((x) => ({ value: x[by], label: x.name }))}
+          value={null}
+          onChange={(v) => v && onChange([...value, v])}
+          placeholder="Search to add a product"
+        />
       </div>
     </FieldShell>
   );
@@ -408,14 +408,17 @@ function LinkLookup({ id, label, kind, value, onChange }: { id: string; label: s
   const items = useLookupFor(kind);
   const extra = kind === 'page' ? [{ id: 'home', slug: 'home', name: 'Home' }] : [];
   const all = [...extra, ...items.filter((x) => !(kind === 'page' && x.slug === 'home'))];
+  const options = all.map((x) => ({ value: x.slug, label: x.name }));
+  if (value && !options.some((o) => o.value === value)) options.unshift({ value, label: `${value} (missing — choose another)` });
   return (
-    <select id={id} aria-label={`${label} — choose`} className={selectCls} value={value} onChange={(e) => onChange(e.target.value)}>
-      <option value="">Choose…</option>
-      {value && !all.some((x) => x.slug === value) && <option value={value}>{value} (missing)</option>}
-      {all.map((x) => (
-        <option key={x.id} value={x.slug}>{x.name}</option>
-      ))}
-    </select>
+    <SearchSelect
+      id={id}
+      ariaLabel={`${label} — choose`}
+      options={options}
+      value={value || null}
+      onChange={(v) => onChange(v ?? '')}
+      placeholder={`Search ${LOOKUP_PLURAL[kind]}`}
+    />
   );
 }
 
@@ -462,6 +465,18 @@ export function SourceInput({ label, help, value, onChange }: { label: string; h
             return (
               <div key={k.kind}>
                 <p className="text-[12px] text-tk-ink mb-1">{k.label}</p>
+                {opts.length > 12 ? (
+                  <SearchMultiSelect
+                    options={opts.map((o) => ({ value: o.slug, label: o.label }))}
+                    values={chosen}
+                    onChange={(nextVals) => {
+                      const attrs = { ...(src.attrs ?? {}), [k.kind]: nextVals };
+                      if (!nextVals.length) delete attrs[k.kind];
+                      set({ attrs });
+                    }}
+                    placeholder={`Search ${k.label.toLowerCase()}`}
+                  />
+                ) : (
                 <div className="flex flex-wrap gap-x-3 gap-y-1">
                   {opts.map((o) => (
                     <label key={o.id} className="flex items-center gap-1.5 text-[12px] text-[#555555]">
@@ -479,6 +494,7 @@ export function SourceInput({ label, help, value, onChange }: { label: string; h
                     </label>
                   ))}
                 </div>
+                )}
               </div>
             );
           })}

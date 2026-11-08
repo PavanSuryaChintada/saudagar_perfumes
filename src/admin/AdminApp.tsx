@@ -28,6 +28,7 @@ import ReviewsPage from './pages/catalog/ReviewsPage';
 import BackInStockPage from './pages/catalog/BackInStockPage';
 import CustomersPage from './pages/CustomersPage';
 import ExportPage from './pages/ExportPage';
+import GuidePage from './guide/GuidePage';
 
 export default function AdminApp() {
   return (
@@ -49,6 +50,7 @@ export default function AdminApp() {
         }
       >
         <Route index element={<DashboardPage />} />
+        <Route path="guide" element={<GuidePage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="media" element={<MediaLibraryPage />} />
         <Route path="products" element={<ProductsPage />} />

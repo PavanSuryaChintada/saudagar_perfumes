@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { toFriendlyError } from '../../../lib/errors';
 import { formatINR } from '../../../lib/money';
 import { PageHeader } from '../../ui/PageHeader';
+import { useGuideStatus } from '../../guide/useGuideStatus';
 import { Button } from '../../ui/Button';
 import { TextInput } from '../../ui/Field';
 import { ConfirmDialog } from '../../ui/ConfirmDialog';
@@ -53,6 +54,7 @@ export default function ProductsPage() {
           </Button>
         }
       />
+      <BeforeProducts />
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-4">
         <div className="flex flex-wrap gap-1.5">
           {(['all', 'active', 'draft', 'archived'] as Status[]).map((s) => (
@@ -140,7 +142,11 @@ export default function ProductsPage() {
             </div>
           );
         })}
-        {!isLoading && rows.length === 0 && <p className="p-8 text-center text-[13px] text-[#777777]">No products match.</p>}
+        {!isLoading && rows.length === 0 && (
+          <p className="p-8 text-center text-[13px] text-[#777777]">
+            {data.length === 0 ? 'No products yet. Press “Add product” to create the first one.' : 'No products match. Clear the search or pick another tab.'}
+          </p>
+        )}
       </div>
 
       <ConfirmDialog
@@ -163,6 +169,38 @@ export default function ProductsPage() {
             : undefined
         }
       />
+    </div>
+  );
+}
+
+/** Shown until categories, the scent profile and notes exist: the things a product is built from. */
+function BeforeProducts() {
+  const { data: status } = useGuideStatus();
+  if (!status) return null;
+  const items = [
+    { key: 'categories', label: 'Categories', hint: 'where products are listed', to: '/admin/categories' },
+    { key: 'scent', label: 'Scent profile', hint: 'family, accords and the other filters', to: '/admin/scent-profile' },
+    { key: 'notes', label: 'Notes library', hint: 'ingredients for the note pyramid', to: '/admin/notes' },
+  ] as const;
+  if (items.every((i) => status[i.key].done)) return null;
+  return (
+    <div className="mb-5 bg-white border border-amber-200">
+      <p className="px-4 py-2.5 border-b border-amber-200 bg-amber-50 text-[13px] text-amber-900">
+        Before your first product, set these up. You can also create categories and notes while adding a product.
+      </p>
+      <ul className="divide-y divide-[#F0F0F0]">
+        {items.map((i) => (
+          <li key={i.key}>
+            <Link to={i.to} className="flex items-center justify-between gap-3 px-4 py-2.5 text-[13px] hover:bg-[#FAFAF8]">
+              <span>
+                <span className={status[i.key].done ? 'text-[#888888] line-through' : 'text-tk-ink'}>{i.label}</span>
+                <span className="text-[#888888]"> · {i.hint}</span>
+              </span>
+              <span className="text-[12px] text-[#777777]">{status[i.key].done ? `✓ ${status[i.key].text}` : 'Set up →'}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

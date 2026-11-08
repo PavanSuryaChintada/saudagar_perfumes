@@ -3,6 +3,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
+import { useEditParam } from '../../ui/useEditParam';
 import { PageHeader } from '../../ui/PageHeader';
 import { Button } from '../../ui/Button';
 import { FieldShell, TextArea, TextInput, Toggle } from '../../ui/Field';
@@ -27,6 +28,7 @@ export default function NotesPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState<NoteRow | null>(null);
+  useEditParam(notes, (n) => edit(n));
 
   const filtered = notes.filter(
     (n) => (!family || n.family_option_id === family) && (!search.trim() || n.name.toLowerCase().includes(search.trim().toLowerCase())),
