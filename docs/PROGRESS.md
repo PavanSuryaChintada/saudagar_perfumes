@@ -169,7 +169,23 @@
 - [x] SETUP.md (keys, accounts, go-live checklist) + README
 - [x] Full test pass: lint, typecheck, 219 unit, 11 SQL files, build, 31 browser tests
 
-## Owner to-do before going live (see docs/SETUP.md)
+## Phase 12: Hardening, clearer errors, smoother admin ✅ (issue #22)
+- [x] Coupons held from placement for online orders too (no stacking a one-use code on unpaid orders)
+- [x] Payments: duplicate payments refunded, no second charge after an unconfirmed payment, capture race, refunds only for real refusals
+- [x] Refund ledger: several partial refunds, never more than paid; Razorpay statuses read-only; automatic refund on cancel; Refunds due list
+- [x] COD limits (largest COD order, open COD orders per customer); first-order offers checked by phone number
+- [x] Function and table permissions locked down (test keeps it so); real-IP rate limits; storage listing closed
+- [x] Advisors: per-row auth checks, duplicate policies and unindexed foreign keys fixed; pg_net moved
+- [x] Auth: exact redirect URLs (no *.vercel.app wildcard), passwords need letters and numbers
+- [x] Every error translated into plain sentences; no raw SQL on screen
+- [x] Dashboard setup checklist; exports complete at any Max rows; customer GST invoice; admin button on the account page
+- [x] Sign-out always works (offline or expired session) and clears cached data
+- [x] Demo deployments hidden from search engines until `VITE_ALLOW_INDEXING=true`
+- [x] docs/SUPABASE.md: every production setting
+- [x] Full test pass: lint, typecheck, 236 unit, 12 SQL files, build, 31 browser tests
+
+## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
+- [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain
 - [ ] Razorpay keys + webhook (or stay COD only)
 - [ ] Courier confirmation for shipping perfume; Delhivery token (optional)
