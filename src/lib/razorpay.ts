@@ -38,7 +38,11 @@ async function functionError(error: unknown): Promise<Error> {
       // fall through
     }
   }
-  return new Error((error as Error)?.message || 'Something went wrong with the payment.');
+  const message = (error as Error)?.message ?? '';
+  if (/failed to send a request|failed to fetch|network/i.test(message)) {
+    return new Error("We couldn't reach the server. Check your connection and try again.");
+  }
+  return new Error("The server didn't answer properly. Please try again in a minute.");
 }
 
 export async function invokeFunction<T>(name: string, body: Record<string, unknown>): Promise<T> {
@@ -52,6 +56,7 @@ export type PayResult = { status: 'paid'; orderNumber: string } | { status: 'dis
 /** Opens Razorpay for a store order and confirms the payment on the server. */
 export async function payOrder(orderId: string, opts: { brand?: string; color?: string } = {}): Promise<PayResult> {
   const start = await invokeFunction<{
+    status?: 'paid';
     key_id: string;
     razorpay_order_id: string;
     amount: number;
@@ -59,6 +64,8 @@ export async function payOrder(orderId: string, opts: { brand?: string; color?: 
     order_number: string;
     prefill: Record<string, string>;
   }>('razorpay-create-order', { order_id: orderId });
+  // Money already reached Razorpay for this order (e.g. the tab closed before confirming): nothing to pay.
+  if (start.status === 'paid') return { status: 'paid', orderNumber: start.order_number };
   await loadCheckout();
 
   return new Promise<PayResult>((resolve) => {

@@ -1,14 +1,16 @@
 // POST {order_id} → a Razorpay order for that store order. The amount always comes from the database.
-import { CORS, caller, fail, json, keys, razorpay, serviceClient, toPaise } from '../_shared/razorpay.ts';
+// If money already reached Razorpay for this order (the confirmation is still on its way), the order is confirmed
+// now instead of opening a second payment.
+import { CORS, caller, confirmPayment, fail, json, keys, razorpay, razorpayMessage, serviceClient, toPaise, type RazorpayPayment } from '../_shared/razorpay.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return fail('Use POST.', 405);
   const { keyId, configured } = keys();
-  if (!configured) return fail('Online payments are not set up yet. Please choose cash on delivery.', 503);
+  if (!configured) return fail('Online payment is not set up yet. Please choose cash on delivery.', 503);
 
   const user = await caller(req);
-  if (!user) return fail('Please sign in again.', 401);
+  if (!user) return fail('Your session has expired. Please sign in again.', 401);
   const { order_id } = await req.json().catch(() => ({}));
   if (typeof order_id !== 'string') return fail('Missing order.');
 
@@ -18,18 +20,26 @@ Deno.serve(async (req) => {
     .select('id, user_id, order_number, status, payment_method, payment_status, total, razorpay_order_id, customer_name, customer_email, customer_phone')
     .eq('id', order_id)
     .maybeSingle();
-  if (!order || order.user_id !== user.id) return fail('Order not found.', 404);
-  if (order.payment_method !== 'ONLINE') return fail('This order is cash on delivery.');
-  if (order.status !== 'PENDING') return fail('This order can no longer be paid.', 409);
-  if (order.payment_status === 'PAID') return fail('This order is already paid.', 409);
+  if (!order || order.user_id !== user.id) return fail("We couldn't find this order.", 404);
+  if (order.payment_method !== 'ONLINE') return fail('This order is cash on delivery, so there is nothing to pay now.');
+  if (order.payment_status === 'PAID') return json({ status: 'paid', order_number: order.order_number });
+  if (order.status !== 'PENDING') return fail('This order was cancelled, so it can no longer be paid.', 409);
   const amount = toPaise(order.total);
   if (amount < 100) return fail('The order total is too small to pay online.');
 
   try {
     let rzpOrderId: string | null = null;
     if (order.razorpay_order_id) {
-      // Reuse the existing Razorpay order on a retry or double click.
       const existing = await razorpay<{ id: string; amount: number; status: string }>(`/orders/${order.razorpay_order_id}`);
+      if (existing.status !== 'created') {
+        // A payment was attempted: if one went through, confirm it rather than charging the customer again.
+        const { items } = await razorpay<{ items: RazorpayPayment[] }>(`/orders/${existing.id}/payments`);
+        const done = items.find((p) => p.status === 'captured' || p.status === 'authorized');
+        if (done) {
+          const result = await confirmPayment(db, order.id, done.id);
+          return result.ok ? json({ status: 'paid', order_number: result.orderNumber }) : fail(result.message, result.status);
+        }
+      }
       if (existing.amount === amount && existing.status !== 'paid') rzpOrderId = existing.id;
     }
     if (!rzpOrderId) {
@@ -50,7 +60,7 @@ Deno.serve(async (req) => {
       prefill: { name: order.customer_name ?? '', email: order.customer_email ?? '', contact: order.customer_phone ?? '' },
     });
   } catch (err) {
-    console.error('create-order', err);
-    return fail(err instanceof Error ? err.message : 'Could not start the payment.', 502);
+    console.error('create-order', order.id, razorpayMessage(err));
+    return fail("We couldn't start the payment right now. Please try again in a minute, or choose cash on delivery.", 502);
   }
 });
