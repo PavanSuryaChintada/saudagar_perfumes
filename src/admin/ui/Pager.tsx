@@ -20,7 +20,7 @@ export function Pager({
   noun?: string;
 }) {
   if (pageCount <= 1) {
-    return total > 0 ? <p className="mt-3 text-[13px] text-[#5A5A5A]">{total} {noun}</p> : null;
+    return total > 0 ? <p className="mt-3 text-[13px] text-[#4A4A4A]">{total} {noun}</p> : null;
   }
   const btn = 'min-w-[36px] h-9 px-2 inline-flex items-center justify-center border text-[13.5px] tabular-nums';
   return (
@@ -34,7 +34,7 @@ export function Pager({
         </button>
         {pageWindow(page, pageCount).map((p, i) =>
           p === null ? (
-            <span key={`gap-${i}`} className="px-1 text-[#6B6B6B]" aria-hidden>
+            <span key={`gap-${i}`} className="px-1 text-[#575757]" aria-hidden>
               …
             </span>
           ) : (

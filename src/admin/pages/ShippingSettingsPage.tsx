@@ -83,7 +83,7 @@ export default function ShippingSettingsPage() {
     }
   };
 
-  if (isLoading) return <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
+  if (isLoading) return <p className="text-[14px] text-[#4A4A4A]">Loading…</p>;
 
   return (
     <div className="space-y-5 pb-20">
@@ -113,7 +113,7 @@ export default function ShippingSettingsPage() {
                 type="button"
                 aria-label={`Remove ${c.name}`}
                 disabled={['india_post', 'delhivery', 'other'].includes(c.key) || c.key === form.default_courier}
-                className="p-2 text-[#6B6B6B] hover:text-rose-600 disabled:opacity-30"
+                className="p-2 text-[#575757] hover:text-rose-600 disabled:opacity-30"
                 onClick={() => setCouriers(couriers.filter((_, j) => j !== i))}
               >
                 <Trash2 size={14} />

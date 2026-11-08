@@ -5,6 +5,7 @@ import { useAdminOrder, useBusinessSettings, type AdminOrder } from '../../order
 import { supabase } from '../../../lib/supabase';
 import { throwIf } from '../../catalog/api';
 import { useBlock } from '../../../cms/useSite';
+import { useInvoiceSettings, type InvoiceSettings } from '../../invoice/invoiceSettings';
 import { formatINR } from '../../../lib/money';
 import { formatIndianPhone } from '../../../lib/phone';
 import { paymentLabel } from '../../../lib/orders';
@@ -23,6 +24,7 @@ export default function PrintOrderPage({ customer = false }: { customer?: boolea
   const { data: o, isLoading } = useAdminOrder(id);
   const { data: biz } = useBusinessSettings();
   const brand = useBlock<Record<string, string>>('brand') || {};
+  const inv = useInvoiceSettings();
 
   useEffect(() => {
     if (!o || !biz) return;
@@ -46,13 +48,15 @@ export default function PrintOrderPage({ customer = false }: { customer?: boolea
         <button type="button" onClick={() => window.print()} className="px-3 py-1.5 bg-black text-white">Print</button>
         <button type="button" onClick={() => window.close()} className="px-3 py-1.5 border border-black">Close</button>
       </div>
-      <OrderDocument o={o} biz={biz} brand={brand} doc={doc} />
+      <OrderDocument o={o} biz={biz} brand={brand} doc={doc} inv={inv} />
     </div>
   );
 }
 
 /** One printable document: the GST tax invoice or the packing slip. */
-export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Record<string, string>; brand: Record<string, string>; doc: 'invoice' | 'slip' }) {
+export function OrderDocument({
+  o, biz, brand, doc, inv,
+}: { o: AdminOrder; biz: Record<string, string>; brand: Record<string, string>; doc: 'invoice' | 'slip'; inv: InvoiceSettings }) {
   const a = o.shipping_address || {};
   const items = o.order_items.filter((i) => i.line_type === 'item');
   const samples = o.order_items.filter((i) => i.line_type === 'sample');
@@ -61,16 +65,16 @@ export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Reco
   const header = (
     <div className="flex justify-between gap-6 pb-4 border-b border-black">
       <div>
-        {brand.logo_light_bg && <img src={brand.logo_light_bg} alt="" className="h-8 mb-2" />}
+        {inv.show_logo && (inv.logo || brand.logo_light_bg) && <img src={inv.logo || brand.logo_light_bg} alt="" className="h-8 mb-2" />}
         <p className="font-semibold">{sellerName}</p>
         {biz.address && <p className="whitespace-pre-line">{biz.address}</p>}
         {biz.state && <p>State: {biz.state}</p>}
         {biz.gstin && <p>GSTIN: {biz.gstin}</p>}
       </div>
       <div className="text-right">
-        <p className="text-[16px] font-semibold uppercase">{doc === 'slip' ? 'Packing slip' : 'Tax invoice'}</p>
-        <p>Order / Invoice no: {o.order_number}</p>
-        <p>Date: {formatOrderDate(o.created_at)}</p>
+        <p className="text-[16px] font-semibold uppercase">{doc === 'slip' ? inv.slip_title : inv.title}</p>
+        <p>{inv.number_label} {o.order_number}</p>
+        <p>{inv.date_label}: {formatOrderDate(o.created_at)}</p>
         <p>{paymentLabel(o)}</p>
       </div>
     </div>
@@ -78,7 +82,7 @@ export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Reco
 
   const shipTo = (
     <div className="py-4">
-      <p className="text-[10px] uppercase tracking-wider">Ship to</p>
+      <p className="text-[10px] uppercase tracking-wider">{inv.ship_to_label}</p>
       <p className="font-semibold">{a.full_name}</p>
       <p>{[a.line1, a.line2].filter(Boolean).join(', ')}</p>
       {a.landmark && <p>Near {a.landmark}</p>}
@@ -144,7 +148,7 @@ export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Reco
       Number(o.discount),
     );
     const ship = Number(o.shipping_fee);
-    if (ship > 0) lines.push(...buildInvoiceLines([{ name: 'Delivery charges', hsn: SHIPPING_SAC, qty: 1, lineTotal: ship, gstRate: SHIPPING_GST }], 0));
+    if (ship > 0) lines.push(...buildInvoiceLines([{ name: inv.delivery_label, hsn: SHIPPING_SAC, qty: 1, lineTotal: ship, gstRate: SHIPPING_GST }], 0));
     const intra = isIntraState(biz.state, o.shipping_address?.state);
     const totalTaxable = lines.reduce((s, l) => s + l.taxable, 0);
     const totalTax = lines.reduce((s, l) => s + l.tax, 0);
@@ -152,21 +156,21 @@ export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Reco
       <>
         <div className="grid grid-cols-2 gap-6">
           <div className="py-4">
-            <p className="text-[10px] uppercase tracking-wider">Bill to</p>
+            <p className="text-[10px] uppercase tracking-wider">{inv.bill_to_label}</p>
             <p className="font-semibold">{o.customer_name}</p>
             {o.customer_email && <p>{o.customer_email}</p>}
             {o.customer_phone && <p>{formatIndianPhone(o.customer_phone)}</p>}
           </div>
           {shipTo}
         </div>
-        <p className="mb-2">Place of supply: {a.state}</p>
+        <p className="mb-2">{inv.place_of_supply_label}: {a.state}</p>
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-y border-black text-left">
-              <th className="py-1.5">Description</th>
-              <th className="py-1.5">HSN/SAC</th>
-              <th className="py-1.5 text-right">Qty</th>
-              <th className="py-1.5 text-right">Taxable value</th>
+              <th className="py-1.5">{inv.col_description}</th>
+              {inv.show_hsn && <th className="py-1.5">{inv.col_hsn}</th>}
+              <th className="py-1.5 text-right">{inv.col_qty}</th>
+              <th className="py-1.5 text-right">{inv.col_taxable}</th>
               {intra ? (
                 <>
                   <th className="py-1.5 text-right">CGST</th>
@@ -175,7 +179,7 @@ export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Reco
               ) : (
                 <th className="py-1.5 text-right">IGST</th>
               )}
-              <th className="py-1.5 text-right">Total</th>
+              <th className="py-1.5 text-right">{inv.col_total}</th>
             </tr>
           </thead>
           <tbody>
@@ -185,7 +189,7 @@ export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Reco
                   {l.name}
                   {l.discount > 0 && <span className="block text-[10px]">Discount {formatINR(l.discount)}</span>}
                 </td>
-                <td className="py-1.5">{l.hsn}</td>
+                {inv.show_hsn && <td className="py-1.5">{l.hsn}</td>}
                 <td className="py-1.5 text-right">{l.qty}</td>
                 <td className="py-1.5 text-right">{formatINR(l.taxable)}</td>
                 {intra ? (
@@ -199,10 +203,10 @@ export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Reco
                 <td className="py-1.5 text-right">{formatINR(l.total)}</td>
               </tr>
             ))}
-            {samples.map((s) => (
+            {inv.show_samples && samples.map((s) => (
               <tr key={s.id} className="border-b border-[#CCCCCC]">
-                <td className="py-1.5">Free sample: {s.product_name} · {s.variant_label}</td>
-                <td className="py-1.5">{(s as unknown as { hsn_code: string | null }).hsn_code}</td>
+                <td className="py-1.5">{inv.sample_prefix}: {s.product_name} · {s.variant_label}</td>
+                {inv.show_hsn && <td className="py-1.5">{(s as unknown as { hsn_code: string | null }).hsn_code}</td>}
                 <td className="py-1.5 text-right">1</td>
                 <td className="py-1.5 text-right">{formatINR(0)}</td>
                 {intra ? <><td /><td /></> : <td />}
@@ -212,7 +216,7 @@ export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Reco
           </tbody>
           <tfoot>
             <tr className="border-t border-black font-semibold">
-              <td className="py-1.5" colSpan={3}>Total</td>
+              <td className="py-1.5" colSpan={inv.show_hsn ? 3 : 2}>{inv.col_total}</td>
               <td className="py-1.5 text-right">{formatINR(totalTaxable)}</td>
               {intra ? (
                 <>
@@ -226,10 +230,17 @@ export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Reco
             </tr>
           </tfoot>
         </table>
-        <p className="mt-3">Amount in words: {rupeesInWords(Number(o.total))}</p>
-        {biz.invoice_note && <p className="mt-6 text-[10px] whitespace-pre-line">{biz.invoice_note}</p>}
-        <p className="mt-8 text-right">For {sellerName}</p>
-        <p className="mt-10 text-right text-[10px]">This is a computer-generated invoice.</p>
+        {inv.show_amount_in_words && <p className="mt-3">{inv.amount_in_words_label}: {rupeesInWords(Number(o.total))}</p>}
+        {inv.thank_you && <p className="mt-4 font-semibold">{inv.thank_you}</p>}
+        {inv.payment_details && <p className="mt-4 whitespace-pre-line">{inv.payment_details}</p>}
+        {inv.terms && <p className="mt-4 text-[10px] whitespace-pre-line">{inv.terms}</p>}
+        {biz.invoice_note && <p className="mt-4 text-[10px] whitespace-pre-line">{biz.invoice_note}</p>}
+        <div className="mt-8 text-right">
+          <p>For {sellerName}</p>
+          {inv.signature ? <img src={inv.signature} alt="" className="inline-block h-12 my-2" /> : <div className="h-10" />}
+          <p className="text-[10px]">{inv.signatory_label}</p>
+        </div>
+        {inv.footer && <p className="mt-8 text-center text-[10px]">{inv.footer}</p>}
       </>
     );
   }
@@ -249,6 +260,7 @@ export function PrintOrdersPage() {
   const ids = (params.get('ids') ?? '').split(',').filter((x) => /^[0-9a-f-]{36}$/i.test(x)).slice(0, 200);
   const { data: biz } = useBusinessSettings();
   const brand = useBlock<Record<string, string>>('brand') || {};
+  const inv = useInvoiceSettings();
   const { data: orders, isLoading } = useQuery({
     queryKey: ['admin', 'orders', 'print', ids.join(',')],
     enabled: ids.length > 0,
@@ -277,7 +289,7 @@ export function PrintOrdersPage() {
       </div>
       {(orders ?? []).map((o, i) => (
         <section key={o.id} className={i < (orders?.length ?? 0) - 1 ? 'break-after-page' : ''}>
-          <OrderDocument o={o} biz={biz} brand={brand} doc={doc} />
+          <OrderDocument o={o} biz={biz} brand={brand} doc={doc} inv={inv} />
         </section>
       ))}
     </div>

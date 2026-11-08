@@ -72,16 +72,16 @@ export default function BirthdayTab() {
           <TextInput id="b-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="max-w-[200px]" />
         </FieldShell>
         <div className="mt-4 border border-[#E2E0DB] divide-y divide-[#E9E7E2] bg-white">
-          {list.isLoading && <p className="px-3 py-3 text-[14px] text-[#5A5A5A]">Loading…</p>}
+          {list.isLoading && <p className="px-3 py-3 text-[14px] text-[#4A4A4A]">Loading…</p>}
           {list.error && <p className="px-3 py-3 text-[14px] text-rose-600">{toFriendlyError(list.error)}</p>}
-          {!list.isLoading && (list.data ?? []).length === 0 && <p className="px-3 py-3 text-[14px] text-[#5A5A5A]">No customers have a birthday on this day.</p>}
+          {!list.isLoading && (list.data ?? []).length === 0 && <p className="px-3 py-3 text-[14px] text-[#4A4A4A]">No customers have a birthday on this day.</p>}
           {(list.data ?? []).map((c) => (
             <div key={c.user_id} className="flex items-center gap-3 px-3 py-2 text-[14px]">
               <div className="min-w-0 flex-1">
                 <p>{c.full_name || 'Customer'}</p>
-                <p className="text-[12px] text-[#626262]">{[c.email, c.phone && formatIndianPhone(c.phone)].filter(Boolean).join(' · ')}</p>
+                <p className="text-[12px] text-[#4F4F4F]">{[c.email, c.phone && formatIndianPhone(c.phone)].filter(Boolean).join(' · ')}</p>
               </div>
-              <span className={`text-[11.5px] uppercase tracking-[0.06em] ${c.has_code ? 'text-emerald-700' : 'text-[#626262]'}`}>{c.has_code ? `Has a ${y} code` : 'No code yet'}</span>
+              <span className={`text-[12.5px] ${c.has_code ? 'text-emerald-700' : 'text-[#4F4F4F]'} font-medium`}>{c.has_code ? `Has a ${y} code` : 'No code yet'}</span>
             </div>
           ))}
         </div>

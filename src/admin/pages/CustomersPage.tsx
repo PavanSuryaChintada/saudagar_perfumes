@@ -83,7 +83,7 @@ export default function CustomersPage() {
       <div className="bg-white border border-[#E2E0DB] overflow-x-auto">
         <table className="w-full text-[14px] min-w-[760px]">
           <thead>
-            <tr className="text-left text-[12px] uppercase tracking-[0.06em] text-[#5A5A5A] border-b border-[#E2E0DB]">
+            <tr className="text-left text-[12px] text-[#4A4A4A] border-b border-[#E2E0DB] font-medium">
               <th className="px-3 py-2 font-medium">Customer</th>
               <th className="px-3 py-2 font-medium">Phone</th>
               <th className="px-3 py-2 font-medium text-right">Orders</th>
@@ -93,13 +93,13 @@ export default function CustomersPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#E9E7E2]">
-            {isLoading && <tr><td colSpan={6} className="px-3 py-6 text-[#5A5A5A]">Loading…</td></tr>}
-            {!isLoading && (data?.rows ?? []).length === 0 && <tr><td colSpan={6} className="px-3 py-6 text-[#5A5A5A]">No customers {search ? 'match' : 'yet'}.</td></tr>}
+            {isLoading && <tr><td colSpan={6} className="px-3 py-6 text-[#4A4A4A]">Loading…</td></tr>}
+            {!isLoading && (data?.rows ?? []).length === 0 && <tr><td colSpan={6} className="px-3 py-6 text-[#4A4A4A]">No customers {search ? 'match' : 'yet'}.</td></tr>}
             {(data?.rows ?? []).map((c) => (
               <tr key={c.id}>
                 <td className="px-3 py-2.5">
                   <p>{c.full_name || '—'}</p>
-                  <p className="text-[12px] text-[#626262]">{c.email} · joined {formatOrderDate(c.created_at)}</p>
+                  <p className="text-[12px] text-[#4F4F4F]">{c.email} · joined {formatOrderDate(c.created_at)}</p>
                 </td>
                 <td className="px-3 py-2.5 text-[13.5px]">{c.phone ? formatIndianPhone(c.phone) : ''}</td>
                 <td className="px-3 py-2.5 text-right tabular-nums">{c.orders}</td>
@@ -107,7 +107,7 @@ export default function CustomersPage() {
                 <td className="px-3 py-2.5 text-[13.5px]">{formatOrderDate(c.last_order_at)}</td>
                 <td className="px-3 py-2.5 text-[13.5px]">
                   {fmtBirthday(c.date_of_birth)}
-                  <button type="button" aria-label={`Set birthday for ${c.full_name || c.email}`} className="ml-1 p-1 text-[#6B6B6B] hover:text-tk-ink align-middle" onClick={() => { setEditing(c); setDob(c.date_of_birth ?? ''); }}>
+                  <button type="button" aria-label={`Set birthday for ${c.full_name || c.email}`} className="ml-1 p-1 text-[#575757] hover:text-tk-ink align-middle" onClick={() => { setEditing(c); setDob(c.date_of_birth ?? ''); }}>
                     <Pencil size={12} />
                   </button>
                 </td>

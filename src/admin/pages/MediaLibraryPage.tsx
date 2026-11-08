@@ -97,7 +97,7 @@ export default function MediaLibraryPage() {
             <div key={it.name}>
               <div className="flex justify-between text-[13px]">
                 <span className="truncate pr-4">{it.name}</span>
-                <span className={it.error ? 'text-rose-600' : 'text-[#5A5A5A]'}>{it.error ? 'Failed' : `${Math.round(it.progress * 100)}%`}</span>
+                <span className={it.error ? 'text-rose-600' : 'text-[#4A4A4A]'}>{it.error ? 'Failed' : `${Math.round(it.progress * 100)}%`}</span>
               </div>
               {it.error ? (
                 <p className="text-[12px] text-rose-600 mt-0.5">{it.error}</p>
@@ -109,7 +109,7 @@ export default function MediaLibraryPage() {
             </div>
           ))}
           {!busy && (
-            <button type="button" onClick={clear} className="text-[12px] text-[#5A5A5A] underline underline-offset-4">
+            <button type="button" onClick={clear} className="text-[12px] text-[#4A4A4A] underline underline-offset-4">
               Clear list
             </button>
           )}
@@ -120,10 +120,10 @@ export default function MediaLibraryPage() {
         <TextInput placeholder="Search by file name" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search media" />
       </div>
 
-      {isLoading && <p className="text-[14px] text-[#5A5A5A]">Loading…</p>}
+      {isLoading && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}
       {error && <p className="text-[14px] text-rose-600">{toFriendlyError(error)}</p>}
       {!isLoading && assets.length === 0 && (
-        <div className="border border-dashed border-[#C4C1B9] bg-white p-10 text-center text-[14px] text-[#5A5A5A]">
+        <div className="border border-dashed border-[#C4C1B9] bg-white p-10 text-center text-[14px] text-[#4A4A4A]">
           {search ? 'No files match that search.' : 'No uploads yet. Upload product photos, banners and videos here.'}
         </div>
       )}
@@ -142,7 +142,7 @@ export default function MediaLibraryPage() {
               <p className="truncate text-tk-ink" title={a.original_name ?? a.path}>
                 {a.original_name ?? a.path}
               </p>
-              <p className="text-[#626262]">
+              <p className="text-[#4F4F4F]">
                 {[a.kind, a.width && a.height ? `${a.width}×${a.height}` : '', formatBytes(a.bytes)].filter(Boolean).join(' · ')}
               </p>
               <TextInput

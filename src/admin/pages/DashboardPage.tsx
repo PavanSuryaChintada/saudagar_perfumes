@@ -35,9 +35,9 @@ const compact = (n: number) => (n >= 100000 ? `₹${(n / 100000).toFixed(n >= 10
 function Kpi({ label, value, hint, to }: { label: string; value: string; hint?: string; to?: string }) {
   const body = (
     <div className="bg-white border border-[#E2E0DB] px-4 py-3 h-full">
-      <p className="text-[12px] uppercase tracking-[0.08em] text-[#5A5A5A]">{label}</p>
+      <p className="text-[12px] text-[#4A4A4A] font-medium">{label}</p>
       <p className="text-[22px] text-tk-ink tabular-nums mt-0.5">{value}</p>
-      {hint && <p className="text-[12px] text-[#626262]">{hint}</p>}
+      {hint && <p className="text-[12px] text-[#4F4F4F]">{hint}</p>}
     </div>
   );
   return to ? <Link to={to} className="block hover:opacity-90">{body}</Link> : body;
@@ -106,10 +106,10 @@ function RevenueChart({ series }: { series: Dashboard['series'] }) {
         </div>
       )}
       <details className="mt-2 text-[13px]">
-        <summary className="cursor-pointer text-[#5A5A5A]">Show as a table</summary>
+        <summary className="cursor-pointer text-[#4A4A4A]">Show as a table</summary>
         <table className="mt-2 w-full max-w-[420px]">
           <thead>
-            <tr className="text-left text-[12px] text-[#5A5A5A]"><th className="py-1 font-medium">Day</th><th className="py-1 font-medium text-right">Revenue</th><th className="py-1 font-medium text-right">Orders</th></tr>
+            <tr className="text-left text-[12px] text-[#4A4A4A]"><th className="py-1 font-medium">Day</th><th className="py-1 font-medium text-right">Revenue</th><th className="py-1 font-medium text-right">Orders</th></tr>
           </thead>
           <tbody>
             {series.filter((d) => d.orders > 0).map((d) => (
@@ -124,7 +124,7 @@ function RevenueChart({ series }: { series: Dashboard['series'] }) {
 
 function RankList({ rows, value, empty, link }: { rows: { label: string; revenue: number; orders?: number; units?: number; id?: string }[]; value: 'revenue'; empty: string; link?: (r: { id?: string }) => string }) {
   const max = Math.max(1, ...rows.map((r) => r[value]));
-  if (!rows.length) return <p className="text-[13px] text-[#626262]">{empty}</p>;
+  if (!rows.length) return <p className="text-[13px] text-[#4F4F4F]">{empty}</p>;
   return (
     <ol className="space-y-2 text-[13.5px]">
       {rows.map((r) => (
@@ -199,10 +199,10 @@ export default function DashboardPage() {
             {setup.map((s) => (
               <li key={s.key}>
                 <Link to={s.link} className="py-2.5 flex gap-3 items-start hover:bg-[#FAFAF8] -mx-2 px-2">
-                  {s.done ? <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-700" aria-label="Done" /> : <Circle size={16} className="mt-0.5 shrink-0 text-[#7A7A7A]" aria-label="To do" />}
+                  {s.done ? <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-700" aria-label="Done" /> : <Circle size={16} className="mt-0.5 shrink-0 text-[#666666]" aria-label="To do" />}
                   <span>
-                    <span className={`block text-[14px] ${s.done ? 'text-[#626262] line-through' : 'text-tk-ink'}`}>{s.label}</span>
-                    {!s.done && <span className="block text-[13px] text-[#5A5A5A]">{s.hint}</span>}
+                    <span className={`block text-[14px] ${s.done ? 'text-[#4F4F4F] line-through' : 'text-tk-ink'}`}>{s.label}</span>
+                    {!s.done && <span className="block text-[13px] text-[#4A4A4A]">{s.hint}</span>}
                   </span>
                 </Link>
               </li>
@@ -235,7 +235,7 @@ export default function DashboardPage() {
       {view === 'orders' && ins && <OrdersView d={ins.pipeline} days={days} />}
       {view === 'payments' && ins && <PaymentsView d={ins.payments} days={days} />}
       {view === 'stock' && ins && <StockView d={ins.stock} days={days} />}
-      {view !== 'overview' && !ins && !insights.error && <p className="text-[14px] text-[#5A5A5A]">Loading…</p>}
+      {view !== 'overview' && !ins && !insights.error && <p className="text-[14px] text-[#4A4A4A]">Loading…</p>}
 
       {view === 'overview' && (
       <>
@@ -252,7 +252,7 @@ export default function DashboardPage() {
       </div>
 
       <Panel title={`Revenue per day · last ${days} days`}>
-        {isLoading ? <p className="text-[14px] text-[#5A5A5A]">Loading…</p> : hasSales ? <RevenueChart series={data!.series} /> : <p className="text-[14px] text-[#5A5A5A]">No orders in this period yet.</p>}
+        {isLoading ? <p className="text-[14px] text-[#4A4A4A]">Loading…</p> : hasSales ? <RevenueChart series={data!.series} /> : <p className="text-[14px] text-[#4A4A4A]">No orders in this period yet.</p>}
       </Panel>
 
       <div className="grid gap-5 lg:grid-cols-2">
@@ -272,7 +272,7 @@ export default function DashboardPage() {
               <span className="mt-1.5 h-2 w-2 shrink-0 bg-tk-accent" aria-hidden />
               <div>
                 <p className="text-[14px] text-tk-ink">{s.label}</p>
-                <p className="text-[13px] text-[#5A5A5A]">{s.detail}</p>
+                <p className="text-[13px] text-[#4A4A4A]">{s.detail}</p>
               </div>
             </li>
           ))}
