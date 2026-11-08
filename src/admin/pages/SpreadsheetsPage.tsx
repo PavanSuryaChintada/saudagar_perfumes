@@ -29,6 +29,8 @@ function useVariantRows() {
         supabase
           .from('product_variants')
           .select('sku, label, kind, price, compare_at_price, stock, product_id, products!inner(name, base_price, archived_at, stock_unit, stock_ml)', { count: 'exact' })
+          .is('purpose', null)
+          .eq('products.is_gift_pack', false)
           .order('sku')
           .range(from, to) as never,
       );

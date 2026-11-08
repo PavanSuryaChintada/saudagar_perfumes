@@ -128,13 +128,25 @@ export const GUIDE: GuideSection[] = [
   {
     id: 'samples',
     title: 'Free samples',
-    why: 'Customers get a free 5 ml sample for every 50 ml they buy, and choose the scent in the bag.',
+    why: 'Customers get a free sample for every set amount of perfume they buy, and can change the scent in the bag.',
     routes: ['/admin/samples'],
     check: 'samples',
     steps: [
       { text: 'Settings → Free samples: switch it on, set “one sample for every … ml” and the sample size.', link: { to: '/admin/settings', label: 'Settings' } },
-      { text: 'Free samples page: add a sample vial for each perfume you offer, with its stock.', link: { to: '/admin/samples', label: 'Free samples' } },
-      { text: '“Surprise me” picks from the vials with the most stock, so popular vials aren’t emptied first.' },
+      { text: 'Free samples page: switch on each perfume you offer as a sample. Samples are poured from that perfume’s own stock.', link: { to: '/admin/samples', label: 'Free samples' } },
+      { text: 'The bag fills each sample with a suggestion, chosen from the perfumes with the most left. Customers can swap it by searching your sample list, or choose “Surprise me”.' },
+    ],
+  },
+  {
+    id: 'giftpack',
+    title: 'Gift pack',
+    why: 'Customers build their own Premium Gift Pack from your perfumes; the bag invites them to try it.',
+    routes: ['/admin/gift-pack'],
+    optional: true,
+    steps: [
+      { text: 'Gift pack page: switch it on and set how many perfumes go in a pack, how many ml each, the price and any discount.', link: { to: '/admin/gift-pack', label: 'Gift pack' } },
+      { text: 'Make sure your perfumes have the size the pack is priced from (30 ml unless you change it). Only those can be chosen.', link: { to: '/admin/products', label: 'Products' } },
+      { text: 'Add a picture of the box and check the words. Each pack’s perfumes are poured from their own stock, and the order page lists exactly what to pour.' },
     ],
   },
   {

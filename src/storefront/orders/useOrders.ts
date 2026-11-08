@@ -4,7 +4,8 @@ import { useAuth } from '../../lib/auth';
 
 export interface OrderItemRow {
   id: string;
-  line_type: 'item' | 'sample';
+  line_type: 'item' | 'sample' | 'pack_item';
+  parent_item_id: string | null;
   product_name: string;
   product_slug: string | null;
   variant_label: string | null;

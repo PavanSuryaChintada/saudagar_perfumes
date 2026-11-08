@@ -15,6 +15,8 @@ import BluorngQuickBuyModal from './components/BluorngQuickBuyModal.jsx';
 import CheckoutPage from './storefront/checkout/CheckoutPage.jsx';
 import OrderPage from './storefront/orders/OrderPage.jsx';
 import { useCartSync } from './storefront/bag/useQuote';
+import { addToBag, bagCount } from './storefront/bag/bagLines';
+import GiftPackPage from './storefront/giftpack/GiftPackPage';
 import { useWishlistSync } from './storefront/wishlistSync';
 import BluorngNavDrawer from './components/BluorngNavDrawer.jsx';
 import BluorngWishlistPage from './components/BluorngWishlistPage.jsx';
@@ -291,18 +293,7 @@ export default function App() {
   // Cart Handlers
   const handleAddToCart = (item, { openCart = true } = {}) => {
     setCart((prevCart) => {
-      const existing = prevCart.find(
-        (i) =>
-          (item.variantId ? i.variantId === item.variantId : i.productId === item.productId && i.size === item.size)
-      );
-      let updated;
-      if (existing) {
-        updated = prevCart.map((i) =>
-          i === existing ? { ...i, quantity: i.quantity + (item.quantity || 1) } : i
-        );
-      } else {
-        updated = [...prevCart, { ...item, quantity: item.quantity || 1 }];
-      }
+      const updated = addToBag(prevCart, item);
       setStoredCart(updated);
       return updated;
     });
@@ -365,7 +356,7 @@ export default function App() {
     resetScrollToTop();
   };
 
-  const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalCartCount = bagCount(cart);
 
   // Shop actions every CMS section can use (product cards, reels, stories, boutiques).
   const storefrontActions = {
@@ -505,6 +496,8 @@ export default function App() {
             <CmsPage slug={resolved.pageSlug} onNavigateHome={navigateToHome} onNavigateCollection={navigateToCollection} />
           ) : view === 'notes' ? (
             <NotesIndexPage />
+          ) : view === 'giftpack' ? (
+            <GiftPackPage onAddToCart={handleAddToCart} onNavigateCollection={navigateToCollection} />
           ) : view === 'notfound' ? (
             <NotFoundPage onNavigateHome={navigateToHome} onNavigateCollection={navigateToCollection} />
           ) : view === 'collection' ? (

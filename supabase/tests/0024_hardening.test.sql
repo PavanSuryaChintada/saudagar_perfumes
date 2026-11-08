@@ -9,7 +9,7 @@ begin
   from pg_proc p join pg_namespace n on n.oid = p.pronamespace
   where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')
     and p.proname <> all (array['is_admin', 'product_is_visible', 'page_is_published', 'site_bootstrap', 'quote_order', 'sample_pool',
-      'available_coupons', 'check_pincode', 'product_reviews', 'request_back_in_stock', 'subscribe_newsletter']);
+      'available_coupons', 'check_pincode', 'product_reviews', 'request_back_in_stock', 'subscribe_newsletter', 'gift_pack_options', 'suggest_samples']);
   assert bad is null, 'visitors can call only the storefront functions, not: ' || coalesce(bad, '');
 
   select string_agg(p.proname, ', ') into bad

@@ -20,6 +20,7 @@ import OrderDetailPage from './pages/orders/OrderDetailPage';
 import PrintOrderPage, { PrintOrdersPage } from './pages/orders/PrintOrderPage';
 import InventoryPage from './pages/orders/InventoryPage';
 import SamplesPage from './pages/orders/SamplesPage';
+import GiftPackAdminPage from './pages/catalog/GiftPackPage';
 import CouponsPage from './pages/coupons/CouponsPage';
 import ShippingSettingsPage from './pages/ShippingSettingsPage';
 import ReturnsPage from './pages/orders/ReturnsPage';
@@ -79,6 +80,7 @@ export default function AdminApp() {
         <Route path="orders/:id" element={<OrderDetailPage />} />
         <Route path="inventory" element={<InventoryPage />} />
         <Route path="samples" element={<SamplesPage />} />
+        <Route path="gift-pack" element={<GiftPackAdminPage />} />
         <Route path="coupons" element={<CouponsPage />} />
         <Route path="shipping" element={<ShippingSettingsPage />} />
         <Route path="returns" element={<ReturnsPage />} />
