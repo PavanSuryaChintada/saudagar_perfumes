@@ -61,3 +61,9 @@ export function paymentLabel(o: PaymentInfo): string {
 export function canCustomerCancel(status: string): boolean {
   return status === 'PENDING';
 }
+
+/** How many of the chosen orders can be packed, shipped or delivered next (the bulk bar shows only those). */
+export function bulkOrderActions(orders: { status: string; payment_method: string; payment_status: string }[]) {
+  const can = (to: OrderStatus) => orders.filter((o) => allowedNextStatuses(o.status as OrderStatus, o.payment_method, o.payment_status).includes(to)).length;
+  return { pack: can('PACKED'), ship: can('SHIPPED'), deliver: can('DELIVERED') };
+}

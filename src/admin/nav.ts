@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BellRing, BookOpen, PackagePlus, FileSpreadsheet, ReceiptText, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
+  BellRing, BookOpen, PackagePlus, PanelTop, FileSpreadsheet, ReceiptText, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -67,6 +67,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { to: '/admin/cms?tab=content&kind=testimonials', label: 'Testimonials', icon: MessageSquareQuote, keywords: 'quotes press' },
       { to: '/admin/cms?tab=content&kind=faqs', label: 'FAQs', icon: HelpCircle, keywords: 'questions answers' },
       { to: '/admin/cms?tab=content&kind=stockists', label: 'Boutiques', icon: Store, keywords: 'stores stockists' },
+      { to: '/admin/cms?tab=site&block=mega_nav', label: 'Mega menu', icon: PanelTop, keywords: 'menu navigation header links mega nav' },
       { to: '/admin/cms?tab=site', label: 'Site settings', icon: Palette, keywords: 'menu footer logo brand theme colours fonts seo header shop words' },
       { to: '/admin/media', label: 'Media library', icon: Image, keywords: 'photos images videos uploads' },
     ],

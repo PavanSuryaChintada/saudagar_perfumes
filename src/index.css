@@ -341,6 +341,10 @@ html.dark .gold-shimmer, [data-theme="dark"] .gold-shimmer {
   font-weight: 600;
   color: #222222;
 }
+/* Grid cells in the admin may shrink, so long names wrap instead of pushing the page wider than a phone. */
+.admin-root .grid > * {
+  min-width: 0;
+}
 /* Column headings stand apart from the rows under them. */
 .admin-root table thead tr {
   background: #ece8df;

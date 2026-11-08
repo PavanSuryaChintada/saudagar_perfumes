@@ -18,7 +18,7 @@ import { rpc, throwIf } from '../../catalog/api';
 import { useAdminOrder, useOrdersRealtime } from '../../orders/api';
 import { StatusBadge } from './OrdersPage';
 import { invokeFunction } from '../../../lib/razorpay';
-import { useCouriers } from '../../orders/shipping';
+import { useCouriers, useShippingSettings } from '../../orders/shipping';
 
 const ACTION_LABEL: Partial<Record<OrderStatus, string>> = {
   PACKED: 'Mark packed',
@@ -34,6 +34,8 @@ export default function OrderDetailPage() {
   const { id } = useParams();
   const qc = useQueryClient();
   const { data: o, isLoading, error } = useAdminOrder(id);
+  const { data: shipSettings } = useShippingSettings();
+  const delhiveryOn = shipSettings?.['delhivery.enabled'] === true;
   const [moving, setMoving] = useState<OrderStatus | null>(null);
   const [moveNote, setMoveNote] = useState('');
   const [tracking, setTracking] = useState({ courier_name: '', tracking_number: '', tracking_url: '' });
@@ -154,7 +156,9 @@ export default function OrderDetailPage() {
         {o.status === 'RTO' && <p className="mt-3 text-[13px] text-[#454545]">The parcel came back. Decide on restocking from the Returns page once it arrives.</p>}
         {o.status === 'PACKED' && !o.tracking_number && (
           <p className="mt-3 text-[13px] text-[#454545]">
-            {o.courier === 'delhivery' ? 'Booking with Delhivery…' : 'Awaiting booking: print the label, book the parcel, then press Mark shipped and enter the tracking number.'}
+            {o.courier === 'delhivery' && delhiveryOn
+              ? 'Booking with Delhivery… The tracking number (AWB), the label to print and the pickup appear here in a moment.'
+              : 'Next: book this parcel with the courier (for Delhivery, in its app or website), stick its label on the box, then press Mark shipped and type the tracking number (AWB) printed on the label. Once Delhivery is connected in Shipping settings, booking happens by itself at the packing step.'}
           </p>
         )}
         {(o as unknown as { shipping_error: string | null }).shipping_error && (

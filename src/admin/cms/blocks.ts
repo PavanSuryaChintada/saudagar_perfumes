@@ -16,7 +16,7 @@ const ACTIONS = [
   { value: 'stores', label: 'Show boutiques' },
 ];
 const action: FieldDef = { key: 'action', label: 'When clicked', type: 'select', options: ACTIONS };
-const actionLink: FieldDef = { ...link('link', 'Link'), showIf: { field: 'action', in: ['link', '', undefined] } };
+const actionLink: FieldDef = { ...link('link', 'Goes to'), showIf: { field: 'action', in: ['link', '', undefined] } };
 
 export interface BlockDef {
   label: string;
@@ -71,13 +71,13 @@ export const BLOCK_SCHEMAS: Record<string, BlockDef> = {
     description: 'The bulletin panel that opens from the bar. The bar text itself comes from Content → Announcements.',
     fields: [
       t('bulletins_heading', 'Panel heading'),
-      { key: 'bulletins', label: 'Bulletins', type: 'list', itemLabel: 'Bulletin', fields: [t('text', 'Text'), link('link', 'Link')] },
+      { key: 'bulletins', label: 'Bulletins', type: 'list', itemLabel: 'Bulletin', fields: [t('text', 'Text'), link('link', 'Goes to')] },
       { key: 'tags', label: 'Tags', type: 'strings' },
     ],
   },
   mega_nav: {
-    label: 'Menu',
-    description: 'The full-screen menu opened from the header.',
+    label: 'Mega menu',
+    description: 'The big menu that opens from the header on computers: its links, collections, accords and picture cards.',
     fields: [
       {
         key: 'items',
@@ -85,35 +85,35 @@ export const BLOCK_SCHEMAS: Record<string, BlockDef> = {
         type: 'list',
         itemLabel: 'Entry',
         fields: [
-          t('title', 'Title'), t('numeral', 'Number', 'e.g. 01'), t('subtitle', 'Subtitle'), link('link', 'Link'),
+          t('title', 'Title'), t('numeral', 'Number', 'e.g. 01'), t('subtitle', 'Subtitle'), link('link', 'Goes to'),
           t('count_label', 'Count label', 'e.g. 12 Flacons'), t('concentration', 'Concentration line'), media('image', 'Image', 'image'), media('video', 'Film', 'video'),
         ],
       },
       t('accords_heading', 'Accords heading'),
-      { key: 'accords', label: 'Accord links', type: 'list', itemLabel: 'Accord', fields: [t('label', 'Label'), link('link', 'Link')] },
-      { key: 'quick_cards', label: 'Quick cards', type: 'list', itemLabel: 'Card', fields: [t('title', 'Title'), t('kicker', 'Small label'), t('subtitle', 'Subtitle'), link('link', 'Link')] },
+      { key: 'accords', label: 'Accord links', type: 'list', itemLabel: 'Accord', fields: [t('label', 'Label'), link('link', 'Goes to')] },
+      { key: 'quick_cards', label: 'Quick cards', type: 'list', itemLabel: 'Card', fields: [t('title', 'Title'), t('kicker', 'Small label'), t('subtitle', 'Subtitle'), link('link', 'Goes to')] },
       { key: 'secondary_links', label: 'Secondary links', type: 'list', itemLabel: 'Link', fields: [t('label', 'Label'), action, actionLink] },
       media('feature_badge_video', 'Feature film', 'video'),
       media('feature_badge_image', 'Feature image', 'image'),
       t('feature_cta_prefix', 'Feature button prefix'),
-      { key: 'feature_secondary_cta', label: 'Feature second button', type: 'group', fields: [t('label', 'Button text'), link('link', 'Link')] },
+      { key: 'feature_secondary_cta', label: 'Feature second button', type: 'group', fields: [t('label', 'Button text'), link('link', 'Goes to')] },
       {
         key: 'side_cells',
         label: 'Side tiles',
         type: 'list',
         itemLabel: 'Tile',
-        fields: [t('title', 'Title'), t('badge', 'Badge'), t('subtitle', 'Subtitle'), media('image', 'Image', 'image'), media('video', 'Film', 'video'), t('cta_label', 'Button text'), link('link', 'Link')],
+        fields: [t('title', 'Title'), t('badge', 'Badge'), t('subtitle', 'Subtitle'), media('image', 'Image', 'image'), media('video', 'Film', 'video'), t('cta_label', 'Button text'), link('link', 'Goes to')],
       },
       t('footer_text', 'Menu footer line'),
     ],
   },
   mobile_drawer: {
-    label: 'Mobile menu',
-    description: 'The side drawer on phones.',
+    label: 'Phone menu',
+    description: 'The menu that slides in on phones.',
     fields: [
-      { key: 'highlight', label: 'Highlight link', type: 'group', fields: [t('label', 'Label'), t('badge', 'Badge'), link('link', 'Link')] },
-      { key: 'all_link', label: '"Shop all" link', type: 'group', fields: [t('label', 'Label'), link('link', 'Link')] },
-      { key: 'collections', label: 'Collection links', type: 'list', itemLabel: 'Link', fields: [t('label', 'Label'), t('count_label', 'Count label'), link('link', 'Link')] },
+      { key: 'highlight', label: 'Highlight link', type: 'group', fields: [t('label', 'Label'), t('badge', 'Badge'), link('link', 'Goes to')] },
+      { key: 'all_link', label: '"Shop all" link', type: 'group', fields: [t('label', 'Label'), link('link', 'Goes to')] },
+      { key: 'collections', label: 'Collection links', type: 'list', itemLabel: 'Link', fields: [t('label', 'Label'), t('count_label', 'Count label'), link('link', 'Goes to')] },
       { key: 'utility_links', label: 'Utility links', type: 'list', itemLabel: 'Link', fields: [t('label', 'Label'), t('icon', 'Icon (emoji)'), action, actionLink] },
       t('theme_label', 'Theme switch label'),
       { key: 'footer_lines', label: 'Footer lines', type: 'strings' },
@@ -141,7 +141,7 @@ export const BLOCK_SCHEMAS: Record<string, BlockDef> = {
       t('theme_dark_label', 'Dark mode label'),
       t('back_to_top', '"Back to top" text'),
       t('copyright', 'Copyright line', 'Use {year} for the current year.'),
-      { key: 'legal_links', label: 'Legal links', type: 'list', itemLabel: 'Link', fields: [t('label', 'Label'), link('link', 'Link')] },
+      { key: 'legal_links', label: 'Legal links', type: 'list', itemLabel: 'Link', fields: [t('label', 'Label'), link('link', 'Goes to')] },
       { key: 'badges', label: 'Badges', type: 'strings' },
     ],
   },

@@ -94,12 +94,16 @@ describe('SchemaForm', () => {
     expect(screen.getByLabelText('Extra')).toBeInTheDocument();
   });
 
-  it('chooses a link by type and value', () => {
+  it('chooses where a button goes with plain choices, no addresses to type', () => {
     const spy = vi.fn();
-    render(<Harness fields={[{ key: 'cta', label: 'Button link', type: 'link' }]} initial={{}} spy={spy} />);
-    fireEvent.change(screen.getByLabelText('Button link — goes to'), { target: { value: 'path' } });
-    fireEvent.change(screen.getByLabelText('Button link — address'), { target: { value: '/shop' } });
+    render(<Harness fields={[{ key: 'cta', label: 'Button goes to', type: 'link' }]} initial={{}} spy={spy} />);
+    fireEvent.click(screen.getByRole('radio', { name: 'Shop page' }));
     expect(spy).toHaveBeenLastCalledWith({ cta: { type: 'path', value: '/shop' } });
+    fireEvent.click(screen.getByRole('radio', { name: 'Other website' }));
+    fireEvent.change(screen.getByLabelText('Button goes to: website address'), { target: { value: 'https://instagram.com/saudagar' } });
+    expect(spy).toHaveBeenLastCalledWith({ cta: { type: 'url', value: 'https://instagram.com/saudagar' } });
+    fireEvent.click(screen.getByRole('radio', { name: 'Nothing' }));
+    expect(spy).toHaveBeenLastCalledWith({ cta: null });
   });
 
   it('renders every section and block schema with real seed-shaped values without crashing', () => {

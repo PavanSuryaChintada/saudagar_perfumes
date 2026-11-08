@@ -383,18 +383,31 @@ function MultiPick({ label, help, value, onChange, by }: { label: string; help?:
   );
 }
 
-const LINK_TYPES: { value: LinkType; label: string }[] = [
-  { value: 'collection', label: 'A collection' },
-  { value: 'category', label: 'A category' },
-  { value: 'product', label: 'A product' },
-  { value: 'note', label: 'A note' },
-  { value: 'page', label: 'A page' },
-  { value: 'path', label: 'A page on this site (address)' },
-  { value: 'url', label: 'Another website' },
+// Where a button or link goes, in plain choices: pick the kind, then search and pick the item.
+const LINK_KINDS: { value: LinkType | ''; label: string }[] = [
+  { value: 'product', label: 'Product' },
+  { value: 'category', label: 'Category' },
+  { value: 'collection', label: 'Collection' },
+  { value: 'note', label: 'Note' },
+  { value: 'page', label: 'Page' },
+  { value: 'path', label: 'Shop page' },
+  { value: 'url', label: 'Other website' },
+  { value: '', label: 'Nothing' },
+];
+
+/** Fixed places in the shop that aren't a product, category, collection, note or page. */
+export const SHOP_PLACES: { value: string; label: string }[] = [
+  { value: '/shop', label: 'All perfumes' },
+  { value: '/gift-pack', label: 'Gift pack builder' },
+  { value: '/notes', label: 'Notes library' },
+  { value: '/story', label: 'Our story' },
+  { value: '/search', label: 'Search' },
+  { value: '/wishlist', label: 'Wishlist' },
+  { value: '/account', label: 'My account' },
+  { value: '/', label: 'Home' },
 ];
 
 export function LinkInput({ label, help, value, onChange }: { label: string; help?: string; value: LinkValue | null; onChange: (v: unknown) => void }) {
-  const typeId = useId();
   const valueId = useId();
   const type = value?.type ?? '';
   const lookupKind = (['collection', 'category', 'product', 'note', 'page'] as const).find((k) => k === type);
@@ -403,40 +416,51 @@ export function LinkInput({ label, help, value, onChange }: { label: string; hel
     if (!next.new_tab) delete next.new_tab;
     onChange(next);
   };
+  const custom = type === 'path' && !!value?.value && !SHOP_PLACES.some((p) => p.value === value.value);
   return (
     <fieldset className="space-y-2">
-      <legend className="text-[12px] font-medium text-[#454545]">{label}</legend>
-      {help && <p className="text-[12px] text-[#4F4F4F]">{help}</p>}
-      <div className="grid sm:grid-cols-2 gap-2">
-        <select
-          id={typeId}
-          aria-label={`${label} — goes to`}
-          className={selectCls}
-          value={type}
-          onChange={(e) => (e.target.value ? onChange({ type: e.target.value, value: '' }) : onChange(null))}
-        >
-          <option value="">No link</option>
-          {LINK_TYPES.map((t) => (
-            <option key={t.value} value={t.value}>{t.label}</option>
-          ))}
-        </select>
-        {lookupKind ? (
-          <LinkLookup id={valueId} label={label} kind={lookupKind} value={value?.value ?? ''} onChange={(v) => set({ value: v })} />
-        ) : type ? (
-          <TextInput
-            id={valueId}
-            aria-label={`${label} — address`}
-            value={value?.value ?? ''}
-            placeholder={type === 'url' ? 'https://…' : '/shop'}
-            onChange={(e) => set({ value: e.target.value })}
-          />
-        ) : null}
+      <legend className="text-[13px] font-medium text-[#2F2F2F]">{label}</legend>
+      {help && <p className="text-[12.5px] text-[#4F4F4F]">{help}</p>}
+      <div role="radiogroup" aria-label={`${label}: kind`} className="flex flex-wrap">
+        {LINK_KINDS.map((k) => {
+          const on = type === k.value;
+          return (
+            <button
+              key={k.value || 'none'}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              onClick={() => (k.value ? (on ? null : onChange({ type: k.value, value: k.value === 'path' ? '/shop' : '' })) : onChange(null))}
+              className={`-ml-px first:ml-0 px-3 py-1.5 text-[12px] font-medium uppercase tracking-[0.08em] border ${
+                on ? 'relative z-[1] bg-tk-ink border-tk-ink text-white' : 'bg-white border-[#C4C1B9] text-[#3F3F3F] hover:text-tk-ink'
+              }`}
+            >
+              {k.label}
+            </button>
+          );
+        })}
       </div>
-      {type === 'url' && (
-        <label className="flex items-center gap-2 text-[13px] text-[#454545]">
-          <input type="checkbox" checked={Boolean(value?.new_tab)} onChange={(e) => set({ new_tab: e.target.checked })} /> Open in a new tab
-        </label>
+      {lookupKind && <LinkLookup id={valueId} label={label} kind={lookupKind} value={value?.value ?? ''} onChange={(v) => set({ value: v })} />}
+      {type === 'path' && (
+        <>
+          <SearchSelect
+            id={valueId}
+            options={[...SHOP_PLACES, ...(custom ? [{ value: value!.value, label: `Address ${value!.value}` }] : [])]}
+            value={value?.value || null}
+            onChange={(v) => set({ value: v ?? '/shop' })}
+            placeholder="Search shop pages"
+          />
+        </>
       )}
+      {type === 'url' && (
+        <>
+          <TextInput id={valueId} aria-label={`${label}: website address`} value={value?.value ?? ''} placeholder="https://www.instagram.com/…" onChange={(e) => set({ value: e.target.value })} />
+          <label className="flex items-center gap-2 text-[13px] text-[#454545]">
+            <input type="checkbox" checked={Boolean(value?.new_tab)} onChange={(e) => set({ new_tab: e.target.checked })} /> Open in a new tab
+          </label>
+        </>
+      )}
+      {!type && <p className="text-[12.5px] text-[#4F4F4F]">Not linked. Pick where it should go above.</p>}
     </fieldset>
   );
 }

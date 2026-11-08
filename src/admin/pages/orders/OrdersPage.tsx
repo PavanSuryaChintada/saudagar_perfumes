@@ -5,7 +5,7 @@ import { PageHeader } from '../../ui/PageHeader';
 import { TextInput } from '../../ui/Field';
 import { Button } from '../../ui/Button';
 import { PAGE_SIZE, useAdminOrders, useOrdersRealtime } from '../../orders/api';
-import { ORDER_STATUS_LABEL, paymentLabel, type OrderStatus } from '../../../lib/orders';
+import { allowedNextStatuses, bulkOrderActions, ORDER_STATUS_LABEL, paymentLabel, type OrderStatus } from '../../../lib/orders';
 import { formatRupees as formatINR } from '../../../lib/money';
 import { fetchAll } from '../../../lib/fetchAll';
 import { toFriendlyError } from '../../../lib/errors';
@@ -84,6 +84,7 @@ export default function OrdersPage() {
   const paramKey = params.toString();
   useEffect(() => setSelected(new Set()), [paramKey]);
   const chosen = useMemo(() => rows.filter((r) => selected.has(r.id)), [rows, selected]);
+  const actions = useMemo(() => bulkOrderActions(chosen), [chosen]);
   const allShown = rows.length > 0 && rows.every((r) => selected.has(r.id));
   const toggle = (id: string, on: boolean) =>
     setSelected((cur) => {
@@ -96,7 +97,9 @@ export default function OrdersPage() {
   const setStatusFor = async (to: 'PACKED' | 'DELIVERED', verb: string) => {
     setBusy(true);
     try {
-      reportBulk(await rpc<BulkResult>('bulk_order_status', { p_orders: chosen.map((o) => o.id), p_status: to, p_note: null }), verb);
+      // Only the orders that can take this step are sent.
+      const ids = chosen.filter((o) => allowedNextStatuses(o.status as OrderStatus, o.payment_method, o.payment_status).includes(to)).map((o) => o.id);
+      reportBulk(await rpc<BulkResult>('bulk_order_status', { p_orders: ids, p_status: to, p_note: null }), verb);
       await refresh();
       setSelected(new Set());
     } catch (err) {
@@ -107,7 +110,14 @@ export default function OrdersPage() {
   };
   const openShip = () => {
     const fallback = String(shipSettings?.['shipping.default_courier'] ?? couriers[0]?.key ?? 'other');
-    setShipping(Object.fromEntries(chosen.filter((o) => o.status === 'PACKED').map((o) => [o.id, { courier: fallback, tracking: '' }])));
+    // A parcel already booked with the courier keeps its courier and tracking number.
+    setShipping(
+      Object.fromEntries(
+        chosen
+          .filter((o) => o.status === 'PACKED')
+          .map((o) => [o.id, { courier: (o as { courier?: string | null }).courier || fallback, tracking: o.tracking_number ?? '' }]),
+      ),
+    );
   };
   const print = (doc: 'invoice' | 'slip') => window.open(`/admin/orders/print?doc=${doc}&ids=${chosen.map((o) => o.id).join(',')}`, '_blank', 'noopener');
   const exportChosen = () =>
@@ -258,9 +268,22 @@ export default function OrdersPage() {
       />
       {selected.size > 0 && <div className="h-24" aria-hidden />}
       <BulkBar count={selected.size} noun={['order', 'orders']} onClear={() => setSelected(new Set())}>
-        <BulkButton disabled={busy} onClick={() => setStatusFor('PACKED', 'marked packed')}>Mark packed</BulkButton>
-        <BulkButton disabled={busy} onClick={openShip}>Ship…</BulkButton>
-        <BulkButton disabled={busy} onClick={() => setStatusFor('DELIVERED', 'marked delivered')}>Mark delivered</BulkButton>
+        {/* Only the steps the chosen orders can still take; the number says how many it applies to. */}
+        {actions.pack > 0 && (
+          <BulkButton disabled={busy} onClick={() => setStatusFor('PACKED', 'marked packed')}>
+            Mark packed{actions.pack < chosen.length ? ` (${actions.pack})` : ''}
+          </BulkButton>
+        )}
+        {actions.ship > 0 && (
+          <BulkButton disabled={busy} onClick={openShip}>
+            Ship{actions.ship < chosen.length ? ` (${actions.ship})` : ''}…
+          </BulkButton>
+        )}
+        {actions.deliver > 0 && (
+          <BulkButton disabled={busy} onClick={() => setStatusFor('DELIVERED', 'marked delivered')}>
+            Mark delivered{actions.deliver < chosen.length ? ` (${actions.deliver})` : ''}
+          </BulkButton>
+        )}
         <BulkButton disabled={busy} onClick={() => print('invoice')}>Print invoices</BulkButton>
         <BulkButton disabled={busy} onClick={() => print('slip')}>Print packing slips</BulkButton>
         <BulkButton disabled={busy} onClick={exportChosen}>Export</BulkButton>
@@ -307,6 +330,12 @@ export default function OrdersPage() {
       >
         {shipping && (
           <div className="space-y-3">
+            <p className="text-[13px] text-[#3F3F3F] bg-[#F6F3EC] border border-[#E6DFD0] px-3 py-2">
+              The tracking number (Delhivery calls it the AWB) is printed on the courier’s label or receipt for each parcel.
+              {shipSettings?.['delhivery.enabled'] === true
+                ? ' Orders booked with Delhivery already have it filled in.'
+                : ' Once Delhivery is connected in Shipping settings, it is filled in for you when you mark an order packed.'}
+            </p>
             {chosen.filter((o) => o.status !== 'PACKED').length > 0 && (
               <p className="text-[13px] bg-amber-50 border border-amber-200 text-amber-900 px-3 py-2">
                 {chosen.filter((o) => o.status !== 'PACKED').map((o) => o.order_number).join(', ')}: not packed yet, so they are left out. Mark them packed first.
@@ -336,7 +365,7 @@ export default function OrdersPage() {
                       </select>
                       <TextInput
                         aria-label={`Tracking number for ${o.order_number}`}
-                        placeholder="Tracking / AWB number"
+                        placeholder="Tracking number (AWB)"
                         value={shipping[o.id].tracking}
                         onChange={(e) => setShipping({ ...shipping, [o.id]: { ...shipping[o.id], tracking: e.target.value } })}
                       />
