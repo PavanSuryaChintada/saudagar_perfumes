@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BellRing, BookOpen, FileSpreadsheet, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
+  BellRing, BookOpen, FileSpreadsheet, ReceiptText, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -74,6 +74,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     heading: 'Settings',
     items: [
       { to: '/admin/settings', label: 'Settings', icon: Settings, keywords: 'cod payments razorpay gst business invoice samples analytics whatsapp' },
+      { to: '/admin/invoice', label: 'Invoice', icon: ReceiptText, keywords: 'gst bill tax invoice packing slip signature seller' },
       { to: '/admin/shipping', label: 'Shipping', icon: Truck, keywords: 'delivery courier pincode fee' },
       { to: '/admin/export', label: 'Data export', icon: DatabaseBackup, keywords: 'csv excel backup download' },
     ],

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
+import { usePickMedia } from './mobileMedia';
 
 type T = Database['public']['Tables'];
 export type Story = T['stories']['Row'] & { product_slug: string | null };
@@ -13,7 +14,9 @@ const FIVE_MIN = 5 * 60_000;
 
 /** Active stories in order, with the tagged product's slug. */
 export function useStories() {
+  const select = usePickMedia();
   return useQuery({
+    select,
     queryKey: ['cms', 'stories'],
     staleTime: FIVE_MIN,
     queryFn: async () => {
@@ -25,7 +28,9 @@ export function useStories() {
 }
 
 export function useStockists() {
+  const select = usePickMedia();
   return useQuery({
+    select,
     queryKey: ['cms', 'stockists'],
     staleTime: FIVE_MIN,
     queryFn: async () => {
@@ -37,7 +42,9 @@ export function useStockists() {
 }
 
 export function useTestimonials() {
+  const select = usePickMedia();
   return useQuery({
+    select,
     queryKey: ['cms', 'testimonials'],
     staleTime: FIVE_MIN,
     queryFn: async () => {
@@ -49,7 +56,9 @@ export function useTestimonials() {
 }
 
 export function useFaqs() {
+  const select = usePickMedia();
   return useQuery({
+    select,
     queryKey: ['cms', 'faqs'],
     staleTime: FIVE_MIN,
     queryFn: async () => {
@@ -62,7 +71,9 @@ export function useFaqs() {
 
 /** Active reels with their tagged products' slugs (in tag order). */
 export function useReels() {
+  const select = usePickMedia();
   return useQuery({
+    select,
     queryKey: ['cms', 'reels'],
     staleTime: FIVE_MIN,
     queryFn: async () => {

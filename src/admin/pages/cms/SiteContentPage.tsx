@@ -26,7 +26,7 @@ export default function SiteContentPage() {
             type="button"
             aria-selected={k === tab}
             onClick={() => setParams({ tab: k })}
-            className={`px-3 py-2 text-[13px] -mb-px border-b-2 ${k === tab ? 'border-tk-ink text-tk-ink' : 'border-transparent text-[#5A5A5A] hover:text-tk-ink'}`}
+            className={`px-3 py-2 text-[13px] -mb-px border-b-2 ${k === tab ? 'border-tk-ink text-tk-ink' : 'border-transparent text-[#4A4A4A] hover:text-tk-ink'}`}
           >
             {BLOCK_SCHEMAS[k].label}
           </button>
@@ -68,7 +68,7 @@ function BlockEditor({ blockKey }: { blockKey: string }) {
     }
   };
 
-  if (isLoading || value === null) return <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
+  if (isLoading || value === null) return <p className="text-[14px] text-[#4A4A4A]">Loading…</p>;
   return (
     <Panel title={def.label} description={def.description}>
       <SchemaForm fields={def.fields} value={value} onChange={setValue} />
@@ -77,7 +77,7 @@ function BlockEditor({ blockKey }: { blockKey: string }) {
         {dirty && (
           <Button variant="ghost" onClick={() => setValue(data ?? {})}>Discard changes</Button>
         )}
-        {!dirty && <span className="text-[13px] text-[#626262]">All changes saved.</span>}
+        {!dirty && <span className="text-[13px] text-[#4F4F4F]">All changes saved.</span>}
       </div>
     </Panel>
   );

@@ -30,6 +30,7 @@ import CustomersPage from './pages/CustomersPage';
 import ExportPage from './pages/ExportPage';
 import GuidePage from './guide/GuidePage';
 import SpreadsheetsPage from './pages/SpreadsheetsPage';
+import InvoicePage from './pages/InvoicePage';
 
 export default function AdminApp() {
   return (
@@ -62,6 +63,7 @@ export default function AdminApp() {
         <Route path="guide" element={<GuidePage />} />
         <Route path="spreadsheets" element={<SpreadsheetsPage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="invoice" element={<InvoicePage />} />
         <Route path="media" element={<MediaLibraryPage />} />
         <Route path="products" element={<ProductsPage />} />
         <Route path="products/:id" element={<ProductEditorPage />} />
@@ -87,7 +89,7 @@ export default function AdminApp() {
         <Route path="export" element={<ExportPage />} />
         <Route
           path="*"
-          element={<p className="text-[14px] text-[#5A5A5A]">This admin page doesn't exist yet.</p>}
+          element={<p className="text-[14px] text-[#4A4A4A]">This admin page doesn't exist yet.</p>}
         />
       </Route>
     </Routes>

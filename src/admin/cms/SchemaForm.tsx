@@ -21,7 +21,19 @@ import { OPTION_KINDS } from '../catalog/api';
 
 type Obj = Record<string, unknown>;
 const selectCls = 'w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white';
-const iconBtn = 'p-1.5 text-[#5A5A5A] hover:text-tk-ink disabled:opacity-30 disabled:hover:text-[#5A5A5A]';
+const iconBtn = 'p-1.5 text-[#4A4A4A] hover:text-tk-ink disabled:opacity-30 disabled:hover:text-[#4A4A4A]';
+
+/** Pictures that get a phone version: not videos, logos, icons or share images, and not when the schema has its own. */
+const NO_PHONE_VERSION = /^(logo|favicon|og_image|icon|signature)/;
+export function wantsPhoneVersion(f: FieldDef, siblings: FieldDef[]): boolean {
+  return (
+    f.type === 'media' &&
+    (f as { accept?: string }).accept !== 'video' &&
+    !f.key.endsWith('_mobile') &&
+    !NO_PHONE_VERSION.test(f.key) &&
+    !siblings.some((x) => x.key === `${f.key}_mobile`)
+  );
+}
 
 /** Renders a form for any CMS field schema. The value is a plain object; onChange receives the whole new object. */
 export function SchemaForm({ fields, value, onChange }: { fields: FieldDef[]; value: Obj | null | undefined; onChange: (v: Obj) => void }) {
@@ -29,7 +41,18 @@ export function SchemaForm({ fields, value, onChange }: { fields: FieldDef[]; va
   return (
     <div className="space-y-4">
       {visibleFields(fields, v).map((f) => (
-        <FieldInput key={f.key} field={f} value={v[f.key]} onChange={(next) => onChange({ ...v, [f.key]: next })} />
+        <div key={f.key} className="space-y-2">
+          <FieldInput field={f} value={v[f.key]} onChange={(next) => onChange({ ...v, [f.key]: next })} />
+          {wantsPhoneVersion(f, fields) && (
+            <div className="pl-3 border-l-2 border-[#E2E0DB]">
+              <FieldInput
+                field={{ key: `${f.key}_mobile`, label: `${f.label}: phone version (optional)`, type: 'media', accept: 'image', help: 'Shown on phones. Leave empty to use the picture above everywhere. If only this one is set, desktops use it too.' }}
+                value={v[`${f.key}_mobile`]}
+                onChange={(next) => onChange({ ...v, [`${f.key}_mobile`]: next })}
+              />
+            </div>
+          )}
+        </div>
       ))}
     </div>
   );
@@ -78,7 +101,7 @@ export function FieldInput({ field, value, onChange }: { field: FieldDef; value:
         <div className="flex items-center gap-2">
           <Toggle id={id} checked={Boolean(value)} onChange={onChange} label={field.label} />
           <label htmlFor={id} className="text-[14px] text-tk-ink">{field.label}</label>
-          {field.help && <span className="text-[12px] text-[#626262]">— {field.help}</span>}
+          {field.help && <span className="text-[12px] text-[#4F4F4F]">— {field.help}</span>}
         </div>
       );
     case 'select':
@@ -155,8 +178,8 @@ export function FieldInput({ field, value, onChange }: { field: FieldDef; value:
     case 'group':
       return (
         <fieldset className="border border-[#E2E0DB] p-3 space-y-3">
-          <legend className="px-1 text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{field.label}</legend>
-          {field.help && <p className="text-[12px] text-[#626262]">{field.help}</p>}
+          <legend className="px-1 text-[12px] font-medium text-[#454545]">{field.label}</legend>
+          {field.help && <p className="text-[12px] text-[#4F4F4F]">{field.help}</p>}
           <SchemaForm fields={field.fields} value={(value as Obj) ?? {}} onChange={onChange} />
         </fieldset>
       );
@@ -201,10 +224,10 @@ function ListInput({ field, value, onChange }: { field: Extract<FieldDef, { type
   const full = field.max !== undefined && value.length >= field.max;
   return (
     <div className="space-y-2">
-      <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{field.label}</p>
-      {field.help && <p className="text-[12px] text-[#626262]">{field.help}</p>}
+      <p className="text-[12px] font-medium text-[#454545]">{field.label}</p>
+      {field.help && <p className="text-[12px] text-[#4F4F4F]">{field.help}</p>}
       <div className="border border-[#E2E0DB] divide-y divide-[#E9E7E2] bg-white">
-        {value.length === 0 && <p className="px-3 py-3 text-[13px] text-[#626262]">Nothing here yet.</p>}
+        {value.length === 0 && <p className="px-3 py-3 text-[13px] text-[#4F4F4F]">Nothing here yet.</p>}
         {value.map((item, i) => {
           const title = itemTitle(item, field.fields, `${field.itemLabel ?? 'Item'} ${i + 1}`);
           const isOpen = open === i;
@@ -255,8 +278,8 @@ function ListInput({ field, value, onChange }: { field: Extract<FieldDef, { type
 function StringsInput({ label, help, placeholder, value, onChange }: { label: string; help?: string; placeholder?: string; value: string[]; onChange: (v: unknown) => void }) {
   return (
     <div className="space-y-2">
-      <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{label}</p>
-      {help && <p className="text-[12px] text-[#626262]">{help}</p>}
+      <p className="text-[12px] font-medium text-[#454545]">{label}</p>
+      {help && <p className="text-[12px] text-[#4F4F4F]">{help}</p>}
       {value.map((s, i) => (
         <div key={i} className="flex items-center gap-1">
           <TextInput aria-label={`${label} ${i + 1}`} value={s} placeholder={placeholder} onChange={(e) => onChange(value.map((x, j) => (j === i ? e.target.value : x)))} />
@@ -368,8 +391,8 @@ export function LinkInput({ label, help, value, onChange }: { label: string; hel
   };
   return (
     <fieldset className="space-y-2">
-      <legend className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{label}</legend>
-      {help && <p className="text-[12px] text-[#626262]">{help}</p>}
+      <legend className="text-[12px] font-medium text-[#454545]">{label}</legend>
+      {help && <p className="text-[12px] text-[#4F4F4F]">{help}</p>}
       <div className="grid sm:grid-cols-2 gap-2">
         <select
           id={typeId}
@@ -439,8 +462,8 @@ export function SourceInput({ label, help, value, onChange }: { label: string; h
   const set = (patch: Partial<ProductSource>) => onChange({ ...src, ...patch });
   return (
     <fieldset className="border border-[#E2E0DB] p-3 space-y-3">
-      <legend className="px-1 text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{label}</legend>
-      {help && <p className="text-[12px] text-[#626262]">{help}</p>}
+      <legend className="px-1 text-[12px] font-medium text-[#454545]">{label}</legend>
+      {help && <p className="text-[12px] text-[#4F4F4F]">{help}</p>}
       <FieldShell label="Show" htmlFor={id}>
         <select id={id} className={selectCls} value={src.mode} onChange={(e) => onChange({ mode: e.target.value, limit: src.limit ?? 8 })}>
           {SOURCE_MODES.map((m) => (
@@ -457,7 +480,7 @@ export function SourceInput({ label, help, value, onChange }: { label: string; h
       {src.mode === 'manual' && <MultiPick label="Products" value={src.products ?? []} onChange={(v) => set({ products: v as string[] })} by="slug" />}
       {src.mode === 'filter' && (
         <div className="space-y-2">
-          <p className="text-[12px] text-[#626262]">Products must match one ticked option in every group you use.</p>
+          <p className="text-[12px] text-[#4F4F4F]">Products must match one ticked option in every group you use.</p>
           {OPTION_KINDS.map((k) => {
             const opts = options.filter((o) => o.kind === k.kind);
             if (!opts.length) return null;

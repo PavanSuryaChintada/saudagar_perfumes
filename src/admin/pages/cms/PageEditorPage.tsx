@@ -67,8 +67,8 @@ export default function PageEditorPage() {
     ]);
   };
 
-  if (pageQuery.isLoading) return <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
-  if (!page || !form) return <p className="text-[14px] text-[#5A5A5A]">This page doesn't exist. <Link to="/admin/pages" className="underline">Back to pages</Link></p>;
+  if (pageQuery.isLoading) return <p className="text-[14px] text-[#4A4A4A]">Loading…</p>;
+  if (!page || !form) return <p className="text-[14px] text-[#4A4A4A]">This page doesn't exist. <Link to="/admin/pages" className="underline">Back to pages</Link></p>;
 
   const savePage = async () => {
     const title = form.title.trim();
@@ -156,7 +156,7 @@ export default function PageEditorPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link to="/admin/pages" className="inline-flex items-center gap-1 text-[13px] text-[#5A5A5A] hover:text-tk-ink mb-3">
+        <Link to="/admin/pages" className="inline-flex items-center gap-1 text-[13px] text-[#4A4A4A] hover:text-tk-ink mb-3">
           <ArrowLeft size={13} /> Pages
         </Link>
         <PageHeader
@@ -180,7 +180,7 @@ export default function PageEditorPage() {
       {page.layout === 'sections' && (
         <Panel title="Sections" description="Drag to reorder. Hidden sections stay here but don't show on the site.">
           {sections.length === 0 ? (
-            <p className="text-[14px] text-[#5A5A5A] mb-3">No sections yet.</p>
+            <p className="text-[14px] text-[#4A4A4A] mb-3">No sections yet.</p>
           ) : (
             <SortableList
               items={sections}
@@ -199,19 +199,19 @@ export default function PageEditorPage() {
                 return (
                   <div className="flex items-center gap-2 pr-2 py-2">
                     <button type="button" className="min-w-0 flex-1 text-left" onClick={() => setEditing(s)}>
-                      <p className={`text-[14px] truncate ${s.is_visible ? 'text-tk-ink' : 'text-[#6B6B6B]'}`}>{name}</p>
-                      <p className="text-[12px] text-[#626262] truncate">{def ? def.label : `Unknown type “${s.section_type}”`}{s.is_visible ? '' : ' · Hidden'}</p>
+                      <p className={`text-[14px] truncate ${s.is_visible ? 'text-tk-ink' : 'text-[#575757]'}`}>{name}</p>
+                      <p className="text-[12px] text-[#4F4F4F] truncate">{def ? def.label : `Unknown type “${s.section_type}”`}{s.is_visible ? '' : ' · Hidden'}</p>
                     </button>
-                    <button type="button" aria-label={s.is_visible ? `Hide ${name}` : `Show ${name}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => setVisible(s, !s.is_visible)}>
+                    <button type="button" aria-label={s.is_visible ? `Hide ${name}` : `Show ${name}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => setVisible(s, !s.is_visible)}>
                       {s.is_visible ? <Eye size={14} /> : <EyeOff size={14} />}
                     </button>
-                    <button type="button" aria-label={`Edit ${name}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => setEditing(s)}>
+                    <button type="button" aria-label={`Edit ${name}`} className="p-1.5 text-[#4A4A4A] hover:text-tk-ink" onClick={() => setEditing(s)}>
                       <Pencil size={14} />
                     </button>
                     <button
                       type="button"
                       aria-label={`Duplicate ${name}`}
-                      className="p-1.5 text-[#5A5A5A] hover:text-tk-ink"
+                      className="p-1.5 text-[#4A4A4A] hover:text-tk-ink"
                       onClick={async () => {
                         try {
                           await rpc('duplicate_section', { p_id: s.id });
@@ -224,7 +224,7 @@ export default function PageEditorPage() {
                     >
                       <Copy size={14} />
                     </button>
-                    <button type="button" aria-label={`Delete ${name}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setRemoving(s)}>
+                    <button type="button" aria-label={`Delete ${name}`} className="p-1.5 text-[#4A4A4A] hover:text-rose-600" onClick={() => setRemoving(s)}>
                       <Trash2 size={14} />
                     </button>
                   </div>
@@ -250,7 +250,7 @@ export default function PageEditorPage() {
           {!page.is_system && (
             <label className="flex items-center gap-2 text-[14px]">
               <Toggle checked={form.is_published} onChange={(on) => setForm({ ...form, is_published: on })} label="Published" /> Published
-              <span className="text-[12px] text-[#626262]">— drafts are only visible to admins.</span>
+              <span className="text-[12px] text-[#4F4F4F]">— drafts are only visible to admins.</span>
             </label>
           )}
           {page.layout === 'rich_text' && (
@@ -279,7 +279,7 @@ export default function PageEditorPage() {
           {Object.entries(SECTION_TYPES).map(([type, def]) => (
             <button key={type} type="button" onClick={() => addSection(type)} className="text-left border border-[#E2E0DB] p-3 hover:border-tk-ink">
               <p className="text-[14px] text-tk-ink">{def.label}</p>
-              <p className="text-[12px] text-[#626262] mt-0.5">{def.description}</p>
+              <p className="text-[12px] text-[#4F4F4F] mt-0.5">{def.description}</p>
             </button>
           ))}
         </div>
@@ -310,7 +310,7 @@ export default function PageEditorPage() {
               SECTION_TYPES[editing.section_type].fields.length ? (
                 <SchemaForm fields={SECTION_TYPES[editing.section_type].fields} value={editing.config} onChange={(config) => setEditing({ ...editing, config })} />
               ) : (
-                <p className="text-[13px] text-[#5A5A5A]">This section has no settings of its own.</p>
+                <p className="text-[13px] text-[#4A4A4A]">This section has no settings of its own.</p>
               )
             ) : (
               <p className="text-[13px] text-rose-600">This section type is no longer supported. Delete it.</p>

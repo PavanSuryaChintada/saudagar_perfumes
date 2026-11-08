@@ -31,10 +31,11 @@ export const GUIDE: GuideSection[] = [
     id: 'setup',
     title: 'Set up the store',
     why: 'Business details print on every invoice; payment and delivery rules decide what customers can do at checkout.',
-    routes: ['/admin/settings', '/admin/shipping'],
+    routes: ['/admin/settings', '/admin/shipping', '/admin/invoice'],
     check: 'setup',
     steps: [
-      { text: 'Fill in Business: legal name, GSTIN, registered address and state. Same state as the customer means CGST + SGST; otherwise IGST.', link: { to: '/admin/settings', label: 'Settings' } },
+      { text: 'Invoice: legal name, GSTIN, registered address and state, then every line printed on the invoice and packing slip, with a live preview.', link: { to: '/admin/invoice', label: 'Invoice' } },
+      { text: 'Product details: manufacturer, packer, consumer care and shelf life, printed on every product page.', link: { to: '/admin/settings', label: 'Settings' } },
       { text: 'Cash on delivery: switch it on, and set the smallest and largest order allowed for COD.', link: { to: '/admin/settings', label: 'Settings' } },
       { text: 'Delivery: fee, free-delivery threshold, couriers you use (with their tracking link) and pincodes you can’t reach.', link: { to: '/admin/shipping', label: 'Shipping' } },
       { text: 'Brand: logo, support phone and email. They appear in the footer, on the contact page and on invoices.', link: { to: '/admin/site', label: 'Site content' } },

@@ -4,11 +4,13 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { useBootstrap } from '../lib/bootstrap';
 import { resolveLink, type LinkValue } from './links';
+import { useScreenMedia } from './mobileMedia';
 
 /** A site-wide block (brand, header, footer, theme…) from the bootstrap payload. */
 export function useBlock<T = Record<string, any>>(key: string): T | undefined {
   const { data } = useBootstrap();
-  return (data?.blocks as Record<string, unknown> | undefined)?.[key] as T | undefined;
+  // Phone or desktop pictures for this screen (see cms/mobileMedia).
+  return useScreenMedia((data?.blocks as Record<string, unknown> | undefined)?.[key] as T | undefined);
 }
 
 export interface Announcement {

@@ -1,4 +1,5 @@
-import { Component, Fragment, type ReactNode } from 'react';
+import { Component, Fragment, useMemo, type ReactNode } from 'react';
+import { pickMedia, useIsPhone } from './mobileMedia';
 import { SECTION_TYPES } from './registry';
 import { useStorefront } from './StorefrontContext';
 import { usePageContent } from './useSite';
@@ -16,9 +17,12 @@ class SectionBoundary extends Component<{ children: ReactNode }, { failed: boole
 
 export function SectionList({ sections }: { sections: { id: string; type: string; config: Record<string, any> }[] }) {
   const actions = useStorefront();
+  // Each section gets the phone or desktop pictures for this screen (see cms/mobileMedia).
+  const phone = useIsPhone();
+  const shown = useMemo(() => sections.map((s) => ({ ...s, config: pickMedia(s.config || {}, phone) })), [sections, phone]);
   return (
     <>
-      {sections.map((s) => {
+      {shown.map((s) => {
         const def = SECTION_TYPES[s.type];
         if (!def) return null;
         const C = def.component;
