@@ -1,4 +1,7 @@
 import { ListHead, RowAction, ShownPill } from '../../ui/ListHead';
+import { SearchListing } from '../../ui/SearchListing';
+import { suggestListing } from '../../../lib/searchListing';
+import { useBlock } from '../../../cms/useSite';
 import { useMemo, useState } from 'react';
 import { usePaged } from '../../../lib/paging';
 import { Pager } from '../../ui/Pager';
@@ -44,6 +47,7 @@ export function flattenTree(rows: CategoryRow[]): { row: CategoryRow; depth: num
 
 export default function CategoriesPage() {
   const { data: rows = [], refetch } = useCategories();
+  const brandName = useBlock<Record<string, string>>('brand')?.name || 'Saudagar Perfumers';
   const invalidate = useInvalidateCatalog();
   const tree = useMemo(() => flattenTree(rows), [rows]);
   const paged = usePaged(tree, 25);
@@ -201,12 +205,15 @@ export default function CategoriesPage() {
             <FieldShell label="Top film (optional)" help="Plays at the top instead of the picture. Keep it short and silent; the picture shows while it loads.">
               <MediaField value={draft.video_url} onChange={(url) => setDraft({ ...draft, video_url: url })} kind="video" label="Upload film" />
             </FieldShell>
-            <FieldShell label="SEO title" htmlFor="c-seot">
-              <TextInput id="c-seot" value={draft.seo_title} onChange={(e) => setDraft({ ...draft, seo_title: e.target.value })} />
-            </FieldShell>
-            <FieldShell label="SEO description" htmlFor="c-seod">
-              <TextArea id="c-seod" rows={2} value={draft.seo_description} onChange={(e) => setDraft({ ...draft, seo_description: e.target.value })} />
-            </FieldShell>
+            <div className="pt-2 border-t border-[#E9E5DC]">
+              <p className="text-[14px] font-semibold text-tk-ink mb-2">How it shows on Google</p>
+              <SearchListing
+                path={`/categories/${draft.slug || 'new'}`}
+                value={{ title: draft.seo_title, description: draft.seo_description }}
+                onChange={(v) => setDraft({ ...draft, seo_title: v.title, seo_description: v.description })}
+                suggestion={suggestListing({ kind: 'category', name: draft.name || 'New category', body: draft.description, siteName: brandName })}
+              />
+            </div>
             <label className="flex items-center gap-2 text-[14px]">
               <Toggle checked={draft.is_active} onChange={(on) => setDraft({ ...draft, is_active: on })} label="Active" /> Active
             </label>

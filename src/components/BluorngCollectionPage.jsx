@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { suggestListing } from '../lib/searchListing';
+import { useBlock } from '../cms/useSite';
 import PageNav from '../storefront/PageNav.jsx';
 import { useSEO } from '../lib/seo';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -71,9 +73,20 @@ export default function BluorngCollectionPage({
     : listing.kind === 'note' ? noteQuery.data?.name || ''
     : listing.kind === 'search' ? (filters.q ? `“${filters.q}”` : 'Search') : 'All Fragrances';
 
+  // Words on Google: the admin's own for this category or collection, else the same automatic words the admin previews.
+  const brandBlock = useBlock('brand');
+  const siteName = brandBlock?.name || 'Saudagar Perfumers';
+  const own = isCollection ? collection : listing.kind === 'category' ? categoryQuery.data : null;
+  const auto = isCollection && !isAll && collection
+    ? suggestListing({ kind: 'collection', name: collection.name, summary: collection.tagline, body: collection.descriptor, siteName })
+    : listing?.kind === 'category' && categoryQuery.data
+      ? suggestListing({ kind: 'category', name: categoryQuery.data.name, body: categoryQuery.data.description, siteName })
+      : listing?.kind === 'note' && noteQuery.data
+        ? suggestListing({ kind: 'note', name: noteQuery.data.name, body: noteQuery.data.description, siteName })
+        : null;
   useSEO({
-    title: scopeName ? scopeName.replace(/[“”]/g, '') : null,
-    description: (isCollection ? collection?.tagline || collection?.headline : listing.kind === 'category' ? categoryQuery.data?.description : listing.kind === 'note' ? noteQuery.data?.short_description : null) || null,
+    title: own?.seo_title || auto?.title || (scopeName ? scopeName.replace(/[“”]/g, '') : null),
+    description: own?.seo_description || auto?.description || null,
     noindex: listing?.kind === 'search',
   });
 

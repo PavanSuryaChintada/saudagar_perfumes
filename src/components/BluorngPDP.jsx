@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { suggestListing } from '../lib/searchListing';
 import { useShopWords } from '../cms/shopWords';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { formatINR as formatPrice } from '../lib/money';
@@ -32,11 +33,24 @@ export default function BluorngPDP(props) {
   const product = useMemo(() => (detail ? toLegacyProduct(detail) : null), [detail]);
 
   const brand = useBlock('brand') || {};
+  // Words on Google: the admin's own, or the same automatic words the admin preview shows.
+  const listing = detail
+    ? suggestListing({
+        kind: 'product',
+        name: detail.name,
+        summary: detail.short_description,
+        body: detail.description,
+        notes: [...(detail.notes?.top ?? []), ...(detail.notes?.heart ?? []), ...(detail.notes?.base ?? [])].map((n) => n.name),
+        family: detail.attributes?.family?.[0]?.label ?? detail.family ?? null,
+        sizes: (detail.sizes ?? []).map((s) => Number(s.ml)),
+        siteName: brand.name || 'Saudagar Perfumers',
+      })
+    : null;
   useSEO(
     detail && product
       ? {
-          title: detail.seo_title || product.name,
-          description: detail.seo_description || detail.short_description || product.description,
+          title: detail.seo_title || listing.title,
+          description: detail.seo_description || listing.description,
           image: product.images?.[0],
           path: `/product/${detail.slug}`,
           type: 'product',

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSEO } from '../lib/seo';
-import { usePageContent } from '../cms/useSite';
+import { useBlock, usePageContent } from '../cms/useSite';
+import { suggestListing } from '../lib/searchListing';
 import { SectionList } from '../cms/SectionRenderer';
 import { sanitizeHtml } from '../lib/richText';
 import NotFoundPage from './NotFoundPage';
@@ -9,7 +10,10 @@ import NotFoundPage from './NotFoundPage';
 export default function CmsPage({ slug, onNavigateHome, onNavigateCollection }) {
   const { data: page, isLoading } = usePageContent(slug);
 
-  useSEO(page ? { title: page.seo_title || page.title, description: page.seo_description, image: page.og_image, noindex: !page.is_published } : { title: null });
+  const brand = useBlock('brand');
+  // Words on Google: the admin's own, or the same automatic words the admin previews.
+  const auto = page ? suggestListing({ kind: 'page', name: page.title, body: page.layout === 'rich_text' ? page.body : null, siteName: brand?.name || 'Saudagar Perfumers' }) : null;
+  useSEO(page ? { title: page.seo_title || auto.title, description: page.seo_description || auto.description, image: page.og_image, noindex: !page.is_published } : { title: null });
 
   if (isLoading) return <div className="min-h-[60vh]" aria-busy="true" />;
   // The product-page and category-page layouts are not pages of their own.

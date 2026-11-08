@@ -1,4 +1,7 @@
 import { ListHead, RowAction, ShownPill } from '../../ui/ListHead';
+import { SearchListing } from '../../ui/SearchListing';
+import { suggestListing } from '../../../lib/searchListing';
+import { useBlock } from '../../../cms/useSite';
 import { useEffect, useMemo, useState } from 'react';
 import { usePaged, spliceOrder } from '../../../lib/paging';
 import { Pager } from '../../ui/Pager';
@@ -103,6 +106,7 @@ function CollectionProducts({ collectionId }: { collectionId: string }) {
 
 export default function CollectionsPage() {
   const { data: rows = [], refetch } = useCollectionsAdmin();
+  const brandName = useBlock<Record<string, string>>('brand')?.name || 'Saudagar Perfumers';
   const invalidate = useInvalidateCatalog();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState('');
@@ -263,8 +267,15 @@ export default function CollectionsPage() {
               {field('hero_badge', 'Hero badge')}
               {field('hero_subtext', 'Hero text', undefined, true)}
               {field('hero_accent_tag', 'Hero accent tag')}
-              {field('seo_title', 'SEO title')}
-              {field('seo_description', 'SEO description', undefined, true)}
+              <div className="pt-2 border-t border-[#E9E5DC]">
+                <p className="text-[14px] font-semibold text-tk-ink mb-2">How it shows on Google</p>
+                <SearchListing
+                  path={`/collections/${draft.slug || 'new'}`}
+                  value={{ title: String(draft.seo_title ?? ''), description: String(draft.seo_description ?? '') }}
+                  onChange={(v) => setDraft({ ...draft, seo_title: v.title, seo_description: v.description })}
+                  suggestion={suggestListing({ kind: 'collection', name: String(draft.name || 'New collection'), summary: String(draft.tagline ?? ''), body: String(draft.descriptor ?? ''), siteName: brandName })}
+                />
+              </div>
               {draft.id ? <CollectionProducts collectionId={draft.id} /> : <p className="text-[13px] text-[#4F4F4F]">Save the collection to add products.</p>}
             </div>
           </div>

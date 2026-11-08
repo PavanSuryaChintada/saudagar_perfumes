@@ -62,9 +62,13 @@ export const BLOCK_SCHEMAS: Record<string, BlockDef> = {
     ],
   },
   seo: {
-    label: 'SEO',
-    description: 'The default title, description and share image for search engines and social links.',
-    fields: [t('default_title', 'Default page title'), ta('default_description', 'Default description'), media('og_image', 'Share image', 'image', '1200×630 works best.')],
+    label: 'Google & sharing',
+    description: 'How the home page shows on Google, and the picture used when any page without its own is shared. Products, categories and pages write their own Google words automatically.',
+    fields: [
+      t('default_title', 'Home page title on Google', 'e.g. Saudagar Perfumers · Luxury perfumes and attars from India. About 60 characters.'),
+      ta('default_description', 'Home page description on Google', 'e.g. Hand-made perfumes, attars and gift sets. Free samples with every order. About 150 characters.'),
+      media('og_image', 'Picture when a link is shared', 'image', 'Shown on WhatsApp, Instagram and Facebook. 1200 × 630 works best.'),
+    ],
   },
   announcement_bar: {
     label: 'Announcement bar',
