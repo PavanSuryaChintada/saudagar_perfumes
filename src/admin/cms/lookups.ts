@@ -29,7 +29,8 @@ export const useNoteLookup = () =>
 export const usePageLookup = () =>
   useLookup('pages', async () => {
     const rows = (await throwIf(supabase.from('pages').select('id, slug, title').order('position'))) as { id: string; slug: string; title: string }[];
-    return (rows ?? []).map((r) => ({ id: r.id, slug: r.slug, name: r.title }));
+    // The product-page and category-page layouts can't be linked to.
+    return (rows ?? []).filter((r) => r.slug !== 'product-page' && r.slug !== 'listing-page').map((r) => ({ id: r.id, slug: r.slug, name: r.title }));
   });
 
 export interface OptionLookup {

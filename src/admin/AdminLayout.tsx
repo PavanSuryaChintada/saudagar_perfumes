@@ -20,12 +20,10 @@ function useActiveItem() {
     if (!query) return true;
     return [...new URLSearchParams(query)].every(([k, v]) => params.get(k) === v);
   };
-  return (to: string, end?: boolean) => {
-    if (!matches(to, end)) return false;
-    if (to.includes('?')) return true;
-    // A plain item gives way to a more specific item for the same screen.
-    return !all.some((i) => i.to !== to && i.to.startsWith(`${to}?`) && matches(i.to, i.end));
-  };
+  // The item that matches the address most closely wins (more matching query parts = closer).
+  const score = (to: string, end?: boolean) => (matches(to, end) ? 1 + [...new URLSearchParams(to.split('?')[1] ?? '')].length : 0);
+  const best = Math.max(0, ...all.map((i) => score(i.to, i.end)));
+  return (to: string, end?: boolean) => best > 0 && score(to, end) === best;
 }
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {

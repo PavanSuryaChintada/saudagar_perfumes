@@ -244,6 +244,13 @@
 - [x] Leaving with unsaved changes asks first; old admin addresses forward to the new screen
 - [x] Tests: 302 unit, 16 SQL files, 33 browser tests
 
+## Phase 19: Easier links, mega menu, tidy notifications, order steps ✅
+- [x] Every button and link: “Button text”, then “Button goes to” with simple choices (Product, Category, Collection, Note, Page, Shop page, Other website, Nothing) and a search; no addresses to type
+- [x] Mega menu and Phone menu named clearly in Site settings, with a Mega menu shortcut in the sidebar
+- [x] Notifications about deleted orders and products are removed with them (test orders no longer fill the bell)
+- [x] Orders: the bulk bar only offers steps the chosen orders can still take (no “Mark packed” on packed orders)
+- [x] Shipping: plain explanation of the tracking number (AWB) and what happens once Delhivery is connected
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain

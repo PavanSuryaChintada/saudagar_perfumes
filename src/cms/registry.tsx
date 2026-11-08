@@ -37,7 +37,7 @@ const t = (key: string, label: string, help?: string): FieldDef => ({ key, label
 const ta = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: 'textarea', help });
 const media = (key: string, label: string, accept?: 'image' | 'video', help?: string): FieldDef => ({ key, label, type: 'media', accept, help });
 const link = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: 'link', help });
-const cta = (key: string, label: string): FieldDef => ({ key, label, type: 'group', fields: [t('label', 'Button text'), link('link', 'Button link')] });
+const cta = (key: string, label: string): FieldDef => ({ key, label, type: 'group', fields: [t('label', 'Button text'), link('link', 'Button goes to')] });
 const header = [t('eyebrow', 'Small heading'), t('heading', 'Heading'), ta('text', 'Text')];
 
 function KineticMarqueeSection({ config = {} }: { config?: Record<string, any> }) {
@@ -57,7 +57,7 @@ export const SECTION_TYPES: Record<string, SectionDef> = {
       media('fallback_image_mobile', 'Image while films load (mobile)', 'image'),
       t('fallback_alt', 'Image description'),
       t('cta_label', 'Button text'),
-      link('cta_link', 'Button link', 'Leave empty to scroll to the next section.'),
+      link('cta_link', 'Button goes to', 'Leave empty to scroll to the next section.'),
     ],
   },
   kinetic_marquee: {
@@ -75,11 +75,11 @@ export const SECTION_TYPES: Record<string, SectionDef> = {
     description: 'Shop-by-category list with a large image for the hovered tile.',
     component: BluorngCategories,
     fields: [
-      t('eyebrow', 'Small heading'), t('heading', 'Heading'), t('view_all_label', '"View all" text'), link('view_all_link', '"View all" link'),
+      t('eyebrow', 'Small heading'), t('heading', 'Heading'), t('view_all_label', '"View all" text'), link('view_all_link', '"View all" goes to'),
       t('cta_label', 'Tile button text'), t('notes_label', 'Notes label'),
       { key: 'items', label: 'Tiles', type: 'list', itemLabel: 'Tile', fields: [
         t('numeral', 'Numeral'), t('title', 'Title'), t('subtitle', 'Subtitle'), t('count_label', 'Count label', 'e.g. 8 Formulations'),
-        ta('description', 'Description'), t('notes', 'Notes line'), t('concentration', 'Concentration line'), media('image', 'Image', 'image'), link('link', 'Link'),
+        ta('description', 'Description'), t('notes', 'Notes line'), t('concentration', 'Concentration line'), media('image', 'Image', 'image'), link('link', 'Goes to'),
       ] },
     ],
   },
@@ -87,13 +87,13 @@ export const SECTION_TYPES: Record<string, SectionDef> = {
     label: 'Products row',
     description: 'A heading and a row of products. Pick the products by hand, or let them fill from best sellers, newest, a collection or a category.',
     component: BluorngFeaturedCollection,
-    fields: [...header, t('side_label', 'Side label'), t('cta_label', 'Button text'), link('cta_link', 'Button link'), { key: 'source', label: 'Products', type: 'product_source' }],
+    fields: [...header, t('side_label', 'Side label'), t('cta_label', 'Button text'), link('cta_link', 'Button goes to'), { key: 'source', label: 'Products', type: 'product_source' }],
   },
   product_showcase: {
     label: 'Products showcase (dark)',
     description: 'Products on a dark background, e.g. gift sets. Pick them by hand or let them fill automatically.',
     component: BluorngCustomExclusive,
-    fields: [...header, t('side_label', 'Side label'), t('cta_label', 'Button text'), link('cta_link', 'Button link'), { key: 'source', label: 'Products', type: 'product_source' }],
+    fields: [...header, t('side_label', 'Side label'), t('cta_label', 'Button text'), link('cta_link', 'Button goes to'), { key: 'source', label: 'Products', type: 'product_source' }],
   },
   product_grid_tabs: {
     label: 'Products with tabs',
@@ -115,7 +115,7 @@ export const SECTION_TYPES: Record<string, SectionDef> = {
     label: 'Three picture tiles',
     description: 'Three large image tiles that link anywhere.',
     component: BluorngGalleryHero,
-    fields: [...header, t('side_label', 'Side label'), { key: 'tiles', label: 'Tiles', type: 'list', itemLabel: 'Tile', max: 3, fields: [t('kicker', 'Small label'), t('title', 'Title'), t('subtitle', 'Caption'), media('image', 'Image', 'image'), link('link', 'Link')] }],
+    fields: [...header, t('side_label', 'Side label'), { key: 'tiles', label: 'Tiles', type: 'list', itemLabel: 'Tile', max: 3, fields: [t('kicker', 'Small label'), t('title', 'Title'), t('subtitle', 'Caption'), media('image', 'Image', 'image'), link('link', 'Goes to')] }],
   },
   editorial_story: {
     label: 'Brand statement with picture tiles',
@@ -123,12 +123,12 @@ export const SECTION_TYPES: Record<string, SectionDef> = {
     component: BluorngEditorial,
     fields: [
       t('eyebrow', 'Small heading'), t('statement', 'Statement', 'Put *words in asterisks* to show them in italics.'), ta('intro', 'Intro text'),
-      { key: 'atelier', label: 'Large image tile', type: 'group', fields: [t('kicker', 'Small label'), t('title', 'Title'), media('image', 'Image', 'image'), link('link', 'Link')] },
+      { key: 'atelier', label: 'Large image tile', type: 'group', fields: [t('kicker', 'Small label'), t('title', 'Title'), media('image', 'Image', 'image'), link('link', 'Goes to')] },
       { key: 'stat', label: 'Number tile', type: 'group', fields: [t('kicker', 'Small label'), t('number', 'Number'), t('caption', 'Caption')] },
       { key: 'sourcing', label: 'Sourcing tile', type: 'group', fields: [t('kicker', 'Small label'), t('title', 'Title'), media('image', 'Image', 'image')] },
       { key: 'craft', label: 'Text tile', type: 'group', fields: [t('kicker', 'Small label'), t('text', 'Text', 'Put *words in asterisks* to show them in italics.')] },
-      t('entries_heading', 'Entry cards heading'), t('view_all_label', '"View all" text'), link('view_all_link', '"View all" link'),
-      { key: 'entries', label: 'Entry cards', type: 'list', itemLabel: 'Card', fields: [t('title', 'Title'), t('note', 'Note'), media('image', 'Image', 'image'), link('link', 'Link')] },
+      t('entries_heading', 'Entry cards heading'), t('view_all_label', '"View all" text'), link('view_all_link', '"View all" goes to'),
+      { key: 'entries', label: 'Entry cards', type: 'list', itemLabel: 'Card', fields: [t('title', 'Title'), t('note', 'Note'), media('image', 'Image', 'image'), link('link', 'Goes to')] },
     ],
   },
   testimonials: {

@@ -34,3 +34,15 @@ describe('allowedNextStatuses', () => {
     expect(allowedNextStatuses('DELIVERED', 'COD', 'PAID')).toEqual([]);
   });
 });
+
+describe('bulkOrderActions', () => {
+  it('offers only the steps that the chosen orders can still take', async () => {
+    const { bulkOrderActions } = await import('./orders');
+    const cod = (status: string) => ({ status, payment_method: 'COD', payment_status: 'PENDING' });
+    expect(bulkOrderActions([cod('PACKED')])).toEqual({ pack: 0, ship: 1, deliver: 0 });
+    expect(bulkOrderActions([cod('PENDING'), cod('PACKED')])).toEqual({ pack: 1, ship: 1, deliver: 0 });
+    expect(bulkOrderActions([cod('SHIPPED'), cod('OUT_FOR_DELIVERY')])).toEqual({ pack: 0, ship: 0, deliver: 2 });
+    expect(bulkOrderActions([cod('DELIVERED'), cod('CANCELLED')])).toEqual({ pack: 0, ship: 0, deliver: 0 });
+    expect(bulkOrderActions([{ status: 'PENDING', payment_method: 'ONLINE', payment_status: 'PENDING' }]).pack).toBe(0);
+  });
+});

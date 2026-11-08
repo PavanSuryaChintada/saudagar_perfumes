@@ -30,7 +30,7 @@ export const CONTENT_TYPES: Record<string, ContentType> = {
     subtitle: (r) => [r.starts_at && `from ${new Date(r.starts_at).toLocaleDateString('en-IN')}`, r.ends_at && `until ${new Date(r.ends_at).toLocaleDateString('en-IN')}`].filter(Boolean).join(' '),
     fields: [
       t('text', 'Message', undefined, 'e.g. Free delivery on orders above ₹4,999'),
-      { key: 'link', label: 'Link', type: 'link' },
+      { key: 'link', label: 'Clicking it goes to', type: 'link' },
       { key: 'starts_at', label: 'Start showing', type: 'datetime', help: 'Leave empty to start now.' },
       { key: 'ends_at', label: 'Stop showing', type: 'datetime', help: 'Leave empty to keep showing.' },
       active,
