@@ -2274,6 +2274,7 @@ export type Database = {
         Returns: Json
       }
       admin_dashboard: { Args: { p_days?: number }; Returns: Json }
+      admin_insights: { Args: { p_days?: number }; Returns: Json }
       apply_shipment_status: {
         Args: { p_awb: string; p_raw: string; p_status: string }
         Returns: Json
@@ -2283,6 +2284,15 @@ export type Database = {
         Returns: undefined
       }
       available_coupons: { Args: { p_items: Json }; Returns: Json }
+      begin_refund: {
+        Args: {
+          p_actor: string
+          p_amount: number
+          p_note: string
+          p_order: string
+        }
+        Returns: Json
+      }
       birthday_customers: {
         Args: { p_day: number; p_month: number; p_year?: number }
         Returns: {
@@ -2294,6 +2304,16 @@ export type Database = {
           user_id: string
         }[]
       }
+      bulk_order_status: {
+        Args: { p_note?: string; p_orders: string[]; p_status: string }
+        Returns: Json
+      }
+      bulk_product_action: {
+        Args: { p_action: string; p_ids: string[]; p_value?: string }
+        Returns: number
+      }
+      bulk_ship_orders: { Args: { p_rows: Json }; Returns: Json }
+      bulk_update_variants: { Args: { p_rows: Json }; Returns: Json }
       cancel_order: {
         Args: { p_order: string; p_reason?: string }
         Returns: undefined
@@ -2333,6 +2353,15 @@ export type Database = {
       delete_product: { Args: { p_id: string }; Returns: undefined }
       duplicate_product: { Args: { p_id: string }; Returns: string }
       duplicate_section: { Args: { p_id: string }; Returns: string }
+      finish_refund: {
+        Args: {
+          p_note?: string
+          p_razorpay_refund_id: string
+          p_refund: string
+          p_status: string
+        }
+        Returns: undefined
+      }
       has_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"]; _uid: string }
         Returns: boolean
@@ -2407,6 +2436,17 @@ export type Database = {
           p_return: string
         }
         Returns: undefined
+      }
+      refunds_due: {
+        Args: never
+        Returns: {
+          customer_name: string
+          due: number
+          order_id: string
+          order_number: string
+          since: string
+          status: string
+        }[]
       }
       release_birthday_coupons: {
         Args: { p_day: number; p_month: number; p_year: number; payload: Json }
@@ -2541,7 +2581,7 @@ export type Database = {
       }
       update_refund_status: {
         Args: { p_razorpay_refund_id: string; p_status: string }
-        Returns: undefined
+        Returns: boolean
       }
       update_return: {
         Args: {
