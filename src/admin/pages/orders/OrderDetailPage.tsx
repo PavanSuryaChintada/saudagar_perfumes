@@ -37,6 +37,7 @@ export default function OrderDetailPage() {
   const { data: shipSettings } = useShippingSettings();
   const delhiveryOn = shipSettings?.['delhivery.enabled'] === true;
   const [moving, setMoving] = useState<OrderStatus | null>(null);
+  const [packCourier, setPackCourier] = useState('');
   const [moveNote, setMoveNote] = useState('');
   const [tracking, setTracking] = useState({ courier_name: '', tracking_number: '', tracking_url: '' });
   const [adminNote, setAdminNote] = useState('');
@@ -379,12 +380,35 @@ export default function OrderDetailPage() {
 
       <ConfirmDialog
         open={!!moving}
-        onOpenChange={(open) => !open && setMoving(null)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setMoving(null);
+            setPackCourier('');
+          }
+        }}
         title={moving ? `${ACTION_LABEL[moving] ?? ORDER_STATUS_LABEL[moving]}?` : ''}
         description={
           <span className="block space-y-2">
             {moving === 'CANCELLED' && <span className="block">Stock for every item and sample goes back on the shelf.</span>}
             {moving === 'DELIVERED' && o.payment_method === 'COD' && <span className="block">This also records the cash ({formatINR(Number(o.total))}) as collected.</span>}
+            {moving === 'PACKED' && !o.tracking_number && (
+              <label className="block text-[13.5px] text-tk-ink">
+                <span className="block font-medium mb-1">Ship with</span>
+                <select
+                  aria-label="Ship with"
+                  value={packCourier || o.courier || ''}
+                  onChange={(e) => setPackCourier(e.target.value)}
+                  className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white"
+                >
+                  {couriers.map((c) => (
+                    <option key={c.key} value={c.key}>
+                      {c.name}
+                      {(c.key === 'delhivery' && delhiveryOn) ? ' (books itself: AWB, label and pickup)' : ' (book it yourself)'}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
             <textarea
               rows={2}
               value={moveNote}
@@ -400,6 +424,10 @@ export default function OrderDetailPage() {
         onConfirm={async () => {
           if (!moving) return;
           try {
+            // The courier is fixed before packing, so a packed order is booked with the right one.
+            if (moving === 'PACKED' && packCourier && packCourier !== o.courier) {
+              await rpc('set_order_courier', { p_order: o.id, p_courier: packCourier });
+            }
             await rpc('set_order_status', { p_order: o.id, p_status: moving, p_note: moveNote || null });
             if (moving === 'CANCELLED' && o.courier === 'delhivery' && o.tracking_number) {
               await invokeFunction('shipping', { action: 'cancel', order_id: o.id }).catch((e) => toast.error(`Cancel the Delhivery shipment by hand: ${toFriendlyError(e)}`));

@@ -48,7 +48,12 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
               }
             >
               <item.icon size={16} strokeWidth={1.75} aria-hidden />
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {item.step && (
+                <span title={`Step ${item.step} of setting up the catalog`} className="w-5 h-5 shrink-0 flex items-center justify-center rounded-full border border-tk-accent-night/60 text-[11px] font-semibold text-tk-accent-night" aria-hidden>
+                  {item.step}
+                </span>
+              )}
             </Link>
           ))}
         </div>

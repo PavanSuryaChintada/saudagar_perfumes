@@ -96,9 +96,10 @@ export default function App() {
   useCartSync(cart, replaceCart, samples, setSamples);
   const ga4Id = useSetting('analytics.ga4_id', '');
   const gtmId = useSetting('analytics.gtm_id', '');
+  const metaPixelId = useSetting('analytics.meta_pixel_id', '');
   useEffect(() => {
-    initAnalytics(ga4Id, gtmId);
-  }, [ga4Id, gtmId]);
+    initAnalytics(ga4Id, gtmId, metaPixelId);
+  }, [ga4Id, gtmId, metaPixelId]);
   useEffect(() => {
     const t = setTimeout(() => trackPageView(location.pathname, document.title), 300);
     return () => clearTimeout(t);

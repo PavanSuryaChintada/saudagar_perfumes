@@ -174,6 +174,14 @@ export const SETTINGS_SCHEMA: SettingGroup[] = [
       },
       { key: 'analytics.ga4_id', label: 'Google Analytics 4 ID', type: 'text', pattern: '^(G-[A-Z0-9]+)?$', patternHint: 'Looks like G-ABC123XYZ, or leave empty.' },
       { key: 'analytics.gtm_id', label: 'Google Tag Manager ID', type: 'text', pattern: '^(GTM-[A-Z0-9]+)?$', patternHint: 'Looks like GTM-ABC123, or leave empty.' },
+      {
+        key: 'analytics.meta_pixel_id',
+        label: 'Meta Pixel ID',
+        type: 'text',
+        pattern: '^([0-9]{10,20})?$',
+        patternHint: 'The number from Meta Events Manager, e.g. 123456789012345, or leave empty.',
+        help: 'Tracks visits, add to bag, checkout and purchases for Facebook and Instagram ads.',
+      },
     ],
   },
 ];
