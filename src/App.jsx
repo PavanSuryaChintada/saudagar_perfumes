@@ -58,6 +58,7 @@ import ListingPage from './storefront/ListingPage.jsx';
 import NotesIndexPage from './storefront/NotesIndexPage.jsx';
 import CmsPage from './storefront/CmsPage.jsx';
 import { StorefrontProvider } from './cms/StorefrontContext';
+import { introStore, markIntroSeen, shouldPlayIntro } from './lib/intro';
 
 export default function App() {
   // The URL is the source of truth for which page is showing (src/app/routes.ts).
@@ -145,8 +146,14 @@ export default function App() {
   const [isNavDrawerOpen, setIsNavDrawerOpen] = useState(false);
   const [quickBuyProduct, setQuickBuyProduct] = useState(null);
 
-  // Luxury Preloader State: plays smoothly on initial site entry / reload
+  // Brand intro: once per visit, and only when the visit starts on the home page (src/lib/intro.ts).
+  const [introWanted] = useState(() => shouldPlayIntro(view, true, introStore()));
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
+  // Stable, so the intro's timer is not restarted every time the page re-renders while data loads.
+  const finishIntro = useCallback(() => {
+    markIntroSeen(introStore());
+    setIsPreloaderDone(true);
+  }, []);
 
   // Global Keyboard Shortcut: Cmd+K / Ctrl+K toggles luxury search
   useEffect(() => {
@@ -314,12 +321,6 @@ export default function App() {
     });
   };
 
-  const handleBuyNow = (item) => {
-    handleAddToCart(item, { openCart: false });
-    setIsCartOpen(false);
-    navigateToCheckout();
-  };
-
   const handleUpdateQuantity = (index, delta) => {
     playSound('tap');
     setCart((prevCart) => {
@@ -396,8 +397,8 @@ export default function App() {
       {/* Toast Notification */}
       <Toast message={toastMessage} />
 
-      {/* 1. MAIN HEADER (Logo, mega menu, search, story, stores, cart badge, theme toggle) */}
-      {view !== 'product' && view !== 'checkout' && view !== 'account' && view !== 'order' && view !== 'story' && (
+      {/* 1. MAIN HEADER: the same on every page except checkout, which keeps a quiet header of its own */}
+      {view !== 'checkout' && (
         <BluorngHeader
           isHomePage={view === 'home'}
           cartCount={totalCartCount}
@@ -416,8 +417,8 @@ export default function App() {
       )}
 
       {/* Luxury Branded Preloader (runs smoothly on initial application mount / reload) */}
-      {!isPreloaderDone && brandBlock?.show_preloader !== false && (
-        <LuxuryPreloader onComplete={() => setIsPreloaderDone(true)} />
+      {introWanted && !isPreloaderDone && brandBlock?.show_preloader !== false && (
+        <LuxuryPreloader onComplete={finishIntro} />
       )}
 
       {/* 3. MAIN PAGE CONTENT VIEW WITH LUXURY ROUTE TRANSITIONS */}
@@ -432,26 +433,17 @@ export default function App() {
               onNoteChange={setBagNote}
               couponCode={couponCode}
               onCouponChange={setCouponCode}
-              theme={theme}
-              onToggleTheme={toggleTheme}
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
               onOpenBag={() => setIsCartOpen(true)}
               onOrderPlaced={handleOrderPlaced}
             />
           ) : view === 'story' ? (
-            <BluorngStoryPage
-              theme={theme}
-              onToggleTheme={toggleTheme}
-              onNavigateHome={navigateToHome}
-              onNavigateCollection={navigateToCollection}
-            />
+            <BluorngStoryPage />
           ) : view === 'order' ? (
-            <OrderPage orderId={resolved.orderId} theme={theme} onToggleTheme={toggleTheme} onNavigateHome={navigateToHome} />
+            <OrderPage orderId={resolved.orderId} />
           ) : view === 'account' ? (
             <BluorngAccountPage
-              theme={theme}
-              onToggleTheme={toggleTheme}
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
               onSelectProduct={navigateToProduct}
@@ -467,18 +459,10 @@ export default function App() {
           ) : view === 'product' ? (
             <BluorngPDP
               productId={selectedProductId}
-              cartCount={totalCartCount}
               wishlist={wishlist}
               onToggleWishlist={handleToggleWishlist}
-              theme={theme}
-              onToggleTheme={toggleTheme}
-              onOpenCart={() => setIsCartOpen(true)}
-              onOpenSearch={() => setIsSearchOpen(true)}
-              onOpenStory={navigateToStory}
-              onOpenNavDrawer={() => setIsNavDrawerOpen(true)}
               onSelectProduct={navigateToProduct}
               onAddToCart={handleAddToCart}
-              onBuyNow={handleBuyNow}
               onQuickBuy={(prod) => setQuickBuyProduct(prod)}
               onNavigateHome={navigateToHome}
               onNavigateCollection={navigateToCollection}
@@ -519,7 +503,7 @@ export default function App() {
       </main>
 
       {/* 4. MASTER LUXURY FOOTER (Links, newsletter, currency, massive SAUDAGAR brand wordmark) */}
-      {view !== 'checkout' && view !== 'account' && view !== 'order' && view !== 'story' && (
+      {view !== 'checkout' && (
         <BluorngFooter
           theme={theme}
           onToggleTheme={toggleTheme}
@@ -533,9 +517,9 @@ export default function App() {
       {/* 5. MOBILE BOTTOM NAVIGATION (Explore, Account, Stories, Boutiques, Bag) */}
       {view !== 'checkout' && (
         <BluorngMobileBottomNav
+          view={view}
           cartCount={totalCartCount}
-          theme={theme}
-          onToggleTheme={toggleTheme}
+          wishlistCount={wishlist.length}
           onNavigateHome={navigateToHome}
           onNavigateCollection={navigateToCollection}
           onScrollToStores={scrollToStores}

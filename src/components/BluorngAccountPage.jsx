@@ -23,7 +23,7 @@ function formatBirthday(iso) {
   return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 }
 
-export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onNavigateHome }) {
+export default function BluorngAccountPage({ onNavigateHome }) {
   const { signOut, isAdmin } = useAuth();
   const { user, profile, addresses, saveProfile, saveAddress, deleteAddress, setDefault } = useAccount();
   const location = useLocation();
@@ -99,7 +99,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
   };
 
   const addressList = addresses.data || [];
-  const displayName = profile?.full_name || 'Your account';
+  const displayName = profile?.full_name || 'Welcome';
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300 font-sans pb-28">
@@ -118,41 +118,11 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
         )}
       </AnimatePresence>
 
-      {/* ================= 1. MINIMAL HEADER ========================== */}
-      <header className="w-full border-b border-[#F0F0F0] dark:border-white/10 bg-white/90 dark:bg-tk-night/90 backdrop-blur-md sticky top-0 z-30 transition-colors">
-        <div className="max-w-5xl mx-auto px-6 sm:px-10 h-16 flex items-center justify-between">
-          <button
-            onClick={onNavigateHome}
-            className="text-[11px] uppercase tracking-[0.18em] text-[#5F5F5F] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer flex items-center gap-2"
-          >
-            <span>←</span>
-            <span>Boutique</span>
-          </button>
-
-          <button onClick={onNavigateHome} className="cursor-pointer" aria-label="Saudagar Home">
-            <img src="/images/saudagar_logo_black.png" alt="Saudagar Perfumers" className="h-6 w-auto object-contain dark:hidden block" />
-            <img src="/images/saudagar_logo_gold.png" alt="Saudagar Perfumers" className="h-6 w-auto object-contain hidden dark:block" />
-          </button>
-
-          <div className="flex items-center gap-4">
-            {onToggleTheme && (
-              <button
-                onClick={onToggleTheme}
-                className="text-[11px] uppercase tracking-wider text-[#5F5F5F] dark:text-[#999999] hover:text-tk-ink dark:hover:text-white transition-colors cursor-pointer"
-                title="Toggle Theme"
-              >
-                {theme === 'dark' ? 'Light' : 'Dark'}
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
-
       {/* ================= 2. CLEAN EDITORIAL HERO ==================== */}
       <section className="max-w-5xl mx-auto px-6 sm:px-10 pt-12 sm:pt-16 pb-10">
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-6 pb-10 border-b border-[#F0F0F0] dark:border-white/10">
           <div className="min-w-0">
-            <span className="text-[11px] uppercase tracking-[0.24em] text-[#666666] dark:text-[#777777] block mb-2 font-medium">Client Account</span>
+            <span className="sf-eyebrow">Your account</span>
             <h1 className="text-[28px] sm:text-[36px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white leading-tight break-words">{displayName}</h1>
             <p className="text-[12.5px] text-[#5F5F5F] dark:text-[#999999] mt-1 font-light break-all">
               {[user?.email, profile?.phone ? formatIndianPhone(profile.phone) : null].filter(Boolean).join(' · ')}
@@ -187,7 +157,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
         </div>
 
         {/* Minimal Underline Tabs */}
-        <nav className="flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] pt-4 overflow-x-auto scrollbar-none border-b border-[#F0F0F0] dark:border-white/10">
+        <nav className="flex items-center gap-8 text-[11.5px] pt-4 overflow-x-auto scrollbar-none border-b border-[#F0F0F0] dark:border-white/10">
           {[
             { id: 'orders', label: 'Orders' },
             { id: 'offers', label: 'Offers' },
@@ -197,7 +167,7 @@ export default function BluorngAccountPage({ theme = 'light', onToggleTheme, onN
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`pb-4 relative transition-colors cursor-pointer whitespace-nowrap ${
+              className={`pb-4 relative uppercase tracking-[0.16em] transition-colors cursor-pointer whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'text-tk-ink dark:text-white font-medium'
                   : 'text-[#666666] hover:text-tk-ink dark:text-[#777777] dark:hover:text-white font-normal'

@@ -1,20 +1,31 @@
 import type { ReactNode, InputHTMLAttributes } from 'react';
 import { Link } from 'react-router';
+import { useBlock } from '../../cms/useSite';
 
 export function AuthLayout({ eyebrow, title, children, footer }: { eyebrow: string; title: string; children: ReactNode; footer?: ReactNode }) {
+  const brand = useBlock<Record<string, string>>('brand') || {};
   return (
     <div className="min-h-[100svh] w-full bg-white dark:bg-tk-night text-tk-ink dark:text-white flex flex-col">
-      <header className="px-4 sm:px-8 py-5 flex items-center justify-between border-b border-[#EAEAEA] dark:border-white/10">
-        <Link to="/" className="text-[15px] sm:text-[17px] tracking-[0.32em] font-medium uppercase">
-          Saudagar
+      <header className="h-16 px-4 sm:px-8 grid grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-[#EAEAEA] dark:border-white/10">
+        <Link to="/" className="justify-self-start inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[#5F5F5F] dark:text-white/60 hover:text-tk-ink dark:hover:text-white">
+          <span aria-hidden>←</span>
+          <span className="hidden sm:inline">Continue shopping</span>
         </Link>
-        <Link to="/" className="text-[11.5px] uppercase tracking-[0.16em] text-[#5F5F5F] dark:text-white/60 hover:text-tk-accent dark:hover:text-tk-accent-night">
-          Continue shopping
+        <Link to="/" aria-label={`${brand.name || 'Saudagar Perfumers'} home`}>
+          {brand.logo_light_bg ? (
+            <>
+              <img src={brand.logo_light_bg} alt={brand.name || ''} className="h-6 sm:h-7 w-auto object-contain dark:hidden block" />
+              {brand.logo_dark_bg && <img src={brand.logo_dark_bg} alt={brand.name || ''} className="h-6 sm:h-7 w-auto object-contain hidden dark:block" />}
+            </>
+          ) : (
+            <span className="text-[15px] sm:text-[17px] tracking-[0.32em] font-medium uppercase">{brand.name || 'Saudagar'}</span>
+          )}
         </Link>
+        <span aria-hidden />
       </header>
       <main className="flex-1 flex items-start sm:items-center justify-center px-4 py-10 sm:py-16">
         <div className="w-full max-w-[420px]">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-tk-accent dark:text-tk-accent-night mb-2">{eyebrow}</p>
+          <p className="sf-eyebrow">{eyebrow}</p>
           <h1 className="text-[24px] sm:text-[28px] font-normal tracking-[-0.015em] mb-8">{title}</h1>
           {children}
           {footer && <div className="mt-8 pt-6 border-t border-[#EAEAEA] dark:border-white/10 text-[12px] text-[#666666] dark:text-white/60">{footer}</div>}

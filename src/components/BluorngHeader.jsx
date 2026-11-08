@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BluorngFullscreenMegaNav from './BluorngFullscreenMegaNav.jsx';
 import { useSmoothScroll } from './motion/SmoothScrollProvider.jsx';
@@ -24,6 +24,18 @@ export default function BluorngHeader({
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMegaNavOpen, setIsMegaNavOpen] = useState(false);
   const { lenis } = useSmoothScroll();
+  const headerRef = useRef(null);
+
+  // Pages with their own sticky parts (the product page) sit just below the header: share its height.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const set = () => document.documentElement.style.setProperty('--site-header-h', `${el.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Monitor scroll: transparent initially, changes color after movement (scrollY > 35)
   useEffect(() => {
@@ -57,6 +69,7 @@ export default function BluorngHeader({
 
   return (
     <motion.header
+      ref={headerRef}
       initial={{ y: -16, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -74,7 +87,7 @@ export default function BluorngHeader({
           {/* Two-Bar Menu Button -> Fullscreen Mega Nav */}
           <button
             onClick={() => setIsMegaNavOpen(true)}
-            className={`flex flex-col justify-center items-center gap-1.5 w-8 h-8 -ml-1 rounded transition-colors p-1 cursor-pointer ${
+            className={`flex flex-col justify-center items-center gap-1.5 w-10 h-10 -ml-2 rounded-[2px] transition-colors p-1 cursor-pointer ${
               isTransparent ? 'hover:bg-white/10' : 'hover:bg-black/5 dark:hover:bg-white/10'
             }`}
             title="Explore Saudagar Directory"
@@ -135,23 +148,20 @@ export default function BluorngHeader({
             className={`p-1.5 sm:px-2 sm:py-1 rounded-[2px] transition-all cursor-pointer flex items-center gap-1.5 ${
               isTransparent || theme === 'dark' ? 'hover:text-tk-accent-night' : 'hover:text-tk-accent'
             }`}
-            title="Search Fragrances (⌘K)"
+            title="Search"
             aria-label="Search Fragrances"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" strokeLinecap="round" />
             </svg>
-            <span className="hidden xl:inline-block text-[10.5px] uppercase tracking-wider font-mono opacity-60 border border-current px-1.5 py-0.5 rounded">
-              ⌘K
-            </span>
           </motion.button>
 
           {/* Luxury Dual-Segmented Capsule Theme Toggle (Light / Dark) - Desktop & Tablet */}
           {onToggleTheme && (
             <div
               onClick={onToggleTheme}
-              className={`hidden sm:inline-flex items-center p-0.5 rounded-full transition-all duration-300 select-none cursor-pointer ${
+              className={`hidden sm:inline-flex items-center p-0.5 rounded-[2px] transition-all duration-300 select-none cursor-pointer ${
                 isTransparent
                   ? 'bg-white/20 backdrop-blur-md'
                   : theme === 'dark'
@@ -169,7 +179,7 @@ export default function BluorngHeader({
                   e.stopPropagation();
                   if (theme !== 'light') onToggleTheme();
                 }}
-                className={`flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200 cursor-pointer ${
+                className={`flex items-center justify-center w-7 h-7 rounded-[2px] transition-all duration-200 cursor-pointer ${
                   theme === 'light'
                     ? 'bg-tk-accent text-white shadow-xs'
                     : isTransparent || theme === 'dark'
@@ -201,7 +211,7 @@ export default function BluorngHeader({
                   e.stopPropagation();
                   if (theme !== 'dark') onToggleTheme();
                 }}
-                className={`flex items-center justify-center w-7 h-7 rounded-full transition-all duration-200 cursor-pointer ${
+                className={`flex items-center justify-center w-7 h-7 rounded-[2px] transition-all duration-200 cursor-pointer ${
                   theme === 'dark'
                     ? 'bg-tk-gold text-tk-night shadow-xs'
                     : isTransparent || theme === 'dark'

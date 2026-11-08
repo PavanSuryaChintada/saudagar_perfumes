@@ -7,7 +7,6 @@ import { ORDER_STATUS_LABEL, ORDER_STEPS, canCustomerCancel, paymentLabel } from
 import { formatINR } from '../../lib/money';
 import { toFriendlyError } from '../../lib/errors';
 import { formatIndianPhone } from '../../lib/phone';
-import MinimalHeader from '../MinimalHeader';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
 import { payOrder } from '../../lib/razorpay';
 import ReturnSection from './ReturnSection';
@@ -17,7 +16,7 @@ import { useQueryClient } from '@tanstack/react-query';
 const STEP_TIME = { PENDING: 'created_at', PACKED: 'packed_at', SHIPPED: 'shipped_at', OUT_FOR_DELIVERY: 'out_for_delivery_at', DELIVERED: 'delivered_at' };
 
 /** /orders/:id — confirmation after checkout and the customer's order details. */
-export default function OrderPage({ orderId, theme, onToggleTheme, onNavigateHome }) {
+export default function OrderPage({ orderId }) {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const justPlaced = params.get('placed') === '1';
@@ -278,8 +277,17 @@ export default function OrderPage({ orderId, theme, onToggleTheme, onNavigateHom
 
   return (
     <div className="min-h-screen bg-white dark:bg-tk-night text-tk-ink dark:text-white transition-colors duration-300 font-sans pb-28">
-      <MinimalHeader backLabel="Your orders" onBack={back} onLogo={onNavigateHome} theme={theme} onToggleTheme={onToggleTheme} />
-      <main className="max-w-5xl mx-auto px-4 sm:px-10 pt-10 sm:pt-14">{body}</main>
+      <main className="max-w-5xl mx-auto px-4 sm:px-10 pt-8 sm:pt-10">
+        <button
+          type="button"
+          onClick={back}
+          className="mb-6 sm:mb-8 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[#5F5F5F] hover:text-tk-ink dark:text-[#999999] dark:hover:text-white transition-colors cursor-pointer"
+        >
+          <span aria-hidden>←</span>
+          <span>Your orders</span>
+        </button>
+        {body}
+      </main>
     </div>
   );
 }
