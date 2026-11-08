@@ -210,6 +210,20 @@
 - [x] Readability: sentence-case labels and headings, darker text, visible scroll bars, clearer toggles
 - [x] Tests: 263 unit, 14 SQL files, 33 browser tests
 
+## Phase 16: Premium Gift Pack and suggested samples ✅
+- [x] Gift pack page (/gift-pack): customers choose any 5 perfumes (repeats allowed), 20 ml each
+- [x] Price: each perfume costs 66.67% of its 30 ml price, minus the pack discount; only perfumes with a 30 ml size can be chosen
+- [x] Each pick is poured from that perfume's own stock; boxes aren't counted; cancelling or a returned pack puts it back
+- [x] One free 10 ml sample per pack, chosen like "Surprise me", never one of the pack's perfumes
+- [x] The pack's ml doesn't earn normal samples
+- [x] "Try our Premium Gift Pack" card in the bag, hidden once a pack is in the bag
+- [x] Free samples start filled with suggestions (chosen like "Surprise me"); customers can swap them by searching the sample list
+- [x] Order page, invoice, packing slip and admin order list each pack's perfumes and its sample
+- [x] Admin → Gift pack: every rule, word and picture editable, with a live price preview and warnings
+- [x] Bag problems that don't belong to one line are now shown, so checkout is never blocked without a reason
+- [x] Fixed: removing a sold size of a perfume no longer pours its liquid away
+- [x] Tests: 284 unit, 15 SQL files, 33 browser tests
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain

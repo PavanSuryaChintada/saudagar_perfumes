@@ -93,6 +93,7 @@ export function useAdminProducts() {
         supabase
           .from('products')
           .select('id, slug, name, is_active, archived_at, min_price, max_price, base_price, total_stock, stock_unit, stock_ml, units_sold, badge, updated_at, admin_note, product_media(url, kind, position)')
+          .eq('is_gift_pack', false)
           .order('updated_at', { ascending: false }),
       );
       return (rows as any[]).map((r) => {
@@ -106,7 +107,7 @@ export function useAdminProducts() {
 export async function loadAdminProduct(id: string): Promise<AdminProductBundle> {
   const [product, variants, media, cats, cols, notes, attrs] = await Promise.all([
     throwIf(supabase.from('products').select('*').eq('id', id).single()),
-    throwIf(supabase.from('product_variants').select('*').eq('product_id', id).order('position')),
+    throwIf(supabase.from('product_variants').select('*').eq('product_id', id).is('purpose', null).order('position')),
     throwIf(supabase.from('product_media').select('*').eq('product_id', id).order('position')),
     throwIf(supabase.from('product_categories').select('category_id').eq('product_id', id)),
     throwIf(supabase.from('product_collections').select('collection_id').eq('product_id', id)),

@@ -4,6 +4,7 @@ export type StorefrontView =
   | 'collection'
   | 'listing'
   | 'notes'
+  | 'giftpack'
   | 'page'
   | 'wishlist'
   | 'story'
@@ -40,6 +41,7 @@ const EXACT: Record<string, StorefrontView> = {
   '/about': 'story',
   '/checkout': 'checkout',
   '/notes': 'notes',
+  '/gift-pack': 'giftpack',
   '/login': 'login',
   '/register': 'register',
   '/forgot-password': 'forgot-password',

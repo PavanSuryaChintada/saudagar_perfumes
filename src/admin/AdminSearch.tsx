@@ -27,8 +27,8 @@ async function searchAll(q: string): Promise<Hit[]> {
   const like = `%${t}%`;
   const digits = t.replace(/\D/g, '');
   const [products, skus, orders, customers, categories, notes, options, collections, coupons, pages] = await Promise.all([
-    supabase.from('products').select('id, name, slug, archived_at').or(`name.ilike.${like},slug.ilike.${like}`).limit(6),
-    supabase.from('product_variants').select('product_id, sku, label, products(name)').ilike('sku', like).limit(4),
+    supabase.from('products').select('id, name, slug, archived_at').eq('is_gift_pack', false).or(`name.ilike.${like},slug.ilike.${like}`).limit(6),
+    supabase.from('product_variants').select('product_id, sku, label, products(name)').is('purpose', null).ilike('sku', like).limit(4),
     supabase
       .from('orders')
       .select('id, order_number, customer_name, total, status')

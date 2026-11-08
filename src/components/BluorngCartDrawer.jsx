@@ -5,6 +5,10 @@ import { PLACEHOLDER_IMAGE } from '../storefront/catalog/adapter';
 import { useQuote, trimSamples } from '../storefront/bag/useQuote';
 import SamplePicker from '../storefront/bag/SamplePicker';
 import { CouponRow } from '../storefront/bag/CouponSheet';
+import { bagCount, isPackLine, lineKey, problemForLine, quoteLineFor } from '../storefront/bag/bagLines';
+import PackLine from '../storefront/bag/PackLine';
+import GiftPackCard from '../storefront/bag/GiftPackCard';
+import { bagProductIds, looseProblems } from '../storefront/bag/bagView';
 
 export default function BluorngCartDrawer({
   isOpen,
@@ -51,8 +55,10 @@ export default function BluorngCartDrawer({
 
   // Every price, total and sample count shown here comes from the server's quote.
   const { data: quote, isFetching, error: quoteError } = useQuote(cart, samples, couponCode, isOpen && cart.length > 0);
-  const lineFor = (item) => quote?.lines.find((l) => l.variant_id === item.variantId);
-  const problemFor = (item) => quote?.problems.find((p) => p.variant_id === item.variantId);
+  const lineFor = (item) => quoteLineFor(quote, item);
+  const problemFor = (item) => problemForLine(quote, item);
+  const otherProblems = looseProblems(quote, cart);
+  const avoidProducts = React.useMemo(() => bagProductIds(quote), [quote]);
   const threshold = quote?.free_shipping?.threshold ?? null;
   const remaining = quote?.free_shipping?.remaining ?? 0;
   const freeShippingProgress = threshold ? Math.min(100, ((threshold - remaining) / threshold) * 100) : 100;
@@ -103,7 +109,7 @@ export default function BluorngCartDrawer({
                 Your Shopping Bag
               </h2>
               <span className="text-[12px] text-[#777777] dark:text-white/60 font-medium">
-                ({cart.reduce((s, i) => s + i.quantity, 0)})
+                ({bagCount(cart)})
               </span>
             </div>
 
@@ -171,6 +177,9 @@ export default function BluorngCartDrawer({
             ) : (
               <>
               {cart.map((item, index) => {
+                if (isPackLine(item)) {
+                  return <PackLine key={lineKey(item)} item={item} line={lineFor(item)} problem={problemFor(item)} onRemove={() => onRemoveItem(index)} />;
+                }
                 const line = lineFor(item);
                 const problem = problemFor(item);
                 const itemImage = line?.image || item.image || PLACEHOLDER_IMAGE;
@@ -180,7 +189,7 @@ export default function BluorngCartDrawer({
 
                 return (
                   <div
-                    key={`${item.productId}-${item.size}-${index}`}
+                    key={lineKey(item)}
                     className="flex gap-3.5 pb-4"
                   >
                     {/* Thumbnail */}
@@ -249,7 +258,13 @@ export default function BluorngCartDrawer({
                   </div>
                 );
               })}
-              {quote?.samples && <SamplePicker samples={quote.samples} picks={samples} onChange={onSamplesChange} />}
+              {otherProblems.length > 0 && (
+                <div role="alert" className="text-[11px] text-rose-700 dark:text-rose-300 font-semibold space-y-1 border border-rose-200 dark:border-rose-400/30 bg-rose-50 dark:bg-rose-950/30 p-3 rounded-xs">
+                  {otherProblems.map((p, i) => <p key={i}>{p.message}</p>)}
+                </div>
+              )}
+              <GiftPackCard cart={cart} onNavigate={onClose} />
+              {quote?.samples && <SamplePicker samples={quote.samples} picks={samples} onChange={onSamplesChange} avoid={avoidProducts} />}
               </>
             )}
           </div>

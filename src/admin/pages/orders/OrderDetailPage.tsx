@@ -1,3 +1,4 @@
+import { splitOrderLines } from '../../../lib/orderLines';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
@@ -58,8 +59,7 @@ export default function OrderDetailPage() {
 
   const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['admin', 'order', id] }), qc.invalidateQueries({ queryKey: ['admin', 'orders'] })]);
   const next = allowedNextStatuses(o.status as OrderStatus, o.payment_method, o.payment_status);
-  const items = o.order_items.filter((i) => i.line_type === 'item');
-  const samples = o.order_items.filter((i) => i.line_type === 'sample');
+  const { items, samples } = splitOrderLines(o.order_items);
   const a = o.shipping_address || {};
   const infoDirty =
     tracking.courier_name !== (o.courier_name ?? '') || tracking.tracking_number !== (o.tracking_number ?? '') || tracking.tracking_url !== (o.tracking_url ?? '') || adminNote !== (o.admin_note ?? '');
@@ -217,6 +217,19 @@ export default function OrderDetailPage() {
                   <div className="flex-1 min-w-0">
                     <p className="truncate">{i.product_name}</p>
                     <p className="text-[12px] text-[#4F4F4F]">{i.variant_label} · SKU {(i as unknown as { sku: string }).sku}</p>
+                    {i.contents.length > 0 && (
+                      <div className="mt-1.5 text-[13px]">
+                        <p className="text-[12px] font-medium text-[#3F3F3F]">Pour into the pack:</p>
+                        <ul className="list-disc pl-5">
+                          {i.contents.map((c) => (
+                            <li key={c.id}>
+                              {c.product_name} · {c.qty} × {c.variant_label?.replace(' (gift pack)', '')}
+                            </li>
+                          ))}
+                        </ul>
+                        {i.packSample && <p className="text-[12.5px] text-[#3F3F3F] mt-1">Free sample in the pack: {i.packSample.product_name} · {i.packSample.variant_label?.replace(' (gift pack)', '')}</p>}
+                      </div>
+                    )}
                   </div>
                   <span className="text-[13px] text-[#454545] tabular-nums">{i.qty} × {formatINR(Number(i.unit_price))}</span>
                   <span className="w-24 text-right tabular-nums">{formatINR(Number(i.line_total))}</span>

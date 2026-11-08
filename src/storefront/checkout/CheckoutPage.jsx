@@ -9,7 +9,10 @@ import AddressModal from '../account/AddressModal';
 import MinimalHeader from '../MinimalHeader';
 import SamplePicker from '../bag/SamplePicker';
 import { CouponRow } from '../bag/CouponSheet';
-import { useQuote, useSamplePool } from '../bag/useQuote';
+import { toQuoteItems, useQuote, useSamplePool } from '../bag/useQuote';
+import { bagProductIds } from '../bag/bagView';
+import { SURPRISE } from '../bag/samplePicks';
+import { groupPicks } from '../giftpack/packMath';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
 import { payOrder } from '../../lib/razorpay';
 import { usePincode } from '../delivery/PincodeCheck';
@@ -61,6 +64,7 @@ export default function CheckoutPage({
   const couponBlocked = !!couponCode && quote && !quote.coupon?.ok;
   const { data: pool = [] } = useSamplePool(!!quote?.samples?.enabled);
   const poolName = useMemo(() => new Map(pool.map((p) => [p.variant_id, p.name])), [pool]);
+  const avoidProducts = useMemo(() => bagProductIds(quote), [quote]);
 
   // Default to the default (or only) address.
   useEffect(() => {
@@ -89,7 +93,7 @@ export default function CheckoutPage({
     try {
       const { data, error: rpcError } = await supabase.rpc('create_order', {
         p_address_id: address.id,
-        p_items: cart.filter((l) => l.variantId).map((l) => ({ variant_id: l.variantId, qty: l.quantity })),
+        p_items: toQuoteItems(cart),
         p_payment_method: payment,
         p_coupon_code: couponCode || undefined,
         p_samples: samples,
@@ -159,8 +163,8 @@ export default function CheckoutPage({
               )}
               {hasProblems && (
                 <div role="alert" className="mb-6 px-4 py-3 text-[12px] bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-900/50">
-                  {quote.problems.map((p) => (
-                    <p key={p.variant_id}>{p.message}</p>
+                  {quote.problems.map((p, i) => (
+                    <p key={i}>{p.message}</p>
                   ))}
                   <button type="button" onClick={onOpenBag} className="mt-2 underline underline-offset-4 uppercase tracking-wider text-[10.5px]">Update your bag</button>
                 </div>
@@ -288,7 +292,7 @@ export default function CheckoutPage({
                   </div>
 
                   {quote?.samples?.enabled && quote.samples.entitlement > 0 && (
-                    <SamplePicker samples={quote.samples} picks={samples} onChange={onSamplesChange} />
+                    <SamplePicker samples={quote.samples} picks={samples} onChange={onSamplesChange} avoid={avoidProducts} />
                   )}
 
                   <div>
@@ -332,13 +336,19 @@ export default function CheckoutPage({
 
                 <div className="divide-y divide-[#EAEAEA] dark:divide-white/10 my-2">
                   {items.map((item) => (
-                    <div key={item.variant_id} className="py-3 flex items-center gap-3">
+                    <div key={item.key || item.variant_id} className="py-3 flex items-center gap-3">
                       <div className="w-14 h-14 rounded-md bg-white dark:bg-[#1A1820] flex items-center justify-center p-1.5 shrink-0 border border-[#ECEAE5] dark:border-white/10">
                         <img src={item.image || PLACEHOLDER_IMAGE} alt={item.name} className="w-full h-full object-contain" />
                       </div>
                       <div className="flex-1 min-w-0 text-[11.5px]">
                         <h4 className="font-normal uppercase tracking-wide text-tk-ink dark:text-white line-clamp-1">{item.name}</h4>
-                        <p className="text-[10.5px] text-[#888888] dark:text-[#A09D96]">{item.label} · Qty {item.qty}</p>
+                        <p className="text-[10.5px] text-[#666666] dark:text-[#A09D96]">{item.label}{item.kind === 'gift_pack' ? '' : ` · Qty ${item.qty}`}</p>
+                        {item.kind === 'gift_pack' && (
+                          <p className="text-[10.5px] text-[#555555] dark:text-[#A09D96] mt-0.5">
+                            {groupPicks(item.picks ?? []).map((c) => (c.n > 1 ? `${c.name} × ${c.n}` : c.name)).join(', ')}
+                            {item.sample_ml > 0 && <span className="block text-tk-accent dark:text-tk-accent-night">+ Free {Number(item.sample_ml)} ml sample, chosen for you</span>}
+                          </p>
+                        )}
                       </div>
                       <span className="text-[12px] font-medium text-tk-ink dark:text-white tabular-nums shrink-0">{formatPrice(item.line_total)}</span>
                     </div>
@@ -349,7 +359,7 @@ export default function CheckoutPage({
                         {quote.samples.entitlement} free {quote.samples.sample_size_ml} ml sample{quote.samples.entitlement === 1 ? '' : 's'}
                       </p>
                       {Array.from({ length: quote.samples.entitlement }, (_, i) => (
-                        <p key={i}>{samples[i] ? poolName.get(samples[i]) || 'Your pick' : 'Surprise me'}</p>
+                        <p key={i}>{samples[i] && samples[i] !== SURPRISE ? poolName.get(samples[i]) || 'Your pick' : 'Surprise me'}</p>
                       ))}
                     </div>
                   )}

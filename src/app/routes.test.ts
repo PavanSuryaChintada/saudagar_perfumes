@@ -19,6 +19,7 @@ describe('resolveStorefrontView', () => {
   it('shop', () => expect(r('/shop')).toEqual({ view: 'listing', listing: { kind: 'shop' } }));
   it('category', () => expect(r('/categories/royal-attars')).toEqual({ view: 'listing', listing: { kind: 'category', slug: 'royal-attars' } }));
   it('notes index', () => expect(r('/notes')).toEqual({ view: 'notes' }));
+  it('gift pack builder', () => expect(r('/gift-pack')).toEqual({ view: 'giftpack' }));
   it('note page', () => expect(r('/notes/taif-rose')).toEqual({ view: 'listing', listing: { kind: 'note', slug: 'taif-rose' } }));
   it('search', () => expect(r('/search', '?q=oud')).toEqual({ view: 'listing', listing: { kind: 'search' } }));
   it('/about is the story page', () => expect(r('/about')).toEqual({ view: 'story' }));

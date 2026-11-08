@@ -1,3 +1,4 @@
+import { splitOrderLines, packContentsText } from '../../lib/orderLines';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -51,8 +52,7 @@ export default function OrderPage({ orderId, theme, onToggleTheme, onNavigateHom
   else if (error) body = <p className="py-24 text-center text-[13px] text-rose-600">{toFriendlyError(error)}</p>;
   else if (!order) body = <p className="py-24 text-center text-[13px] text-[#888888]">We couldn't find this order.</p>;
   else {
-    const items = order.order_items.filter((i) => i.line_type === 'item');
-    const samples = order.order_items.filter((i) => i.line_type === 'sample');
+    const { items, samples } = splitOrderLines(order.order_items);
     const a = order.shipping_address || {};
     const stopped = order.status === 'CANCELLED' || order.status === 'RTO';
     const reached = ORDER_STEPS.indexOf(order.status);
@@ -193,7 +193,13 @@ export default function OrderPage({ orderId, theme, onToggleTheme, onNavigateHom
                   <img src={i.image_url || PLACEHOLDER_IMAGE} alt="" className="w-16 h-16 object-contain bg-[#F7F7F6] dark:bg-[#18171C] rounded-[2px]" />
                   <div className="flex-1 min-w-0 text-[12.5px]">
                     <p className="uppercase tracking-wide truncate">{i.product_name}</p>
-                    <p className="text-[11.5px] text-[#888888]">{i.variant_label} · Qty {i.qty} · {formatINR(Number(i.unit_price))} each</p>
+                    <p className="text-[11.5px] text-[#666666] dark:text-[#AAAAAA]">{i.variant_label} · Qty {i.qty} · {formatINR(Number(i.unit_price))} each</p>
+                    {i.contents.length > 0 && <p className="text-[11.5px] text-[#555555] dark:text-[#BBBBBB] mt-0.5">{packContentsText(i)}</p>}
+                    {i.packSample && (
+                      <p className="text-[11.5px] text-tk-accent dark:text-tk-accent-night mt-0.5">
+                        + Free sample: {i.packSample.product_name} · {i.packSample.variant_label}
+                      </p>
+                    )}
                   </div>
                   <span className="text-[13px] tabular-nums">{formatINR(Number(i.line_total))}</span>
                 </div>

@@ -34,6 +34,7 @@ export default function InventoryPage() {
           .from('products')
           .select('id, name, stock_unit, stock_ml, product_variants(id, sku, label, kind, size_ml, stock, is_active, is_hidden, in_sample_pool)')
           .is('archived_at', null)
+          .eq('is_gift_pack', false)
           .order('name'),
       )) as unknown as StockProduct[],
   });

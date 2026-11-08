@@ -14,7 +14,7 @@ function useLookup(key: string, load: () => Promise<LookupItem[]>) {
 
 export const useProductLookup = () =>
   useLookup('products', async () =>
-    ((await throwIf(supabase.from('products').select('id, slug, name').is('archived_at', null).order('name'))) as LookupItem[]) ?? [],
+    ((await throwIf(supabase.from('products').select('id, slug, name').is('archived_at', null).eq('is_gift_pack', false).order('name'))) as LookupItem[]) ?? [],
   );
 
 export const useCollectionLookup = () =>

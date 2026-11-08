@@ -221,7 +221,7 @@ export default function ProductEditorPage() {
   const productList = useQuery({
     queryKey: ['admin', 'catalog', 'product-picker'],
     queryFn: async () =>
-      (await throwIf(supabase.from('products').select('id, name, primary_category_id').is('archived_at', null).order('name'))) as { id: string; name: string; primary_category_id: string | null }[],
+      (await throwIf(supabase.from('products').select('id, name, primary_category_id').is('archived_at', null).eq('is_gift_pack', false).order('name'))) as { id: string; name: string; primary_category_id: string | null }[],
     staleTime: 30_000,
   });
   const [adjustOpen, setAdjustOpen] = useState(false);

@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BellRing, BookOpen, FileSpreadsheet, ReceiptText, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
+  BellRing, BookOpen, PackagePlus, FileSpreadsheet, ReceiptText, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -45,6 +45,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { to: '/admin/notes', label: 'Notes', icon: Leaf, keywords: 'ingredients pyramid top heart base' },
       { to: '/admin/collections', label: 'Collections', icon: Layers, keywords: 'edit curated group' },
       { to: '/admin/samples', label: 'Free samples', icon: Gift, keywords: '5 ml vials sample pool' },
+      { to: '/admin/gift-pack', label: 'Gift pack', icon: PackagePlus, keywords: 'premium gift box 5 x 20 ml pack bundle' },
     ],
   },
   {

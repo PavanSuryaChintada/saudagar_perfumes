@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
+import { packContentsText, splitOrderLines } from '../../../lib/orderLines';
 import { useParams, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useAdminOrder, useBusinessSettings, type AdminOrder } from '../../orders/api';
@@ -58,8 +59,10 @@ export function OrderDocument({
   o, biz, brand, doc, inv,
 }: { o: AdminOrder; biz: Record<string, string>; brand: Record<string, string>; doc: 'invoice' | 'slip'; inv: InvoiceSettings }) {
   const a = o.shipping_address || {};
-  const items = o.order_items.filter((i) => i.line_type === 'item');
-  const samples = o.order_items.filter((i) => i.line_type === 'sample');
+  // Gift packs carry their perfumes; their free sample is listed with the other samples.
+  const split = splitOrderLines(o.order_items);
+  const items = split.items;
+  const samples = [...split.samples, ...items.flatMap((i) => (i.packSample ? [i.packSample] : []))];
   const sellerName = biz.legal_name || brand.legal_name || brand.name || '';
 
   const header = (
@@ -109,12 +112,22 @@ export function OrderDocument({
           </thead>
           <tbody>
             {items.map((i) => (
-              <tr key={i.id} className="border-b border-[#CCCCCC]">
-                <td className="py-1.5">{i.product_name} · {i.variant_label}</td>
-                <td className="py-1.5 font-mono">{(i as unknown as { sku: string }).sku}</td>
-                <td className="py-1.5 text-right">{i.qty}</td>
-                <td className="py-1.5 text-right">☐</td>
-              </tr>
+              <Fragment key={i.id}>
+                <tr className="border-b border-[#CCCCCC]">
+                  <td className="py-1.5">{i.product_name} · {i.variant_label}</td>
+                  <td className="py-1.5 font-mono">{(i as unknown as { sku: string }).sku}</td>
+                  <td className="py-1.5 text-right">{i.qty}</td>
+                  <td className="py-1.5 text-right">☐</td>
+                </tr>
+                {i.contents.map((c) => (
+                  <tr key={c.id} className="border-b border-[#CCCCCC]">
+                    <td className="py-1.5 pl-5">↳ {c.product_name} · {c.variant_label}</td>
+                    <td className="py-1.5 font-mono">{(c as unknown as { sku: string }).sku}</td>
+                    <td className="py-1.5 text-right">{c.qty}</td>
+                    <td className="py-1.5 text-right">☐</td>
+                  </tr>
+                ))}
+              </Fragment>
             ))}
           </tbody>
         </table>
@@ -144,7 +157,7 @@ export function OrderDocument({
     );
   } else {
     const lines = buildInvoiceLines(
-      items.map((i) => ({ name: `${i.product_name} · ${i.variant_label}`, hsn: (i as unknown as { hsn_code: string | null }).hsn_code, qty: i.qty, lineTotal: Number(i.line_total), gstRate: Number((i as unknown as { gst_rate: number | null }).gst_rate ?? 18) })),
+      items.map((i) => ({ name: `${i.product_name} · ${i.variant_label}${i.contents.length ? ` (${packContentsText(i)})` : ''}`, hsn: (i as unknown as { hsn_code: string | null }).hsn_code, qty: i.qty, lineTotal: Number(i.line_total), gstRate: Number((i as unknown as { gst_rate: number | null }).gst_rate ?? 18) })),
       Number(o.discount),
     );
     const ship = Number(o.shipping_fee);
