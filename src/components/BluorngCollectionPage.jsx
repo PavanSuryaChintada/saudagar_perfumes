@@ -16,6 +16,7 @@ import ListingBanner from '../storefront/ListingBanner.jsx';
 import SortMenu from '../storefront/catalog/SortMenu.jsx';
 import { CmsSections } from '../cms/SectionRenderer';
 import { SectionContext } from '../cms/SectionContext';
+import ServiceDown from './ServiceDown';
 
 const LISTING_PAGE_DEFAULT = [
   { id: 'd1', type: 'listing_header', config: {} },
@@ -56,7 +57,7 @@ export default function BluorngCollectionPage({
   }, [listing?.kind, listing?.slug, isCollection, isAll, initialCategory]);
 
   const {
-    filters, sections, activeFilters, counts, totalActive, products, total, isLoading,
+    filters, sections, activeFilters, counts, totalActive, products, total, isLoading, error: listError,
     toggle, clear, sort, setSort, page, pageCount, setPage, setQuery, setPriceRange, priceSpan
   } = useListing(ctx);
   // A price range typed by the shopper that isn't one of the ready-made bands also shows as a chip.
@@ -452,7 +453,9 @@ export default function BluorngCollectionPage({
           {/* ================= PRODUCT GRID AREA ================= */}
           <main className="flex-1 min-w-0 w-full">
             <AnimatePresence mode="wait">
-              {isLoading && products.length === 0 ? (
+              {listError && products.length === 0 ? (
+                <ServiceDown key="down" inline />
+              ) : isLoading && products.length === 0 ? (
                 <div key="loading" className="py-24 text-center text-[12.5px] text-[#666666]" aria-busy="true">Loading fragrances…</div>
               ) : products.length === 0 ? (
                 <motion.div

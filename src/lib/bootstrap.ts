@@ -13,6 +13,7 @@ export function useBootstrap() {
   return useQuery({
     queryKey: ['bootstrap'],
     staleTime: 5 * 60_000,
+    retry: 2,
     queryFn: async () => {
       const { data, error } = await supabase.rpc('site_bootstrap');
       if (error) throw error;

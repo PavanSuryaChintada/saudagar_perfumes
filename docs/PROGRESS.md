@@ -302,9 +302,24 @@
 - [x] Tablet: category tiles in a grid (the sliding strip only on wide screens); section headers no longer squeeze their links; phone shop toolbar fits on one row; account tabs wrap instead of hiding
 - [x] Results: tiny text 116 → 14 (all capital-letter labels), hard-to-read text 44 → 8 (all text over photos, which the scan cannot see), small tap areas 48 → 29 (inline text links); nothing wider than the screen
 
+## Phase 26: Brutal testing and hardening ✅
+- [x] Live attack probe (`npm run security:probe`, 82 checks): strangers and customers can't read or change other people's data, orders, prices, stock, coupons, refunds or roles; edge functions, webhooks and uploads refuse them
+- [x] Whole-journey tests as customers and admin (`npm run test:scenarios`, 49 checks): coupons (once only, freed on cancel), the last bottle bought by two people at once, packing → shipping → delivery, reviews and moderation, returns and refunds, gift packs, archived products, back-in-stock, wishlist
+- [x] Fixed: a return could list the same bottle twice and put two back on the shelf for one sold (database fix + test)
+- [x] Fixed: robots.txt had been deleted by accident, so the live site told search engines to skip everything; restored with private pages kept out
+- [x] Fixed: the security policy blocked the Meta Pixel; now allowed
+- [x] Fixed: if the database can't be reached the shop said "Nothing here yet" and products showed the 404; now a clear "We can't reach the shop right now" with Try again, retrying by itself
+- [x] Fixed: any page error blanked the whole site; now a calm message with Reload and Home, and old tabs reload once after a new release
+- [x] Fixed: tab titles read "SAUDAGAR PERFUMES" (wrong name); private pages and missing products stay out of search results
+- [x] Post-login links refuse hidden tab or newline tricks
+- [x] npm audit: 0 vulnerabilities (zod 4, Vite, PostCSS parser, source maps, minimatch under typescript-eslint)
+- [x] The database audit script no longer prints the JWT secret; test clean-up also removes test coupons and sign-ups
+- [x] Every admin page and part opens without errors; the live site has no console errors or failed requests
+
 ## Owner to-do before going live (see docs/SETUP.md and docs/SUPABASE.md)
 - [ ] Run `npm run hook:secret` (automatic refunds); delete the unused Singapore Supabase project
 - [ ] Supabase Pro, SMTP, domain
+- [ ] After SMTP: turn on email confirmation (`CONFIRM_EMAIL=on`, docs/SETUP.md §5); with Pro: leaked-password check; optionally a Turnstile CAPTCHA on sign-up
 - [ ] Send Razorpay, Delhivery and India Post details (see docs/INTEGRATIONS.md); GA4 / Meta Pixel IDs
 - [ ] Courier confirmation for shipping perfume; Delhivery token (optional)
 - [ ] Replace sample products, policy text, GSTIN and business details

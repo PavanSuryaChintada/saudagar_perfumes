@@ -40,4 +40,10 @@ const auth = await mgmt(`/projects/${ref}/config/auth`);
 const pick = ['site_url','uri_allow_list','mailer_autoconfirm','password_min_length','password_required_characters','password_hibp_enabled','security_update_password_require_reauthentication','mailer_secure_email_change_enabled','security_captcha_enabled','rate_limit_email_sent','rate_limit_token_refresh','rate_limit_verify','rate_limit_otp','rate_limit_anonymous_users','jwt_exp','sessions_timebox','sessions_inactivity_timeout','refresh_token_rotation_enabled','security_refresh_token_reuse_interval','external_anonymous_users_enabled','disable_signup','mfa_totp_enroll_enabled','mfa_totp_verify_enabled','smtp_host','mailer_otp_exp','db_max_pool_size'];
 console.log('\n== auth config ==');
 for (const k of pick) console.log(`${k}: ${JSON.stringify(auth[k])}`);
-try { const pg = await mgmt(`/projects/${ref}/postgrest`); console.log('\n== data api ==', JSON.stringify(pg)); } catch (e) { console.log(e.message); }
+try {
+  // Never print secrets: the Data API settings include the project's JWT secret.
+  const { jwt_secret: _secret, ...pg } = await mgmt(`/projects/${ref}/postgrest`);
+  console.log('\n== data api ==', JSON.stringify(pg));
+} catch (e) {
+  console.log(e.message);
+}

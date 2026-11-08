@@ -1,4 +1,5 @@
 import { useShopWords } from '../cms/shopWords';
+import { useSEO } from '../lib/seo';
 
 export default function NotFoundPage({
   onNavigateHome,
@@ -8,6 +9,8 @@ export default function NotFoundPage({
   onNavigateCollection: (slug: string) => void;
 }) {
   const words = useShopWords();
+  // Also used for a missing product or collection, so it names itself and stays out of search results.
+  useSEO({ title: 'Page not found', noindex: true });
   return (
     <section className="min-h-[70vh] flex items-center justify-center px-4 py-24 text-center">
       <div className="max-w-[460px]">

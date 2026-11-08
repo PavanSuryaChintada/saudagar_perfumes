@@ -15,7 +15,7 @@ export const addressSchema = z.object({
     .string()
     .transform((v, ctx) => {
       const n = normalizeIndianPhone(v);
-      if (!n) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Enter a 10-digit Indian mobile number.' });
+      if (!n) ctx.addIssue({ code: 'custom', message: 'Enter a 10-digit Indian mobile number.' });
       return n ?? '';
     }),
   line1: z.string().trim().min(3, 'Enter the house number and street.'),
@@ -36,7 +36,7 @@ export const personalDetailsSchema = z.object({
     .transform((v, ctx) => {
       if (!v || !v.trim()) return null;
       const n = normalizeIndianPhone(v);
-      if (!n) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Enter a 10-digit Indian mobile number.' });
+      if (!n) ctx.addIssue({ code: 'custom', message: 'Enter a 10-digit Indian mobile number.' });
       return n;
     }),
   date_of_birth: z
@@ -44,7 +44,7 @@ export const personalDetailsSchema = z.object({
     .optional()
     .transform((v, ctx) => {
       if (!v) return null;
-      if (v < '1900-01-01' || v > todayIso()) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Enter a real date of birth.' });
+      if (v < '1900-01-01' || v > todayIso()) ctx.addIssue({ code: 'custom', message: 'Enter a real date of birth.' });
       return v;
     }),
   whatsapp_opt_in: z.boolean(),
