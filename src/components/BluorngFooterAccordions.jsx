@@ -24,12 +24,12 @@ export default function BluorngFooterAccordions({ config = {} }) {
           {/* ================= LEFT: EXPANDABLE BRAND ACCORDION (7 COLS) ================= */}
           <div className="lg:col-span-7 flex flex-col justify-start">
             {config.eyebrow && (
-              <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#A09D96] font-medium block mb-1">
+              <span className="sf-eyebrow">
                 {config.eyebrow}
               </span>
             )}
             {config.heading && (
-              <h2 className="text-[18px] sm:text-[22px] font-normal uppercase tracking-[0.02em] text-tk-ink dark:text-white leading-snug">
+              <h2 className="sf-title">
                 {config.heading}
               </h2>
             )}

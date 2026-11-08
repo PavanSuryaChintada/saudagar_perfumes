@@ -78,7 +78,7 @@ function QuickBuyModalContent({
         {/* Minimal Circle Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-[#5F5F5F] hover:text-tk-ink dark:text-[#A09D96] dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+          className="absolute top-4 right-4 z-30 w-8 h-8 rounded-[2px] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-[#5F5F5F] hover:text-tk-ink dark:text-[#A09D96] dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           aria-label="Close Quick Add"
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -109,7 +109,7 @@ function QuickBuyModalContent({
                 e.stopPropagation();
                 onToggleWishlist && onToggleWishlist(product.id);
               }}
-              className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/85 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 text-tk-ink dark:text-white shadow-xs backdrop-blur-xs"
+              className="absolute top-3 right-3 z-20 w-7 h-7 rounded-[2px] flex items-center justify-center transition-all duration-200 cursor-pointer bg-white/85 dark:bg-black/60 hover:bg-white dark:hover:bg-black/90 text-tk-ink dark:text-white shadow-xs backdrop-blur-xs"
               title={wishlist.includes(product.id) ? 'Remove from wishlist' : 'Save to wishlist'}
               aria-label="Wishlist"
             >
@@ -234,7 +234,7 @@ function QuickBuyModalContent({
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-[2px] hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                   aria-label="Decrease quantity"
                 >
                   −
@@ -245,7 +245,7 @@ function QuickBuyModalContent({
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.min(maxQty, q + 1))}
-                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                  className="w-6 h-6 flex items-center justify-center text-[13px] text-[#5F5F5F] hover:text-tk-ink dark:hover:text-white cursor-pointer select-none rounded-[2px] hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                   aria-label="Increase quantity"
                 >
                   +

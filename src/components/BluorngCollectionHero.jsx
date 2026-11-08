@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCollections } from '../storefront/catalog/hooks';
+import { posterFor } from '../lib/media';
 
 /** Collections with a hero film, as edited in Admin → Collections. */
 export function useHeroCollections() {
@@ -113,7 +114,7 @@ export default function BluorngCollectionHero({
                 if (el) videoRefs.current[col.id] = el;
               }}
               src={col.video}
-              poster={col.poster}
+              poster={posterFor(col.video, col.poster)}
               autoPlay={isCurrent}
               loop
               muted={isMuted}
@@ -139,7 +140,7 @@ export default function BluorngCollectionHero({
         <button
           onClick={toggleMute}
           aria-label={isMuted ? 'Unmute' : 'Mute'}
-          className="absolute top-5 right-5 sm:top-6 sm:right-6 z-30 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center text-[11px] backdrop-blur-md border border-white/20 transition-all cursor-pointer"
+          className="absolute top-5 right-5 sm:top-6 sm:right-6 z-30 w-8 h-8 rounded-[2px] bg-black/40 hover:bg-black/60 text-white flex items-center justify-center text-[11px] backdrop-blur-md border border-white/20 transition-all cursor-pointer"
         >
           {isMuted ? '🔇' : '🔊'}
         </button>

@@ -46,8 +46,8 @@ export function StoryTenets({ config = {} }) {
   return (
     <section className="max-w-5xl mx-auto px-6 sm:px-10 py-16 border-t border-[#F0F0F0] dark:border-white/10">
       <div className="mb-12">
-        {config.eyebrow && <span className="text-[11px] uppercase tracking-[0.2em] text-[#666666] font-medium block mb-1">{config.eyebrow}</span>}
-        {config.heading && <h2 className="text-[24px] sm:text-[30px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white">{config.heading}</h2>}
+        {config.eyebrow && <span className="sf-eyebrow">{config.eyebrow}</span>}
+        {config.heading && <h2 className="sf-title">{config.heading}</h2>}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
         {items.map((t, i) => (
@@ -67,8 +67,8 @@ export function StoryTimeline({ config = {} }) {
   return (
     <section className="max-w-5xl mx-auto px-6 sm:px-10 py-16 border-t border-[#F0F0F0] dark:border-white/10">
       <div className="mb-14">
-        {config.eyebrow && <span className="text-[11px] uppercase tracking-[0.2em] text-[#666666] font-medium block mb-1">{config.eyebrow}</span>}
-        {config.heading && <h2 className="text-[24px] sm:text-[30px] font-normal tracking-[-0.015em] text-tk-ink dark:text-white">{config.heading}</h2>}
+        {config.eyebrow && <span className="sf-eyebrow">{config.eyebrow}</span>}
+        {config.heading && <h2 className="sf-title">{config.heading}</h2>}
         {config.text && <p className="text-[13px] text-[#5F5F5F] dark:text-[#999999] mt-1 font-light max-w-xl">{config.text}</p>}
       </div>
       <div className="space-y-12 sm:space-y-16 relative before:absolute before:left-3 sm:before:left-5 before:top-2 before:bottom-2 before:w-[1px] before:bg-[#EAEAEA] dark:before:bg-white/10">

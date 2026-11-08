@@ -36,7 +36,7 @@ export default function NotesIndexPage() {
   }, [paged.rows]);
 
   return (
-    <div className="w-full min-h-screen bg-white dark:bg-tk-night text-tk-ink dark:text-white pb-28">
+    <div className="w-full min-h-screen bg-white dark:bg-tk-night text-tk-ink dark:text-white pb-12">
       <ListingHeader eyebrow={words.notes_eyebrow} title={words.notes_title} description={words.notes_text} />
       <div className="px-4 sm:px-8 lg:px-12 py-12 space-y-12">
         {isLoading && <p className="text-[12.5px] text-[#666666]">Loading notes…</p>}

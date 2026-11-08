@@ -99,7 +99,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
   }
 
   return (
-    <div className="w-full min-h-screen bg-white dark:bg-tk-night text-tk-ink dark:text-white pb-44">
+    <div className="w-full min-h-screen bg-white dark:bg-tk-night text-tk-ink dark:text-white">
       <ListingHeader eyebrow="Gift pack" title={words.title} description={words.tagline} image={block.image || undefined} />
 
       <div className="px-4 sm:px-8 lg:px-12 py-8 sm:py-10 space-y-8">
@@ -166,7 +166,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
             <p className="text-[13px] text-[#555555] dark:text-white/70">No perfumes can go in a pack right now. Please check back soon.</p>
           )}
           {opts.perfumes.length > 0 && perfumes.length === 0 && <p className="text-[13px] text-[#555555] dark:text-white/70">No perfumes match “{term}”.</p>}
-          <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+          <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
             {paged.rows.map((p) => {
               const n = picks.filter((x) => x === p.product_id).length;
               const ok = canPick(opts, picks, p.product_id);
@@ -177,7 +177,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
                     <img src={p.image || PLACEHOLDER_IMAGE} alt={p.name} className="w-full h-full object-contain" loading="lazy" />
                   </Link>
                   <div className="p-3 flex-1 flex flex-col gap-2">
-                    <p className="text-[12px] font-semibold uppercase tracking-wide leading-tight">{p.name}</p>
+                    <p className="text-[12px] font-semibold uppercase tracking-wide leading-[1.35] min-h-[2.7em] line-clamp-2">{p.name}</p>
                     <p className="text-[12px] text-[#555555] dark:text-white/70">
                       {formatINR(p.price)} for {Number(opts.size_ml)} ml
                     </p>
@@ -206,8 +206,8 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
         </section>
       </div>
 
-      {/* Summary bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 bg-white dark:bg-[#0E0C10] border-t border-[#E6E4DF] dark:border-white/10 px-4 sm:px-8 lg:px-12 py-3 pb-[calc(env(safe-area-inset-bottom)+12px)] lg:pb-3 mb-[60px] lg:mb-0">
+      {/* Summary bar: stays in view while choosing, and stops above the footer instead of covering it */}
+      <div className="sticky bottom-[64px] lg:bottom-0 z-30 mt-10 bg-white/95 dark:bg-[#0E0C10]/95 backdrop-blur-md border-t border-[#E6E4DF] dark:border-white/10 px-4 sm:px-8 lg:px-12 py-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="text-[12.5px]">
             <p className="font-semibold">
@@ -226,7 +226,7 @@ export default function GiftPackPage({ onAddToCart, onNavigateCollection }) {
             type="button"
             onClick={addToBag}
             disabled={!full}
-            className="w-full sm:w-auto px-8 py-3.5 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] font-bold uppercase tracking-[0.12em] disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto h-12 px-8 bg-tk-ink hover:bg-tk-accent dark:bg-tk-gold text-white dark:text-tk-night text-[11.5px] font-bold uppercase tracking-[0.12em] rounded-[2px] transition-colors disabled:bg-[#9A9A9A] disabled:hover:bg-[#9A9A9A] dark:disabled:bg-white/20 disabled:cursor-not-allowed"
           >
             {full ? words.add_button : `Choose ${count - picks.length} more`}
           </button>

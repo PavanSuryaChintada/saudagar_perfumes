@@ -231,7 +231,7 @@ export default function BluorngCartDrawer({
 
                       {/* Quantity Stepper & Price Row */}
                       <div className="flex items-center justify-between mt-2 pt-1">
-                        <div className="flex items-center bg-black/[0.05] dark:bg-white/10 rounded-full overflow-hidden">
+                        <div className="flex items-center bg-black/[0.05] dark:bg-white/10 rounded-[2px] overflow-hidden">
                           <button
                             onClick={() => onUpdateQuantity(index, -1)}
                             className="w-6 h-6 flex items-center justify-center text-xs hover:bg-black/[0.08] dark:hover:bg-white/20 transition-colors cursor-pointer"

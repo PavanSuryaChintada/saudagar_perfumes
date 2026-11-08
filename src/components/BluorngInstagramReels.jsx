@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { formatINR as formatPrice } from '../lib/money';
 import { useReels } from '../cms/useContent';
 import { useGo } from '../cms/useSite';
+import { posterFor } from '../lib/media';
 import { useProductsBySlugs } from '../storefront/catalog/hooks';
 import ScrollReveal from './motion/ScrollReveal.jsx';
 
@@ -52,7 +53,7 @@ export default function BluorngInstagramReels({
         {reel.video ? (
           <video
             src={reel.video}
-            poster={reel.image || undefined}
+            poster={posterFor(reel.video, reel.image)}
             muted
             loop
             autoPlay
@@ -83,7 +84,7 @@ export default function BluorngInstagramReels({
 
         {/* Center Play Button on Hover */}
         <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md text-white flex items-center justify-center transform scale-90 opacity-70 group-hover:scale-100 group-hover:opacity-100 group-hover:bg-tk-accent dark:group-hover:bg-tk-gold dark:group-hover:text-tk-night transition-all duration-300 shadow-xl">
+          <div className="w-12 h-12 rounded-[2px] bg-black/30 backdrop-blur-md text-white flex items-center justify-center transform scale-90 opacity-70 group-hover:scale-100 group-hover:opacity-100 group-hover:bg-tk-accent dark:group-hover:bg-tk-gold dark:group-hover:text-tk-night transition-all duration-300 shadow-xl">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="ml-1">
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
@@ -91,7 +92,7 @@ export default function BluorngInstagramReels({
         </div>
 
         {/* Bottom Editorial Content Area */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-20 flex flex-col gap-2">
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 z-20 flex flex-col gap-2 whitespace-normal">
           {/* Audio track line */}
           {reel.audio && (
             <div className="flex items-center gap-1.5 text-[10.5px] text-white/60 truncate font-light">
@@ -153,10 +154,10 @@ export default function BluorngInstagramReels({
               )}
             </div>
 
-            <h2 className="text-[24px] sm:text-[36px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white leading-tight font-serif">
+            <h2 className="sf-title">
               {config.heading}
             </h2>
-            <p className="text-[12.5px] sm:text-[13.5px] text-[#666666] dark:text-white/60 tracking-wide mt-1.5 max-w-xl font-light">
+            <p className="sf-lead">
               {config.text}
             </p>
           </div>
@@ -164,14 +165,19 @@ export default function BluorngInstagramReels({
           {/* Right Action & Pause/Play Indicator */}
           <div className="flex items-center gap-4">
             
-            {/* Auto-scroll Status Pill */}
+            {/* Pause or play the moving row of videos */}
             <button
+              type="button"
               onClick={() => setIsPaused((prev) => !prev)}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[2px] bg-black/[0.05] dark:bg-white/[0.08] hover:bg-black/[0.1] dark:hover:bg-white/[0.14] text-tk-ink dark:text-white/80 text-[11.5px] uppercase tracking-wider transition-colors cursor-pointer"
-              title={isPaused ? "Resume Auto-scroll" : "Pause Auto-scroll"}
+              aria-pressed={isPaused}
+              className="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-[2px] border border-[#D5D2CA] dark:border-white/20 text-tk-ink dark:text-white/85 hover:border-tk-ink dark:hover:border-white text-[11px] font-medium uppercase tracking-wider transition-colors cursor-pointer"
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${isPaused ? 'bg-tk-accent dark:bg-tk-accent-night' : 'bg-tk-accent dark:bg-tk-accent-night animate-pulse'}`} />
-              <span>{isPaused ? 'Paused ⏸' : 'Auto-scrolling'}</span>
+              {isPaused ? (
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden><polygon points="6 4 20 12 6 20 6 4" /></svg>
+              ) : (
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden><rect x="5" y="4" width="5" height="16" /><rect x="14" y="4" width="5" height="16" /></svg>
+              )}
+              <span>{isPaused ? 'Play' : 'Pause'}</span>
             </button>
 
             {/* Direct Instagram Link */}
@@ -179,7 +185,7 @@ export default function BluorngInstagramReels({
               href={config.follow_url || '#'}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-tk-ink text-white hover:bg-tk-accent dark:bg-white dark:text-tk-ink dark:hover:bg-tk-gold dark:hover:text-tk-night text-[11px] font-semibold uppercase tracking-wider rounded-[2px] transition-all duration-300 cursor-pointer shadow-md"
+              className="inline-flex items-center gap-2 h-10 px-5 bg-tk-ink text-white hover:bg-tk-accent dark:bg-white dark:text-tk-ink dark:hover:bg-tk-gold dark:hover:text-tk-night text-[11px] font-semibold uppercase tracking-wider rounded-[2px] transition-all duration-300 cursor-pointer shadow-md"
             >
               <span>{config.follow_label}</span>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

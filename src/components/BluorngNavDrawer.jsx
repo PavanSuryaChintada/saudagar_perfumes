@@ -182,7 +182,7 @@ export default function BluorngNavDrawer({
                     <span className="text-[11px] font-medium text-[#5F5F5F] dark:text-white/60">
                       {drawer.theme_label}
                     </span>
-                    <div className="inline-flex items-center p-0.5 rounded-full bg-black/[0.06] dark:bg-white/10 transition-colors">
+                    <div className="inline-flex items-center p-0.5 rounded-[2px] bg-black/[0.06] dark:bg-white/10 transition-colors">
                       <button
                         type="button"
                         onClick={() => {

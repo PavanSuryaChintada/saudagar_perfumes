@@ -1,4 +1,5 @@
 import React from 'react';
+import { posterFor } from '../lib/media';
 
 /**
  * The top of a category (or collection) page when it has its own picture or film: full width, with the name and
@@ -8,7 +9,7 @@ export default function ListingBanner({ eyebrow, title, description, image, vide
   return (
     <section className="relative w-full min-h-[46vh] sm:min-h-[56vh] flex items-end overflow-hidden bg-[#111111]">
       {video ? (
-        <video className="absolute inset-0 w-full h-full object-cover" src={video} poster={image || undefined} autoPlay muted loop playsInline aria-hidden />
+        <video className="absolute inset-0 w-full h-full object-cover" src={video} poster={posterFor(video, image)} autoPlay muted loop playsInline aria-hidden />
       ) : (
         image && <img className="absolute inset-0 w-full h-full object-cover" src={image} alt="" />
       )}

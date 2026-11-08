@@ -15,13 +15,13 @@ export default function BluorngGalleryHero({ config = {} }) {
         {/* ================= EDITORIAL GALLERY TITLE (Borderless, Minimal) ================= */}
         <ScrollReveal variant="fade-up" className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
-            <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#A09D96] font-medium block mb-1">
+            <span className="sf-eyebrow">
               {config.eyebrow}
             </span>
-            <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
+            <h2 className="sf-title">
               {config.heading}
             </h2>
-            <p className="text-[12px] text-[#5F5F5F] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
+            <p className="sf-lead">
               {config.text}
             </p>
           </div>
@@ -53,7 +53,7 @@ export default function BluorngGalleryHero({ config = {} }) {
                     </h3>
                   </div>
 
-                  <div className="w-7 h-7 rounded-full bg-white/80 dark:bg-white/10 group-hover:bg-tk-ink dark:group-hover:bg-tk-gold dark:group-hover:text-tk-night text-tk-ink dark:text-white group-hover:text-white flex items-center justify-center text-[12px] transition-all duration-200 shadow-xs">
+                  <div className="w-7 h-7 rounded-[2px] bg-white/80 dark:bg-white/10 group-hover:bg-tk-ink dark:group-hover:bg-tk-gold dark:group-hover:text-tk-night text-tk-ink dark:text-white group-hover:text-white flex items-center justify-center text-[12px] transition-all duration-200 shadow-xs">
                     ↗
                   </div>
                 </div>

@@ -19,10 +19,10 @@ export default function BluorngCategories({ config = {} }) {
         {/* ================= EDITORIAL HEADER ================= */}
         <div className="flex items-end justify-between mb-5">
           <div>
-            <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#88857F] font-medium block mb-0.5">
+            <span className="sf-eyebrow">
               {config.eyebrow}
             </span>
-            <h2 className="text-[19px] sm:text-[24px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
+            <h2 className="sf-title">
               {config.heading}
             </h2>
           </div>
@@ -37,7 +37,7 @@ export default function BluorngCategories({ config = {} }) {
         </div>
 
         {/* ================= DESKTOP: MINIMAL EXPANDING PAVILION ================= */}
-        <div className="hidden md:flex h-[350px] w-full rounded-xl bg-[#F8F7F4] dark:bg-[#141318] overflow-hidden p-1.5 gap-1.5 transition-colors duration-300">
+        <div className="hidden md:flex h-[350px] w-full rounded-[2px] bg-[#F8F7F4] dark:bg-[#141318] overflow-hidden p-1.5 gap-1.5 transition-colors duration-300">
           {CATEGORY_ITEMS.map((item, idx) => {
             const isExpanded = activeIdx === idx;
 
@@ -56,7 +56,7 @@ export default function BluorngCategories({ config = {} }) {
                 transition={{
                   layout: { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
                 }}
-                className={`relative flex flex-col justify-between overflow-hidden cursor-pointer transition-colors duration-300 rounded-lg ${
+                className={`relative flex flex-col justify-between overflow-hidden cursor-pointer transition-colors duration-300 rounded-[2px] ${
                   isExpanded ? 'flex-[3.2] bg-[#FFFFFF] dark:bg-[#1C1A22] shadow-sm' : 'flex-1 bg-transparent hover:bg-white/50 dark:hover:bg-white/5'
                 }`}
               >
@@ -80,7 +80,7 @@ export default function BluorngCategories({ config = {} }) {
                     className="relative z-10 flex-1 px-6 py-4 flex items-center justify-between gap-6"
                   >
                     {/* Left: Details */}
-                    <div className="flex-1 flex flex-col justify-between h-full py-1">
+                    <div className="flex-1 min-w-0 flex flex-col justify-between h-full py-1">
                       <div>
                         <span className="text-[10.5px] uppercase tracking-[0.14em] text-tk-accent dark:text-tk-accent-night font-medium block mb-0.5">
                           {item.concentration}
@@ -101,19 +101,19 @@ export default function BluorngCategories({ config = {} }) {
                       </div>
 
                       {/* Minimal CTA */}
-                      <div className="pt-2 flex items-center gap-3">
+                      <div className="pt-2 flex items-center flex-wrap gap-x-3 gap-y-1">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             onSelectCategory(item.link);
                           }}
-                          className="text-[11.5px] uppercase tracking-[0.12em] text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
+                          className="text-[11.5px] uppercase tracking-[0.12em] text-tk-ink dark:text-white hover:text-tk-accent dark:hover:text-tk-accent-night transition-colors flex items-center gap-1.5 font-medium cursor-pointer whitespace-nowrap border-b border-current pb-0.5"
                         >
                           <span>{config.cta_label}</span>
                           <span className="text-[12px]">→</span>
                         </button>
-                        <span className="text-[10.5px] uppercase tracking-wider text-[#6B6B6B] dark:text-white/40">
-                          ({item.count_label})
+                        <span className="text-[10.5px] uppercase tracking-wider text-[#6B6B6B] dark:text-white/40 whitespace-nowrap">
+                          {item.count_label}
                         </span>
                       </div>
                     </div>
@@ -167,7 +167,7 @@ export default function BluorngCategories({ config = {} }) {
               className="flex flex-col group cursor-pointer select-none active:opacity-75 transition-opacity"
             >
               {/* Clean Soft Pedestal Stage (No heavy borders, no box-in-box, pure flacon) */}
-              <div className="w-full aspect-square rounded-md bg-[#F8F7F5] dark:bg-[#141318] flex items-center justify-center p-4 relative overflow-hidden transition-colors">
+              <div className="w-full aspect-square rounded-[2px] bg-[#F8F7F5] dark:bg-[#141318] flex items-center justify-center p-4 relative overflow-hidden transition-colors">
                 <img
                   src={item.image}
                   alt={item.title}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useGo } from '../cms/useSite';
 import { resolveLink } from '../cms/links';
+import { posterFor } from '../lib/media';
 
 /** Section "hero_video_carousel": films, fallback images and the call to action all come from the CMS. */
 export default function BluorngHero({ config = {} }) {
@@ -125,6 +126,7 @@ export default function BluorngHero({ config = {} }) {
             key={vid.id || vid.src}
             ref={(el) => (videoElementsRef.current[idx] = el)}
             src={vid.src}
+            poster={posterFor(vid.src)}
             preload="auto"
             muted={isMuted}
             playsInline
@@ -180,7 +182,8 @@ export default function BluorngHero({ config = {} }) {
                     }`}>
                       {String(idx + 1).padStart(2, '0')}
                     </span>
-                    <span>{vid.label}</span>
+                    {/* A label that is only a number would repeat the counter ("01 01"), so it is left out. */}
+                    {vid.label && !/^\s*\d+\s*$/.test(vid.label) && <span>{vid.label}</span>}
 
                     {/* Hairline progress along the bottom of the active film */}
                     {isActive && (

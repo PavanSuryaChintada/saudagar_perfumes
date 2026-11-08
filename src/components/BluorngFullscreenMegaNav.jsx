@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBlock, useGo } from '../cms/useSite';
+import { posterFor } from '../lib/media';
 
 export default function BluorngFullscreenMegaNav({
   isOpen,
@@ -163,7 +164,7 @@ export default function BluorngFullscreenMegaNav({
               {/* Theme Switcher Pill in Mega Nav */}
               {onToggleTheme && (
                 <div
-                  className="inline-flex items-center p-0.5 rounded-full bg-black/[0.06] dark:bg-white/10 transition-colors select-none"
+                  className="inline-flex items-center p-0.5 rounded-[2px] bg-black/[0.06] dark:bg-white/10 transition-colors select-none"
                   role="radiogroup"
                   aria-label="Theme Selector"
                 >
@@ -172,7 +173,7 @@ export default function BluorngFullscreenMegaNav({
                     onClick={() => {
                       if (theme !== 'light') onToggleTheme();
                     }}
-                    className={`flex items-center justify-center w-6 h-6 rounded-full transition-all duration-200 cursor-pointer ${
+                    className={`flex items-center justify-center w-6 h-6 rounded-[2px] transition-all duration-200 cursor-pointer ${
                       theme === 'light'
                         ? 'bg-tk-accent text-white shadow-xs'
                         : 'text-tk-ink/50 dark:text-white/50 hover:text-tk-ink dark:hover:text-white'
@@ -197,7 +198,7 @@ export default function BluorngFullscreenMegaNav({
                     onClick={() => {
                       if (theme !== 'dark') onToggleTheme();
                     }}
-                    className={`flex items-center justify-center w-6 h-6 rounded-full transition-all duration-200 cursor-pointer ${
+                    className={`flex items-center justify-center w-6 h-6 rounded-[2px] transition-all duration-200 cursor-pointer ${
                       theme === 'dark'
                         ? 'bg-tk-gold text-tk-night font-medium shadow-xs'
                         : 'text-tk-ink/50 dark:text-white/50 hover:text-tk-ink dark:hover:text-white'
@@ -367,7 +368,7 @@ export default function BluorngFullscreenMegaNav({
                               if (el) videoRefs.current[cat.id] = el;
                             }}
                             src={cat.video}
-                            poster={cat.image}
+                            poster={posterFor(cat.video, cat.image)}
                             autoPlay={idx === 0}
                             loop
                             muted
@@ -457,7 +458,7 @@ export default function BluorngFullscreenMegaNav({
                       {cell.video ? (
                         <video
                           src={cell.video}
-                          poster={cell.image || undefined}
+                          poster={posterFor(cell.video, cell.image)}
                           autoPlay
                           muted
                           loop

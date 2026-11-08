@@ -24,19 +24,19 @@ export default function BluorngSignatureCollection({
         {/* ================= EDITORIAL SECTION HEADER (Borderless, Minimal) ================= */}
         <ScrollReveal variant="fade-up" className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
-            <span className="text-[11px] uppercase tracking-[0.16em] text-[#666666] dark:text-[#A09D96] font-medium block mb-1">
+            <span className="sf-eyebrow">
               {config.eyebrow}
             </span>
-            <h2 className="text-[22px] sm:text-[30px] font-normal uppercase tracking-[0.03em] text-tk-ink dark:text-white">
+            <h2 className="sf-title">
               {config.heading}
             </h2>
-            <p className="text-[12px] text-[#5F5F5F] dark:text-[#A09D96] tracking-wide mt-1.5 max-w-lg font-normal">
+            <p className="sf-lead">
               {config.text}
             </p>
           </div>
 
-          {/* Refined Category Filter Pills (Soft, rounded-full, no box borders) */}
-          <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none bg-[#F7F6F3] dark:bg-[#141318] p-1 rounded-full">
+          {/* Category filter tabs */}
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none bg-[#F7F6F3] dark:bg-[#141318] p-1 rounded-[2px]">
             {filters.map((f) => {
               const isActive = selectedFilter === f.value;
               return (

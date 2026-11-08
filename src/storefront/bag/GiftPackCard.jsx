@@ -15,12 +15,14 @@ export default function GiftPackCard({ cart, onNavigate }) {
   const text = fillPackText(block?.bag_text || 'Your own selection of our perfumes, in one gift box.', opts);
   const button = fillPackText(block?.bag_button || 'Build your pack', opts);
   return (
-    <div className="flex gap-3 items-center rounded-xs border border-tk-ink/15 dark:border-white/15 bg-[#FAF9F6] dark:bg-[#141318] p-3.5">
-      {block?.image && <img src={block.image} alt="" className="w-14 h-14 object-cover shrink-0" />}
-      <div className="flex-1 min-w-0">
-        <p className="text-[11.5px] font-bold uppercase tracking-wider text-tk-ink dark:text-white">{heading}</p>
-        <p className="text-[11px] text-[#555555] dark:text-white/70 mt-0.5 leading-relaxed">{text}</p>
-        <p className="text-[11.5px] text-tk-accent dark:text-tk-accent-night font-semibold mt-1">{packFacts(opts).join(' · ')}</p>
+    <div className="rounded-[2px] border border-tk-ink/15 dark:border-white/15 bg-[#FAF9F6] dark:bg-[#141318] p-4">
+      <div className="flex gap-3 items-start">
+        {block?.image && <img src={block.image} alt="" className="w-14 h-14 object-cover shrink-0" />}
+        <div className="flex-1 min-w-0">
+          <p className="text-[11.5px] font-bold uppercase tracking-wider text-tk-ink dark:text-white">{heading}</p>
+          <p className="text-[12px] text-[#555555] dark:text-white/70 mt-1 leading-relaxed">{text}</p>
+          <p className="text-[11.5px] text-tk-accent dark:text-tk-accent-night font-semibold mt-1.5">{packFacts(opts).join(' · ')}</p>
+        </div>
       </div>
       <button
         type="button"
@@ -28,9 +30,9 @@ export default function GiftPackCard({ cart, onNavigate }) {
           onNavigate?.();
           navigate('/gift-pack');
         }}
-        className="shrink-0 px-3.5 py-2 bg-tk-ink dark:bg-tk-gold text-white dark:text-tk-night text-[11px] font-bold uppercase tracking-[0.12em] cursor-pointer"
+        className="mt-3.5 w-full h-10 rounded-[2px] border border-tk-ink dark:border-white/70 text-tk-ink dark:text-white hover:bg-tk-ink hover:text-white dark:hover:bg-white dark:hover:text-tk-night text-[11px] font-bold uppercase tracking-[0.14em] transition-colors cursor-pointer"
       >
-        {button}
+        {button} →
       </button>
     </div>
   );
