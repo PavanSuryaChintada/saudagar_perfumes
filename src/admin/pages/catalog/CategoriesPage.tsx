@@ -3,6 +3,8 @@ import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
+import { useEditParam } from '../../ui/useEditParam';
+import { SearchSelect, categoryOptions } from '../../ui/SearchSelect';
 import { PageHeader } from '../../ui/PageHeader';
 import { Button } from '../../ui/Button';
 import { FieldShell, TextArea, TextInput, Toggle } from '../../ui/Field';
@@ -44,6 +46,15 @@ export default function CategoriesPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState<CategoryRow | null>(null);
+  const edit = (row: CategoryRow) => {
+    setError('');
+    setDraft({
+      id: row.id, name: row.name, slug: row.slug, parent_id: row.parent_id ?? '', description: row.description ?? '',
+      image_url: row.image_url ?? '', video_url: row.video_url ?? '', is_active: row.is_active, seo_title: row.seo_title ?? '',
+      seo_description: row.seo_description ?? '',
+    });
+  };
+  useEditParam(rows, edit);
 
   const refresh = async () => {
     await refetch();
@@ -125,14 +136,7 @@ export default function CategoriesPage() {
               type="button"
               aria-label={`Edit ${row.name}`}
               className="p-1.5 text-[#777777] hover:text-tk-ink"
-              onClick={() => {
-                setError('');
-                setDraft({
-                  id: row.id, name: row.name, slug: row.slug, parent_id: row.parent_id ?? '', description: row.description ?? '',
-                  image_url: row.image_url ?? '', video_url: row.video_url ?? '', is_active: row.is_active, seo_title: row.seo_title ?? '',
-                  seo_description: row.seo_description ?? '',
-                });
-              }}
+              onClick={() => edit(row)}
             >
               <Pencil size={14} />
             </button>
@@ -165,14 +169,14 @@ export default function CategoriesPage() {
               <TextInput id="c-slug" value={draft.slug} onChange={(e) => setDraft({ ...draft, slug: slugify(e.target.value) })} />
             </FieldShell>
             <FieldShell label="Inside" htmlFor="c-parent" help="Leave empty for a top-level category.">
-              <select id="c-parent" value={draft.parent_id} onChange={(e) => setDraft({ ...draft, parent_id: e.target.value })} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
-                <option value="">Top level</option>
-                {tree
-                  .filter(({ row }) => !draft.id || !descendants(draft.id).has(row.id))
-                  .map(({ row, depth }) => (
-                    <option key={row.id} value={row.id}>{`${'— '.repeat(depth)}${row.name}`}</option>
-                  ))}
-              </select>
+              <SearchSelect
+                id="c-parent"
+                options={categoryOptions(rows.filter((r) => !draft.id || !descendants(draft.id).has(r.id)))}
+                value={draft.parent_id || null}
+                onChange={(v) => setDraft({ ...draft, parent_id: v ?? '' })}
+                allowClear
+                placeholder="Top level (no parent). Search to choose one"
+              />
             </FieldShell>
             <FieldShell label="Description" htmlFor="c-desc">
               <TextArea id="c-desc" rows={2} value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />

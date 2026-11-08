@@ -11,6 +11,8 @@ import { Button } from '../../ui/Button';
 import { FieldShell, TextArea, TextInput, Toggle } from '../../ui/Field';
 import { Modal } from '../../ui/Modal';
 import { ConfirmDialog } from '../../ui/ConfirmDialog';
+import { SearchMultiSelect, categoryOptions } from '../../ui/SearchSelect';
+import { useEditParam } from '../../ui/useEditParam';
 import { rpc, throwIf, useCategories } from '../../catalog/api';
 import { useProductLookup } from '../../cms/lookups';
 import WelcomeTab from './WelcomeTab';
@@ -130,8 +132,6 @@ function CouponsTab() {
   const [deleting, setDeleting] = useState<CouponRow | null>(null);
   const { data: categories = [] } = useCategories();
   const { data: products = [] } = useProductLookup();
-  const [catSearch, setCatSearch] = useState('');
-  const [prodSearch, setProdSearch] = useState('');
   const [custSearch, setCustSearch] = useState('');
 
   const { data: rows = [], isLoading } = useQuery({
@@ -177,6 +177,8 @@ function CouponsTab() {
     });
   };
 
+  useEditParam(rows, (r) => { setKind(''); edit(r); });
+
   const save = async () => {
     if (!draft) return;
     const code = draft.code.trim().toUpperCase().replace(/\s+/g, '');
@@ -211,8 +213,6 @@ function CouponsTab() {
     }
   };
 
-  const catName = new Map(categories.map((c) => [c.id, c.name]));
-  const prodName = new Map(products.map((p) => [p.id, p.name]));
 
   return (
     <div>
@@ -333,41 +333,21 @@ function CouponsTab() {
             <fieldset className="border border-[#EAEAEA] p-3 space-y-2">
               <legend className="px-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555]">Where it applies</legend>
               <p className="text-[11px] text-[#888888]">No categories = the whole store. A category includes its sub-categories.</p>
-              <div className="flex flex-wrap gap-1.5">
-                {draft.category_ids.map((id) => (
-                  <button key={id} type="button" onClick={() => setDraft({ ...draft, category_ids: draft.category_ids.filter((x) => x !== id) })} className="px-2 py-0.5 text-[12px] bg-[#F4F3EE] border border-[#E0DDD5]">
-                    {catName.get(id) ?? 'Category'} ✕
-                  </button>
-                ))}
-              </div>
-              <TextInput placeholder="Search categories to add" value={catSearch} onChange={(e) => setCatSearch(e.target.value)} aria-label="Search categories" />
-              {catSearch.trim() && (
-                <div className="border border-[#EAEAEA] max-h-36 overflow-y-auto">
-                  {categories.filter((c) => !draft.category_ids.includes(c.id) && c.name.toLowerCase().includes(catSearch.trim().toLowerCase())).slice(0, 12).map((c) => (
-                    <button key={c.id} type="button" className="block w-full text-left px-3 py-1.5 text-[12.5px] hover:bg-[#FAFAF7]" onClick={() => { setDraft({ ...draft, category_ids: [...draft.category_ids, c.id] }); setCatSearch(''); }}>
-                      {c.name}
-                    </button>
-                  ))}
-                </div>
-              )}
+              <SearchMultiSelect
+                ariaLabel="Categories this code covers"
+                options={categoryOptions(categories)}
+                values={draft.category_ids}
+                onChange={(v) => setDraft({ ...draft, category_ids: v })}
+                placeholder="Search categories, or leave empty for the whole store"
+              />
               <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] pt-2">Never applies to</p>
-              <div className="flex flex-wrap gap-1.5">
-                {draft.excluded_product_ids.map((id) => (
-                  <button key={id} type="button" onClick={() => setDraft({ ...draft, excluded_product_ids: draft.excluded_product_ids.filter((x) => x !== id) })} className="px-2 py-0.5 text-[12px] bg-[#F4F3EE] border border-[#E0DDD5]">
-                    {prodName.get(id) ?? 'Product'} ✕
-                  </button>
-                ))}
-              </div>
-              <TextInput placeholder="Search products to exclude" value={prodSearch} onChange={(e) => setProdSearch(e.target.value)} aria-label="Search products to exclude" />
-              {prodSearch.trim() && (
-                <div className="border border-[#EAEAEA] max-h-36 overflow-y-auto">
-                  {products.filter((p) => !draft.excluded_product_ids.includes(p.id) && p.name.toLowerCase().includes(prodSearch.trim().toLowerCase())).slice(0, 12).map((p) => (
-                    <button key={p.id} type="button" className="block w-full text-left px-3 py-1.5 text-[12.5px] hover:bg-[#FAFAF7]" onClick={() => { setDraft({ ...draft, excluded_product_ids: [...draft.excluded_product_ids, p.id] }); setProdSearch(''); }}>
-                      {p.name}
-                    </button>
-                  ))}
-                </div>
-              )}
+              <SearchMultiSelect
+                ariaLabel="Products this code never covers"
+                options={products.map((p) => ({ value: p.id, label: p.name }))}
+                values={draft.excluded_product_ids}
+                onChange={(v) => setDraft({ ...draft, excluded_product_ids: v })}
+                placeholder="Search products to exclude"
+              />
             </fieldset>
 
             <fieldset className="border border-[#EAEAEA] p-3 space-y-2">

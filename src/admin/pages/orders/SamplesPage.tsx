@@ -11,6 +11,7 @@ import { Button } from '../../ui/Button';
 import { FieldShell, TextInput, Toggle } from '../../ui/Field';
 import { Modal } from '../../ui/Modal';
 import { SortableList } from '../../ui/SortableList';
+import { SearchSelect } from '../../ui/SearchSelect';
 import { rpc, throwIf, useInvalidateCatalog } from '../../catalog/api';
 import { useProductLookup } from '../../cms/lookups';
 
@@ -188,12 +189,14 @@ export default function SamplesPage() {
       >
         <div className="space-y-4">
           <FieldShell label="Scent" htmlFor="sv-product">
-            <select id="sv-product" value={newProduct} onChange={(e) => setNewProduct(e.target.value)} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
-              <option value="">Choose a product…</option>
-              {products.filter((p) => !withVial.has(p.id)).map((p) => (
-                <option key={p.id} value={p.id}>{p.name}</option>
-              ))}
-            </select>
+            <SearchSelect
+              id="sv-product"
+              options={products.filter((p) => !withVial.has(p.id)).map((p) => ({ value: p.id, label: p.name }))}
+              value={newProduct || null}
+              onChange={(v) => setNewProduct(v ?? '')}
+              placeholder="Search products"
+              emptyText="Every product already has a sample vial."
+            />
           </FieldShell>
           <FieldShell label="Opening stock (vials)" htmlFor="sv-stock">
             <TextInput id="sv-stock" inputMode="numeric" placeholder="e.g. 50" value={newStock} onChange={(e) => setNewStock(e.target.value)} />
