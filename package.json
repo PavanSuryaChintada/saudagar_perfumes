@@ -17,6 +17,8 @@
     "functions:deploy": "node --env-file=.env.local scripts/deploy-functions.mjs",
     "connect": "node --env-file=.env.local scripts/connect.mjs",
     "db:audit": "node --env-file=.env.local scripts/audit-db.mjs",
+    "security:probe": "node --env-file=.env.local scripts/security-probe.mjs",
+    "test:scenarios": "node --env-file=.env.local scripts/scenario-test.mjs",
     "hook:secret": "node --env-file=.env.local scripts/set-hook-secret.mjs",
     "auth:configure": "node --env-file=.env.local scripts/configure-auth.mjs"
   },
@@ -65,6 +67,11 @@
     "react-hook-form": "^7.91.0",
     "react-router": "^7.18.5",
     "sonner": "^2.0.8",
-    "zod": "^3.25.76"
+    "zod": "^4.6.7"
+  },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.5"
+    }
   }
 }
