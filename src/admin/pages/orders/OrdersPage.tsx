@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Pager } from '../../ui/Pager';
 import { Link, useSearchParams } from 'react-router';
 import { PageHeader } from '../../ui/PageHeader';
 import { TextInput } from '../../ui/Field';
@@ -13,6 +14,28 @@ import { supabase } from '../../../lib/supabase';
 import { downloadCsv, toCsv } from '../../export/csv';
 import { toast } from 'sonner';
 import { Download } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { BulkBar, BulkButton, RowCheck } from '../../ui/BulkBar';
+import { Modal } from '../../ui/Modal';
+import { rpc } from '../../catalog/api';
+import { useCouriers, useShippingSettings } from '../../orders/shipping';
+import type { AdminOrder } from '../../orders/api';
+
+interface BulkResult {
+  done: number;
+  skipped: { order_number: string; message: string }[];
+}
+
+/** One toast that says what happened, and why any order was left alone. */
+function reportBulk(r: BulkResult, verb: string) {
+  if (r.done) toast.success(`${r.done} order${r.done === 1 ? '' : 's'} ${verb}.`);
+  if (r.skipped.length) {
+    toast.warning(`${r.skipped.length} order${r.skipped.length === 1 ? ' was' : 's were'} left as they were`, {
+      description: r.skipped.slice(0, 6).map((x) => `${x.order_number}: ${x.message}`).join('  ·  '),
+      duration: 12000,
+    });
+  }
+}
 
 const STATUS_FILTERS: { value: string; label: string }[] = [
   { value: '', label: 'All' },
@@ -31,13 +54,13 @@ export const STATUS_TONE: Record<string, string> = {
   SHIPPED: 'bg-indigo-50 text-indigo-800 border-indigo-200',
   OUT_FOR_DELIVERY: 'bg-indigo-50 text-indigo-800 border-indigo-200',
   DELIVERED: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-  CANCELLED: 'bg-[#F4F3EE] text-[#777777] border-[#E0DDD5]',
+  CANCELLED: 'bg-[#F4F3EE] text-[#5A5A5A] border-[#D3D0C8]',
   RTO: 'bg-rose-50 text-rose-700 border-rose-200',
 };
 
 export function StatusBadge({ status }: { status: string }) {
   return (
-    <span className={`inline-block px-2 py-0.5 border text-[10.5px] uppercase tracking-[0.06em] whitespace-nowrap ${STATUS_TONE[status] ?? ''}`}>
+    <span className={`inline-block px-2 py-0.5 border text-[11.5px] uppercase tracking-[0.06em] whitespace-nowrap ${STATUS_TONE[status] ?? ''}`}>
       {ORDER_STATUS_LABEL[status as OrderStatus] ?? status}
     </span>
   );
@@ -51,6 +74,59 @@ export default function OrdersPage() {
   const [search, setSearch] = useState(params.get('q') ?? '');
   const { data, isLoading, error } = useAdminOrders({ status, search: params.get('q') ?? '', page });
   const rows = data?.rows ?? [];
+  const qc = useQueryClient();
+  const couriers = useCouriers();
+  const { data: shipSettings } = useShippingSettings();
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState(false);
+  const [shipping, setShipping] = useState<Record<string, { courier: string; tracking: string }> | null>(null);
+  // Selection belongs to the page being looked at.
+  const paramKey = params.toString();
+  useEffect(() => setSelected(new Set()), [paramKey]);
+  const chosen = useMemo(() => rows.filter((r) => selected.has(r.id)), [rows, selected]);
+  const allShown = rows.length > 0 && rows.every((r) => selected.has(r.id));
+  const toggle = (id: string, on: boolean) =>
+    setSelected((cur) => {
+      const next = new Set(cur);
+      if (on) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  const refresh = () => qc.invalidateQueries({ queryKey: ['admin', 'orders'] });
+  const setStatusFor = async (to: 'PACKED' | 'DELIVERED', verb: string) => {
+    setBusy(true);
+    try {
+      reportBulk(await rpc<BulkResult>('bulk_order_status', { p_orders: chosen.map((o) => o.id), p_status: to, p_note: null }), verb);
+      await refresh();
+      setSelected(new Set());
+    } catch (err) {
+      toast.error(toFriendlyError(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const openShip = () => {
+    const fallback = String(shipSettings?.['shipping.default_courier'] ?? couriers[0]?.key ?? 'other');
+    setShipping(Object.fromEntries(chosen.filter((o) => o.status === 'PACKED').map((o) => [o.id, { courier: fallback, tracking: '' }])));
+  };
+  const print = (doc: 'invoice' | 'slip') => window.open(`/admin/orders/print?doc=${doc}&ids=${chosen.map((o) => o.id).join(',')}`, '_blank', 'noopener');
+  const exportChosen = () =>
+    downloadCsv(
+      `orders-selected-${new Date().toISOString().slice(0, 10)}.csv`,
+      toCsv(
+        chosen.map((o: AdminOrder) => ({
+          order_number: o.order_number,
+          created_at: o.created_at,
+          customer: o.customer_name,
+          phone: o.customer_phone,
+          city: o.ship_city,
+          state: o.ship_state,
+          total: o.total,
+          payment: paymentLabel(o),
+          status: ORDER_STATUS_LABEL[o.status as OrderStatus] ?? o.status,
+        })),
+      ),
+    );
   const pages = Math.max(1, Math.ceil((data?.count ?? 0) / PAGE_SIZE));
 
   const update = (patch: Record<string, string>) => {
@@ -101,7 +177,7 @@ export default function OrdersPage() {
             key={f.value}
             type="button"
             onClick={() => update({ status: f.value })}
-            className={`px-3 py-1.5 text-[12px] border ${status === f.value ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#D5D3CC] text-[#555555] hover:border-tk-ink'}`}
+            className={`px-3 py-1.5 text-[13px] border ${status === f.value ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#C4C1B9] text-[#454545] hover:border-tk-ink'}`}
           >
             {f.label}
           </button>
@@ -118,11 +194,14 @@ export default function OrdersPage() {
         <Button type="submit" variant="secondary">Search</Button>
       </form>
 
-      {error && <p className="text-[13px] text-rose-600 mb-3">{toFriendlyError(error)}</p>}
-      <div className="bg-white border border-[#EAEAEA] overflow-x-auto">
-        <table className="w-full text-[13px] min-w-[720px]">
+      {error && <p className="text-[14px] text-rose-600 mb-3">{toFriendlyError(error)}</p>}
+      <div className="bg-white border border-[#E2E0DB] overflow-x-auto">
+        <table className="w-full text-[14px] min-w-[720px]">
           <thead>
-            <tr className="text-left text-[11px] uppercase tracking-[0.06em] text-[#777777] border-b border-[#EAEAEA]">
+            <tr className="text-left text-[12px] uppercase tracking-[0.06em] text-[#5A5A5A] border-b border-[#E2E0DB]">
+              <th className="pl-3 py-2 w-8">
+                <RowCheck checked={allShown} onChange={(on) => setSelected(on ? new Set(rows.map((r) => r.id)) : new Set())} label="Select every order on this page" />
+              </th>
               <th className="px-3 py-2 font-medium">Order</th>
               <th className="px-3 py-2 font-medium">Customer</th>
               <th className="px-3 py-2 font-medium">Items</th>
@@ -131,33 +210,36 @@ export default function OrdersPage() {
               <th className="px-3 py-2 font-medium">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F0F0F0]">
+          <tbody className="divide-y divide-[#E9E7E2]">
             {isLoading && (
-              <tr><td colSpan={6} className="px-3 py-6 text-[#777777]">Loading…</td></tr>
+              <tr><td colSpan={7} className="px-3 py-6 text-[#5A5A5A]">Loading…</td></tr>
             )}
             {!isLoading && rows.length === 0 && (
-              <tr><td colSpan={6} className="px-3 py-6 text-[#777777]">No orders {status || params.get('q') ? 'match these filters' : 'yet'}.</td></tr>
+              <tr><td colSpan={7} className="px-3 py-6 text-[#5A5A5A]">No orders {status || params.get('q') ? 'match these filters' : 'yet'}.</td></tr>
             )}
             {rows.map((o) => {
               const items = o.order_items.filter((i) => i.line_type === 'item').reduce((n, i) => n + i.qty, 0);
               const samples = o.order_items.filter((i) => i.line_type === 'sample').length;
               return (
-                <tr key={o.id} className="hover:bg-[#FAFAF7]">
+                <tr key={o.id} className={`hover:bg-[#FAFAF7] ${selected.has(o.id) ? 'bg-[#FBF8F1]' : ''}`}>
+                  <td className="pl-3 py-2.5 align-top">
+                    <RowCheck checked={selected.has(o.id)} onChange={(on) => toggle(o.id, on)} label={`Select ${o.order_number}`} />
+                  </td>
                   <td className="px-3 py-2.5">
-                    <Link to={`/admin/orders/${o.id}`} className="font-medium text-tk-ink hover:underline">{o.order_number}</Link>
-                    <p className="text-[11px] text-[#888888]">{formatOrderDateTime(o.created_at)}</p>
+                    <Link to={`/admin/orders/${o.id}`} className="font-medium text-tk-ink underline decoration-[#C4C1B9] underline-offset-4 hover:decoration-tk-ink">{o.order_number}</Link>
+                    <p className="text-[12px] text-[#626262]">{formatOrderDateTime(o.created_at)}</p>
                   </td>
                   <td className="px-3 py-2.5">
                     <p>{o.customer_name}</p>
-                    <p className="text-[11px] text-[#888888]">{[o.ship_city, o.ship_state].filter(Boolean).join(', ')}</p>
+                    <p className="text-[12px] text-[#626262]">{[o.ship_city, o.ship_state].filter(Boolean).join(', ')}</p>
                   </td>
-                  <td className="px-3 py-2.5 text-[12px] text-[#555555]">
+                  <td className="px-3 py-2.5 text-[13px] text-[#454545]">
                     {items} item{items === 1 ? '' : 's'}
                     {samples > 0 && ` + ${samples} sample${samples === 1 ? '' : 's'}`}
-                    {o.samples_short > 0 && <span className="block text-rose-600 text-[11px]">{o.samples_short} sample short</span>}
+                    {o.samples_short > 0 && <span className="block text-rose-600 text-[12px]">{o.samples_short} sample short</span>}
                   </td>
                   <td className="px-3 py-2.5 tabular-nums">{formatINR(Number(o.total))}</td>
-                  <td className="px-3 py-2.5 text-[12px] text-[#555555]">{paymentLabel(o)}</td>
+                  <td className="px-3 py-2.5 text-[13px] text-[#454545]">{paymentLabel(o)}</td>
                   <td className="px-3 py-2.5"><StatusBadge status={o.status} /></td>
                 </tr>
               );
@@ -165,13 +247,106 @@ export default function OrdersPage() {
           </tbody>
         </table>
       </div>
-      {pages > 1 && (
-        <div className="flex items-center gap-3 mt-3 text-[12px]">
-          <Button size="sm" variant="secondary" disabled={page === 0} onClick={() => update({ page: String(page - 1) })}>Previous</Button>
-          <span>Page {page + 1} of {pages}</span>
-          <Button size="sm" variant="secondary" disabled={page + 1 >= pages} onClick={() => update({ page: String(page + 1) })}>Next</Button>
-        </div>
-      )}
+      <Pager
+        page={page + 1}
+        pageCount={pages}
+        onPage={(p) => update({ page: p > 1 ? String(p - 1) : '' })}
+        from={(data?.count ?? 0) ? page * PAGE_SIZE + 1 : 0}
+        to={Math.min(data?.count ?? 0, (page + 1) * PAGE_SIZE)}
+        total={data?.count ?? 0}
+        noun="orders"
+      />
+      {selected.size > 0 && <div className="h-24" aria-hidden />}
+      <BulkBar count={selected.size} noun={['order', 'orders']} onClear={() => setSelected(new Set())}>
+        <BulkButton disabled={busy} onClick={() => setStatusFor('PACKED', 'marked packed')}>Mark packed</BulkButton>
+        <BulkButton disabled={busy} onClick={openShip}>Ship…</BulkButton>
+        <BulkButton disabled={busy} onClick={() => setStatusFor('DELIVERED', 'marked delivered')}>Mark delivered</BulkButton>
+        <BulkButton disabled={busy} onClick={() => print('invoice')}>Print invoices</BulkButton>
+        <BulkButton disabled={busy} onClick={() => print('slip')}>Print packing slips</BulkButton>
+        <BulkButton disabled={busy} onClick={exportChosen}>Export</BulkButton>
+      </BulkBar>
+
+      <Modal
+        open={!!shipping}
+        onOpenChange={(o) => !o && !busy && setShipping(null)}
+        wide
+        title="Ship the selected orders"
+        description="Choose the courier and enter the tracking number for each packed order. Customers see tracking on their order straight away."
+        footer={
+          <>
+            <Button variant="secondary" disabled={busy} onClick={() => setShipping(null)}>Cancel</Button>
+            <Button
+              busy={busy}
+              disabled={!shipping || !Object.keys(shipping).length}
+              onClick={async () => {
+                if (!shipping) return;
+                const missing = Object.entries(shipping).filter(([, v]) => !v.tracking.trim());
+                if (missing.length) return toast.error('Enter a tracking number for every order, or untick the ones you are not shipping now.');
+                setBusy(true);
+                try {
+                  reportBulk(
+                    await rpc<BulkResult>('bulk_ship_orders', {
+                      p_rows: Object.entries(shipping).map(([order_id, v]) => ({ order_id, courier: v.courier, tracking: v.tracking.trim() })),
+                    }),
+                    'shipped',
+                  );
+                  await refresh();
+                  setShipping(null);
+                  setSelected(new Set());
+                } catch (err) {
+                  toast.error(toFriendlyError(err));
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              Ship {shipping ? Object.keys(shipping).length : 0} orders
+            </Button>
+          </>
+        }
+      >
+        {shipping && (
+          <div className="space-y-3">
+            {chosen.filter((o) => o.status !== 'PACKED').length > 0 && (
+              <p className="text-[13px] bg-amber-50 border border-amber-200 text-amber-900 px-3 py-2">
+                {chosen.filter((o) => o.status !== 'PACKED').map((o) => o.order_number).join(', ')}: not packed yet, so they are left out. Mark them packed first.
+              </p>
+            )}
+            {Object.keys(shipping).length === 0 ? (
+              <p className="text-[14px] text-[#454545]">None of the selected orders is packed yet.</p>
+            ) : (
+              <div className="divide-y divide-[#E9E7E2] border border-[#E2E0DB]">
+                {chosen
+                  .filter((o) => shipping[o.id])
+                  .map((o) => (
+                    <div key={o.id} className="grid gap-2 sm:grid-cols-[150px_1fr_1fr] items-center px-3 py-2.5">
+                      <p className="text-[14px] font-medium">
+                        {o.order_number}
+                        <span className="block text-[12px] font-normal text-[#5A5A5A]">{o.customer_name} · {o.ship_city}</span>
+                      </p>
+                      <select
+                        aria-label={`Courier for ${o.order_number}`}
+                        value={shipping[o.id].courier}
+                        onChange={(e) => setShipping({ ...shipping, [o.id]: { ...shipping[o.id], courier: e.target.value } })}
+                        className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white"
+                      >
+                        {couriers.map((c) => (
+                          <option key={c.key} value={c.key}>{c.name}</option>
+                        ))}
+                      </select>
+                      <TextInput
+                        aria-label={`Tracking number for ${o.order_number}`}
+                        placeholder="Tracking / AWB number"
+                        value={shipping[o.id].tracking}
+                        onChange={(e) => setShipping({ ...shipping, [o.id]: { ...shipping[o.id], tracking: e.target.value } })}
+                      />
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

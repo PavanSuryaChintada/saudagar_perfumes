@@ -17,7 +17,7 @@ import SiteContentPage from './pages/cms/SiteContentPage';
 import ContentListPage from './pages/cms/ContentListPage';
 import OrdersPage from './pages/orders/OrdersPage';
 import OrderDetailPage from './pages/orders/OrderDetailPage';
-import PrintOrderPage from './pages/orders/PrintOrderPage';
+import PrintOrderPage, { PrintOrdersPage } from './pages/orders/PrintOrderPage';
 import InventoryPage from './pages/orders/InventoryPage';
 import SamplesPage from './pages/orders/SamplesPage';
 import CouponsPage from './pages/coupons/CouponsPage';
@@ -29,11 +29,20 @@ import BackInStockPage from './pages/catalog/BackInStockPage';
 import CustomersPage from './pages/CustomersPage';
 import ExportPage from './pages/ExportPage';
 import GuidePage from './guide/GuidePage';
+import SpreadsheetsPage from './pages/SpreadsheetsPage';
 
 export default function AdminApp() {
   return (
     <Routes>
       <Route path="login" element={<LoginPage admin />} />
+      <Route
+        path="orders/print"
+        element={
+          <RequireAdmin>
+            <PrintOrdersPage />
+          </RequireAdmin>
+        }
+      />
       <Route
         path="orders/:id/print"
         element={
@@ -51,6 +60,7 @@ export default function AdminApp() {
       >
         <Route index element={<DashboardPage />} />
         <Route path="guide" element={<GuidePage />} />
+        <Route path="spreadsheets" element={<SpreadsheetsPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="media" element={<MediaLibraryPage />} />
         <Route path="products" element={<ProductsPage />} />
@@ -77,7 +87,7 @@ export default function AdminApp() {
         <Route path="export" element={<ExportPage />} />
         <Route
           path="*"
-          element={<p className="text-[13px] text-[#777777]">This admin page doesn't exist yet.</p>}
+          element={<p className="text-[14px] text-[#5A5A5A]">This admin page doesn't exist yet.</p>}
         />
       </Route>
     </Routes>

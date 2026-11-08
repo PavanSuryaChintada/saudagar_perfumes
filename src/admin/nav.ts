@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import {
-  BellRing, BookOpen, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
+  BellRing, BookOpen, FileSpreadsheet, Boxes, Clapperboard, Compass, DatabaseBackup, Star, Users, Gift, IndianRupee, RotateCcw, ShoppingBag, TicketPercent, FileText, FolderTree, HelpCircle, Image, LayoutDashboard, Layers, Leaf, Megaphone, MessageSquareQuote, Package, Palette, Settings, Sparkles, Store, Truck,
 } from 'lucide-react';
 
 export interface AdminNavItem {
@@ -34,6 +34,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
       { to: '/admin/refunds', label: 'Refunds', icon: IndianRupee, keywords: 'money back razorpay upi' },
       { to: '/admin/inventory', label: 'Inventory', icon: Boxes, keywords: 'stock low stock adjust' },
       { to: '/admin/products', label: 'Products', icon: Package, keywords: 'perfume add product sizes prices' },
+      { to: '/admin/spreadsheets', label: 'Spreadsheets', icon: FileSpreadsheet, keywords: 'bulk import csv excel price stock update many' },
     ],
   },
   {
