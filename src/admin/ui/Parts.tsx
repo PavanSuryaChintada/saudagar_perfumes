@@ -89,9 +89,37 @@ export function PartsLayout({ parts, current, onSelect, children, aside }: { par
           </ol>
           {aside}
         </nav>
-        <div className="min-w-0 space-y-5">{children}</div>
+        <div className="min-w-0 space-y-5">
+          {children}
+          <StepButtons parts={parts} current={current} onSelect={onSelect} />
+        </div>
       </div>
     </Current.Provider>
+  );
+}
+
+/** "← Back" and "Next →" under each part, so a new item can be filled in from top to bottom. */
+function StepButtons({ parts, current, onSelect }: { parts: PartDef[]; current: string; onSelect: (id: string) => void }) {
+  const open = parts.filter((p) => !p.locked);
+  const at = open.findIndex((p) => p.id === current);
+  const prev = at > 0 ? open[at - 1] : null;
+  const next = at >= 0 && at < open.length - 1 ? open[at + 1] : null;
+  if (!prev && !next) return null;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+      {prev ? (
+        <button type="button" onClick={() => onSelect(prev.id)} className="inline-flex items-center gap-1.5 px-3.5 py-2.5 text-[13.5px] text-[#3F3F3F] border border-[#C4C1B9] bg-white hover:border-tk-ink hover:text-tk-ink">
+          ← Back: {prev.label}
+        </button>
+      ) : (
+        <span />
+      )}
+      {next && (
+        <button type="button" onClick={() => onSelect(next.id)} className="inline-flex items-center gap-1.5 px-4 py-2.5 text-[13.5px] font-semibold text-white bg-tk-ink hover:bg-tk-accent">
+          Next: {next.label} →
+        </button>
+      )}
+    </div>
   );
 }
 

@@ -9,6 +9,8 @@ test('signed-out visitors are sent to the admin login and come back after signin
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(page).toHaveURL(/\/admin\/settings$/);
   await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible();
+  // Settings are split into parts: open the free samples part from the side menu.
+  await page.getByRole('button', { name: /Free samples/ }).click();
   await expect(page.getByRole('heading', { name: 'Free samples' })).toBeVisible();
 });
 

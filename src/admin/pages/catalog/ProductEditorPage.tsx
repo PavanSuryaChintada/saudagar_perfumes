@@ -232,7 +232,14 @@ export default function ProductEditorPage() {
   const [adjustOpen, setAdjustOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [switchTo, setSwitchTo] = useState<'ml' | 'piece' | null>(null);
-  const [part, setPart] = usePart([{ id: 'listing', label: '' }, ...['basics', 'sizes', 'stock', 'photos', 'scent', 'notes', 'story', 'sections', 'label', 'visibility', 'google'].map((id) => ({ id, label: '' }))]);
+  // Parts other than the category stay locked until a category is chosen, even when asked for in the address.
+  const [part, setPart] = usePart(
+    ['listing', 'basics', 'sizes', 'stock', 'photos', 'scent', 'notes', 'story', 'sections', 'label', 'visibility', 'google'].map((id) => ({
+      id,
+      label: '',
+      locked: !!form && !form.primary_category_id && id !== 'listing',
+    })),
+  );
   const [stockDelta, setStockDelta] = useState('');
   const [stockReason, setStockReason] = useState('restock');
   const [stockNote, setStockNote] = useState('');
@@ -331,7 +338,8 @@ export default function ProductEditorPage() {
       ];
       const first = order.find(([, keys]) => keys.some((k) => Object.keys(found).some((e) => e === k || e.startsWith(`${k}.`))));
       if (first) setPart(first[0]);
-      setTimeout(() => document.querySelector('main [hidden] ~ * .text-rose-600, main div:not([hidden]) > section .text-rose-600')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
+      // Only the part on screen matters: scroll to its first highlighted field.
+      setTimeout(() => document.querySelector('main div:not([hidden]) > section .text-rose-600')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
       return;
     }
     setSaving(true);
