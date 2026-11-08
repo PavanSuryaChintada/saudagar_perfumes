@@ -16,13 +16,13 @@ export default function GuideDrawer({ open, onOpenChange }: { open: boolean; onO
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-[85] bg-black/30" />
-        <Dialog.Content className="fixed z-[86] inset-y-0 right-0 w-full sm:w-[440px] bg-white border-l border-[#EAEAEA] shadow-xl flex flex-col focus:outline-none">
-          <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-[#EAEAEA]">
+        <Dialog.Content className="fixed z-[86] inset-y-0 right-0 w-full sm:w-[440px] bg-white border-l border-[#E2E0DB] shadow-xl flex flex-col focus:outline-none">
+          <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-[#E2E0DB]">
             <div>
               <Dialog.Title className="text-[15px] font-medium text-tk-ink">How this page works</Dialog.Title>
-              <Dialog.Description className="text-[12px] text-[#777777] mt-0.5">The steps for this part of the store.</Dialog.Description>
+              <Dialog.Description className="text-[13px] text-[#5A5A5A] mt-0.5">The steps for this part of the store.</Dialog.Description>
             </div>
-            <Dialog.Close className="p-1 text-[#777777] hover:text-tk-ink" aria-label="Close">
+            <Dialog.Close className="p-1 text-[#5A5A5A] hover:text-tk-ink" aria-label="Close">
               <X size={18} />
             </Dialog.Close>
           </div>
@@ -39,11 +39,11 @@ export default function GuideDrawer({ open, onOpenChange }: { open: boolean; onO
               ))
             ) : (
               <div className="space-y-3">
-                <p className="text-[13px] text-[#555555]">The guide covers the whole store. Pick a topic:</p>
-                <ul className="divide-y divide-[#F0F0F0] border border-[#EAEAEA]">
+                <p className="text-[14px] text-[#454545]">The guide covers the whole store. Pick a topic:</p>
+                <ul className="divide-y divide-[#E9E7E2] border border-[#E2E0DB]">
                   {GUIDE.map((s, i) => (
                     <li key={s.id}>
-                      <Link to={`/admin/guide?section=${s.id}`} onClick={close} className="flex items-center justify-between gap-3 px-3 py-2.5 text-[13px] hover:bg-[#FAFAF8]">
+                      <Link to={`/admin/guide?section=${s.id}`} onClick={close} className="flex items-center justify-between gap-3 px-3 py-2.5 text-[14px] hover:bg-[#FAFAF8]">
                         <span>{i + 1}. {s.title}</span>
                         <StatusPill status={s.check ? status?.[s.check] : undefined} optional={s.optional} />
                       </Link>
@@ -53,8 +53,8 @@ export default function GuideDrawer({ open, onOpenChange }: { open: boolean; onO
               </div>
             )}
           </div>
-          <div className="border-t border-[#EAEAEA] px-5 py-3">
-            <Link to="/admin/guide" onClick={close} className="inline-flex items-center gap-2 text-[12.5px] text-tk-accent underline underline-offset-4">
+          <div className="border-t border-[#E2E0DB] px-5 py-3">
+            <Link to="/admin/guide" onClick={close} className="inline-flex items-center gap-2 text-[13.5px] text-tk-accent underline underline-offset-4">
               <Compass size={14} aria-hidden /> Open the full guide
             </Link>
           </div>

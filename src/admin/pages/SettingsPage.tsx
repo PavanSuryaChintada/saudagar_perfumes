@@ -27,10 +27,10 @@ function FieldInput({ field, value, onChange, error }: { field: SettingField; va
     return (
       <div className="flex items-start justify-between gap-4 py-1">
         <div>
-          <label htmlFor={id} className="text-[13px] text-tk-ink">
+          <label htmlFor={id} className="text-[14px] text-tk-ink">
             {field.label}
           </label>
-          {field.help && <p className="text-[11px] text-[#888888] mt-0.5 max-w-[520px]">{field.help}</p>}
+          {field.help && <p className="text-[12px] text-[#626262] mt-0.5 max-w-[520px]">{field.help}</p>}
         </div>
         <Toggle id={id} checked={Boolean(value)} onChange={onChange} label={field.label} />
       </div>
@@ -42,7 +42,7 @@ function FieldInput({ field, value, onChange, error }: { field: SettingField; va
       <FieldShell label={field.label} help={field.help} error={error}>
         <div className="flex items-center gap-2">
           <TextInput aria-label={`${field.label} from`} inputMode="numeric" value={v.min} onChange={(e) => onChange({ ...v, min: e.target.value })} className="max-w-[90px]" invalid={!!error} />
-          <span className="text-[12px] text-[#777777]">to</span>
+          <span className="text-[13px] text-[#5A5A5A]">to</span>
           <TextInput aria-label={`${field.label} to`} inputMode="numeric" value={v.max} onChange={(e) => onChange({ ...v, max: e.target.value })} className="max-w-[90px]" invalid={!!error} />
         </div>
       </FieldShell>
@@ -51,7 +51,7 @@ function FieldInput({ field, value, onChange, error }: { field: SettingField; va
   return (
     <FieldShell label={field.label} htmlFor={id} help={field.help} error={error}>
       <div className="flex items-center gap-2">
-        {field.suffix === '₹' && <span className="text-[13px] text-[#777777]">₹</span>}
+        {field.suffix === '₹' && <span className="text-[14px] text-[#5A5A5A]">₹</span>}
         <TextInput
           id={id}
           inputMode={field.type === 'number' ? 'numeric' : field.type === 'phone' ? 'tel' : undefined}
@@ -60,7 +60,7 @@ function FieldInput({ field, value, onChange, error }: { field: SettingField; va
           invalid={!!error}
           className={field.type === 'number' ? 'max-w-[160px]' : ''}
         />
-        {field.suffix && field.suffix !== '₹' && <span className="text-[12px] text-[#777777] whitespace-nowrap">{field.suffix}</span>}
+        {field.suffix && field.suffix !== '₹' && <span className="text-[13px] text-[#5A5A5A] whitespace-nowrap">{field.suffix}</span>}
       </div>
     </FieldShell>
   );
@@ -129,8 +129,8 @@ export default function SettingsPage() {
   return (
     <div className="pb-24">
       <PageHeader title="Settings" description="Store-wide rules for delivery, cash on delivery, returns, stock alerts, free samples and integrations." />
-      {isLoading && <p className="text-[13px] text-[#777777]">Loading settings…</p>}
-      {loadError && <p className="text-[13px] text-rose-600">{toFriendlyError(loadError)}</p>}
+      {isLoading && <p className="text-[14px] text-[#5A5A5A]">Loading settings…</p>}
+      {loadError && <p className="text-[14px] text-rose-600">{toFriendlyError(loadError)}</p>}
       {initial && (
         <div className="space-y-5">
           {SETTINGS_SCHEMA.map((g) => (
@@ -147,8 +147,8 @@ export default function SettingsPage() {
         </div>
       )}
       {dirty && (
-        <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#EAEAEA] px-4 sm:px-8 py-3 flex items-center justify-between gap-3">
-          <p className="text-[12px] text-[#555555]">
+        <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#E2E0DB] px-4 sm:px-8 py-3 flex items-center justify-between gap-3">
+          <p className="text-[13px] text-[#454545]">
             {dirtyKeys.length} unsaved change{dirtyKeys.length === 1 ? '' : 's'}
           </p>
           <div className="flex gap-2">

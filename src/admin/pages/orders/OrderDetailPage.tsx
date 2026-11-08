@@ -52,9 +52,9 @@ export default function OrderDetailPage() {
     setAdminNote(o.admin_note ?? '');
   }, [o]);
 
-  if (isLoading) return <p className="text-[13px] text-[#777777]">Loading…</p>;
-  if (error) return <p className="text-[13px] text-rose-600">{toFriendlyError(error)}</p>;
-  if (!o) return <p className="text-[13px] text-[#777777]">This order doesn't exist. <Link to="/admin/orders" className="underline">Back to orders</Link></p>;
+  if (isLoading) return <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
+  if (error) return <p className="text-[14px] text-rose-600">{toFriendlyError(error)}</p>;
+  if (!o) return <p className="text-[14px] text-[#5A5A5A]">This order doesn't exist. <Link to="/admin/orders" className="underline">Back to orders</Link></p>;
 
   const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['admin', 'order', id] }), qc.invalidateQueries({ queryKey: ['admin', 'orders'] })]);
   const next = allowedNextStatuses(o.status as OrderStatus, o.payment_method, o.payment_status);
@@ -102,7 +102,7 @@ export default function OrderDetailPage() {
   return (
     <div className="space-y-5">
       <div>
-        <Link to="/admin/orders" className="inline-flex items-center gap-1 text-[12px] text-[#777777] hover:text-tk-ink mb-3">
+        <Link to="/admin/orders" className="inline-flex items-center gap-1 text-[13px] text-[#5A5A5A] hover:text-tk-ink mb-3">
           <ArrowLeft size={13} /> Orders
         </Link>
         <PageHeader
@@ -110,10 +110,10 @@ export default function OrderDetailPage() {
           description={`Placed ${formatOrderDateTime(o.created_at)} · ${paymentLabel(o)}`}
           actions={
             <>
-              <a href={`/admin/orders/${o.id}/print?doc=invoice`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#D5D3CC] bg-white text-[12px] hover:border-tk-ink">
+              <a href={`/admin/orders/${o.id}/print?doc=invoice`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#C4C1B9] bg-white text-[13px] hover:border-tk-ink">
                 <Printer size={13} /> Invoice
               </a>
-              <a href={`/admin/orders/${o.id}/print?doc=slip`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#D5D3CC] bg-white text-[12px] hover:border-tk-ink">
+              <a href={`/admin/orders/${o.id}/print?doc=slip`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#C4C1B9] bg-white text-[13px] hover:border-tk-ink">
                 <Printer size={13} /> Packing slip
               </a>
             </>
@@ -124,7 +124,7 @@ export default function OrderDetailPage() {
       <Panel title="Status">
         <div className="flex flex-wrap items-center gap-3">
           <StatusBadge status={o.status} />
-          {next.length === 0 && <span className="text-[12px] text-[#777777]">No further steps.</span>}
+          {next.length === 0 && <span className="text-[13px] text-[#5A5A5A]">No further steps.</span>}
           {next.map((s) => (
             <Button
               key={s}
@@ -146,19 +146,19 @@ export default function OrderDetailPage() {
           ))}
         </div>
         {o.status === 'CANCELLED' && (
-          <p className="mt-3 text-[12px] text-[#555555]">
+          <p className="mt-3 text-[13px] text-[#454545]">
             Cancelled by {o.cancelled_by === 'customer' ? 'the customer' : 'the store'} on {formatOrderDateTime(o.cancelled_at)}
             {o.cancel_reason ? ` — ${o.cancel_reason}` : ''}. Stock was put back.
           </p>
         )}
-        {o.status === 'RTO' && <p className="mt-3 text-[12px] text-[#555555]">The parcel came back. Decide on restocking from the Returns page once it arrives.</p>}
+        {o.status === 'RTO' && <p className="mt-3 text-[13px] text-[#454545]">The parcel came back. Decide on restocking from the Returns page once it arrives.</p>}
         {o.status === 'PACKED' && !o.tracking_number && (
-          <p className="mt-3 text-[12px] text-[#555555]">
+          <p className="mt-3 text-[13px] text-[#454545]">
             {o.courier === 'delhivery' ? 'Booking with Delhivery…' : 'Awaiting booking: print the label, book the parcel, then press Mark shipped and enter the tracking number.'}
           </p>
         )}
         {(o as unknown as { shipping_error: string | null }).shipping_error && (
-          <div className="mt-3 px-3 py-2 bg-rose-50 border border-rose-200 text-[12px] text-rose-700 flex flex-wrap items-center gap-3">
+          <div className="mt-3 px-3 py-2 bg-rose-50 border border-rose-200 text-[13px] text-rose-700 flex flex-wrap items-center gap-3">
             <span>Courier booking failed: {(o as unknown as { shipping_error: string }).shipping_error}</span>
             <Button
               size="sm"
@@ -182,15 +182,15 @@ export default function OrderDetailPage() {
           </div>
         )}
         {(o as unknown as { shipping_status: string | null }).shipping_status && (
-          <p className="mt-2 text-[11px] text-[#888888]">Courier says: {(o as unknown as { shipping_status: string }).shipping_status}</p>
+          <p className="mt-2 text-[12px] text-[#626262]">Courier says: {(o as unknown as { shipping_status: string }).shipping_status}</p>
         )}
         {(o as unknown as { label_url: string | null }).label_url && (
-          <a href={(o as unknown as { label_url: string }).label_url} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[12px] underline">Courier label (PDF)</a>
+          <a href={(o as unknown as { label_url: string }).label_url} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[13px] underline">Courier label (PDF)</a>
         )}
         {o.payment_method === 'ONLINE' && ['PAID', 'PARTIALLY_REFUNDED'].includes(o.payment_status) && (
-          <div className="mt-4 pt-4 border-t border-[#EAEAEA] flex flex-wrap items-end gap-3">
+          <div className="mt-4 pt-4 border-t border-[#E2E0DB] flex flex-wrap items-end gap-3">
             {['CANCELLED', 'RTO'].includes(o.status) && (
-              <p role="status" className="basis-full text-[12.5px] bg-rose-50 border border-rose-200 text-rose-800 px-3 py-2">
+              <p role="status" className="basis-full text-[13.5px] bg-rose-50 border border-rose-200 text-rose-800 px-3 py-2">
                 {o.status === 'CANCELLED' ? 'This order was cancelled after it was paid.' : 'This paid order came back to us.'} {formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))} still has to go back to the customer
                 {o.status === 'CANCELLED' ? '. An automatic refund starts when it is cancelled (see the history below); refund here if it did not start.' : ', unless you are re-sending it.'}
               </p>
@@ -210,51 +210,51 @@ export default function OrderDetailPage() {
       <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
         <div className="space-y-5 min-w-0">
           <Panel title="Items">
-            <div className="divide-y divide-[#F0F0F0]">
+            <div className="divide-y divide-[#E9E7E2]">
               {items.map((i) => (
-                <div key={i.id} className="flex items-center gap-3 py-2.5 text-[13px]">
+                <div key={i.id} className="flex items-center gap-3 py-2.5 text-[14px]">
                   <div className="w-12 h-12 bg-[#F4F3EE] shrink-0">{i.image_url && <img src={i.image_url} alt="" className="w-full h-full object-contain" />}</div>
                   <div className="flex-1 min-w-0">
                     <p className="truncate">{i.product_name}</p>
-                    <p className="text-[11px] text-[#888888]">{i.variant_label} · SKU {(i as unknown as { sku: string }).sku}</p>
+                    <p className="text-[12px] text-[#626262]">{i.variant_label} · SKU {(i as unknown as { sku: string }).sku}</p>
                   </div>
-                  <span className="text-[12px] text-[#555555] tabular-nums">{i.qty} × {formatINR(Number(i.unit_price))}</span>
+                  <span className="text-[13px] text-[#454545] tabular-nums">{i.qty} × {formatINR(Number(i.unit_price))}</span>
                   <span className="w-24 text-right tabular-nums">{formatINR(Number(i.line_total))}</span>
                 </div>
               ))}
             </div>
-            <div className="mt-3 pt-3 border-t border-[#EAEAEA] space-y-1 text-[13px] max-w-[320px] ml-auto">
-              <div className="flex justify-between text-[#555555]"><span>Subtotal</span><span>{formatINR(Number(o.subtotal))}</span></div>
+            <div className="mt-3 pt-3 border-t border-[#E2E0DB] space-y-1 text-[14px] max-w-[320px] ml-auto">
+              <div className="flex justify-between text-[#454545]"><span>Subtotal</span><span>{formatINR(Number(o.subtotal))}</span></div>
               {Number(o.discount) > 0 && <div className="flex justify-between text-emerald-700"><span>Discount {o.coupon_code ? `(${o.coupon_code})` : ''}</span><span>−{formatINR(Number(o.discount))}</span></div>}
-              <div className="flex justify-between text-[#555555]"><span>Delivery</span><span>{Number(o.shipping_fee) === 0 ? 'Free' : formatINR(Number(o.shipping_fee))}</span></div>
-              <div className="flex justify-between font-medium pt-1 border-t border-[#EAEAEA]"><span>Total</span><span>{formatINR(Number(o.total))}</span></div>
+              <div className="flex justify-between text-[#454545]"><span>Delivery</span><span>{Number(o.shipping_fee) === 0 ? 'Free' : formatINR(Number(o.shipping_fee))}</span></div>
+              <div className="flex justify-between font-medium pt-1 border-t border-[#E2E0DB]"><span>Total</span><span>{formatINR(Number(o.total))}</span></div>
             </div>
           </Panel>
 
           <Panel title={`Free samples (${samples.length} of ${o.samples_entitled})`}>
-            {samples.length === 0 && o.samples_entitled === 0 && <p className="text-[12px] text-[#777777]">This order didn't earn samples.</p>}
-            <ul className="space-y-1 text-[13px]">
+            {samples.length === 0 && o.samples_entitled === 0 && <p className="text-[13px] text-[#5A5A5A]">This order didn't earn samples.</p>}
+            <ul className="space-y-1 text-[14px]">
               {samples.map((s) => (
                 <li key={s.id}>
                   {s.product_name} · {s.variant_label}
-                  <span className="text-[11px] text-[#888888]">{s.sample_auto ? ' — chosen by the store' : ' — customer’s pick'}</span>
+                  <span className="text-[12px] text-[#626262]">{s.sample_auto ? ' — chosen by the store' : ' — customer’s pick'}</span>
                 </li>
               ))}
             </ul>
             {o.samples_short > 0 && (
-              <p className="mt-2 text-[12px] text-rose-600">{o.samples_short} sample{o.samples_short === 1 ? ' was' : 's were'} out of stock at order time. Consider adding one by hand.</p>
+              <p className="mt-2 text-[13px] text-rose-600">{o.samples_short} sample{o.samples_short === 1 ? ' was' : 's were'} out of stock at order time. Consider adding one by hand.</p>
             )}
           </Panel>
 
           <Panel title="History">
-            <ul className="space-y-2 text-[12.5px]">
+            <ul className="space-y-2 text-[13.5px]">
               {(o.order_events ?? []).map((e) => (
                 <li key={e.id} className="flex gap-3">
-                  <span className="text-[#888888] whitespace-nowrap">{formatOrderDateTime(e.created_at)}</span>
+                  <span className="text-[#626262] whitespace-nowrap">{formatOrderDateTime(e.created_at)}</span>
                   <span>
                     {e.to_status ? ORDER_STATUS_LABEL[e.to_status as OrderStatus] ?? e.to_status : e.kind === 'tracking' ? 'Tracking added' : 'Note'}
-                    {e.message ? <span className="text-[#666666]"> — {e.message}</span> : null}
-                    {e.actor_role ? <span className="text-[#999999]"> · {e.actor_role}</span> : null}
+                    {e.message ? <span className="text-[#525252]"> — {e.message}</span> : null}
+                    {e.actor_role ? <span className="text-[#6B6B6B]"> · {e.actor_role}</span> : null}
                   </span>
                 </li>
               ))}
@@ -264,15 +264,15 @@ export default function OrderDetailPage() {
 
         <aside className="space-y-5">
           <Panel title="Customer">
-            <p className="text-[13px]">{o.customer_name}</p>
-            <p className="text-[12px] text-[#666666]">{o.customer_email}</p>
+            <p className="text-[14px]">{o.customer_name}</p>
+            <p className="text-[13px] text-[#525252]">{o.customer_email}</p>
             {o.customer_phone && (
-              <p className="text-[12px] text-[#666666]">
+              <p className="text-[13px] text-[#525252]">
                 <a href={`tel:+91${o.customer_phone}`} className="underline">{formatIndianPhone(o.customer_phone)}</a>
               </p>
             )}
-            <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mt-4 mb-1">Ship to</p>
-            <p className="text-[12.5px] leading-relaxed text-[#444444]">
+            <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mt-4 mb-1">Ship to</p>
+            <p className="text-[13.5px] leading-relaxed text-[#444444]">
               {a.full_name}
               <br />
               {[a.line1, a.line2].filter(Boolean).join(', ')}
@@ -282,8 +282,8 @@ export default function OrderDetailPage() {
             </p>
             {o.note && (
               <>
-                <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mt-4 mb-1">Customer note</p>
-                <p className="text-[12.5px] text-[#444444] whitespace-pre-line">{o.note}</p>
+                <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mt-4 mb-1">Customer note</p>
+                <p className="text-[13.5px] text-[#444444] whitespace-pre-line">{o.note}</p>
               </>
             )}
           </Panel>
@@ -315,18 +315,18 @@ export default function OrderDetailPage() {
         description={
           <span className="block space-y-3 text-tk-ink">
             <span className="block">
-              <label htmlFor="ship-courier" className="block text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1">Courier</label>
-              <select id="ship-courier" value={shipCourier} onChange={(e) => setShipCourier(e.target.value)} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+              <label htmlFor="ship-courier" className="block text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1">Courier</label>
+              <select id="ship-courier" value={shipCourier} onChange={(e) => setShipCourier(e.target.value)} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
                 {couriers.map((c) => (
                   <option key={c.key} value={c.key}>{c.name}</option>
                 ))}
               </select>
             </span>
             <span className="block">
-              <label htmlFor="ship-awb" className="block text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1">Tracking / article number</label>
-              <input id="ship-awb" value={shipAwb} onChange={(e) => setShipAwb(e.target.value)} placeholder="e.g. EK123456789IN" className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px]" />
+              <label htmlFor="ship-awb" className="block text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1">Tracking / article number</label>
+              <input id="ship-awb" value={shipAwb} onChange={(e) => setShipAwb(e.target.value)} placeholder="e.g. EK123456789IN" className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px]" />
             </span>
-            <span className="block text-[12px] text-[#666666]">The customer sees the tracking link on their order.</span>
+            <span className="block text-[13px] text-[#525252]">The customer sees the tracking link on their order.</span>
           </span>
         }
         confirmLabel="Mark shipped"
@@ -374,7 +374,7 @@ export default function OrderDetailPage() {
               onChange={(e) => setMoveNote(e.target.value)}
               placeholder={moving === 'CANCELLED' ? 'Reason (shown to the customer)' : 'Note (optional)'}
               aria-label="Note"
-              className="w-full border border-[#D5D3CC] px-2 py-1.5 text-[13px] text-tk-ink"
+              className="w-full border border-[#C4C1B9] px-2 py-1.5 text-[14px] text-tk-ink"
             />
           </span>
         }

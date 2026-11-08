@@ -37,18 +37,18 @@ export default function GuidePage() {
         title="Guide"
         description="Everything the admin does, in the order to do it the first time. Each step links to the page that does it. Later, use the ? on any page to see just that page's steps."
       />
-      <div className="mb-5 flex items-center gap-3 text-[13px]">
-        <div className="h-1.5 flex-1 bg-[#EAEAEA]" aria-hidden>
+      <div className="mb-5 flex items-center gap-3 text-[14px]">
+        <div className="h-1.5 flex-1 bg-[#E2E0DB]" aria-hidden>
           <div className="h-full bg-tk-accent transition-all" style={{ width: `${required.length ? (done / required.length) * 100 : 0}%` }} />
         </div>
-        <span className="tabular-nums text-[#555555]">{status ? `${done} of ${required.length} set up` : 'Checking…'}</span>
+        <span className="tabular-nums text-[#454545]">{status ? `${done} of ${required.length} set up` : 'Checking…'}</span>
       </div>
 
       <ol className="space-y-3">
         {GUIDE.map((s, i) => {
           const isOpen = open.has(s.id);
           return (
-            <li key={s.id} id={`guide-${s.id}`} className="bg-white border border-[#EAEAEA] scroll-mt-6">
+            <li key={s.id} id={`guide-${s.id}`} className="bg-white border border-[#E2E0DB] scroll-mt-6">
               <button
                 type="button"
                 onClick={() => toggle(s.id)}
@@ -56,15 +56,15 @@ export default function GuidePage() {
                 aria-controls={`guide-body-${s.id}`}
                 className="w-full flex items-center gap-3 px-4 sm:px-5 py-3.5 text-left hover:bg-[#FAFAF8]"
               >
-                <span className="h-7 w-7 shrink-0 bg-tk-ink text-white text-[12px] flex items-center justify-center tabular-nums">{i + 1}</span>
+                <span className="h-7 w-7 shrink-0 bg-tk-ink text-white text-[13px] flex items-center justify-center tabular-nums">{i + 1}</span>
                 <span className="flex-1 min-w-0">
                   <span className="block text-[14px] text-tk-ink">{s.title}</span>
                 </span>
                 <StatusPill status={s.check ? status?.[s.check] : undefined} optional={s.optional} />
-                <ChevronDown size={16} className={`shrink-0 text-[#888888] transition-transform ${isOpen ? 'rotate-180' : ''}`} aria-hidden />
+                <ChevronDown size={16} className={`shrink-0 text-[#626262] transition-transform ${isOpen ? 'rotate-180' : ''}`} aria-hidden />
               </button>
               {isOpen && (
-                <div id={`guide-body-${s.id}`} className="px-4 sm:px-5 pb-5 pt-1 border-t border-[#F0F0F0]">
+                <div id={`guide-body-${s.id}`} className="px-4 sm:px-5 pb-5 pt-1 border-t border-[#E9E7E2]">
                   <GuideSteps section={s} />
                 </div>
               )}

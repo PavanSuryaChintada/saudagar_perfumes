@@ -5,18 +5,22 @@ import { ORDER_STATUS_LABEL } from '../../lib/orders';
 import { formatINR } from '../../lib/money';
 import { toFriendlyError } from '../../lib/errors';
 import { PLACEHOLDER_IMAGE } from '../catalog/adapter';
+import PageNav from '../PageNav.jsx';
+import { usePaged } from '../../lib/paging';
 
 /** Account → Orders. */
 export default function OrdersList() {
   const { data: orders = [], isLoading, error } = useMyOrders();
+  const paged = usePaged(orders, 10);
 
   if (isLoading) return <p className="py-16 text-center text-[#888888] text-[13px]">Loading orders…</p>;
   if (error) return <p className="py-16 text-center text-rose-600 text-[13px]">{toFriendlyError(error)}</p>;
   if (orders.length === 0) return <div className="py-16 text-center text-[#888888] text-[13px]">No orders yet.</div>;
 
   return (
+    <div>
     <div className="divide-y divide-[#F0F0F0] dark:divide-white/10">
-      {orders.map((o) => {
+      {paged.rows.map((o) => {
         const items = o.order_items.filter((i) => i.line_type === 'item');
         const count = items.reduce((n, i) => n + i.qty, 0);
         return (
@@ -45,6 +49,8 @@ export default function OrdersList() {
           </Link>
         );
       })}
+    </div>
+    <PageNav page={paged.page} pageCount={paged.pageCount} label="Order pages" onPage={paged.setPage} />
     </div>
   );
 }

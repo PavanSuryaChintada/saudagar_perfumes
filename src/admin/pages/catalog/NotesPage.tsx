@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { usePaged, spliceOrder } from '../../../lib/paging';
+import { Pager } from '../../ui/Pager';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
@@ -34,6 +36,7 @@ export default function NotesPage() {
     (n) => (!family || n.family_option_id === family) && (!search.trim() || n.name.toLowerCase().includes(search.trim().toLowerCase())),
   );
   const canReorder = !search.trim() && !family;
+  const paged = usePaged(filtered, 25, `${search}|${family}`);
 
   const refresh = async () => {
     await refetch();
@@ -79,22 +82,22 @@ export default function NotesPage() {
       />
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <TextInput placeholder="Search notes" value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-[280px]" aria-label="Search notes" />
-        <select value={family} onChange={(e) => setFamily(e.target.value)} className="border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white sm:max-w-[240px]" aria-label="Filter by family">
+        <select value={family} onChange={(e) => setFamily(e.target.value)} className="border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white sm:max-w-[240px]" aria-label="Filter by family">
           <option value="">All families</option>
           {families.map((f) => (
             <option key={f.id} value={f.id}>{f.label}</option>
           ))}
         </select>
-        <p className="text-[12px] text-[#888888] self-center">{filtered.length} notes{canReorder ? ' · drag to reorder' : ''}</p>
+        <p className="text-[13px] text-[#626262] self-center">{filtered.length} notes{canReorder ? ' · drag to reorder' : ''}</p>
       </div>
 
       {canReorder ? (
         <SortableList
-          items={filtered}
-          className="bg-white border border-[#EAEAEA] divide-y divide-[#F0F0F0]"
+          items={paged.rows}
+          className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]"
           onReorder={async (ids) => {
             try {
-              await rpc('reorder_rows', { p_table: 'notes', p_ids: ids });
+              await rpc('reorder_rows', { p_table: 'notes', p_ids: spliceOrder(filtered.map((x) => x.id), paged.from - 1, ids) });
               await refresh();
             } catch (err) {
               toast.error(toFriendlyError(err));
@@ -103,14 +106,15 @@ export default function NotesPage() {
           renderItem={(n) => <NoteRowView n={n} family={familyName.get(n.family_option_id ?? '')} onEdit={() => edit(n)} onDelete={() => setDeleting(n)} />}
         />
       ) : (
-        <div className="bg-white border border-[#EAEAEA] divide-y divide-[#F0F0F0]">
-          {filtered.map((n) => (
+        <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
+          {paged.rows.map((n) => (
             <div key={n.id} className="pl-3">
               <NoteRowView n={n} family={familyName.get(n.family_option_id ?? '')} onEdit={() => edit(n)} onDelete={() => setDeleting(n)} />
             </div>
           ))}
         </div>
       )}
+      <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="notes" />
 
       <Modal
         open={!!draft}
@@ -125,7 +129,7 @@ export default function NotesPage() {
       >
         {draft && (
           <div className="space-y-4">
-            {error && <p className="text-[12px] text-rose-600">{error}</p>}
+            {error && <p className="text-[13px] text-rose-600">{error}</p>}
             <FieldShell label="Name" htmlFor="n-name">
               <TextInput id="n-name" value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value, slug: draft.id ? draft.slug : slugify(e.target.value) })} />
             </FieldShell>
@@ -133,7 +137,7 @@ export default function NotesPage() {
               <TextInput id="n-slug" value={draft.slug} onChange={(e) => setDraft({ ...draft, slug: slugify(e.target.value) })} />
             </FieldShell>
             <FieldShell label="Note family" htmlFor="n-fam">
-              <select id="n-fam" value={draft.family_option_id} onChange={(e) => setDraft({ ...draft, family_option_id: e.target.value })} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+              <select id="n-fam" value={draft.family_option_id} onChange={(e) => setDraft({ ...draft, family_option_id: e.target.value })} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
                 <option value="">None</option>
                 {families.map((f) => (
                   <option key={f.id} value={f.id}>{f.label}</option>
@@ -146,7 +150,7 @@ export default function NotesPage() {
             <FieldShell label="Image">
               <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload image" />
             </FieldShell>
-            <label className="flex items-center gap-2 text-[13px]">
+            <label className="flex items-center gap-2 text-[14px]">
               <Toggle checked={draft.is_active} onChange={(on) => setDraft({ ...draft, is_active: on })} label="Active" /> Active
             </label>
           </div>
@@ -186,17 +190,17 @@ export default function NotesPage() {
 function NoteRowView({ n, family, onEdit, onDelete }: { n: NoteRow; family?: string; onEdit: () => void; onDelete: () => void }) {
   return (
     <div className="flex items-center gap-3 pr-2 py-2">
-      <div className="w-8 h-8 rounded-full bg-[#F4F3EE] overflow-hidden shrink-0 flex items-center justify-center text-[11px] text-tk-accent">
+      <div className="w-8 h-8 rounded-full bg-[#F4F3EE] overflow-hidden shrink-0 flex items-center justify-center text-[12px] text-tk-accent">
         {n.image_url ? <img src={n.image_url} alt="" className="w-full h-full object-cover" /> : n.name.charAt(0)}
       </div>
       <div className="min-w-0 flex-1">
-        <p className={`text-[13px] truncate ${n.is_active ? '' : 'text-[#999999] line-through'}`}>{n.name}</p>
-        <p className="text-[11px] text-[#888888]">{family ?? 'No family'}</p>
+        <p className={`text-[14px] truncate ${n.is_active ? '' : 'text-[#6B6B6B] line-through'}`}>{n.name}</p>
+        <p className="text-[12px] text-[#626262]">{family ?? 'No family'}</p>
       </div>
-      <button type="button" aria-label={`Edit ${n.name}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={onEdit}>
+      <button type="button" aria-label={`Edit ${n.name}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={onEdit}>
         <Pencil size={14} />
       </button>
-      <button type="button" aria-label={`Delete ${n.name}`} className="p-1.5 text-[#777777] hover:text-rose-600" onClick={onDelete}>
+      <button type="button" aria-label={`Delete ${n.name}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={onDelete}>
         <Trash2 size={14} />
       </button>
     </div>

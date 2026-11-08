@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import PageNav from '../storefront/PageNav.jsx';
 import { useSEO } from '../lib/seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router';
@@ -619,29 +620,7 @@ export default function BluorngCollectionPage({
               )}
             </AnimatePresence>
 
-            {pageCount > 1 && (
-              <nav className="flex items-center justify-center gap-4 pt-12 text-[12px]" aria-label="Pages">
-                <button
-                  type="button"
-                  disabled={page <= 1}
-                  onClick={() => setPage(page - 1)}
-                  className="px-4 py-2 border border-[#E0DDD5] dark:border-white/15 disabled:opacity-40 hover:border-tk-ink dark:hover:border-white transition-colors"
-                >
-                  ← Previous
-                </button>
-                <span className="text-[#777777] dark:text-[#A09D96] tabular-nums">
-                  Page {page} of {pageCount}
-                </span>
-                <button
-                  type="button"
-                  disabled={page >= pageCount}
-                  onClick={() => setPage(page + 1)}
-                  className="px-4 py-2 border border-[#E0DDD5] dark:border-white/15 disabled:opacity-40 hover:border-tk-ink dark:hover:border-white transition-colors"
-                >
-                  Next →
-                </button>
-              </nav>
-            )}
+            <PageNav page={page} pageCount={pageCount} label="Product pages" onPage={setPage} />
           </main>
 
         </div>

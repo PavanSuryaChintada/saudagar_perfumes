@@ -20,8 +20,8 @@ import {
 import { OPTION_KINDS } from '../catalog/api';
 
 type Obj = Record<string, unknown>;
-const selectCls = 'w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white';
-const iconBtn = 'p-1.5 text-[#777777] hover:text-tk-ink disabled:opacity-30 disabled:hover:text-[#777777]';
+const selectCls = 'w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white';
+const iconBtn = 'p-1.5 text-[#5A5A5A] hover:text-tk-ink disabled:opacity-30 disabled:hover:text-[#5A5A5A]';
 
 /** Renders a form for any CMS field schema. The value is a plain object; onChange receives the whole new object. */
 export function SchemaForm({ fields, value, onChange }: { fields: FieldDef[]; value: Obj | null | undefined; onChange: (v: Obj) => void }) {
@@ -77,8 +77,8 @@ export function FieldInput({ field, value, onChange }: { field: FieldDef; value:
       return (
         <div className="flex items-center gap-2">
           <Toggle id={id} checked={Boolean(value)} onChange={onChange} label={field.label} />
-          <label htmlFor={id} className="text-[13px] text-tk-ink">{field.label}</label>
-          {field.help && <span className="text-[11px] text-[#888888]">— {field.help}</span>}
+          <label htmlFor={id} className="text-[14px] text-tk-ink">{field.label}</label>
+          {field.help && <span className="text-[12px] text-[#626262]">— {field.help}</span>}
         </div>
       );
     case 'select':
@@ -101,7 +101,7 @@ export function FieldInput({ field, value, onChange }: { field: FieldDef; value:
               aria-label={`${field.label} picker`}
               value={/^#[0-9a-f]{6}$/i.test(str) ? str : '#000000'}
               onChange={(e) => onChange(e.target.value.toUpperCase())}
-              className="h-9 w-12 border border-[#D5D3CC] bg-white p-0.5"
+              className="h-9 w-12 border border-[#C4C1B9] bg-white p-0.5"
             />
             <TextInput id={id} value={str} placeholder="#C4823F" onChange={(e) => onChange(e.target.value)} className="max-w-[140px] font-mono" />
           </div>
@@ -154,9 +154,9 @@ export function FieldInput({ field, value, onChange }: { field: FieldDef; value:
       return <StringsInput label={field.label} help={field.help} placeholder={field.placeholder} value={Array.isArray(value) ? (value as string[]) : []} onChange={onChange} />;
     case 'group':
       return (
-        <fieldset className="border border-[#EAEAEA] p-3 space-y-3">
-          <legend className="px-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555]">{field.label}</legend>
-          {field.help && <p className="text-[11px] text-[#888888]">{field.help}</p>}
+        <fieldset className="border border-[#E2E0DB] p-3 space-y-3">
+          <legend className="px-1 text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{field.label}</legend>
+          {field.help && <p className="text-[12px] text-[#626262]">{field.help}</p>}
           <SchemaForm fields={field.fields} value={(value as Obj) ?? {}} onChange={onChange} />
         </fieldset>
       );
@@ -201,17 +201,17 @@ function ListInput({ field, value, onChange }: { field: Extract<FieldDef, { type
   const full = field.max !== undefined && value.length >= field.max;
   return (
     <div className="space-y-2">
-      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555]">{field.label}</p>
-      {field.help && <p className="text-[11px] text-[#888888]">{field.help}</p>}
-      <div className="border border-[#EAEAEA] divide-y divide-[#F0F0F0] bg-white">
-        {value.length === 0 && <p className="px-3 py-3 text-[12px] text-[#888888]">Nothing here yet.</p>}
+      <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{field.label}</p>
+      {field.help && <p className="text-[12px] text-[#626262]">{field.help}</p>}
+      <div className="border border-[#E2E0DB] divide-y divide-[#E9E7E2] bg-white">
+        {value.length === 0 && <p className="px-3 py-3 text-[13px] text-[#626262]">Nothing here yet.</p>}
         {value.map((item, i) => {
           const title = itemTitle(item, field.fields, `${field.itemLabel ?? 'Item'} ${i + 1}`);
           const isOpen = open === i;
           return (
             <div key={i}>
               <div className="flex items-center gap-1 pr-1">
-                <button type="button" className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 text-left text-[13px]" onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen}>
+                <button type="button" className="flex-1 min-w-0 flex items-center gap-2 px-3 py-2 text-left text-[14px]" onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen}>
                   {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                   <span className="truncate">{title}</span>
                 </button>
@@ -244,7 +244,7 @@ function ListInput({ field, value, onChange }: { field: Extract<FieldDef, { type
           onChange([...value, emptyItem(field.fields)]);
           setOpen(value.length);
         }}
-        className="inline-flex items-center gap-1.5 text-[12px] text-tk-ink hover:text-tk-accent disabled:opacity-40"
+        className="inline-flex items-center gap-1.5 text-[13px] text-tk-ink hover:text-tk-accent disabled:opacity-40"
       >
         <Plus size={13} /> Add {noun}
       </button>
@@ -255,8 +255,8 @@ function ListInput({ field, value, onChange }: { field: Extract<FieldDef, { type
 function StringsInput({ label, help, placeholder, value, onChange }: { label: string; help?: string; placeholder?: string; value: string[]; onChange: (v: unknown) => void }) {
   return (
     <div className="space-y-2">
-      <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555]">{label}</p>
-      {help && <p className="text-[11px] text-[#888888]">{help}</p>}
+      <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{label}</p>
+      {help && <p className="text-[12px] text-[#626262]">{help}</p>}
       {value.map((s, i) => (
         <div key={i} className="flex items-center gap-1">
           <TextInput aria-label={`${label} ${i + 1}`} value={s} placeholder={placeholder} onChange={(e) => onChange(value.map((x, j) => (j === i ? e.target.value : x)))} />
@@ -268,7 +268,7 @@ function StringsInput({ label, help, placeholder, value, onChange }: { label: st
           </button>
         </div>
       ))}
-      <button type="button" onClick={() => onChange([...value, ''])} className="inline-flex items-center gap-1.5 text-[12px] text-tk-ink hover:text-tk-accent">
+      <button type="button" onClick={() => onChange([...value, ''])} className="inline-flex items-center gap-1.5 text-[13px] text-tk-ink hover:text-tk-accent">
         <Plus size={13} /> Add
       </button>
     </div>
@@ -324,7 +324,7 @@ function MultiPick({ label, help, value, onChange, by }: { label: string; help?:
     <FieldShell label={label} htmlFor={id} help={help}>
       <div className="space-y-1">
         {value.map((v, i) => (
-          <div key={v} className="flex items-center gap-1 border border-[#EAEAEA] bg-white px-2 py-1 text-[13px]">
+          <div key={v} className="flex items-center gap-1 border border-[#E2E0DB] bg-white px-2 py-1 text-[14px]">
             <span className="flex-1 truncate">{name(v)}</span>
             <button type="button" aria-label="Move up" className={iconBtn} disabled={i === 0} onClick={() => onChange(move(value, i, i - 1))}>
               <ArrowUp size={13} />
@@ -368,8 +368,8 @@ export function LinkInput({ label, help, value, onChange }: { label: string; hel
   };
   return (
     <fieldset className="space-y-2">
-      <legend className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555]">{label}</legend>
-      {help && <p className="text-[11px] text-[#888888]">{help}</p>}
+      <legend className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{label}</legend>
+      {help && <p className="text-[12px] text-[#626262]">{help}</p>}
       <div className="grid sm:grid-cols-2 gap-2">
         <select
           id={typeId}
@@ -396,7 +396,7 @@ export function LinkInput({ label, help, value, onChange }: { label: string; hel
         ) : null}
       </div>
       {type === 'url' && (
-        <label className="flex items-center gap-2 text-[12px] text-[#555555]">
+        <label className="flex items-center gap-2 text-[13px] text-[#454545]">
           <input type="checkbox" checked={Boolean(value?.new_tab)} onChange={(e) => set({ new_tab: e.target.checked })} /> Open in a new tab
         </label>
       )}
@@ -438,9 +438,9 @@ export function SourceInput({ label, help, value, onChange }: { label: string; h
   const { data: options = [] } = useOptionLookup();
   const set = (patch: Partial<ProductSource>) => onChange({ ...src, ...patch });
   return (
-    <fieldset className="border border-[#EAEAEA] p-3 space-y-3">
-      <legend className="px-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555]">{label}</legend>
-      {help && <p className="text-[11px] text-[#888888]">{help}</p>}
+    <fieldset className="border border-[#E2E0DB] p-3 space-y-3">
+      <legend className="px-1 text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">{label}</legend>
+      {help && <p className="text-[12px] text-[#626262]">{help}</p>}
       <FieldShell label="Show" htmlFor={id}>
         <select id={id} className={selectCls} value={src.mode} onChange={(e) => onChange({ mode: e.target.value, limit: src.limit ?? 8 })}>
           {SOURCE_MODES.map((m) => (
@@ -457,14 +457,14 @@ export function SourceInput({ label, help, value, onChange }: { label: string; h
       {src.mode === 'manual' && <MultiPick label="Products" value={src.products ?? []} onChange={(v) => set({ products: v as string[] })} by="slug" />}
       {src.mode === 'filter' && (
         <div className="space-y-2">
-          <p className="text-[11px] text-[#888888]">Products must match one ticked option in every group you use.</p>
+          <p className="text-[12px] text-[#626262]">Products must match one ticked option in every group you use.</p>
           {OPTION_KINDS.map((k) => {
             const opts = options.filter((o) => o.kind === k.kind);
             if (!opts.length) return null;
             const chosen = src.attrs?.[k.kind] ?? [];
             return (
               <div key={k.kind}>
-                <p className="text-[12px] text-tk-ink mb-1">{k.label}</p>
+                <p className="text-[13px] text-tk-ink mb-1">{k.label}</p>
                 {opts.length > 12 ? (
                   <SearchMultiSelect
                     options={opts.map((o) => ({ value: o.slug, label: o.label }))}
@@ -479,7 +479,7 @@ export function SourceInput({ label, help, value, onChange }: { label: string; h
                 ) : (
                 <div className="flex flex-wrap gap-x-3 gap-y-1">
                   {opts.map((o) => (
-                    <label key={o.id} className="flex items-center gap-1.5 text-[12px] text-[#555555]">
+                    <label key={o.id} className="flex items-center gap-1.5 text-[13px] text-[#454545]">
                       <input
                         type="checkbox"
                         checked={chosen.includes(o.slug)}

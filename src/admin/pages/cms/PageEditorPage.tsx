@@ -67,8 +67,8 @@ export default function PageEditorPage() {
     ]);
   };
 
-  if (pageQuery.isLoading) return <p className="text-[13px] text-[#777777]">Loading…</p>;
-  if (!page || !form) return <p className="text-[13px] text-[#777777]">This page doesn't exist. <Link to="/admin/pages" className="underline">Back to pages</Link></p>;
+  if (pageQuery.isLoading) return <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
+  if (!page || !form) return <p className="text-[14px] text-[#5A5A5A]">This page doesn't exist. <Link to="/admin/pages" className="underline">Back to pages</Link></p>;
 
   const savePage = async () => {
     const title = form.title.trim();
@@ -156,7 +156,7 @@ export default function PageEditorPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link to="/admin/pages" className="inline-flex items-center gap-1 text-[12px] text-[#777777] hover:text-tk-ink mb-3">
+        <Link to="/admin/pages" className="inline-flex items-center gap-1 text-[13px] text-[#5A5A5A] hover:text-tk-ink mb-3">
           <ArrowLeft size={13} /> Pages
         </Link>
         <PageHeader
@@ -164,7 +164,7 @@ export default function PageEditorPage() {
           description={`${pageHref(page.slug)} · ${page.layout === 'sections' ? 'Section page' : 'Text page'}${page.is_system ? ' · Built-in' : ''}`}
           actions={
             <>
-              <a href={pageHref(page.slug)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-[12px] border border-[#D5D3CC] bg-white hover:border-tk-ink">
+              <a href={pageHref(page.slug)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 text-[13px] border border-[#C4C1B9] bg-white hover:border-tk-ink">
                 <ExternalLink size={14} /> View on site
               </a>
               {!page.is_system && (
@@ -180,11 +180,11 @@ export default function PageEditorPage() {
       {page.layout === 'sections' && (
         <Panel title="Sections" description="Drag to reorder. Hidden sections stay here but don't show on the site.">
           {sections.length === 0 ? (
-            <p className="text-[13px] text-[#777777] mb-3">No sections yet.</p>
+            <p className="text-[14px] text-[#5A5A5A] mb-3">No sections yet.</p>
           ) : (
             <SortableList
               items={sections}
-              className="border border-[#EAEAEA] divide-y divide-[#F0F0F0] mb-3"
+              className="border border-[#E2E0DB] divide-y divide-[#E9E7E2] mb-3"
               onReorder={async (ids) => {
                 try {
                   await rpc('reorder_rows', { p_table: 'website_sections', p_ids: ids });
@@ -199,19 +199,19 @@ export default function PageEditorPage() {
                 return (
                   <div className="flex items-center gap-2 pr-2 py-2">
                     <button type="button" className="min-w-0 flex-1 text-left" onClick={() => setEditing(s)}>
-                      <p className={`text-[13px] truncate ${s.is_visible ? 'text-tk-ink' : 'text-[#999999]'}`}>{name}</p>
-                      <p className="text-[11px] text-[#888888] truncate">{def ? def.label : `Unknown type “${s.section_type}”`}{s.is_visible ? '' : ' · Hidden'}</p>
+                      <p className={`text-[14px] truncate ${s.is_visible ? 'text-tk-ink' : 'text-[#6B6B6B]'}`}>{name}</p>
+                      <p className="text-[12px] text-[#626262] truncate">{def ? def.label : `Unknown type “${s.section_type}”`}{s.is_visible ? '' : ' · Hidden'}</p>
                     </button>
-                    <button type="button" aria-label={s.is_visible ? `Hide ${name}` : `Show ${name}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => setVisible(s, !s.is_visible)}>
+                    <button type="button" aria-label={s.is_visible ? `Hide ${name}` : `Show ${name}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => setVisible(s, !s.is_visible)}>
                       {s.is_visible ? <Eye size={14} /> : <EyeOff size={14} />}
                     </button>
-                    <button type="button" aria-label={`Edit ${name}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => setEditing(s)}>
+                    <button type="button" aria-label={`Edit ${name}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => setEditing(s)}>
                       <Pencil size={14} />
                     </button>
                     <button
                       type="button"
                       aria-label={`Duplicate ${name}`}
-                      className="p-1.5 text-[#777777] hover:text-tk-ink"
+                      className="p-1.5 text-[#5A5A5A] hover:text-tk-ink"
                       onClick={async () => {
                         try {
                           await rpc('duplicate_section', { p_id: s.id });
@@ -224,7 +224,7 @@ export default function PageEditorPage() {
                     >
                       <Copy size={14} />
                     </button>
-                    <button type="button" aria-label={`Delete ${name}`} className="p-1.5 text-[#777777] hover:text-rose-600" onClick={() => setRemoving(s)}>
+                    <button type="button" aria-label={`Delete ${name}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setRemoving(s)}>
                       <Trash2 size={14} />
                     </button>
                   </div>
@@ -240,7 +240,7 @@ export default function PageEditorPage() {
 
       <Panel title="Page settings">
         <div className="space-y-4">
-          {pageError && <p className="text-[12px] text-rose-600">{pageError}</p>}
+          {pageError && <p className="text-[13px] text-rose-600">{pageError}</p>}
           <FieldShell label="Title" htmlFor="pe-title">
             <TextInput id="pe-title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
           </FieldShell>
@@ -248,9 +248,9 @@ export default function PageEditorPage() {
             <TextInput id="pe-slug" value={form.slug} disabled={page.is_system} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })} />
           </FieldShell>
           {!page.is_system && (
-            <label className="flex items-center gap-2 text-[13px]">
+            <label className="flex items-center gap-2 text-[14px]">
               <Toggle checked={form.is_published} onChange={(on) => setForm({ ...form, is_published: on })} label="Published" /> Published
-              <span className="text-[11px] text-[#888888]">— drafts are only visible to admins.</span>
+              <span className="text-[12px] text-[#626262]">— drafts are only visible to admins.</span>
             </label>
           )}
           {page.layout === 'rich_text' && (
@@ -277,9 +277,9 @@ export default function PageEditorPage() {
       <Modal open={adding} onOpenChange={setAdding} title="Add a section" description="New sections start with sample content copied from an existing section of the same kind. Edit it, then save." wide>
         <div className="grid sm:grid-cols-2 gap-2">
           {Object.entries(SECTION_TYPES).map(([type, def]) => (
-            <button key={type} type="button" onClick={() => addSection(type)} className="text-left border border-[#EAEAEA] p-3 hover:border-tk-ink">
-              <p className="text-[13px] text-tk-ink">{def.label}</p>
-              <p className="text-[11px] text-[#888888] mt-0.5">{def.description}</p>
+            <button key={type} type="button" onClick={() => addSection(type)} className="text-left border border-[#E2E0DB] p-3 hover:border-tk-ink">
+              <p className="text-[14px] text-tk-ink">{def.label}</p>
+              <p className="text-[12px] text-[#626262] mt-0.5">{def.description}</p>
             </button>
           ))}
         </div>
@@ -303,17 +303,17 @@ export default function PageEditorPage() {
             <FieldShell label="Name in this list" htmlFor="sec-label" help="Only admins see this.">
               <TextInput id="sec-label" value={editing.label ?? ''} onChange={(e) => setEditing({ ...editing, label: e.target.value })} />
             </FieldShell>
-            <label className="flex items-center gap-2 text-[13px]">
+            <label className="flex items-center gap-2 text-[14px]">
               <Toggle checked={editing.is_visible} onChange={(on) => setEditing({ ...editing, is_visible: on })} label="Show on the site" /> Show on the site
             </label>
             {SECTION_TYPES[editing.section_type] ? (
               SECTION_TYPES[editing.section_type].fields.length ? (
                 <SchemaForm fields={SECTION_TYPES[editing.section_type].fields} value={editing.config} onChange={(config) => setEditing({ ...editing, config })} />
               ) : (
-                <p className="text-[12px] text-[#777777]">This section has no settings of its own.</p>
+                <p className="text-[13px] text-[#5A5A5A]">This section has no settings of its own.</p>
               )
             ) : (
-              <p className="text-[12px] text-rose-600">This section type is no longer supported. Delete it.</p>
+              <p className="text-[13px] text-rose-600">This section type is no longer supported. Delete it.</p>
             )}
           </div>
         )}

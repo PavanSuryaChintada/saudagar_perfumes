@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -10,12 +11,16 @@ const SmoothScrollContext = createContext(null);
 export function SmoothScrollProvider({ children }) {
   const [lenis, setLenis] = useState(null);
   const lenisRef = useRef(null);
+  // The admin, printouts and invoices use the browser's own scrolling: smooth scrolling there only gets in the way
+  // of long forms, side panels and lists.
+  const { pathname } = useLocation();
+  const nativeOnly = pathname.startsWith('/admin') || /^\/orders\/[^/]+\/invoice/.test(pathname);
 
   useEffect(() => {
     // Check user preference for reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || nativeOnly) {
       return;
     }
 
@@ -28,7 +33,10 @@ export function SmoothScrollProvider({ children }) {
       smoothWheel: true,
       wheelMultiplier: 0.95,
       touchMultiplier: 1.2,
-      infinite: false
+      infinite: false,
+      // Drawers, pop-ups, dropdowns and any box with its own scrollbar scroll on their own.
+      allowNestedScroll: true,
+      prevent: (node) => !!node.closest?.('[data-lenis-prevent], [role="dialog"], [role="listbox"], [data-radix-scroll-area-viewport]'),
     });
 
     lenisRef.current = lenisInstance;
@@ -51,7 +59,7 @@ export function SmoothScrollProvider({ children }) {
       lenisRef.current = null;
       setLenis(null);
     };
-  }, []);
+  }, [nativeOnly]);
 
   const scrollTo = (target, options = {}) => {
     if (lenisRef.current) {

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { usePaged } from '../../../lib/paging';
+import { Pager } from '../../ui/Pager';
 import { Link } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -49,6 +51,7 @@ export default function ReviewsPage() {
       return (await throwIf(q)) as unknown as ReviewRow[];
     },
   });
+  const paged = usePaged(rows, 20, rows.length);
 
   const moderate = async (id: string, next: ReviewRow['status']) => {
     try {
@@ -66,26 +69,26 @@ export default function ReviewsPage() {
       <PageHeader title="Reviews" description="Only customers with a delivered order can review. Nothing shows on the site until you approve it; ratings count approved reviews only." />
       <div className="flex flex-wrap gap-1 mb-4">
         {TABS.map(([v, l]) => (
-          <button key={v || 'all'} type="button" onClick={() => setStatus(v)} className={`px-3 py-1.5 text-[12px] border ${status === v ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#D5D3CC] text-[#555555] hover:border-tk-ink'}`}>
+          <button key={v || 'all'} type="button" onClick={() => setStatus(v)} className={`px-3 py-1.5 text-[13px] border ${status === v ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#C4C1B9] text-[#454545] hover:border-tk-ink'}`}>
             {l}
           </button>
         ))}
       </div>
       <div className="space-y-3">
-        {isLoading && <p className="text-[13px] text-[#777777]">Loading…</p>}
-        {!isLoading && rows.length === 0 && <p className="bg-white border border-[#EAEAEA] px-4 py-6 text-[13px] text-[#777777]">No reviews here.</p>}
-        {rows.map((r) => (
-          <div key={r.id} className="bg-white border border-[#EAEAEA] p-4 text-[13px] space-y-2">
+        {isLoading && <p className="text-[14px] text-[#5A5A5A]">Loading…</p>}
+        {!isLoading && rows.length === 0 && <p className="bg-white border border-[#E2E0DB] px-4 py-6 text-[14px] text-[#5A5A5A]">No reviews here.</p>}
+        {paged.rows.map((r) => (
+          <div key={r.id} className="bg-white border border-[#E2E0DB] p-4 text-[14px] space-y-2">
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-tk-accent">{'★'.repeat(r.rating)}<span className="text-[#DDDDDD]">{'★'.repeat(5 - r.rating)}</span></span>
               {r.title && <span className="font-medium">{r.title}</span>}
-              <span className="text-[11px] text-[#888888]">
+              <span className="text-[12px] text-[#626262]">
                 {r.display_name}{r.city ? `, ${r.city}` : ''} · {formatOrderDateTime(r.created_at)} · {r.product ? <Link to={`/admin/products/${r.product.id}`} className="underline">{r.product.name}</Link> : 'Deleted product'}
               </span>
-              <span className="ml-auto text-[10.5px] uppercase tracking-[0.06em] text-[#777777]">{r.status.toLowerCase()}{r.helpful_count ? ` · ${r.helpful_count} helpful` : ''}</span>
+              <span className="ml-auto text-[11.5px] uppercase tracking-[0.06em] text-[#5A5A5A]">{r.status.toLowerCase()}{r.helpful_count ? ` · ${r.helpful_count} helpful` : ''}</span>
             </div>
             {r.body && <p className="text-[#444444] whitespace-pre-line">{r.body}</p>}
-            {(r.longevity || r.sillage) && <p className="text-[11px] text-[#888888]">{[r.longevity && `Longevity: ${r.longevity.label}`, r.sillage && `Sillage: ${r.sillage.label}`].filter(Boolean).join(' · ')}</p>}
+            {(r.longevity || r.sillage) && <p className="text-[12px] text-[#626262]">{[r.longevity && `Longevity: ${r.longevity.label}`, r.sillage && `Sillage: ${r.sillage.label}`].filter(Boolean).join(' · ')}</p>}
             {r.review_media.length > 0 && (
               <div className="flex gap-2">
                 {[...r.review_media].sort((a, b) => a.position - b.position).map((m) => (
@@ -103,6 +106,7 @@ export default function ReviewsPage() {
           </div>
         ))}
       </div>
+      <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="reviews" />
     </div>
   );
 }

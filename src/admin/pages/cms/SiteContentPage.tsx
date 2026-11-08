@@ -18,7 +18,7 @@ export default function SiteContentPage() {
   return (
     <div>
       <PageHeader title="Site content" description="Everything that appears on every page: theme, brand, menus, footer and SEO." />
-      <div role="tablist" aria-label="Site content" className="flex flex-wrap gap-1 border-b border-[#EAEAEA] mb-5">
+      <div role="tablist" aria-label="Site content" className="flex flex-wrap gap-1 border-b border-[#E2E0DB] mb-5">
         {TABS.map((k) => (
           <button
             key={k}
@@ -26,7 +26,7 @@ export default function SiteContentPage() {
             type="button"
             aria-selected={k === tab}
             onClick={() => setParams({ tab: k })}
-            className={`px-3 py-2 text-[12px] -mb-px border-b-2 ${k === tab ? 'border-tk-ink text-tk-ink' : 'border-transparent text-[#777777] hover:text-tk-ink'}`}
+            className={`px-3 py-2 text-[13px] -mb-px border-b-2 ${k === tab ? 'border-tk-ink text-tk-ink' : 'border-transparent text-[#5A5A5A] hover:text-tk-ink'}`}
           >
             {BLOCK_SCHEMAS[k].label}
           </button>
@@ -68,16 +68,16 @@ function BlockEditor({ blockKey }: { blockKey: string }) {
     }
   };
 
-  if (isLoading || value === null) return <p className="text-[13px] text-[#777777]">Loading…</p>;
+  if (isLoading || value === null) return <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
   return (
     <Panel title={def.label} description={def.description}>
       <SchemaForm fields={def.fields} value={value} onChange={setValue} />
-      <div className="sticky bottom-0 mt-6 -mx-4 sm:-mx-5 px-4 sm:px-5 py-3 bg-white border-t border-[#EAEAEA] flex items-center gap-3">
+      <div className="sticky bottom-0 mt-6 -mx-4 sm:-mx-5 px-4 sm:px-5 py-3 bg-white border-t border-[#E2E0DB] flex items-center gap-3">
         <Button onClick={save} busy={busy} disabled={!dirty}>Save {def.label.toLowerCase()}</Button>
         {dirty && (
           <Button variant="ghost" onClick={() => setValue(data ?? {})}>Discard changes</Button>
         )}
-        {!dirty && <span className="text-[12px] text-[#888888]">All changes saved.</span>}
+        {!dirty && <span className="text-[13px] text-[#626262]">All changes saved.</span>}
       </div>
     </Panel>
   );

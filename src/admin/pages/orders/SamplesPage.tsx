@@ -117,10 +117,10 @@ export default function SamplesPage() {
           </Button>
         }
       />
-      {!enabled && <p className="px-3 py-2 bg-amber-50 border border-amber-200 text-[12px] text-amber-800">The free sample programme is switched off in Settings.</p>}
+      {!enabled && <p className="px-3 py-2 bg-amber-50 border border-amber-200 text-[13px] text-amber-800">The free sample programme is switched off in Settings.</p>}
 
       <Panel title="Try the rule">
-        <div className="flex flex-wrap items-end gap-3 text-[13px]">
+        <div className="flex flex-wrap items-end gap-3 text-[14px]">
           <FieldShell label="Perfume in the bag (ml)" htmlFor="ex-ml">
             <TextInput id="ex-ml" inputMode="numeric" value={exampleMl} onChange={(e) => setExampleMl(e.target.value)} className="max-w-[140px]" />
           </FieldShell>
@@ -132,11 +132,11 @@ export default function SamplesPage() {
 
       <Panel title={`Sample list · ${live} available to pick`} description="Drag to set the order customers see. Vials at zero stock are hidden from customers automatically; 'Surprise me' picks favour scents with more stock.">
         {pool.length === 0 ? (
-          <p className="text-[13px] text-[#777777]">No sample vials yet. Add one, or switch on “Offer as a free sample” in a product.</p>
+          <p className="text-[14px] text-[#5A5A5A]">No sample vials yet. Add one, or switch on “Offer as a free sample” in a product.</p>
         ) : (
           <SortableList
             items={pool}
-            className="border border-[#EAEAEA] divide-y divide-[#F0F0F0]"
+            className="border border-[#E2E0DB] divide-y divide-[#E9E7E2]"
             onReorder={async (ids) => {
               try {
                 await rpc('reorder_rows', { p_table: 'product_variants', p_ids: ids });
@@ -146,25 +146,25 @@ export default function SamplesPage() {
               }
             }}
             renderItem={(r) => (
-              <div className="flex items-center gap-3 pr-3 py-2 text-[13px]">
+              <div className="flex items-center gap-3 pr-3 py-2 text-[14px]">
                 <div className="min-w-0 flex-1">
                   <Link to={`/admin/products/${r.product?.id}`} className="hover:underline">{r.product?.name}</Link>
-                  <p className="text-[11px] text-[#888888]">{r.label} · {r.sku}{r.product && !r.product.is_active ? ' · product is a draft' : ''}</p>
+                  <p className="text-[12px] text-[#626262]">{r.label} · {r.sku}{r.product && !r.product.is_active ? ' · product is a draft' : ''}</p>
                 </div>
-                <span className={`tabular-nums text-[12px] ${r.stock === 0 ? 'text-rose-600' : r.stock <= 5 ? 'text-amber-700' : 'text-[#555555]'}`}>{r.stock} in stock</span>
+                <span className={`tabular-nums text-[13px] ${r.stock === 0 ? 'text-rose-600' : r.stock <= 5 ? 'text-amber-700' : 'text-[#454545]'}`}>{r.stock} in stock</span>
                 <Toggle checked={r.in_sample_pool} onChange={(on) => setInPool(r, on)} label={`Offer ${r.product?.name ?? ''} as a free sample`} />
               </div>
             )}
           />
         )}
-        <p className="mt-2 text-[11px] text-[#888888]">Add stock to vials from Inventory → Sample vials.</p>
+        <p className="mt-2 text-[12px] text-[#626262]">Add stock to vials from Inventory → Sample vials.</p>
       </Panel>
 
       <Panel title="Given in the last 30 days">
         {(given.data ?? []).length === 0 ? (
-          <p className="text-[13px] text-[#777777]">None yet.</p>
+          <p className="text-[14px] text-[#5A5A5A]">None yet.</p>
         ) : (
-          <ul className="text-[13px] divide-y divide-[#F0F0F0]">
+          <ul className="text-[14px] divide-y divide-[#E9E7E2]">
             {(given.data ?? []).map(([name, n]) => (
               <li key={name} className="flex justify-between py-1.5">
                 <span>{name}</span>

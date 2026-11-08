@@ -25,9 +25,9 @@ export function ConfirmDialog({
     <Dialog.Root open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-[90] bg-black/40" />
-        <Dialog.Content className="fixed z-[91] left-1/2 top-1/2 w-[calc(100vw-32px)] max-w-[440px] -translate-x-1/2 -translate-y-1/2 bg-white p-6 border border-[#EAEAEA] shadow-xl focus:outline-none">
+        <Dialog.Content className="fixed z-[91] left-1/2 top-1/2 w-[calc(100vw-32px)] max-w-[440px] -translate-x-1/2 -translate-y-1/2 bg-white p-6 border border-[#E2E0DB] shadow-xl focus:outline-none">
           <Dialog.Title className="text-[16px] font-medium text-tk-ink">{title}</Dialog.Title>
-          {description && <Dialog.Description className="mt-2 text-[13px] text-[#666666]">{description}</Dialog.Description>}
+          {description && <Dialog.Description className="mt-2 text-[14px] text-[#525252]">{description}</Dialog.Description>}
           <div className="mt-6 flex justify-end gap-2">
             <Button variant="secondary" onClick={() => onOpenChange(false)} disabled={busy}>
               Cancel

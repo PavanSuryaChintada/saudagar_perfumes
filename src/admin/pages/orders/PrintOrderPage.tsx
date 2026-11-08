@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router';
-import { useAdminOrder, useBusinessSettings } from '../../orders/api';
+import { useQuery } from '@tanstack/react-query';
+import { useAdminOrder, useBusinessSettings, type AdminOrder } from '../../orders/api';
+import { supabase } from '../../../lib/supabase';
+import { throwIf } from '../../catalog/api';
 import { useBlock } from '../../../cms/useSite';
 import { formatINR } from '../../../lib/money';
 import { formatIndianPhone } from '../../../lib/phone';
@@ -31,11 +34,29 @@ export default function PrintOrderPage({ customer = false }: { customer?: boolea
   if (isLoading || !biz) return <p className="p-8 text-[13px]">Preparing…</p>;
   if (!o) return <p className="p-8 text-[13px]">Order not found.</p>;
 
+  const missing = [!biz.gstin && 'GSTIN', !biz.address && 'business address', !biz.state && 'business state'].filter(Boolean);
+  return (
+    <div className="bg-white text-black min-h-screen">
+      {!customer && missing.length > 0 && doc === 'invoice' && (
+        <p className="print:hidden px-6 py-3 bg-amber-50 border-b border-amber-200 text-[12px] text-amber-800">
+          Add the {missing.join(', ')} in Admin → Settings → Business before using these invoices.
+        </p>
+      )}
+      <div className="print:hidden px-6 py-3 flex gap-3 text-[12px] border-b border-[#EAEAEA]">
+        <button type="button" onClick={() => window.print()} className="px-3 py-1.5 bg-black text-white">Print</button>
+        <button type="button" onClick={() => window.close()} className="px-3 py-1.5 border border-black">Close</button>
+      </div>
+      <OrderDocument o={o} biz={biz} brand={brand} doc={doc} />
+    </div>
+  );
+}
+
+/** One printable document: the GST tax invoice or the packing slip. */
+export function OrderDocument({ o, biz, brand, doc }: { o: AdminOrder; biz: Record<string, string>; brand: Record<string, string>; doc: 'invoice' | 'slip' }) {
   const a = o.shipping_address || {};
   const items = o.order_items.filter((i) => i.line_type === 'item');
   const samples = o.order_items.filter((i) => i.line_type === 'sample');
   const sellerName = biz.legal_name || brand.legal_name || brand.name || '';
-  const missing = [!biz.gstin && 'GSTIN', !biz.address && 'business address', !biz.state && 'business state'].filter(Boolean);
 
   const header = (
     <div className="flex justify-between gap-6 pb-4 border-b border-black">
@@ -214,20 +235,51 @@ export default function PrintOrderPage({ customer = false }: { customer?: boolea
   }
 
   return (
+    <div className="max-w-[800px] mx-auto p-8 text-[11.5px] leading-relaxed">
+      {header}
+      {body}
+    </div>
+  );
+}
+
+/** /admin/orders/print?doc=invoice|slip&ids=a,b,c — many documents, one per printed page. */
+export function PrintOrdersPage() {
+  const [params] = useSearchParams();
+  const doc = params.get('doc') === 'slip' ? 'slip' : 'invoice';
+  const ids = (params.get('ids') ?? '').split(',').filter((x) => /^[0-9a-f-]{36}$/i.test(x)).slice(0, 200);
+  const { data: biz } = useBusinessSettings();
+  const brand = useBlock<Record<string, string>>('brand') || {};
+  const { data: orders, isLoading } = useQuery({
+    queryKey: ['admin', 'orders', 'print', ids.join(',')],
+    enabled: ids.length > 0,
+    queryFn: async () => {
+      const rows = (await throwIf(supabase.from('orders').select('*, order_items(*)').in('id', ids))) as unknown as AdminOrder[];
+      for (const r of rows) r.order_items = [...(r.order_items ?? [])].sort((x, y) => x.position - y.position);
+      return ids.map((id) => rows.find((r) => r.id === id)).filter(Boolean) as AdminOrder[];
+    },
+  });
+
+  useEffect(() => {
+    if (!orders?.length || !biz) return;
+    document.title = `${doc === 'slip' ? 'Packing slips' : 'Invoices'} (${orders.length})`;
+    const t = setTimeout(() => window.print(), 500);
+    return () => clearTimeout(t);
+  }, [orders, biz, doc]);
+
+  if (!ids.length) return <p className="p-8 text-[13px]">No orders chosen. Tick orders on the Orders page first.</p>;
+  if (isLoading || !biz) return <p className="p-8 text-[13px]">Preparing {ids.length} documents…</p>;
+  return (
     <div className="bg-white text-black min-h-screen">
-      {!customer && missing.length > 0 && doc === 'invoice' && (
-        <p className="print:hidden px-6 py-3 bg-amber-50 border-b border-amber-200 text-[12px] text-amber-800">
-          Add the {missing.join(', ')} in Admin → Settings → Business before using these invoices.
-        </p>
-      )}
-      <div className="print:hidden px-6 py-3 flex gap-3 text-[12px] border-b border-[#EAEAEA]">
-        <button type="button" onClick={() => window.print()} className="px-3 py-1.5 bg-black text-white">Print</button>
+      <div className="print:hidden px-6 py-3 flex items-center gap-3 text-[12px] border-b border-[#EAEAEA]">
+        <button type="button" onClick={() => window.print()} className="px-3 py-1.5 bg-black text-white">Print all {orders?.length ?? 0}</button>
         <button type="button" onClick={() => window.close()} className="px-3 py-1.5 border border-black">Close</button>
+        <span className="text-[#555555]">Each {doc === 'slip' ? 'packing slip' : 'invoice'} prints on its own page.</span>
       </div>
-      <div className="max-w-[800px] mx-auto p-8 text-[11.5px] leading-relaxed">
-        {header}
-        {body}
-      </div>
+      {(orders ?? []).map((o, i) => (
+        <section key={o.id} className={i < (orders?.length ?? 0) - 1 ? 'break-after-page' : ''}>
+          <OrderDocument o={o} biz={biz} brand={brand} doc={doc} />
+        </section>
+      ))}
     </div>
   );
 }

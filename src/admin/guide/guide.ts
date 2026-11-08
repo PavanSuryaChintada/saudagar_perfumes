@@ -111,6 +111,20 @@ export const GUIDE: GuideSection[] = [
     tip: 'Making something similar? Use “Copy details from another product” at the top of the editor, then change what differs.',
   },
   {
+    id: 'spreadsheets',
+    title: 'Many changes at once',
+    why: 'Tick several rows to act on them together, or use a spreadsheet for prices, stock and new products.',
+    routes: ['/admin/spreadsheets'],
+    optional: true,
+    steps: [
+      { text: 'Products: tick several, then Make live, Hide, Add to category or collection, Set badge or Archive from the bar at the bottom.', link: { to: '/admin/products', label: 'Products' } },
+      { text: 'Orders: tick several, then Mark packed, Ship (one tracking number each), Mark delivered, or print all their invoices and packing slips.', link: { to: '/admin/orders', label: 'Orders' } },
+      { text: 'Prices & stock: download the sheet, change prices or stock in Excel or Google Sheets, upload it, check the preview, Apply.', link: { to: '/admin/spreadsheets', label: 'Spreadsheets' } },
+      { text: 'New products: download the template, one row per bottle size, upload it, check the preview, Import. Missing categories and notes are created.', link: { to: '/admin/spreadsheets?tab=import', label: 'Import' } },
+    ],
+    tip: 'Save the sheet as CSV before uploading (Excel: File → Save as → CSV UTF-8). Nothing changes until you press Apply or Import.',
+  },
+  {
     id: 'samples',
     title: 'Free samples',
     why: 'Customers get a free 5 ml sample for every 50 ml they buy, and choose the scent in the bag.',

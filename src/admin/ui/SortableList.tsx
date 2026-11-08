@@ -31,7 +31,7 @@ export function SortableList<T extends { id: string }>({
   items,
   onReorder,
   renderItem,
-  className = 'divide-y divide-[#F0F0F0]',
+  className = 'divide-y divide-[#E9E7E2]',
 }: {
   items: T[];
   onReorder: (ids: string[]) => void;

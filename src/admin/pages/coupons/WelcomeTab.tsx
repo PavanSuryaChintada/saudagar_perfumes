@@ -123,7 +123,7 @@ export default function WelcomeTab() {
     <div className="space-y-5">
       <Panel title="Rules" description="Every customer who signs up gets one personal code, shown in their account under Offers.">
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="flex items-center gap-2 text-[13px] sm:col-span-2">
+          <label className="flex items-center gap-2 text-[14px] sm:col-span-2">
             <Toggle checked={form.enabled} onChange={(on) => setForm({ ...form, enabled: on })} label="Give welcome codes" /> Give a welcome code to every new customer
           </label>
           <FieldShell label="Code prefix" htmlFor="w-prefix" help="Codes look like WELCOME-7KX2QD.">
@@ -138,7 +138,7 @@ export default function WelcomeTab() {
           <FieldShell label="Maximum discount (₹)" htmlFor="w-max" help="0 = no cap.">
             <TextInput id="w-max" inputMode="decimal" value={form.max_discount} onChange={(e) => setForm({ ...form, max_discount: e.target.value })} />
           </FieldShell>
-          <label className="flex items-center gap-2 text-[13px]">
+          <label className="flex items-center gap-2 text-[14px]">
             <Toggle checked={form.first_order_only} onChange={(on) => setForm({ ...form, first_order_only: on })} label="First order only" /> First order only
           </label>
         </div>
@@ -146,16 +146,16 @@ export default function WelcomeTab() {
       </Panel>
 
       <Panel title="Tiers" description="Each new customer gets one tier, chosen at random by its share. Tiers that have issued codes are switched off, not deleted.">
-        {activeWeight === 0 && <p className="mb-3 text-[12px] text-rose-600">No active tier has a share above 0, so no codes are given.</p>}
-        <div className="border border-[#EAEAEA] divide-y divide-[#F0F0F0] bg-white">
+        {activeWeight === 0 && <p className="mb-3 text-[13px] text-rose-600">No active tier has a share above 0, so no codes are given.</p>}
+        <div className="border border-[#E2E0DB] divide-y divide-[#E9E7E2] bg-white">
           {(tiers.data ?? []).map((t) => {
             const s = stats.data?.get(t.id) ?? { issued: 0, used: 0 };
             const share = activeWeight && t.is_active ? Math.round((t.weight / activeWeight) * 100) : 0;
             return (
-              <div key={t.id} className="flex items-center gap-3 px-3 py-2.5 text-[13px]">
+              <div key={t.id} className="flex items-center gap-3 px-3 py-2.5 text-[14px]">
                 <div className="min-w-0 flex-1">
-                  <p className={t.is_active ? '' : 'text-[#999999]'}>{t.label}</p>
-                  <p className="text-[11px] text-[#888888]">
+                  <p className={t.is_active ? '' : 'text-[#6B6B6B]'}>{t.label}</p>
+                  <p className="text-[12px] text-[#626262]">
                     {describeOffer({ discount_type: t.discount_type, value: t.value, max_discount: null, min_order: 0 })} · {t.is_active ? `${share}% of new customers` : 'off'} · {s.issued} issued · {s.used} used
                   </p>
                 </div>
@@ -171,7 +171,7 @@ export default function WelcomeTab() {
                     }
                   }}
                 />
-                <button type="button" aria-label={`Edit ${t.label}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => setTier({ ...t, value_text: String(t.value), weight_text: String(t.weight) })}>
+                <button type="button" aria-label={`Edit ${t.label}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => setTier({ ...t, value_text: String(t.value), weight_text: String(t.weight) })}>
                   <Pencil size={14} />
                 </button>
               </div>
@@ -201,7 +201,7 @@ export default function WelcomeTab() {
             </FieldShell>
             <div className="grid gap-4 sm:grid-cols-3">
               <FieldShell label="Type" htmlFor="t-type">
-                <select id="t-type" value={tier.discount_type} onChange={(e) => setTier({ ...tier, discount_type: e.target.value as Tier['discount_type'] })} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+                <select id="t-type" value={tier.discount_type} onChange={(e) => setTier({ ...tier, discount_type: e.target.value as Tier['discount_type'] })} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
                   <option value="PERCENT">Percent</option>
                   <option value="FLAT">Flat ₹</option>
                 </select>

@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import { usePaged, spliceOrder } from '../../../lib/paging';
+import { Pager } from '../../ui/Pager';
 import { ExternalLink, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
@@ -54,18 +56,18 @@ function CollectionProducts({ collectionId }: { collectionId: string }) {
 
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">Products in this collection · drag to set the order</p>
+      <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1.5">Products in this collection · drag to set the order</p>
       <SortableList
         items={ids.map((id) => ({ id }))}
-        className="divide-y divide-[#F0F0F0] border border-[#EAEAEA] mb-2"
+        className="divide-y divide-[#E9E7E2] border border-[#E2E0DB] mb-2"
         onReorder={(next) => run(() => rpc('reorder_collection_products', { p_collection: collectionId, p_product_ids: next }))}
         renderItem={({ id }) => (
-          <div className="flex items-center gap-2 pr-2 py-1.5 text-[12.5px]">
+          <div className="flex items-center gap-2 pr-2 py-1.5 text-[13.5px]">
             <span className="flex-1 truncate">{byId.get(id)?.name ?? '…'}</span>
             <button
               type="button"
               aria-label="Remove from collection"
-              className="p-1 text-[#999999] hover:text-rose-600"
+              className="p-1 text-[#6B6B6B] hover:text-rose-600"
               onClick={() => run(() => throwIf(supabase.from('product_collections').delete().eq('collection_id', collectionId).eq('product_id', id)))}
             >
               <X size={13} />
@@ -73,16 +75,16 @@ function CollectionProducts({ collectionId }: { collectionId: string }) {
           </div>
         )}
       />
-      {ids.length === 0 && <p className="text-[12px] text-[#888888] mb-2">No products yet.</p>}
+      {ids.length === 0 && <p className="text-[13px] text-[#626262] mb-2">No products yet.</p>}
       <div className="relative">
         <TextInput placeholder="Add a product…" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Add product to collection" />
         {candidates.length > 0 && (
-          <div className="absolute z-10 left-0 right-0 mt-1 bg-white border border-[#D5D3CC] shadow-md">
+          <div className="absolute z-10 left-0 right-0 mt-1 bg-white border border-[#C4C1B9] shadow-md">
             {candidates.map((p) => (
               <button
                 key={p.id}
                 type="button"
-                className="block w-full text-left px-3 py-1.5 text-[12.5px] hover:bg-[#F4F3EE]"
+                className="block w-full text-left px-3 py-1.5 text-[13.5px] hover:bg-[#F4F3EE]"
                 onClick={() => {
                   setSearch('');
                   run(() => throwIf(supabase.from('product_collections').insert({ collection_id: collectionId, product_id: p.id, position: ids.length })));
@@ -104,6 +106,7 @@ export default function CollectionsPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState<CollectionRow | null>(null);
+  const paged = usePaged(rows, 25);
   useEditParam(rows, (c) => { setError(''); setDraft(toDraft(c)); });
 
   const refresh = async () => {
@@ -160,11 +163,11 @@ export default function CollectionsPage() {
         }
       />
       <SortableList
-        items={rows}
-        className="bg-white border border-[#EAEAEA] divide-y divide-[#F0F0F0]"
+        items={paged.rows}
+        className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]"
         onReorder={async (ids) => {
           try {
-            await rpc('reorder_rows', { p_table: 'collections', p_ids: ids });
+            await rpc('reorder_rows', { p_table: 'collections', p_ids: spliceOrder(rows.map((x) => x.id), paged.from - 1, ids) });
             await refresh();
           } catch (err) {
             toast.error(toFriendlyError(err));
@@ -174,24 +177,25 @@ export default function CollectionsPage() {
           <div className="flex items-center gap-3 pr-2 py-2">
             <div className="w-10 h-10 bg-[#F4F3EE] overflow-hidden shrink-0">{c.image_url && <img src={c.image_url} alt="" className="w-full h-full object-cover" />}</div>
             <div className="min-w-0 flex-1">
-              <p className={`text-[13px] ${c.is_active ? '' : 'text-[#999999] line-through'}`}>{c.name}</p>
-              <p className="text-[11px] text-[#888888] truncate">
+              <p className={`text-[14px] ${c.is_active ? '' : 'text-[#6B6B6B] line-through'}`}>{c.name}</p>
+              <p className="text-[12px] text-[#626262] truncate">
                 /collections/{c.slug}
                 {c.aliases.length > 0 && ` · old links: ${c.aliases.join(', ')}`}
               </p>
             </div>
-            <a href={`/collections/${c.slug}`} target="_blank" rel="noreferrer" className="p-1.5 text-[#777777] hover:text-tk-ink" aria-label="View on site">
+            <a href={`/collections/${c.slug}`} target="_blank" rel="noreferrer" className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" aria-label="View on site">
               <ExternalLink size={14} />
             </a>
-            <button type="button" aria-label={`Edit ${c.name}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => { setError(''); setDraft(toDraft(c)); }}>
+            <button type="button" aria-label={`Edit ${c.name}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => { setError(''); setDraft(toDraft(c)); }}>
               <Pencil size={14} />
             </button>
-            <button type="button" aria-label={`Delete ${c.name}`} className="p-1.5 text-[#777777] hover:text-rose-600" onClick={() => setDeleting(c)}>
+            <button type="button" aria-label={`Delete ${c.name}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(c)}>
               <Trash2 size={14} />
             </button>
           </div>
         )}
       />
+      <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="collections" />
 
       <Modal
         open={!!draft}
@@ -208,7 +212,7 @@ export default function CollectionsPage() {
         {draft && (
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="space-y-4">
-              {error && <p className="text-[12px] text-rose-600">{error}</p>}
+              {error && <p className="text-[13px] text-rose-600">{error}</p>}
               <FieldShell label="Name" htmlFor="col-name">
                 <TextInput id="col-name" value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value, slug: draft.id ? draft.slug : slugify(e.target.value) })} />
               </FieldShell>
@@ -226,12 +230,12 @@ export default function CollectionsPage() {
               <FieldShell label="Card image">
                 <MediaField value={draft.image_url} onChange={(url) => setDraft({ ...draft, image_url: url })} kind="image" label="Upload image" />
               </FieldShell>
-              <label className="flex items-center gap-2 text-[13px]">
+              <label className="flex items-center gap-2 text-[14px]">
                 <Toggle checked={draft.is_active} onChange={(on) => setDraft({ ...draft, is_active: on })} label="Active" /> Active
               </label>
             </div>
             <div className="space-y-4">
-              <p className="text-[12px] text-[#777777]">Hero film (leave the video and poster empty for a simple page header)</p>
+              <p className="text-[13px] text-[#5A5A5A]">Hero film (leave the video and poster empty for a simple page header)</p>
               <FieldShell label="Hero video">
                 <MediaField value={draft.hero_video_url} onChange={(url) => setDraft({ ...draft, hero_video_url: url })} kind="video" label="Upload video" />
               </FieldShell>
@@ -245,7 +249,7 @@ export default function CollectionsPage() {
               {field('hero_accent_tag', 'Hero accent tag')}
               {field('seo_title', 'SEO title')}
               {field('seo_description', 'SEO description', undefined, true)}
-              {draft.id ? <CollectionProducts collectionId={draft.id} /> : <p className="text-[12px] text-[#888888]">Save the collection to add products.</p>}
+              {draft.id ? <CollectionProducts collectionId={draft.id} /> : <p className="text-[13px] text-[#626262]">Save the collection to add products.</p>}
             </div>
           </div>
         )}

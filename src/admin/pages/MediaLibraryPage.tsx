@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react';
+import { usePaged } from '../../lib/paging';
+import { Pager } from '../ui/Pager';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Copy, Trash2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
@@ -35,6 +37,7 @@ export default function MediaLibraryPage() {
       return data as MediaAsset[];
     },
   });
+  const paged = usePaged(assets, 40, assets.length);
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ['admin', 'media'] });
 
@@ -89,15 +92,15 @@ export default function MediaLibraryPage() {
       />
 
       {items.length > 0 && (
-        <div className="mb-5 border border-[#EAEAEA] bg-white p-4 space-y-2.5">
+        <div className="mb-5 border border-[#E2E0DB] bg-white p-4 space-y-2.5">
           {items.map((it) => (
             <div key={it.name}>
-              <div className="flex justify-between text-[12px]">
+              <div className="flex justify-between text-[13px]">
                 <span className="truncate pr-4">{it.name}</span>
-                <span className={it.error ? 'text-rose-600' : 'text-[#777777]'}>{it.error ? 'Failed' : `${Math.round(it.progress * 100)}%`}</span>
+                <span className={it.error ? 'text-rose-600' : 'text-[#5A5A5A]'}>{it.error ? 'Failed' : `${Math.round(it.progress * 100)}%`}</span>
               </div>
               {it.error ? (
-                <p className="text-[11px] text-rose-600 mt-0.5">{it.error}</p>
+                <p className="text-[12px] text-rose-600 mt-0.5">{it.error}</p>
               ) : (
                 <div className="h-1 bg-[#EEEEEE] mt-1">
                   <div className="h-1 bg-tk-accent transition-all" style={{ width: `${it.progress * 100}%` }} />
@@ -106,7 +109,7 @@ export default function MediaLibraryPage() {
             </div>
           ))}
           {!busy && (
-            <button type="button" onClick={clear} className="text-[11px] text-[#777777] underline underline-offset-4">
+            <button type="button" onClick={clear} className="text-[12px] text-[#5A5A5A] underline underline-offset-4">
               Clear list
             </button>
           )}
@@ -117,17 +120,17 @@ export default function MediaLibraryPage() {
         <TextInput placeholder="Search by file name" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Search media" />
       </div>
 
-      {isLoading && <p className="text-[13px] text-[#777777]">Loading…</p>}
-      {error && <p className="text-[13px] text-rose-600">{toFriendlyError(error)}</p>}
+      {isLoading && <p className="text-[14px] text-[#5A5A5A]">Loading…</p>}
+      {error && <p className="text-[14px] text-rose-600">{toFriendlyError(error)}</p>}
       {!isLoading && assets.length === 0 && (
-        <div className="border border-dashed border-[#D5D3CC] bg-white p-10 text-center text-[13px] text-[#777777]">
+        <div className="border border-dashed border-[#C4C1B9] bg-white p-10 text-center text-[14px] text-[#5A5A5A]">
           {search ? 'No files match that search.' : 'No uploads yet. Upload product photos, banners and videos here.'}
         </div>
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        {assets.map((a) => (
-          <figure key={a.id} className="bg-white border border-[#EAEAEA] flex flex-col">
+        {paged.rows.map((a) => (
+          <figure key={a.id} className="bg-white border border-[#E2E0DB] flex flex-col">
             <div className="aspect-square bg-[#F4F3EE] flex items-center justify-center overflow-hidden">
               {a.kind === 'video' ? (
                 <video src={a.url} className="w-full h-full object-cover" muted playsInline preload="metadata" />
@@ -135,11 +138,11 @@ export default function MediaLibraryPage() {
                 <img src={a.url} alt={a.alt ?? ''} loading="lazy" className="w-full h-full object-contain" />
               )}
             </div>
-            <figcaption className="p-2.5 space-y-2 text-[11px]">
+            <figcaption className="p-2.5 space-y-2 text-[12px]">
               <p className="truncate text-tk-ink" title={a.original_name ?? a.path}>
                 {a.original_name ?? a.path}
               </p>
-              <p className="text-[#888888]">
+              <p className="text-[#626262]">
                 {[a.kind, a.width && a.height ? `${a.width}×${a.height}` : '', formatBytes(a.bytes)].filter(Boolean).join(' · ')}
               </p>
               <TextInput
@@ -147,7 +150,7 @@ export default function MediaLibraryPage() {
                 placeholder="Description (alt text)"
                 defaultValue={a.alt ?? ''}
                 onBlur={(e) => saveAlt(a, e.target.value.trim())}
-                className="text-[11px] py-1.5"
+                className="text-[12px] py-1.5"
               />
               <div className="flex gap-1.5">
                 <Button
@@ -173,6 +176,7 @@ export default function MediaLibraryPage() {
           </figure>
         ))}
       </div>
+      <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="files" />
 
       <ConfirmDialog
         open={!!pendingDelete}
