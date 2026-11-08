@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Download, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
@@ -38,8 +39,10 @@ async function fetchCustomers(search: string, page: number, size = SIZE) {
 
 export default function CustomersPage() {
   const qc = useQueryClient();
-  const [input, setInput] = useState('');
-  const [search, setSearch] = useState('');
+  // ?q= comes from the admin search ("open this customer").
+  const [params] = useSearchParams();
+  const [input, setInput] = useState(() => params.get('q') ?? '');
+  const [search, setSearch] = useState(() => params.get('q') ?? '');
   const [page, setPage] = useState(0);
   const [editing, setEditing] = useState<CustomerRow | null>(null);
   const [dob, setDob] = useState('');
