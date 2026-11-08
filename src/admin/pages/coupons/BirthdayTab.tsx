@@ -71,17 +71,17 @@ export default function BirthdayTab() {
         <FieldShell label="Birthday" htmlFor="b-date">
           <TextInput id="b-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="max-w-[200px]" />
         </FieldShell>
-        <div className="mt-4 border border-[#EAEAEA] divide-y divide-[#F0F0F0] bg-white">
-          {list.isLoading && <p className="px-3 py-3 text-[13px] text-[#777777]">Loading…</p>}
-          {list.error && <p className="px-3 py-3 text-[13px] text-rose-600">{toFriendlyError(list.error)}</p>}
-          {!list.isLoading && (list.data ?? []).length === 0 && <p className="px-3 py-3 text-[13px] text-[#777777]">No customers have a birthday on this day.</p>}
+        <div className="mt-4 border border-[#E2E0DB] divide-y divide-[#E9E7E2] bg-white">
+          {list.isLoading && <p className="px-3 py-3 text-[14px] text-[#5A5A5A]">Loading…</p>}
+          {list.error && <p className="px-3 py-3 text-[14px] text-rose-600">{toFriendlyError(list.error)}</p>}
+          {!list.isLoading && (list.data ?? []).length === 0 && <p className="px-3 py-3 text-[14px] text-[#5A5A5A]">No customers have a birthday on this day.</p>}
           {(list.data ?? []).map((c) => (
-            <div key={c.user_id} className="flex items-center gap-3 px-3 py-2 text-[13px]">
+            <div key={c.user_id} className="flex items-center gap-3 px-3 py-2 text-[14px]">
               <div className="min-w-0 flex-1">
                 <p>{c.full_name || 'Customer'}</p>
-                <p className="text-[11px] text-[#888888]">{[c.email, c.phone && formatIndianPhone(c.phone)].filter(Boolean).join(' · ')}</p>
+                <p className="text-[12px] text-[#626262]">{[c.email, c.phone && formatIndianPhone(c.phone)].filter(Boolean).join(' · ')}</p>
               </div>
-              <span className={`text-[10.5px] uppercase tracking-[0.06em] ${c.has_code ? 'text-emerald-700' : 'text-[#888888]'}`}>{c.has_code ? `Has a ${y} code` : 'No code yet'}</span>
+              <span className={`text-[11.5px] uppercase tracking-[0.06em] ${c.has_code ? 'text-emerald-700' : 'text-[#626262]'}`}>{c.has_code ? `Has a ${y} code` : 'No code yet'}</span>
             </div>
           ))}
         </div>
@@ -93,7 +93,7 @@ export default function BirthdayTab() {
             <TextInput id="b-prefix" value={offer.prefix} onChange={(e) => setOffer({ ...offer, prefix: e.target.value.toUpperCase() })} />
           </FieldShell>
           <FieldShell label="Type" htmlFor="b-type">
-            <select id="b-type" value={offer.discount_type} onChange={(e) => setOffer({ ...offer, discount_type: e.target.value })} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+            <select id="b-type" value={offer.discount_type} onChange={(e) => setOffer({ ...offer, discount_type: e.target.value })} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
               <option value="PERCENT">Percent</option>
               <option value="FLAT">Flat ₹</option>
             </select>

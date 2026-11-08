@@ -13,7 +13,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
     <nav className="flex-1 min-h-0 overflow-y-auto overscroll-contain py-4" aria-label="Admin">
       {ADMIN_NAV.map((group, gi) => (
         <div key={gi} className="mb-4">
-          {group.heading && <p className="px-5 mb-1.5 text-[10px] uppercase tracking-[0.14em] text-[#999999]">{group.heading}</p>}
+          {group.heading && <p className="px-5 mb-1.5 text-[11.5px] font-semibold uppercase tracking-[0.14em] text-[#5A5A5A]">{group.heading}</p>}
           {group.items.map((item) => (
             <NavLink
               key={item.to}
@@ -21,8 +21,8 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
               end={item.end}
               onClick={onNavigate}
               className={({ isActive }) =>
-                `flex items-center gap-2.5 px-5 py-2 text-[13px] border-l-2 transition-colors ${
-                  isActive ? 'border-tk-accent text-tk-ink bg-[#F8F7F5] font-medium' : 'border-transparent text-[#555555] hover:text-tk-ink hover:bg-[#FAFAF8]'
+                `flex items-center gap-2.5 px-5 py-2 text-[14px] border-l-2 transition-colors ${
+                  isActive ? 'border-tk-accent text-tk-ink bg-[#F1EFEA] font-semibold' : 'border-transparent text-[#3F3F3F] hover:text-tk-ink hover:bg-[#F6F5F1]'
                 }`
               }
             >
@@ -50,22 +50,22 @@ export default function AdminLayout() {
   }, [location.pathname]);
 
   const brand = (
-    <Link to="/admin" className="block px-5 py-5 border-b border-[#EAEAEA]">
+    <Link to="/admin" className="block px-5 py-5 border-b border-[#E2E0DB]">
       <span className="block text-[14px] tracking-[0.3em] uppercase text-tk-ink">Saudagar</span>
-      <span className="block text-[10px] uppercase tracking-[0.18em] text-tk-accent mt-0.5">Store admin</span>
+      <span className="block text-[11px] uppercase tracking-[0.18em] text-tk-accent mt-0.5">Store admin</span>
     </Link>
   );
 
   const footer = (
-    <div className="border-t border-[#EAEAEA] p-4 space-y-2">
-      <p className="text-[11px] text-[#888888] truncate" title={user?.email ?? ''}>
+    <div className="border-t border-[#E2E0DB] p-4 space-y-2">
+      <p className="text-[12px] text-[#626262] truncate" title={user?.email ?? ''}>
         {user?.email}
       </p>
       <div className="flex gap-2">
-        <a href="/" target="_blank" rel="noreferrer" className="flex-1 inline-flex items-center justify-center gap-1.5 border border-[#D5D3CC] px-2 py-1.5 text-[11px] text-[#555555] hover:border-tk-ink">
+        <a href="/" target="_blank" rel="noreferrer" className="flex-1 inline-flex items-center justify-center gap-1.5 border border-[#C4C1B9] px-2 py-1.5 text-[12px] text-[#454545] hover:border-tk-ink">
           <ExternalLink size={13} /> View store
         </a>
-        <button type="button" onClick={() => signOut()} className="inline-flex items-center justify-center gap-1.5 border border-[#D5D3CC] px-2 py-1.5 text-[11px] text-[#555555] hover:border-tk-ink">
+        <button type="button" onClick={() => signOut()} className="inline-flex items-center justify-center gap-1.5 border border-[#C4C1B9] px-2 py-1.5 text-[12px] text-[#454545] hover:border-tk-ink">
           <LogOut size={13} /> Sign out
         </button>
       </div>
@@ -74,23 +74,23 @@ export default function AdminLayout() {
 
   return (
     <GuideContext.Provider value={guide}>
-    <div className="min-h-screen bg-[#F8F7F5] text-tk-ink font-sans">
+    <div className="admin-root min-h-screen bg-[#F8F7F5] text-tk-ink font-sans">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed inset-y-0 left-0 w-[240px] flex-col bg-white border-r border-[#EAEAEA]">
+      <aside className="hidden lg:flex fixed inset-y-0 left-0 w-[240px] flex-col bg-white border-r border-[#E2E0DB]">
         {brand}
         <NavList />
         {footer}
       </aside>
 
       {/* Mobile top bar + drawer */}
-      <header className="lg:hidden sticky top-0 z-40 flex items-center justify-between bg-white border-b border-[#EAEAEA] px-4 h-14">
+      <header className="lg:hidden sticky top-0 z-40 flex items-center justify-between bg-white border-b border-[#E2E0DB] px-4 h-14">
         <button type="button" aria-label="Open menu" onClick={() => setDrawerOpen(true)} className="p-2 -ml-2">
           <Menu size={20} />
         </button>
-        <span className="text-[13px] tracking-[0.3em] uppercase">Saudagar</span>
+        <span className="text-[14px] tracking-[0.3em] uppercase">Saudagar</span>
         <div className="flex items-center">
           <SearchButton compact onClick={() => setSearchOpen(true)} />
-          <button type="button" aria-label="How this page works" onClick={() => setHelpOpen(true)} className="p-2 text-[#555555] hover:text-tk-ink">
+          <button type="button" aria-label="How this page works" onClick={() => setHelpOpen(true)} className="p-2 text-[#454545] hover:text-tk-ink">
             <CircleHelp size={18} />
           </button>
           <NotificationsBell />
@@ -118,7 +118,7 @@ export default function AdminLayout() {
           <button
             type="button"
             onClick={() => setHelpOpen(true)}
-            className="inline-flex items-center gap-1.5 border border-[#D5D3CC] bg-white px-3 py-2 text-[12.5px] text-[#555555] hover:border-tk-ink hover:text-tk-ink"
+            className="inline-flex items-center gap-1.5 border border-[#C4C1B9] bg-white px-3 py-2 text-[13.5px] text-[#454545] hover:border-tk-ink hover:text-tk-ink"
           >
             <CircleHelp size={15} aria-hidden /> Help
           </button>

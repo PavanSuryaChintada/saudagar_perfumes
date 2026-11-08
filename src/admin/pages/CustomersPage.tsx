@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Pager } from '../ui/Pager';
 import { useSearchParams } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Download, Pencil } from 'lucide-react';
@@ -78,11 +79,11 @@ export default function CustomersPage() {
         <TextInput placeholder="Name, email or phone" value={input} onChange={(e) => setInput(e.target.value)} aria-label="Search customers" />
         <Button type="submit" variant="secondary">Search</Button>
       </form>
-      {error && <p className="text-[13px] text-rose-600 mb-3">{toFriendlyError(error)}</p>}
-      <div className="bg-white border border-[#EAEAEA] overflow-x-auto">
-        <table className="w-full text-[13px] min-w-[760px]">
+      {error && <p className="text-[14px] text-rose-600 mb-3">{toFriendlyError(error)}</p>}
+      <div className="bg-white border border-[#E2E0DB] overflow-x-auto">
+        <table className="w-full text-[14px] min-w-[760px]">
           <thead>
-            <tr className="text-left text-[11px] uppercase tracking-[0.06em] text-[#777777] border-b border-[#EAEAEA]">
+            <tr className="text-left text-[12px] uppercase tracking-[0.06em] text-[#5A5A5A] border-b border-[#E2E0DB]">
               <th className="px-3 py-2 font-medium">Customer</th>
               <th className="px-3 py-2 font-medium">Phone</th>
               <th className="px-3 py-2 font-medium text-right">Orders</th>
@@ -91,22 +92,22 @@ export default function CustomersPage() {
               <th className="px-3 py-2 font-medium">Birthday</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F0F0F0]">
-            {isLoading && <tr><td colSpan={6} className="px-3 py-6 text-[#777777]">Loading…</td></tr>}
-            {!isLoading && (data?.rows ?? []).length === 0 && <tr><td colSpan={6} className="px-3 py-6 text-[#777777]">No customers {search ? 'match' : 'yet'}.</td></tr>}
+          <tbody className="divide-y divide-[#E9E7E2]">
+            {isLoading && <tr><td colSpan={6} className="px-3 py-6 text-[#5A5A5A]">Loading…</td></tr>}
+            {!isLoading && (data?.rows ?? []).length === 0 && <tr><td colSpan={6} className="px-3 py-6 text-[#5A5A5A]">No customers {search ? 'match' : 'yet'}.</td></tr>}
             {(data?.rows ?? []).map((c) => (
               <tr key={c.id}>
                 <td className="px-3 py-2.5">
                   <p>{c.full_name || '—'}</p>
-                  <p className="text-[11px] text-[#888888]">{c.email} · joined {formatOrderDate(c.created_at)}</p>
+                  <p className="text-[12px] text-[#626262]">{c.email} · joined {formatOrderDate(c.created_at)}</p>
                 </td>
-                <td className="px-3 py-2.5 text-[12.5px]">{c.phone ? formatIndianPhone(c.phone) : ''}</td>
+                <td className="px-3 py-2.5 text-[13.5px]">{c.phone ? formatIndianPhone(c.phone) : ''}</td>
                 <td className="px-3 py-2.5 text-right tabular-nums">{c.orders}</td>
                 <td className="px-3 py-2.5 text-right tabular-nums">{formatINR(Number(c.spent))}</td>
-                <td className="px-3 py-2.5 text-[12.5px]">{formatOrderDate(c.last_order_at)}</td>
-                <td className="px-3 py-2.5 text-[12.5px]">
+                <td className="px-3 py-2.5 text-[13.5px]">{formatOrderDate(c.last_order_at)}</td>
+                <td className="px-3 py-2.5 text-[13.5px]">
                   {fmtBirthday(c.date_of_birth)}
-                  <button type="button" aria-label={`Set birthday for ${c.full_name || c.email}`} className="ml-1 p-1 text-[#999999] hover:text-tk-ink align-middle" onClick={() => { setEditing(c); setDob(c.date_of_birth ?? ''); }}>
+                  <button type="button" aria-label={`Set birthday for ${c.full_name || c.email}`} className="ml-1 p-1 text-[#6B6B6B] hover:text-tk-ink align-middle" onClick={() => { setEditing(c); setDob(c.date_of_birth ?? ''); }}>
                     <Pencil size={12} />
                   </button>
                 </td>
@@ -115,13 +116,15 @@ export default function CustomersPage() {
           </tbody>
         </table>
       </div>
-      {pages > 1 && (
-        <div className="flex items-center gap-3 mt-3 text-[12px]">
-          <Button size="sm" variant="secondary" disabled={page === 0} onClick={() => setPage(page - 1)}>Previous</Button>
-          <span>Page {page + 1} of {pages}</span>
-          <Button size="sm" variant="secondary" disabled={page + 1 >= pages} onClick={() => setPage(page + 1)}>Next</Button>
-        </div>
-      )}
+      <Pager
+        page={page + 1}
+        pageCount={pages}
+        onPage={(p) => setPage(p - 1)}
+        from={(data?.count ?? 0) ? page * SIZE + 1 : 0}
+        to={Math.min(data?.count ?? 0, (page + 1) * SIZE)}
+        total={data?.count ?? 0}
+        noun="customers"
+      />
 
       <Modal
         open={!!editing}

@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { usePaged } from '../../../lib/paging';
+import { Pager } from '../../ui/Pager';
 import { Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { History } from 'lucide-react';
@@ -86,6 +88,7 @@ export default function InventoryPage() {
       .filter((r) => (filter === 'low' ? r.stock > 0 && r.stock <= low : filter === 'out' ? r.stock === 0 : filter === 'samples' ? r.kind === 'sample' : true))
       .filter((r) => !term || r.product!.name.toLowerCase().includes(term) || r.sku.toLowerCase().includes(term));
   }, [rows, filter, search, low]);
+  const paged = usePaged(visible, 25, visible.length);
 
   const counts = useMemo(() => {
     const live = rows.filter((r) => r.product && !r.product.archived_at && !r.is_hidden);
@@ -115,7 +118,15 @@ export default function InventoryPage() {
 
   return (
     <div>
-      <PageHeader title="Inventory" description="Every bottle size and sample vial. Each change is logged with its reason; orders and cancellations move stock automatically." />
+      <PageHeader
+        title="Inventory"
+        description="Every bottle size and sample vial. Each change is logged with its reason; orders and cancellations move stock automatically."
+        actions={
+          <Link to="/admin/spreadsheets" className="inline-flex items-center gap-2 border border-[#C4C1B9] bg-white px-4 py-2.5 text-[14px] font-medium hover:border-tk-ink">
+            Update many by spreadsheet
+          </Link>
+        }
+      />
       <div className="flex flex-wrap gap-1 mb-3">
         {([
           ['all', 'All'],
@@ -127,7 +138,7 @@ export default function InventoryPage() {
             key={v}
             type="button"
             onClick={() => setFilter(v)}
-            className={`px-3 py-1.5 text-[12px] border ${filter === v ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#D5D3CC] text-[#555555] hover:border-tk-ink'}`}
+            className={`px-3 py-1.5 text-[13px] border ${filter === v ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#C4C1B9] text-[#454545] hover:border-tk-ink'}`}
           >
             {l}
           </button>
@@ -135,10 +146,10 @@ export default function InventoryPage() {
       </div>
       <TextInput placeholder="Search by product or SKU" value={search} onChange={(e) => setSearch(e.target.value)} className="max-w-[320px] mb-4" aria-label="Search inventory" />
 
-      <div className="bg-white border border-[#EAEAEA] overflow-x-auto">
-        <table className="w-full text-[13px] min-w-[640px]">
+      <div className="bg-white border border-[#E2E0DB] overflow-x-auto">
+        <table className="w-full text-[14px] min-w-[640px]">
           <thead>
-            <tr className="text-left text-[11px] uppercase tracking-[0.06em] text-[#777777] border-b border-[#EAEAEA]">
+            <tr className="text-left text-[12px] uppercase tracking-[0.06em] text-[#5A5A5A] border-b border-[#E2E0DB]">
               <th className="px-3 py-2 font-medium">Product</th>
               <th className="px-3 py-2 font-medium">Size</th>
               <th className="px-3 py-2 font-medium">SKU</th>
@@ -146,25 +157,25 @@ export default function InventoryPage() {
               <th className="px-3 py-2" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F0F0F0]">
-            {isLoading && <tr><td colSpan={5} className="px-3 py-6 text-[#777777]">Loading…</td></tr>}
-            {!isLoading && visible.length === 0 && <tr><td colSpan={5} className="px-3 py-6 text-[#777777]">Nothing here.</td></tr>}
-            {visible.map((r) => (
+          <tbody className="divide-y divide-[#E9E7E2]">
+            {isLoading && <tr><td colSpan={5} className="px-3 py-6 text-[#5A5A5A]">Loading…</td></tr>}
+            {!isLoading && visible.length === 0 && <tr><td colSpan={5} className="px-3 py-6 text-[#5A5A5A]">Nothing here.</td></tr>}
+            {paged.rows.map((r) => (
               <tr key={r.id}>
                 <td className="px-3 py-2">
                   <Link to={`/admin/products/${r.product!.id}`} className="hover:underline">{r.product!.name}</Link>
                 </td>
                 <td className="px-3 py-2">
                   {r.label}
-                  {r.kind === 'sample' && <span className="ml-2 text-[10px] uppercase tracking-wider text-tk-accent">{r.in_sample_pool ? 'Free sample' : 'Sample (off)'}</span>}
-                  {!r.is_active && <span className="ml-2 text-[10px] uppercase tracking-wider text-[#999999]">Unavailable</span>}
+                  {r.kind === 'sample' && <span className="ml-2 text-[11px] uppercase tracking-wider text-tk-accent">{r.in_sample_pool ? 'Free sample' : 'Sample (off)'}</span>}
+                  {!r.is_active && <span className="ml-2 text-[11px] uppercase tracking-wider text-[#6B6B6B]">Unavailable</span>}
                 </td>
-                <td className="px-3 py-2 font-mono text-[12px] text-[#555555]">{r.sku}</td>
+                <td className="px-3 py-2 font-mono text-[13px] text-[#454545]">{r.sku}</td>
                 <td className={`px-3 py-2 text-right tabular-nums font-medium ${r.stock === 0 ? 'text-rose-600' : r.stock <= low ? 'text-amber-700' : ''}`}>{r.stock}</td>
                 <td className="px-3 py-2 text-right whitespace-nowrap">
                   <Button size="sm" variant="secondary" onClick={() => { setDelta(''); setNote(''); setReason('restock'); setAdjusting(r); }}>Adjust</Button>
-                  <button type="button" aria-label={`Stock history for ${r.product!.name} ${r.label}`} className="ml-1 p-1.5 text-[#777777] hover:text-tk-ink align-middle" onClick={() => setHistoryFor(r)}>
-                    <History size={14} />
+                  <button type="button" aria-label={`Stock history for ${r.product!.name} ${r.label}`} className="ml-1 inline-flex items-center gap-1 px-2 py-1.5 text-[12.5px] text-[#3F3F3F] border border-transparent hover:border-[#C4C1B9] hover:text-tk-ink align-middle" onClick={() => setHistoryFor(r)}>
+                    <History size={13} aria-hidden /> History
                   </button>
                 </td>
               </tr>
@@ -172,6 +183,7 @@ export default function InventoryPage() {
           </tbody>
         </table>
       </div>
+      <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="sizes" />
 
       <Modal
         open={!!adjusting}
@@ -190,7 +202,7 @@ export default function InventoryPage() {
             <TextInput id="inv-delta" inputMode="numeric" placeholder="e.g. 12" value={delta} onChange={(e) => setDelta(e.target.value)} />
           </FieldShell>
           <FieldShell label="Reason" htmlFor="inv-reason">
-            <select id="inv-reason" value={reason} onChange={(e) => setReason(e.target.value)} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+            <select id="inv-reason" value={reason} onChange={(e) => setReason(e.target.value)} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
               {STOCK_REASONS.map(([v, l]) => (
                 <option key={v} value={v}>{l}</option>
               ))}
@@ -204,27 +216,27 @@ export default function InventoryPage() {
 
       <Modal open={!!historyFor} onOpenChange={(o) => !o && setHistoryFor(null)} title={`Stock history · ${historyFor?.product?.name ?? ''} ${historyFor?.label ?? ''}`} wide>
         {history.isLoading ? (
-          <p className="text-[13px] text-[#777777]">Loading…</p>
+          <p className="text-[14px] text-[#5A5A5A]">Loading…</p>
         ) : (history.data ?? []).length === 0 ? (
-          <p className="text-[13px] text-[#777777]">No stock changes yet.</p>
+          <p className="text-[14px] text-[#5A5A5A]">No stock changes yet.</p>
         ) : (
-          <table className="w-full text-[12.5px]">
+          <table className="w-full text-[13.5px]">
             <thead>
-              <tr className="text-left text-[11px] uppercase tracking-[0.06em] text-[#777777] border-b border-[#EAEAEA]">
+              <tr className="text-left text-[12px] uppercase tracking-[0.06em] text-[#5A5A5A] border-b border-[#E2E0DB]">
                 <th className="py-1.5 font-medium">When</th>
                 <th className="py-1.5 font-medium">Reason</th>
                 <th className="py-1.5 font-medium text-right">Change</th>
                 <th className="py-1.5 font-medium text-right">After</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#F0F0F0]">
+            <tbody className="divide-y divide-[#E9E7E2]">
               {(history.data ?? []).map((m) => (
                 <tr key={m.id}>
-                  <td className="py-1.5 text-[#666666] whitespace-nowrap">{formatOrderDateTime(m.created_at)}</td>
+                  <td className="py-1.5 text-[#525252] whitespace-nowrap">{formatOrderDateTime(m.created_at)}</td>
                   <td className="py-1.5">
                     {REASON_LABEL[m.reason] ?? m.reason}
-                    {m.order_id && <Link to={`/admin/orders/${m.order_id}`} className="ml-1 underline text-[11px]">order</Link>}
-                    {m.note && <span className="block text-[11px] text-[#888888]">{m.note}</span>}
+                    {m.order_id && <Link to={`/admin/orders/${m.order_id}`} className="ml-1 underline text-[12px]">order</Link>}
+                    {m.note && <span className="block text-[12px] text-[#626262]">{m.note}</span>}
                   </td>
                   <td className={`py-1.5 text-right tabular-nums ${m.delta < 0 ? 'text-rose-600' : 'text-emerald-700'}`}>{m.delta > 0 ? `+${m.delta}` : m.delta}</td>
                   <td className="py-1.5 text-right tabular-nums">{m.stock_after}</td>

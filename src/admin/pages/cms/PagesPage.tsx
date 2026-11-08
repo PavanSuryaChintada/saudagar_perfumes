@@ -77,20 +77,20 @@ export default function PagesPage() {
           </Button>
         }
       />
-      <div className="bg-white border border-[#EAEAEA] divide-y divide-[#F0F0F0]">
+      <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
         {pages.map((p) => (
           <div key={p.id} className="flex items-center gap-3 px-3 py-2.5">
             <Link to={`/admin/pages/${p.id}`} className="min-w-0 flex-1">
-              <p className="text-[13px] text-tk-ink truncate hover:underline">{p.title}</p>
-              <p className="text-[11px] text-[#888888] truncate">
+              <p className="text-[14px] text-tk-ink truncate hover:underline">{p.title}</p>
+              <p className="text-[12px] text-[#626262] truncate">
                 {pageHref(p.slug)} · {p.layout === 'sections' ? 'Sections' : 'Text'}
                 {p.is_system ? ' · Built-in' : ''}
               </p>
             </Link>
-            <span className={`text-[10px] uppercase tracking-[0.08em] px-2 py-0.5 border ${p.is_published ? 'border-emerald-300 text-emerald-700' : 'border-[#D5D3CC] text-[#888888]'}`}>
+            <span className={`text-[11px] uppercase tracking-[0.08em] px-2 py-0.5 border ${p.is_published ? 'border-emerald-300 text-emerald-700' : 'border-[#C4C1B9] text-[#626262]'}`}>
               {p.is_published ? 'Published' : 'Draft'}
             </span>
-            <a href={pageHref(p.slug)} target="_blank" rel="noreferrer" aria-label={`View ${p.title} on the site`} className="p-1.5 text-[#777777] hover:text-tk-ink">
+            <a href={pageHref(p.slug)} target="_blank" rel="noreferrer" aria-label={`View ${p.title} on the site`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink">
               <ExternalLink size={14} />
             </a>
           </div>
@@ -110,7 +110,7 @@ export default function PagesPage() {
       >
         {draft && (
           <div className="space-y-4">
-            {error && <p className="text-[12px] text-rose-600">{error}</p>}
+            {error && <p className="text-[13px] text-rose-600">{error}</p>}
             <FieldShell label="Title" htmlFor="pg-title">
               <TextInput id="pg-title" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value, slug: slugify(e.target.value) })} />
             </FieldShell>
@@ -118,14 +118,14 @@ export default function PagesPage() {
               <TextInput id="pg-slug" value={draft.slug} onChange={(e) => setDraft({ ...draft, slug: slugify(e.target.value) })} />
             </FieldShell>
             <fieldset className="space-y-2">
-              <legend className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555]">Kind of page</legend>
-              <label className="flex items-start gap-2 text-[13px]">
+              <legend className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">Kind of page</legend>
+              <label className="flex items-start gap-2 text-[14px]">
                 <input type="radio" name="pg-layout" checked={draft.layout === 'rich_text'} onChange={() => setDraft({ ...draft, layout: 'rich_text' })} />
-                <span>Text page<span className="block text-[11px] text-[#888888]">One formatted document — policies, about, contact.</span></span>
+                <span>Text page<span className="block text-[12px] text-[#626262]">One formatted document — policies, about, contact.</span></span>
               </label>
-              <label className="flex items-start gap-2 text-[13px]">
+              <label className="flex items-start gap-2 text-[14px]">
                 <input type="radio" name="pg-layout" checked={draft.layout === 'sections'} onChange={() => setDraft({ ...draft, layout: 'sections' })} />
-                <span>Section page<span className="block text-[11px] text-[#888888]">Built from the same sections as the home page.</span></span>
+                <span>Section page<span className="block text-[12px] text-[#626262]">Built from the same sections as the home page.</span></span>
               </label>
             </fieldset>
           </div>

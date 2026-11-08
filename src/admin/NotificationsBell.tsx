@@ -65,20 +65,20 @@ export default function NotificationsBell() {
 
   return (
     <div className="relative" ref={box}>
-      <button type="button" onClick={() => setOpen(!open)} aria-label={`Notifications${unread ? `, ${unread} new` : ''}`} aria-expanded={open} className="relative p-2 text-[#555555] hover:text-tk-ink">
+      <button type="button" onClick={() => setOpen(!open)} aria-label={`Notifications${unread ? `, ${unread} new` : ''}`} aria-expanded={open} className="relative p-2 text-[#454545] hover:text-tk-ink">
         <Bell size={17} />
         {unread > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-tk-accent text-white text-[10px] leading-4 text-center rounded-full tabular-nums">{unread > 9 ? '9+' : unread}</span>
+          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-tk-accent text-white text-[11px] leading-4 text-center rounded-full tabular-nums">{unread > 9 ? '9+' : unread}</span>
         )}
       </button>
       {open && (
-        <div className="absolute right-0 mt-2 w-[min(360px,calc(100vw-32px))] max-h-[70vh] overflow-y-auto bg-white border border-[#EAEAEA] shadow-xl z-50">
-          <div className="flex items-center justify-between px-3 py-2 border-b border-[#EAEAEA]">
-            <p className="text-[12px] font-medium">Notifications</p>
-            {unread > 0 && <button type="button" onClick={() => markRead()} className="text-[11px] underline">Mark all read</button>}
+        <div className="absolute right-0 mt-2 w-[min(360px,calc(100vw-32px))] max-h-[70vh] overflow-y-auto bg-white border border-[#E2E0DB] shadow-xl z-50">
+          <div className="flex items-center justify-between px-3 py-2 border-b border-[#E2E0DB]">
+            <p className="text-[13px] font-medium">Notifications</p>
+            {unread > 0 && <button type="button" onClick={() => markRead()} className="text-[12px] underline">Mark all read</button>}
           </div>
-          {notes.length === 0 && <p className="px-3 py-6 text-[12px] text-[#777777]">Nothing yet.</p>}
-          <ul className="divide-y divide-[#F0F0F0]">
+          {notes.length === 0 && <p className="px-3 py-6 text-[13px] text-[#5A5A5A]">Nothing yet.</p>}
+          <ul className="divide-y divide-[#E9E7E2]">
             {notes.map((n) => (
               <li key={n.id}>
                 <Link
@@ -89,9 +89,9 @@ export default function NotificationsBell() {
                   }}
                   className={`block px-3 py-2.5 hover:bg-[#FAFAF7] ${n.read_at ? '' : 'bg-[#FFF9F2]'}`}
                 >
-                  <p className="text-[12.5px] text-tk-ink">{n.title}</p>
-                  {n.body && <p className="text-[11.5px] text-[#666666]">{n.body}</p>}
-                  <p className="text-[10.5px] text-[#999999] mt-0.5">{formatOrderDateTime(n.created_at)}</p>
+                  <p className="text-[13.5px] text-tk-ink">{n.title}</p>
+                  {n.body && <p className="text-[12.5px] text-[#525252]">{n.body}</p>}
+                  <p className="text-[11.5px] text-[#6B6B6B] mt-0.5">{formatOrderDateTime(n.created_at)}</p>
                 </Link>
               </li>
             ))}

@@ -4,9 +4,9 @@ type Variant = 'primary' | 'secondary' | 'danger' | 'ghost';
 
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-tk-ink text-white hover:bg-tk-accent disabled:hover:bg-tk-ink',
-  secondary: 'border border-[#D5D3CC] text-tk-ink bg-white hover:border-tk-ink',
+  secondary: 'border border-[#C4C1B9] text-tk-ink bg-white hover:border-tk-ink',
   danger: 'bg-rose-600 text-white hover:bg-rose-700',
-  ghost: 'text-[#555555] hover:text-tk-ink hover:bg-[#F4F3EE]',
+  ghost: 'text-[#454545] hover:text-tk-ink hover:bg-[#F4F3EE]',
 };
 
 export function Button({
@@ -18,7 +18,7 @@ export function Button({
   type = 'button',
   ...rest
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; size?: 'sm' | 'md'; busy?: boolean; children: ReactNode }) {
-  const sizing = size === 'sm' ? 'px-3 py-1.5 text-[11px]' : 'px-4 py-2.5 text-[12px]';
+  const sizing = size === 'sm' ? 'px-3 py-1.5 text-[12px]' : 'px-4 py-2.5 text-[13px]';
   return (
     <button
       type={type}

@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { usePaged } from '../../../lib/paging';
+import { Pager } from '../../ui/Pager';
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
@@ -43,6 +45,7 @@ export default function CategoriesPage() {
   const { data: rows = [], refetch } = useCategories();
   const invalidate = useInvalidateCatalog();
   const tree = useMemo(() => flattenTree(rows), [rows]);
+  const paged = usePaged(tree, 25);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState<CategoryRow | null>(null);
@@ -123,30 +126,31 @@ export default function CategoriesPage() {
           </Button>
         }
       />
-      <div className="bg-white border border-[#EAEAEA] divide-y divide-[#F0F0F0]">
-        {tree.map(({ row, depth }) => (
+      <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
+        {paged.rows.map(({ row, depth }) => (
           <div key={row.id} className="flex items-center gap-2 px-3 py-2" style={{ paddingLeft: 12 + depth * 22 }}>
             <div className="min-w-0 flex-1">
-              <p className={`text-[13px] ${row.is_active ? '' : 'text-[#999999] line-through'}`}>{row.name}</p>
-              <p className="text-[11px] text-[#888888]">/categories/{row.slug}</p>
+              <p className={`text-[14px] ${row.is_active ? '' : 'text-[#6B6B6B] line-through'}`}>{row.name}</p>
+              <p className="text-[12px] text-[#626262]">/categories/{row.slug}</p>
             </div>
-            <button type="button" aria-label="Move up" className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => move(row, -1)}><ArrowUp size={14} /></button>
-            <button type="button" aria-label="Move down" className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => move(row, 1)}><ArrowDown size={14} /></button>
+            <button type="button" aria-label="Move up" className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => move(row, -1)}><ArrowUp size={14} /></button>
+            <button type="button" aria-label="Move down" className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => move(row, 1)}><ArrowDown size={14} /></button>
             <button
               type="button"
               aria-label={`Edit ${row.name}`}
-              className="p-1.5 text-[#777777] hover:text-tk-ink"
+              className="p-1.5 text-[#5A5A5A] hover:text-tk-ink"
               onClick={() => edit(row)}
             >
               <Pencil size={14} />
             </button>
-            <button type="button" aria-label={`Delete ${row.name}`} className="p-1.5 text-[#777777] hover:text-rose-600" onClick={() => setDeleting(row)}>
+            <button type="button" aria-label={`Delete ${row.name}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(row)}>
               <Trash2 size={14} />
             </button>
           </div>
         ))}
-        {tree.length === 0 && <p className="p-8 text-center text-[13px] text-[#777777]">No categories yet.</p>}
+        {tree.length === 0 && <p className="p-8 text-center text-[14px] text-[#5A5A5A]">No categories yet.</p>}
       </div>
+      <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="categories" />
 
       <Modal
         open={!!draft}
@@ -161,7 +165,7 @@ export default function CategoriesPage() {
       >
         {draft && (
           <div className="space-y-4">
-            {error && <p className="text-[12px] text-rose-600">{error}</p>}
+            {error && <p className="text-[13px] text-rose-600">{error}</p>}
             <FieldShell label="Name" htmlFor="c-name">
               <TextInput id="c-name" value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value, slug: draft.id ? draft.slug : slugify(e.target.value) })} />
             </FieldShell>
@@ -193,7 +197,7 @@ export default function CategoriesPage() {
             <FieldShell label="SEO description" htmlFor="c-seod">
               <TextArea id="c-seod" rows={2} value={draft.seo_description} onChange={(e) => setDraft({ ...draft, seo_description: e.target.value })} />
             </FieldShell>
-            <label className="flex items-center gap-2 text-[13px]">
+            <label className="flex items-center gap-2 text-[14px]">
               <Toggle checked={draft.is_active} onChange={(on) => setDraft({ ...draft, is_active: on })} label="Active" /> Active
             </label>
           </div>

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { usePaged, spliceOrder } from '../../../lib/paging';
+import { Pager } from '../../ui/Pager';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
@@ -29,6 +31,7 @@ export default function ScentProfilePage() {
   });
   const meta = OPTION_KINDS.find((k) => k.kind === kind)!;
   const list = options.filter((o) => o.kind === kind);
+  const paged = usePaged(list, 25, kind);
 
   const refresh = async () => {
     await refetch();
@@ -76,7 +79,7 @@ export default function ScentProfilePage() {
             key={k.kind}
             type="button"
             onClick={() => setKind(k.kind)}
-            className={`px-3 py-1.5 text-[12px] border ${kind === k.kind ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#D5D3CC] text-[#555555] hover:border-tk-ink'}`}
+            className={`px-3 py-1.5 text-[13px] border ${kind === k.kind ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#C4C1B9] text-[#454545] hover:border-tk-ink'}`}
           >
             {k.label}
           </button>
@@ -84,34 +87,35 @@ export default function ScentProfilePage() {
       </div>
       <Panel title={meta.label} description={meta.help || 'Drag to reorder.'}>
         <SortableList
-          items={list}
+          items={paged.rows}
           onReorder={async (ids) => {
             try {
-              await rpc('reorder_rows', { p_table: 'attribute_options', p_ids: ids });
+              await rpc('reorder_rows', { p_table: 'attribute_options', p_ids: spliceOrder(list.map((x) => x.id), paged.from - 1, ids) });
               await refresh();
             } catch (err) {
               toast.error(toFriendlyError(err));
             }
           }}
-          className="divide-y divide-[#F0F0F0] border border-[#EAEAEA] mb-3"
+          className="divide-y divide-[#E9E7E2] border border-[#E2E0DB] mb-3"
           renderItem={(o) => (
             <div className="flex items-center gap-3 pr-2 py-2">
               <div className="min-w-0 flex-1">
-                <p className={`text-[13px] ${o.is_active ? 'text-tk-ink' : 'text-[#999999] line-through'}`}>
-                  {o.label} {o.badge && <span className="ml-1 text-[10px] px-1.5 py-0.5 bg-[#F4F3EE] text-[#777777]">{o.badge}</span>}
+                <p className={`text-[14px] ${o.is_active ? 'text-tk-ink' : 'text-[#6B6B6B] line-through'}`}>
+                  {o.label} {o.badge && <span className="ml-1 text-[11px] px-1.5 py-0.5 bg-[#F4F3EE] text-[#5A5A5A]">{o.badge}</span>}
                 </p>
-                {o.description && <p className="text-[11px] text-[#888888] truncate">{o.description}</p>}
+                {o.description && <p className="text-[12px] text-[#626262] truncate">{o.description}</p>}
               </div>
-              <button type="button" aria-label={`Edit ${o.label}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => { setError(''); setDraft({ id: o.id, kind: o.kind, label: o.label, slug: o.slug, description: o.description ?? '', badge: o.badge ?? '', is_active: o.is_active }); }}>
+              <button type="button" aria-label={`Edit ${o.label}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => { setError(''); setDraft({ id: o.id, kind: o.kind, label: o.label, slug: o.slug, description: o.description ?? '', badge: o.badge ?? '', is_active: o.is_active }); }}>
                 <Pencil size={14} />
               </button>
-              <button type="button" aria-label={`Delete ${o.label}`} className="p-1.5 text-[#777777] hover:text-rose-600" onClick={() => setDeleting(o)}>
+              <button type="button" aria-label={`Delete ${o.label}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(o)}>
                 <Trash2 size={14} />
               </button>
             </div>
           )}
         />
-        {list.length === 0 && <p className="text-[12px] text-[#888888] mb-3">No options yet.</p>}
+        <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="options" />
+        {list.length === 0 && <p className="text-[13px] text-[#626262] mb-3">No options yet.</p>}
         <Button size="sm" variant="secondary" onClick={() => { setError(''); setDraft({ kind, label: '', slug: '', description: '', badge: '', is_active: true }); }}>
           <Plus size={12} /> Add option
         </Button>
@@ -130,7 +134,7 @@ export default function ScentProfilePage() {
       >
         {draft && (
           <div className="space-y-4">
-            {error && <p className="text-[12px] text-rose-600">{error}</p>}
+            {error && <p className="text-[13px] text-rose-600">{error}</p>}
             <FieldShell label="Label" htmlFor="o-label">
               <TextInput id="o-label" value={draft.label} onChange={(e) => setDraft({ ...draft, label: e.target.value, slug: draft.id ? draft.slug : slugify(e.target.value) })} />
             </FieldShell>
@@ -143,7 +147,7 @@ export default function ScentProfilePage() {
             <FieldShell label="Badge (optional)" htmlFor="o-badge" help="Short tag shown next to the filter option, e.g. 38–46%.">
               <TextInput id="o-badge" value={draft.badge} onChange={(e) => setDraft({ ...draft, badge: e.target.value })} />
             </FieldShell>
-            <label className="flex items-center gap-2 text-[13px]">
+            <label className="flex items-center gap-2 text-[14px]">
               <Toggle checked={draft.is_active} onChange={(on) => setDraft({ ...draft, is_active: on })} label="Active" /> Active
             </label>
           </div>

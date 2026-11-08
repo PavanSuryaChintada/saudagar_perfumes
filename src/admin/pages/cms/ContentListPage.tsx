@@ -44,7 +44,7 @@ function toRow(type: ContentType, form: Record<string, unknown>): Record<string,
 export default function ContentListPage() {
   const { kind = '' } = useParams();
   const type = CONTENT_TYPES[kind];
-  if (!type) return <p className="text-[13px] text-[#777777]">Unknown content list.</p>;
+  if (!type) return <p className="text-[14px] text-[#5A5A5A]">Unknown content list.</p>;
   return <ContentList key={kind} type={type} />;
 }
 
@@ -114,11 +114,11 @@ function ContentList({ type }: { type: ContentType }) {
         }
       />
       {rows.length === 0 ? (
-        <p className="bg-white border border-[#EAEAEA] px-4 py-6 text-[13px] text-[#777777]">No {type.label.toLowerCase()} yet.</p>
+        <p className="bg-white border border-[#E2E0DB] px-4 py-6 text-[14px] text-[#5A5A5A]">No {type.label.toLowerCase()} yet.</p>
       ) : (
         <SortableList
           items={rows}
-          className="bg-white border border-[#EAEAEA] divide-y divide-[#F0F0F0]"
+          className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]"
           onReorder={async (ids) => {
             try {
               await rpc('reorder_rows', { p_table: type.table, p_ids: ids });
@@ -133,14 +133,14 @@ function ContentList({ type }: { type: ContentType }) {
                 <div className="w-10 h-10 bg-[#F4F3EE] overflow-hidden shrink-0">{r[type.thumbField] && <MediaPreview url={r[type.thumbField]} />}</div>
               )}
               <div className="min-w-0 flex-1">
-                <p className={`text-[13px] truncate ${r.is_active ? '' : 'text-[#999999]'}`}>{String(r[type.titleField] ?? '')}</p>
-                {type.subtitle?.(r) && <p className="text-[11px] text-[#888888] truncate">{type.subtitle(r)}</p>}
+                <p className={`text-[14px] truncate ${r.is_active ? '' : 'text-[#6B6B6B]'}`}>{String(r[type.titleField] ?? '')}</p>
+                {type.subtitle?.(r) && <p className="text-[12px] text-[#626262] truncate">{type.subtitle(r)}</p>}
               </div>
               <Toggle checked={Boolean(r.is_active)} onChange={(on) => setActive(r, on)} label={`Show ${String(r[type.titleField] ?? '')}`} />
-              <button type="button" aria-label={`Edit ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => { setError(''); setDraft({ id: r.id, form: toForm(type, r) }); }}>
+              <button type="button" aria-label={`Edit ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => { setError(''); setDraft({ id: r.id, form: toForm(type, r) }); }}>
                 <Pencil size={14} />
               </button>
-              <button type="button" aria-label={`Delete ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#777777] hover:text-rose-600" onClick={() => setDeleting(r)}>
+              <button type="button" aria-label={`Delete ${String(r[type.titleField] ?? '')}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(r)}>
                 <Trash2 size={14} />
               </button>
             </div>
@@ -162,7 +162,7 @@ function ContentList({ type }: { type: ContentType }) {
       >
         {draft && (
           <div className="space-y-4">
-            {error && <p className="text-[12px] text-rose-600">{error}</p>}
+            {error && <p className="text-[13px] text-rose-600">{error}</p>}
             <SchemaForm fields={type.fields} value={draft.form} onChange={(form) => setDraft({ ...draft, form })} />
           </div>
         )}

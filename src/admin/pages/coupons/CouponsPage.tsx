@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { usePaged } from '../../../lib/paging';
+import { Pager } from '../../ui/Pager';
 import { useSearchParams } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
@@ -79,9 +81,9 @@ const toLocal = (iso: string | null) => {
 
 export function couponStatus(c: Pick<CouponRow, 'is_active' | 'starts_at' | 'expires_at' | 'usage_limit'> & { used: number }): { label: string; tone: string } {
   const now = Date.now();
-  if (!c.is_active) return { label: 'Off', tone: 'bg-[#F4F3EE] text-[#777777] border-[#E0DDD5]' };
-  if (c.expires_at && new Date(c.expires_at).getTime() <= now) return { label: 'Expired', tone: 'bg-[#F4F3EE] text-[#777777] border-[#E0DDD5]' };
-  if (c.usage_limit !== null && c.used >= c.usage_limit) return { label: 'Used up', tone: 'bg-[#F4F3EE] text-[#777777] border-[#E0DDD5]' };
+  if (!c.is_active) return { label: 'Off', tone: 'bg-[#F4F3EE] text-[#5A5A5A] border-[#D3D0C8]' };
+  if (c.expires_at && new Date(c.expires_at).getTime() <= now) return { label: 'Expired', tone: 'bg-[#F4F3EE] text-[#5A5A5A] border-[#D3D0C8]' };
+  if (c.usage_limit !== null && c.used >= c.usage_limit) return { label: 'Used up', tone: 'bg-[#F4F3EE] text-[#5A5A5A] border-[#D3D0C8]' };
   if (c.starts_at && new Date(c.starts_at).getTime() > now) return { label: 'Scheduled', tone: 'bg-sky-50 text-sky-800 border-sky-200' };
   return { label: 'Live', tone: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
 }
@@ -97,7 +99,7 @@ export default function CouponsPage() {
   return (
     <div>
       <PageHeader title="Coupons" description="Codes customers type or pick at checkout, the welcome gift every new customer gets, and birthday codes." />
-      <div role="tablist" aria-label="Coupons" className="flex gap-1 border-b border-[#EAEAEA] mb-5">
+      <div role="tablist" aria-label="Coupons" className="flex gap-1 border-b border-[#E2E0DB] mb-5">
         {([
           ['coupons', 'Coupons'],
           ['welcome', 'Welcome offer'],
@@ -109,7 +111,7 @@ export default function CouponsPage() {
             type="button"
             aria-selected={tab === k}
             onClick={() => setParams(k === 'coupons' ? {} : { tab: k })}
-            className={`px-3 py-2 text-[12px] -mb-px border-b-2 ${tab === k ? 'border-tk-ink text-tk-ink' : 'border-transparent text-[#777777] hover:text-tk-ink'}`}
+            className={`px-3 py-2 text-[13px] -mb-px border-b-2 ${tab === k ? 'border-tk-ink text-tk-ink' : 'border-transparent text-[#5A5A5A] hover:text-tk-ink'}`}
           >
             {l}
           </button>
@@ -163,6 +165,7 @@ function CouponsTab() {
     return rows.filter((r) => !t || r.code.includes(t) || (r.description ?? '').toUpperCase().includes(t));
   }, [rows, search]);
 
+  const paged = usePaged(filtered, 25, `${search}|${kind}`);
   const used = (r: CouponRow) => r.coupon_redemptions.filter((x) => !x.released_at).length;
   const refresh = () => qc.invalidateQueries({ queryKey: ['admin', 'coupons'] });
 
@@ -218,7 +221,7 @@ function CouponsTab() {
     <div>
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <TextInput placeholder="Search codes" value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-[260px]" aria-label="Search coupons" />
-        <select value={kind} onChange={(e) => setKind(e.target.value as typeof kind)} className="border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white sm:max-w-[200px]" aria-label="Kind">
+        <select value={kind} onChange={(e) => setKind(e.target.value as typeof kind)} className="border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white sm:max-w-[200px]" aria-label="Kind">
           <option value="general">Store codes</option>
           <option value="welcome">Welcome codes</option>
           <option value="birthday">Birthday codes</option>
@@ -230,10 +233,10 @@ function CouponsTab() {
         </Button>
       </div>
 
-      <div className="bg-white border border-[#EAEAEA] overflow-x-auto">
-        <table className="w-full text-[13px] min-w-[680px]">
+      <div className="bg-white border border-[#E2E0DB] overflow-x-auto">
+        <table className="w-full text-[14px] min-w-[680px]">
           <thead>
-            <tr className="text-left text-[11px] uppercase tracking-[0.06em] text-[#777777] border-b border-[#EAEAEA]">
+            <tr className="text-left text-[12px] uppercase tracking-[0.06em] text-[#5A5A5A] border-b border-[#E2E0DB]">
               <th className="px-3 py-2 font-medium">Code</th>
               <th className="px-3 py-2 font-medium">Offer</th>
               <th className="px-3 py-2 font-medium">Used</th>
@@ -241,29 +244,29 @@ function CouponsTab() {
               <th className="px-3 py-2" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F0F0F0]">
-            {isLoading && <tr><td colSpan={5} className="px-3 py-6 text-[#777777]">Loading…</td></tr>}
-            {!isLoading && filtered.length === 0 && <tr><td colSpan={5} className="px-3 py-6 text-[#777777]">No coupons yet.</td></tr>}
-            {filtered.map((r) => {
+          <tbody className="divide-y divide-[#E9E7E2]">
+            {isLoading && <tr><td colSpan={5} className="px-3 py-6 text-[#5A5A5A]">Loading…</td></tr>}
+            {!isLoading && filtered.length === 0 && <tr><td colSpan={5} className="px-3 py-6 text-[#5A5A5A]">No coupons yet.</td></tr>}
+            {paged.rows.map((r) => {
               const st = couponStatus({ ...r, used: used(r) });
               return (
                 <tr key={r.id}>
                   <td className="px-3 py-2.5">
                     <p className="font-mono font-medium">{r.code}</p>
-                    <p className="text-[11px] text-[#888888]">
+                    <p className="text-[12px] text-[#626262]">
                       {r.assigned_user_id ? 'Personal' : r.is_listed ? 'Shown at checkout' : 'Hidden — must be typed'}
                       {r.coupon_categories.length ? ` · ${r.coupon_categories.length} categor${r.coupon_categories.length === 1 ? 'y' : 'ies'}` : ''}
                     </p>
                   </td>
-                  <td className="px-3 py-2.5 text-[12.5px]">
+                  <td className="px-3 py-2.5 text-[13.5px]">
                     {describeOffer(r)}
-                    {r.description && <p className="text-[11px] text-[#888888]">{r.description}</p>}
+                    {r.description && <p className="text-[12px] text-[#626262]">{r.description}</p>}
                   </td>
-                  <td className="px-3 py-2.5 tabular-nums text-[12.5px]">{used(r)} / {r.usage_limit ?? '∞'}</td>
-                  <td className="px-3 py-2.5"><span className={`inline-block px-2 py-0.5 border text-[10.5px] uppercase tracking-[0.06em] ${st.tone}`}>{st.label}</span></td>
+                  <td className="px-3 py-2.5 tabular-nums text-[13.5px]">{used(r)} / {r.usage_limit ?? '∞'}</td>
+                  <td className="px-3 py-2.5"><span className={`inline-block px-2 py-0.5 border text-[11.5px] uppercase tracking-[0.06em] ${st.tone}`}>{st.label}</span></td>
                   <td className="px-3 py-2.5 text-right whitespace-nowrap">
-                    <button type="button" aria-label={`Edit ${r.code}`} className="p-1.5 text-[#777777] hover:text-tk-ink" onClick={() => edit(r)}><Pencil size={14} /></button>
-                    <button type="button" aria-label={`Delete ${r.code}`} className="p-1.5 text-[#777777] hover:text-rose-600" onClick={() => setDeleting(r)}><Trash2 size={14} /></button>
+                    <button type="button" aria-label={`Edit ${r.code}`} className="p-1.5 text-[#5A5A5A] hover:text-tk-ink" onClick={() => edit(r)}><Pencil size={14} /></button>
+                    <button type="button" aria-label={`Delete ${r.code}`} className="p-1.5 text-[#5A5A5A] hover:text-rose-600" onClick={() => setDeleting(r)}><Trash2 size={14} /></button>
                   </td>
                 </tr>
               );
@@ -271,6 +274,7 @@ function CouponsTab() {
           </tbody>
         </table>
       </div>
+      <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="coupons" />
 
       <Modal
         open={!!draft}
@@ -286,7 +290,7 @@ function CouponsTab() {
       >
         {draft && (
           <div className="space-y-5">
-            {error && <p className="text-[12px] text-rose-600">{error}</p>}
+            {error && <p className="text-[13px] text-rose-600">{error}</p>}
             <div className="grid gap-4 sm:grid-cols-2">
               <FieldShell label="Code" htmlFor="c-code" help="Letters, numbers, - and _. Saved in capitals.">
                 <TextInput id="c-code" placeholder="e.g. DIWALI15" value={draft.code} onChange={(e) => setDraft({ ...draft, code: e.target.value.toUpperCase() })} className="font-mono" />
@@ -295,7 +299,7 @@ function CouponsTab() {
                 <TextInput id="c-desc" placeholder="e.g. 15% off for Diwali" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
               </FieldShell>
               <FieldShell label="Discount type" htmlFor="c-type">
-                <select id="c-type" value={draft.discount_type} onChange={(e) => setDraft({ ...draft, discount_type: e.target.value as Draft['discount_type'] })} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+                <select id="c-type" value={draft.discount_type} onChange={(e) => setDraft({ ...draft, discount_type: e.target.value as Draft['discount_type'] })} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
                   <option value="PERCENT">Percent off</option>
                   <option value="FLAT">Flat ₹ off</option>
                 </select>
@@ -322,7 +326,7 @@ function CouponsTab() {
                 <TextInput id="c-end" type="datetime-local" value={draft.expires_at} onChange={(e) => setDraft({ ...draft, expires_at: e.target.value })} />
               </FieldShell>
             </div>
-            <div className="flex flex-wrap gap-6 text-[13px]">
+            <div className="flex flex-wrap gap-6 text-[14px]">
               <label className="flex items-center gap-2"><Toggle checked={draft.is_active} onChange={(on) => setDraft({ ...draft, is_active: on })} label="Active" /> Active</label>
               <label className="flex items-center gap-2"><Toggle checked={draft.first_order_only} onChange={(on) => setDraft({ ...draft, first_order_only: on })} label="First order only" /> First order only</label>
               {!draft.assigned_user_id && (
@@ -330,9 +334,9 @@ function CouponsTab() {
               )}
             </div>
 
-            <fieldset className="border border-[#EAEAEA] p-3 space-y-2">
-              <legend className="px-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555]">Where it applies</legend>
-              <p className="text-[11px] text-[#888888]">No categories = the whole store. A category includes its sub-categories.</p>
+            <fieldset className="border border-[#E2E0DB] p-3 space-y-2">
+              <legend className="px-1 text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">Where it applies</legend>
+              <p className="text-[12px] text-[#626262]">No categories = the whole store. A category includes its sub-categories.</p>
               <SearchMultiSelect
                 ariaLabel="Categories this code covers"
                 options={categoryOptions(categories)}
@@ -340,7 +344,7 @@ function CouponsTab() {
                 onChange={(v) => setDraft({ ...draft, category_ids: v })}
                 placeholder="Search categories, or leave empty for the whole store"
               />
-              <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] pt-2">Never applies to</p>
+              <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] pt-2">Never applies to</p>
               <SearchMultiSelect
                 ariaLabel="Products this code never covers"
                 options={products.map((p) => ({ value: p.id, label: p.name }))}
@@ -350,22 +354,22 @@ function CouponsTab() {
               />
             </fieldset>
 
-            <fieldset className="border border-[#EAEAEA] p-3 space-y-2">
-              <legend className="px-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555]">Personal code (optional)</legend>
-              <p className="text-[11px] text-[#888888]">Only this customer can use it; it shows in their account under Offers.</p>
+            <fieldset className="border border-[#E2E0DB] p-3 space-y-2">
+              <legend className="px-1 text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545]">Personal code (optional)</legend>
+              <p className="text-[12px] text-[#626262]">Only this customer can use it; it shows in their account under Offers.</p>
               {draft.assigned_user_id ? (
-                <p className="text-[13px]">
+                <p className="text-[14px]">
                   {draft.assigned_label}{' '}
-                  <button type="button" className="ml-2 text-[12px] underline" onClick={() => setDraft({ ...draft, assigned_user_id: '', assigned_label: '' })}>Remove</button>
+                  <button type="button" className="ml-2 text-[13px] underline" onClick={() => setDraft({ ...draft, assigned_user_id: '', assigned_label: '' })}>Remove</button>
                 </p>
               ) : (
                 <>
                   <TextInput placeholder="Search customers by name, email or phone" value={custSearch} onChange={(e) => setCustSearch(e.target.value)} aria-label="Search customers" />
                   {(customers.data ?? []).length > 0 && (
-                    <div className="border border-[#EAEAEA] max-h-36 overflow-y-auto">
+                    <div className="border border-[#E2E0DB] max-h-36 overflow-y-auto">
                       {(customers.data ?? []).map((c) => (
-                        <button key={c.id} type="button" className="block w-full text-left px-3 py-1.5 text-[12.5px] hover:bg-[#FAFAF7]" onClick={() => { setDraft({ ...draft, assigned_user_id: c.id, assigned_label: `${c.full_name || 'Customer'} · ${c.email ?? ''}`, is_listed: false }); setCustSearch(''); }}>
-                          {c.full_name || 'Customer'} <span className="text-[#888888]">· {c.email}{c.phone ? ` · ${c.phone}` : ''}</span>
+                        <button key={c.id} type="button" className="block w-full text-left px-3 py-1.5 text-[13.5px] hover:bg-[#FAFAF7]" onClick={() => { setDraft({ ...draft, assigned_user_id: c.id, assigned_label: `${c.full_name || 'Customer'} · ${c.email ?? ''}`, is_listed: false }); setCustSearch(''); }}>
+                          {c.full_name || 'Customer'} <span className="text-[#626262]">· {c.email}{c.phone ? ` · ${c.phone}` : ''}</span>
                         </button>
                       ))}
                     </div>

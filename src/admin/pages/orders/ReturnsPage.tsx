@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { usePaged } from '../../../lib/paging';
+import { Pager } from '../../ui/Pager';
 import { Link } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -75,6 +77,7 @@ export default function ReturnsPage() {
       return (await throwIf(q)) as unknown as ReturnRow[];
     },
   });
+  const paged = usePaged(rows, 20, rows.length);
   const current = rows.find((r) => r.id === openId) ?? null;
   const refresh = () => qc.invalidateQueries({ queryKey: ['admin', 'returns'] });
 
@@ -87,25 +90,26 @@ export default function ReturnsPage() {
             key={f || 'all'}
             type="button"
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 text-[12px] border ${filter === f ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#D5D3CC] text-[#555555] hover:border-tk-ink'}`}
+            className={`px-3 py-1.5 text-[13px] border ${filter === f ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white border-[#C4C1B9] text-[#454545] hover:border-tk-ink'}`}
           >
             {f ? STATUS[f] : 'All'}
           </button>
         ))}
       </div>
-      <div className="bg-white border border-[#EAEAEA] divide-y divide-[#F0F0F0]">
-        {isLoading && <p className="px-3 py-6 text-[13px] text-[#777777]">Loading…</p>}
-        {!isLoading && rows.length === 0 && <p className="px-3 py-6 text-[13px] text-[#777777]">Nothing here.</p>}
-        {rows.map((r) => (
-          <button key={r.id} type="button" onClick={() => setOpenId(r.id)} className="w-full text-left flex items-center gap-3 px-3 py-3 hover:bg-[#FAFAF7] text-[13px]">
+      <div className="bg-white border border-[#E2E0DB] divide-y divide-[#E9E7E2]">
+        {isLoading && <p className="px-3 py-6 text-[14px] text-[#5A5A5A]">Loading…</p>}
+        {!isLoading && rows.length === 0 && <p className="px-3 py-6 text-[14px] text-[#5A5A5A]">Nothing here.</p>}
+        {paged.rows.map((r) => (
+          <button key={r.id} type="button" onClick={() => setOpenId(r.id)} className="w-full text-left flex items-center gap-3 px-3 py-3 hover:bg-[#FAFAF7] text-[14px]">
             <div className="min-w-0 flex-1">
               <p className="font-medium">{r.order.order_number} · {r.order.customer_name}</p>
-              <p className="text-[11px] text-[#888888] truncate">{REASON[r.reason]} · {formatOrderDateTime(r.created_at)}{r.details ? ` · ${r.details}` : ''}</p>
+              <p className="text-[12px] text-[#626262] truncate">{REASON[r.reason]} · {formatOrderDateTime(r.created_at)}{r.details ? ` · ${r.details}` : ''}</p>
             </div>
-            <span className="text-[10.5px] uppercase tracking-[0.06em] px-2 py-0.5 border border-[#E0DDD5] bg-[#F4F3EE]">{STATUS[r.status]}</span>
+            <span className="text-[11.5px] uppercase tracking-[0.06em] px-2 py-0.5 border border-[#D3D0C8] bg-[#F4F3EE]">{STATUS[r.status]}</span>
           </button>
         ))}
       </div>
+      <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="returns" />
       {current && <ReturnModal r={current} onClose={() => setOpenId(null)} onChanged={refresh} />}
     </div>
   );
@@ -144,15 +148,15 @@ function ReturnModal({ r, onClose, onChanged }: { r: ReturnRow; onClose: () => v
 
   return (
     <Modal open onOpenChange={(open) => !open && !busy && onClose()} title={`Return · ${o.order_number}`} description={`${REASON[r.reason]} · ${STATUS[r.status]}`} wide>
-      <div className="space-y-5 text-[13px]">
+      <div className="space-y-5 text-[14px]">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1">Items</p>
+          <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1">Items</p>
           <ul className="space-y-1">
             {returned.map((x) => (
               <li key={x.order_item_id}>{x.qty} × {x.item?.product_name} · {x.item?.variant_label}</li>
             ))}
           </ul>
-          <p className="text-[12px] text-[#777777] mt-1">
+          <p className="text-[13px] text-[#5A5A5A] mt-1">
             Worth {formatINR(value)} · <Link to={`/admin/orders/${o.id}`} className="underline">open order</Link> · {o.customer_phone}
           </p>
         </div>
@@ -160,7 +164,7 @@ function ReturnModal({ r, onClose, onChanged }: { r: ReturnRow; onClose: () => v
         {r.media.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {r.media.map((p) => (
-              <a key={p} href={media[p]} target="_blank" rel="noreferrer" className="w-24 h-24 bg-[#F4F3EE] border border-[#EAEAEA] overflow-hidden block">
+              <a key={p} href={media[p]} target="_blank" rel="noreferrer" className="w-24 h-24 bg-[#F4F3EE] border border-[#E2E0DB] overflow-hidden block">
                 {media[p] && <MediaPreview url={media[p]} />}
               </a>
             ))}
@@ -168,12 +172,12 @@ function ReturnModal({ r, onClose, onChanged }: { r: ReturnRow; onClose: () => v
         )}
 
         {r.status === 'REQUESTED' && (
-          <div className="space-y-3 border-t border-[#EAEAEA] pt-4">
+          <div className="space-y-3 border-t border-[#E2E0DB] pt-4">
             <FieldShell label="Message to the customer" htmlFor="rt-note" help="Required when declining.">
               <TextArea id="rt-note" rows={2} value={note} onChange={(e) => setNote(e.target.value)} placeholder="e.g. Sorry about this — please post it back and we'll replace it." />
             </FieldShell>
             <FieldShell label="How it comes back" htmlFor="rt-method">
-              <select id="rt-method" value={method} onChange={(e) => setMethod(e.target.value)} className="w-full sm:max-w-[320px] border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+              <select id="rt-method" value={method} onChange={(e) => setMethod(e.target.value)} className="w-full sm:max-w-[320px] border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
                 <option value="POST">Customer posts it back (e.g. India Post)</option>
                 <option value="PICKUP">Courier pickup</option>
                 <option value="NOT_NEEDED">No need to send it back (write it off)</option>
@@ -187,8 +191,8 @@ function ReturnModal({ r, onClose, onChanged }: { r: ReturnRow; onClose: () => v
         )}
 
         {['APPROVED', 'PICKUP_SCHEDULED', 'IN_TRANSIT'].includes(r.status) && (
-          <div className="space-y-3 border-t border-[#EAEAEA] pt-4">
-            <p className="text-[12px] text-[#555555]">{r.return_method === 'PICKUP' ? 'Arrange the courier pickup, then add its tracking number.' : 'Waiting for the customer to post it back.'}</p>
+          <div className="space-y-3 border-t border-[#E2E0DB] pt-4">
+            <p className="text-[13px] text-[#454545]">{r.return_method === 'PICKUP' ? 'Arrange the courier pickup, then add its tracking number.' : 'Waiting for the customer to post it back.'}</p>
             <div className="grid gap-3 sm:grid-cols-2">
               <FieldShell label="Courier" htmlFor="rt-courier"><TextInput id="rt-courier" value={courier} onChange={(e) => setCourier(e.target.value)} placeholder="e.g. India Post" /></FieldShell>
               <FieldShell label="Tracking number" htmlFor="rt-tracking"><TextInput id="rt-tracking" value={tracking} onChange={(e) => setTracking(e.target.value)} /></FieldShell>
@@ -198,13 +202,13 @@ function ReturnModal({ r, onClose, onChanged }: { r: ReturnRow; onClose: () => v
               <Button busy={busy} onClick={() => act(() => rpc('receive_return', { p_return: r.id, p_decision: 'RESTOCK' }), 'Received and restocked.')}>Received · restock</Button>
               <Button variant="danger" disabled={busy} onClick={() => act(() => rpc('receive_return', { p_return: r.id, p_decision: 'WRITE_OFF' }), 'Received and written off.')}>Received · write off (damaged)</Button>
             </div>
-            <p className="text-[11px] text-[#888888]">A leaked or opened bottle should always be written off.</p>
+            <p className="text-[12px] text-[#626262]">A leaked or opened bottle should always be written off.</p>
           </div>
         )}
 
         {r.status === 'RECEIVED' && (
-          <div className="space-y-4 border-t border-[#EAEAEA] pt-4">
-            <p className="text-[12px] text-[#555555]">Stock decision: {r.stock_decision === 'RESTOCK' ? 'put back on sale' : 'written off'}. Now resolve it.</p>
+          <div className="space-y-4 border-t border-[#E2E0DB] pt-4">
+            <p className="text-[13px] text-[#454545]">Stock decision: {r.stock_decision === 'RESTOCK' ? 'put back on sale' : 'written off'}. Now resolve it.</p>
             <div className="grid gap-3 sm:grid-cols-2">
               <FieldShell label="Refund amount (₹)" htmlFor="rt-amount" help={`Paid ${formatINR(Number(o.total) - Number(o.amount_refunded))}.`}>
                 <TextInput id="rt-amount" inputMode="decimal" value={refundAmount} onChange={(e) => setRefundAmount(e.target.value)} />
@@ -241,7 +245,7 @@ function ReturnModal({ r, onClose, onChanged }: { r: ReturnRow; onClose: () => v
         )}
 
         {['REFUNDED', 'REPLACED', 'REJECTED'].includes(r.status) && (
-          <p className="border-t border-[#EAEAEA] pt-4 text-[12.5px]">
+          <p className="border-t border-[#E2E0DB] pt-4 text-[13.5px]">
             {r.status === 'REFUNDED' && `Refunded ${formatINR(Number(r.refund_amount ?? 0))}.`}
             {r.status === 'REPLACED' && r.replacement_order_id && (
               <Link to={`/admin/orders/${r.replacement_order_id}`} className="underline">Open the replacement order</Link>

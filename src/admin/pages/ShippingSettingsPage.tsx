@@ -83,7 +83,7 @@ export default function ShippingSettingsPage() {
     }
   };
 
-  if (isLoading) return <p className="text-[13px] text-[#777777]">Loading…</p>;
+  if (isLoading) return <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
 
   return (
     <div className="space-y-5 pb-20">
@@ -91,7 +91,7 @@ export default function ShippingSettingsPage() {
 
       <Panel title="Couriers" description="The tracking link template uses {awb} for the tracking number. A courier that can't collect cash turns off COD while it is the default.">
         <FieldShell label="Default courier" htmlFor="sh-default">
-          <select id="sh-default" value={form.default_courier} onChange={(e) => setForm({ ...form, default_courier: e.target.value })} className="w-full sm:max-w-[280px] border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+          <select id="sh-default" value={form.default_courier} onChange={(e) => setForm({ ...form, default_courier: e.target.value })} className="w-full sm:max-w-[280px] border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
             {couriers.map((c) => (
               <option key={c.key} value={c.key}>{c.name}</option>
             ))}
@@ -99,21 +99,21 @@ export default function ShippingSettingsPage() {
         </FieldShell>
         <div className="mt-4 space-y-3">
           {couriers.map((c, i) => (
-            <div key={c.key} className="grid gap-2 sm:grid-cols-[180px_1fr_auto_auto] items-end border border-[#EAEAEA] p-3">
+            <div key={c.key} className="grid gap-2 sm:grid-cols-[180px_1fr_auto_auto] items-end border border-[#E2E0DB] p-3">
               <FieldShell label="Name">
                 <TextInput value={c.name} onChange={(e) => setCouriers(couriers.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} aria-label="Courier name" />
               </FieldShell>
               <FieldShell label="Tracking link">
                 <TextInput placeholder="https://…/{awb}" value={c.tracking_url} onChange={(e) => setCouriers(couriers.map((x, j) => (j === i ? { ...x, tracking_url: e.target.value } : x)))} aria-label="Tracking link template" />
               </FieldShell>
-              <label className="flex items-center gap-2 text-[12px] pb-2">
+              <label className="flex items-center gap-2 text-[13px] pb-2">
                 <Toggle checked={c.cod_allowed} onChange={(on) => setCouriers(couriers.map((x, j) => (j === i ? { ...x, cod_allowed: on } : x)))} label={`${c.name} collects cash`} /> Collects cash
               </label>
               <button
                 type="button"
                 aria-label={`Remove ${c.name}`}
                 disabled={['india_post', 'delhivery', 'other'].includes(c.key) || c.key === form.default_courier}
-                className="p-2 text-[#999999] hover:text-rose-600 disabled:opacity-30"
+                className="p-2 text-[#6B6B6B] hover:text-rose-600 disabled:opacity-30"
                 onClick={() => setCouriers(couriers.filter((_, j) => j !== i))}
               >
                 <Trash2 size={14} />
@@ -156,7 +156,7 @@ export default function ShippingSettingsPage() {
           >
             Check
           </Button>
-          {testResult && <p className={`text-[12px] pb-2 ${testResult.serviceable ? 'text-emerald-700' : 'text-rose-600'}`}>{testResult.message} (saved settings)</p>}
+          {testResult && <p className={`text-[13px] pb-2 ${testResult.serviceable ? 'text-emerald-700' : 'text-rose-600'}`}>{testResult.message} (saved settings)</p>}
         </div>
       </Panel>
 
@@ -172,11 +172,11 @@ export default function ShippingSettingsPage() {
 
       <Panel title="Delhivery (automatic booking)" description="Off until the Delhivery API token is added as the DELHIVERY_TOKEN secret in Supabase. Test in staging first; the integration is marked unverified until checked against your account's API documents.">
         <div className="grid gap-4 sm:grid-cols-2">
-          <label className="flex items-center gap-2 text-[13px] sm:col-span-2">
+          <label className="flex items-center gap-2 text-[14px] sm:col-span-2">
             <Toggle checked={form.dl_enabled} onChange={(on) => setForm({ ...form, dl_enabled: on })} label="Book with Delhivery" /> Book packed orders with Delhivery automatically
           </label>
           <FieldShell label="Mode" htmlFor="sh-dlmode">
-            <select id="sh-dlmode" value={form.dl_mode} onChange={(e) => setForm({ ...form, dl_mode: e.target.value })} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+            <select id="sh-dlmode" value={form.dl_mode} onChange={(e) => setForm({ ...form, dl_mode: e.target.value })} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
               <option value="staging">Staging (test)</option>
               <option value="production">Production (live)</option>
             </select>
@@ -185,7 +185,7 @@ export default function ShippingSettingsPage() {
             <TextInput id="sh-pickup" value={form.dl_pickup} onChange={(e) => setForm({ ...form, dl_pickup: e.target.value })} />
           </FieldShell>
           <FieldShell label="Status updates" htmlFor="sh-updates" help="Webhook if Delhivery pushes updates to you, otherwise check every 30 minutes.">
-            <select id="sh-updates" value={form.status_updates} onChange={(e) => setForm({ ...form, status_updates: e.target.value })} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+            <select id="sh-updates" value={form.status_updates} onChange={(e) => setForm({ ...form, status_updates: e.target.value })} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
               <option value="webhook">Webhook</option>
               <option value="poll">Check every 30 minutes</option>
             </select>
@@ -193,7 +193,7 @@ export default function ShippingSettingsPage() {
         </div>
       </Panel>
 
-      <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#EAEAEA] px-4 sm:px-8 py-3 flex justify-end">
+      <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#E2E0DB] px-4 sm:px-8 py-3 flex justify-end">
         <Button onClick={save} busy={saving}>Save shipping settings</Button>
       </div>
     </div>

@@ -18,20 +18,20 @@ export default function RequireAdmin({ children }: { children: ReactNode }) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 bg-white text-tk-ink">
         <div className="max-w-[420px] text-center">
-          <p className="text-[10px] uppercase tracking-[0.22em] text-tk-accent mb-2">Store admin</p>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-tk-accent mb-2">Store admin</p>
           <h1 className="text-[24px] font-normal mb-3">You don't have access</h1>
-          <p className="text-[13px] text-[#666666] mb-8">
+          <p className="text-[14px] text-[#525252] mb-8">
             This account isn't an admin. Sign in with an admin account, or go back to the store.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               type="button"
               onClick={() => signOut()}
-              className="px-6 py-3 bg-tk-ink hover:bg-tk-accent text-white text-[11px] font-semibold uppercase tracking-[0.18em]"
+              className="px-6 py-3 bg-tk-ink hover:bg-tk-accent text-white text-[12px] font-semibold uppercase tracking-[0.18em]"
             >
               Sign out
             </button>
-            <Link to="/" className="px-6 py-3 border border-tk-ink text-[11px] font-semibold uppercase tracking-[0.18em]">
+            <Link to="/" className="px-6 py-3 border border-tk-ink text-[12px] font-semibold uppercase tracking-[0.18em]">
               Back to store
             </Link>
           </div>

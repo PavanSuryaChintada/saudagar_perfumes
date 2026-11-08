@@ -56,9 +56,9 @@ export default function ExportPage() {
     <div>
       <PageHeader title="Data export" description="Download any table as a CSV that opens in Excel or Google Sheets. Supabase also keeps daily backups on the Pro plan." />
       <Panel>
-        <ul className="divide-y divide-[#F0F0F0]">
+        <ul className="divide-y divide-[#E9E7E2]">
           {TABLES.map((t) => (
-            <li key={t.table} className="flex items-center justify-between gap-3 py-2.5 text-[13px]">
+            <li key={t.table} className="flex items-center justify-between gap-3 py-2.5 text-[14px]">
               <span>{t.label}</span>
               <Button size="sm" variant="secondary" busy={busy === t.table} disabled={!!busy && busy !== t.table} onClick={() => exportTable(t.table, t.order, t.unique)}>
                 <Download size={13} /> CSV

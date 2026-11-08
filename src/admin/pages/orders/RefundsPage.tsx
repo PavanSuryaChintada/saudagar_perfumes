@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { usePaged } from '../../../lib/paging';
+import { Pager } from '../../ui/Pager';
 import { Link } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -52,6 +54,7 @@ export default function RefundsPage() {
     queryKey: ['admin', 'refunds-due'],
     queryFn: async () => (await rpc<DueRow[]>('refunds_due', {})) ?? [],
   });
+  const paged = usePaged(rows, 25, rows.length);
   const [managing, setManaging] = useState<RefundRow | null>(null);
   const [status, setStatus] = useState<RefundRow['status']>('PROCESSING');
   const [note, setNote] = useState('');
@@ -70,15 +73,15 @@ export default function RefundsPage() {
       {due.length > 0 && (
         <section aria-labelledby="due-h" className="mb-6 bg-white border border-rose-200">
           <div className="px-4 py-3 border-b border-rose-200 bg-rose-50">
-            <h2 id="due-h" className="text-[13px] font-semibold text-rose-800">Refunds due · {due.length}</h2>
-            <p className="text-[12px] text-rose-800/80">Paid online orders that were cancelled or came back, with money still to return.</p>
+            <h2 id="due-h" className="text-[14px] font-semibold text-rose-800">Refunds due · {due.length}</h2>
+            <p className="text-[13px] text-rose-800/80">Paid online orders that were cancelled or came back, with money still to return.</p>
           </div>
-          <ul className="divide-y divide-[#F0F0F0]">
+          <ul className="divide-y divide-[#E9E7E2]">
             {due.map((d) => (
-              <li key={d.order_id} className="px-4 py-3 flex flex-wrap items-center gap-3 justify-between text-[13px]">
+              <li key={d.order_id} className="px-4 py-3 flex flex-wrap items-center gap-3 justify-between text-[14px]">
                 <div>
                   <Link to={`/admin/orders/${d.order_id}`} className="font-medium hover:underline">{d.order_number}</Link>
-                  <p className="text-[11px] text-[#888888]">
+                  <p className="text-[12px] text-[#626262]">
                     {d.customer_name} · {d.status === 'CANCELLED' ? 'cancelled' : 'returned to us'} {formatOrderDateTime(d.since)}
                   </p>
                 </div>
@@ -92,10 +95,10 @@ export default function RefundsPage() {
         </section>
       )}
 
-      <div className="bg-white border border-[#EAEAEA] overflow-x-auto">
-        <table className="w-full text-[13px] min-w-[680px]">
+      <div className="bg-white border border-[#E2E0DB] overflow-x-auto">
+        <table className="w-full text-[14px] min-w-[680px]">
           <thead>
-            <tr className="text-left text-[11px] uppercase tracking-[0.06em] text-[#777777] border-b border-[#EAEAEA]">
+            <tr className="text-left text-[12px] uppercase tracking-[0.06em] text-[#5A5A5A] border-b border-[#E2E0DB]">
               <th className="px-3 py-2 font-medium">Order</th>
               <th className="px-3 py-2 font-medium">Amount</th>
               <th className="px-3 py-2 font-medium">How</th>
@@ -103,25 +106,25 @@ export default function RefundsPage() {
               <th className="px-3 py-2" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#F0F0F0]">
-            {isLoading && <tr><td colSpan={5} className="px-3 py-6 text-[#777777]">Loading…</td></tr>}
+          <tbody className="divide-y divide-[#E9E7E2]">
+            {isLoading && <tr><td colSpan={5} className="px-3 py-6 text-[#5A5A5A]">Loading…</td></tr>}
             {!isLoading && rows.length === 0 && (
-              <tr><td colSpan={5} className="px-3 py-6 text-[#777777]">No refunds yet. Refunds you make from an order or a return appear here.</td></tr>
+              <tr><td colSpan={5} className="px-3 py-6 text-[#5A5A5A]">No refunds yet. Refunds you make from an order or a return appear here.</td></tr>
             )}
-            {rows.map((r) => (
+            {paged.rows.map((r) => (
               <tr key={r.id}>
                 <td className="px-3 py-2.5">
                   <Link to={`/admin/orders/${r.order_id}`} className="font-medium hover:underline">{r.order.order_number}</Link>
-                  <p className="text-[11px] text-[#888888]">{r.order.customer_name} · {formatOrderDateTime(r.created_at)}</p>
+                  <p className="text-[12px] text-[#626262]">{r.order.customer_name} · {formatOrderDateTime(r.created_at)}</p>
                 </td>
                 <td className="px-3 py-2.5 tabular-nums">{formatINR(Number(r.amount))}</td>
-                <td className="px-3 py-2.5 text-[12px]">
+                <td className="px-3 py-2.5 text-[13px]">
                   {r.method === 'RAZORPAY' ? 'Razorpay' : 'UPI / bank'}
-                  <p className="text-[11px] text-[#888888] font-mono">{r.razorpay_refund_id ?? r.reference}</p>
+                  <p className="text-[12px] text-[#626262] font-mono">{r.razorpay_refund_id ?? r.reference}</p>
                 </td>
                 <td className="px-3 py-2.5">
-                  <span className={`inline-block px-2 py-0.5 border text-[10.5px] uppercase tracking-[0.06em] ${TONE[r.status]}`}>{r.status.toLowerCase()}</span>
-                  {r.status === 'FAILED' && r.note && <p className="text-[11px] text-rose-700 mt-1 max-w-[260px]">{r.note}</p>}
+                  <span className={`inline-block px-2 py-0.5 border text-[11.5px] uppercase tracking-[0.06em] ${TONE[r.status]}`}>{r.status.toLowerCase()}</span>
+                  {r.status === 'FAILED' && r.note && <p className="text-[12px] text-rose-700 mt-1 max-w-[260px]">{r.note}</p>}
                 </td>
                 <td className="px-3 py-2.5 text-right">
                   <Button size="sm" variant="secondary" onClick={() => { setManaging(r); setStatus(r.status); setNote(r.note ?? ''); }}>Manage</Button>
@@ -130,8 +133,9 @@ export default function RefundsPage() {
             ))}
           </tbody>
         </table>
+        <Pager page={paged.page} pageCount={paged.pageCount} onPage={paged.setPage} from={paged.from} to={paged.to} total={paged.total} noun="refunds" />
         {rows.length >= LIMIT && (
-          <p className="px-3 py-2 text-[11.5px] text-[#777777] border-t border-[#EAEAEA]">Showing the latest {LIMIT}. Older refunds are in Data export.</p>
+          <p className="px-3 py-2 text-[12.5px] text-[#5A5A5A] border-t border-[#E2E0DB]">Showing the latest {LIMIT}. Older refunds are in Data export.</p>
         )}
       </div>
 
@@ -188,7 +192,7 @@ export default function RefundsPage() {
           <div className="space-y-4">
             {online ? (
               <div className="space-y-2">
-                <p className="text-[12.5px] text-[#555555]">
+                <p className="text-[13.5px] text-[#454545]">
                   Razorpay sets the status of online refunds; it updates on its own. Status now: <strong>{managing.status.toLowerCase()}</strong>.
                 </p>
                 {managing.status === 'PROCESSING' && (
@@ -215,7 +219,7 @@ export default function RefundsPage() {
               </div>
             ) : (
               <FieldShell label="Status" htmlFor="rf-status" help="Set this once the UPI or bank transfer has gone through.">
-                <select id="rf-status" value={status} onChange={(e) => setStatus(e.target.value as RefundRow['status'])} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+                <select id="rf-status" value={status} onChange={(e) => setStatus(e.target.value as RefundRow['status'])} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
                   <option value="PROCESSING">Processing</option>
                   <option value="REFUNDED">Refunded</option>
                   <option value="FAILED">Failed</option>

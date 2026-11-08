@@ -61,11 +61,11 @@ function NotePicker({
       <SortableList
         items={mine.map((l) => ({ id: l.note_id }))}
         onReorder={reorder}
-        className="divide-y divide-[#F0F0F0] border border-[#EAEAEA] mb-2"
+        className="divide-y divide-[#E9E7E2] border border-[#E2E0DB] mb-2"
         renderItem={(item) => (
-          <div className="flex items-center justify-between pr-2 py-1.5 text-[12.5px]">
+          <div className="flex items-center justify-between pr-2 py-1.5 text-[13.5px]">
             <span>{byId.get(item.id)?.name ?? 'Unknown note'}</span>
-            <button type="button" aria-label="Remove note" className="p-1 text-[#999999] hover:text-rose-600" onClick={() => onChange(links.filter((l) => l.note_id !== item.id))}>
+            <button type="button" aria-label="Remove note" className="p-1 text-[#6B6B6B] hover:text-rose-600" onClick={() => onChange(links.filter((l) => l.note_id !== item.id))}>
               <X size={13} />
             </button>
           </div>
@@ -74,16 +74,16 @@ function NotePicker({
       <div className="relative">
         <TextInput placeholder="Search or add a note" value={term} onChange={(e) => setTerm(e.target.value)} aria-label={`Add ${tier} note`} />
         {q && (
-          <div className="absolute z-10 left-0 right-0 mt-1 bg-white border border-[#D5D3CC] shadow-md max-h-56 overflow-y-auto">
+          <div className="absolute z-10 left-0 right-0 mt-1 bg-white border border-[#C4C1B9] shadow-md max-h-56 overflow-y-auto">
             {matches.map((n) => (
-              <button key={n.id} type="button" className="block w-full text-left px-3 py-1.5 text-[12.5px] hover:bg-[#F4F3EE]" onClick={() => add(n.id)}>
+              <button key={n.id} type="button" className="block w-full text-left px-3 py-1.5 text-[13.5px] hover:bg-[#F4F3EE]" onClick={() => add(n.id)}>
                 {n.name}
               </button>
             ))}
             {!exact && (
               <button
                 type="button"
-                className="block w-full text-left px-3 py-1.5 text-[12.5px] text-tk-accent hover:bg-[#F4F3EE]"
+                className="block w-full text-left px-3 py-1.5 text-[13.5px] text-tk-accent hover:bg-[#F4F3EE]"
                 onClick={async () => {
                   const created = await onCreate(term.trim());
                   if (created) add(created.id);
@@ -143,7 +143,7 @@ function OptionChips({
               key={o.id}
               type="button"
               onClick={() => toggle(o)}
-              className={`px-2.5 py-1 text-[12px] border ${on ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white text-[#555555] border-[#D5D3CC] hover:border-tk-ink'} ${o.is_active ? '' : 'opacity-50'}`}
+              className={`px-2.5 py-1 text-[13px] border ${on ? 'bg-tk-ink text-white border-tk-ink' : 'bg-white text-[#454545] border-[#C4C1B9] hover:border-tk-ink'} ${o.is_active ? '' : 'opacity-50'}`}
             >
               {o.label}
             </button>
@@ -152,7 +152,7 @@ function OptionChips({
       </div>
       {isAccord &&
         mine.map((a) => (
-          <div key={a.option_id} className="flex items-center gap-3 text-[12px]">
+          <div key={a.option_id} className="flex items-center gap-3 text-[13px]">
             <span className="w-28 truncate">{options.find((o) => o.id === a.option_id)?.label}</span>
             <input
               type="range"
@@ -167,7 +167,7 @@ function OptionChips({
           </div>
         ))}
       {isFamily && mine.length > 1 && (
-        <div className="flex flex-wrap gap-3 text-[12px] text-[#555555]">
+        <div className="flex flex-wrap gap-3 text-[13px] text-[#454545]">
           <span>Primary:</span>
           {mine.map((a) => (
             <label key={a.option_id} className="flex items-center gap-1">
@@ -246,7 +246,7 @@ export default function ProductEditorPage() {
   const collectionPicks = useMemo(() => collections.map((c) => ({ value: c.id, label: c.name, tag: c.is_active ? undefined : 'hidden' })), [collections]);
 
   if (!form) {
-    return bundle.error ? <p className="text-[13px] text-rose-600">{toFriendlyError(bundle.error)}</p> : <p className="text-[13px] text-[#777777]">Loading…</p>;
+    return bundle.error ? <p className="text-[14px] text-rose-600">{toFriendlyError(bundle.error)}</p> : <p className="text-[14px] text-[#5A5A5A]">Loading…</p>;
   }
 
   const set = <K extends keyof ProductForm>(key: K, value: ProductForm[K]) => setForm((f) => (f ? { ...f, [key]: value } : f));
@@ -383,16 +383,16 @@ export default function ProductEditorPage() {
               <Copy size={13} /> Copy details from another product
             </Button>
             {!isNew && (
-              <a href={`/product/${form.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#D5D3CC] text-[12px] hover:border-tk-ink">
+              <a href={`/product/${form.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 px-3 py-2 border border-[#C4C1B9] text-[13px] hover:border-tk-ink">
                 <ExternalLink size={13} /> View on site
               </a>
             )}
           </>
         }
       />
-      {isSample && <p className="mb-4 px-3 py-2 bg-amber-50 border border-amber-200 text-[12px] text-amber-800">This is sample content from the original website. Replace the details before launch.</p>}
+      {isSample && <p className="mb-4 px-3 py-2 bg-amber-50 border border-amber-200 text-[13px] text-amber-800">This is sample content from the original website. Replace the details before launch.</p>}
 
-      <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
+      <div className="grid gap-5 xl:grid-cols-[1fr_340px] pb-28">
         <div className="space-y-5 min-w-0">
           <Panel
             title="1 · Where it's listed"
@@ -444,15 +444,15 @@ export default function ProductEditorPage() {
 {form.primary_category_id ? (
 <>
           <Panel title="2 · Scent type" description="Every option here is also a filter on the shop pages. Manage the options under Catalog → Scent profile.">
-            {errors.attributes && <p className="text-[12px] text-rose-600 mb-2">{errors.attributes}</p>}
+            {errors.attributes && <p className="text-[13px] text-rose-600 mb-2">{errors.attributes}</p>}
             <div className="space-y-5">
               {OPTION_KINDS.filter((k) => k.kind !== 'note_family').map((k) => (
                 <div key={k.kind}>
-                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">{k.label}</p>
+                  <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1.5">{k.label}</p>
                   {optionsOf(k.kind).length ? (
                     <OptionChips kind={k.kind} options={optionsOf(k.kind)} attributes={form.attributes} onChange={(next) => set('attributes', next)} />
                   ) : (
-                    <p className="text-[12px] text-[#999999]">No options yet.</p>
+                    <p className="text-[13px] text-[#6B6B6B]">No options yet.</p>
                   )}
                 </div>
               ))}
@@ -463,7 +463,7 @@ export default function ProductEditorPage() {
             <div className="grid gap-4 md:grid-cols-3">
               {TIERS.map((t) => (
                 <div key={t.tier}>
-                  <p className="text-[11px] uppercase tracking-[0.08em] text-[#555555] mb-1.5">{t.label}</p>
+                  <p className="text-[12px] uppercase tracking-[0.08em] text-[#454545] mb-1.5">{t.label}</p>
                   <NotePicker tier={t.tier} links={form.notes} notes={notes} onChange={(next) => set('notes', next)} onCreate={createNote} />
                 </div>
               ))}
@@ -506,8 +506,8 @@ export default function ProductEditorPage() {
           <Panel title="5 · Sizes, prices and stock" description="Leave a size's price empty to use the base price. Stock changes are logged; use Adjust for existing sizes.">
             <div className="flex items-start justify-between gap-3 p-3 mb-4 bg-[#FFF7ED] border border-[#F5E3CC]">
               <div>
-                <p className="text-[13px] text-tk-ink">Offer as a free sample</p>
-                <p className="text-[11px] text-[#777777]">
+                <p className="text-[14px] text-tk-ink">Offer as a free sample</p>
+                <p className="text-[12px] text-[#5A5A5A]">
                   Adds a {sampleSize} ml vial of this scent to the list customers choose free samples from. The vial has its own stock below; at zero it disappears from the list.
                 </p>
               </div>
@@ -521,18 +521,18 @@ export default function ProductEditorPage() {
                 <TextInput id="p-mrp" inputMode="decimal" value={form.compare_at_price} onChange={(e) => set('compare_at_price', e.target.value)} />
               </FieldShell>
             </div>
-            {err('variants') && <p className="text-[12px] text-rose-600 mb-2">{err('variants')}</p>}
+            {err('variants') && <p className="text-[13px] text-rose-600 mb-2">{err('variants')}</p>}
             <div className="space-y-3">
               {form.variants.map((v, i) => (
-                <div key={v.id ?? `new-${i}`} className={`border p-3 ${v.is_hidden ? 'border-dashed border-[#D5D3CC] opacity-70' : 'border-[#EAEAEA]'}`}>
+                <div key={v.id ?? `new-${i}`} className={`border p-3 ${v.is_hidden ? 'border-dashed border-[#C4C1B9] opacity-70' : 'border-[#E2E0DB]'}`}>
                   <div className="flex flex-wrap items-center gap-2 mb-3">
-                    <span className={`px-2 py-0.5 text-[11px] ${v.kind === 'sample' ? 'bg-[#FFF7ED] text-tk-accent' : 'bg-[#F4F3EE] text-[#555555]'}`}>
+                    <span className={`px-2 py-0.5 text-[12px] ${v.kind === 'sample' ? 'bg-[#FFF7ED] text-tk-accent' : 'bg-[#F4F3EE] text-[#454545]'}`}>
                       {v.kind === 'sample' ? 'Free sample vial' : 'Bottle size'}
                     </span>
-                    {v.is_hidden && <span className="text-[11px] text-[#777777]">Hidden</span>}
+                    {v.is_hidden && <span className="text-[12px] text-[#5A5A5A]">Hidden</span>}
                     <span className="flex-1" />
                     {v.id && (
-                      <span className="text-[12px] text-[#555555] tabular-nums">
+                      <span className="text-[13px] text-[#454545] tabular-nums">
                         Stock: <strong className={(v.stock ?? 0) <= 5 ? 'text-rose-600' : ''}>{v.stock ?? 0}</strong>
                       </span>
                     )}
@@ -543,7 +543,7 @@ export default function ProductEditorPage() {
                     )}
                     <button
                       type="button"
-                      className="p-1.5 text-[#999999] hover:text-rose-600"
+                      className="p-1.5 text-[#6B6B6B] hover:text-rose-600"
                       aria-label="Remove size"
                       title={v.units_sold ? 'Sold before: it will be hidden, not deleted' : 'Remove'}
                       onClick={() => set('variants', form.variants.filter((_, j) => j !== i))}
@@ -593,7 +593,7 @@ export default function ProductEditorPage() {
                       </div>
                     </FieldShell>
                   </div>
-                  <div className="flex flex-wrap gap-5 mt-3 text-[12px]">
+                  <div className="flex flex-wrap gap-5 mt-3 text-[13px]">
                     <label className="flex items-center gap-2">
                       <Toggle checked={v.is_active} onChange={(on) => setVariant(i, { is_active: on })} label="Available" /> Available
                     </label>
@@ -618,7 +618,7 @@ export default function ProductEditorPage() {
                 const order = ids.map((x) => Number(x.split(':')[0]));
                 set('media', order.map((i) => form.media[i]));
               }}
-              className="divide-y divide-[#F0F0F0] border border-[#EAEAEA] mb-3"
+              className="divide-y divide-[#E9E7E2] border border-[#E2E0DB] mb-3"
               renderItem={({ m, i }) => (
                 <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 p-2">
                   <div className="w-14 h-14 bg-[#F4F3EE] shrink-0 overflow-hidden">
@@ -633,7 +633,7 @@ export default function ProductEditorPage() {
                   <select
                     value={m.variant_sku}
                     onChange={(e) => set('media', form.media.map((x, j) => (j === i ? { ...x, variant_sku: e.target.value } : x)))}
-                    className="border border-[#D5D3CC] px-2 py-2 text-[12px] bg-white"
+                    className="border border-[#C4C1B9] px-2 py-2 text-[13px] bg-white"
                     aria-label="Show for size"
                   >
                     <option value="">All sizes</option>
@@ -641,7 +641,7 @@ export default function ProductEditorPage() {
                       <option key={v.sku} value={v.sku.toUpperCase()}>{v.label || v.sku}</option>
                     ))}
                   </select>
-                  <button type="button" className="p-2 text-[#999999] hover:text-rose-600" aria-label="Remove media" onClick={() => set('media', form.media.filter((_, j) => j !== i))}>
+                  <button type="button" className="p-2 text-[#6B6B6B] hover:text-rose-600" aria-label="Remove media" onClick={() => set('media', form.media.filter((_, j) => j !== i))}>
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -670,10 +670,10 @@ export default function ProductEditorPage() {
           </Panel>
 
           <Panel title="8 · Product page sections" description="Extra drop-down sections on this product's page, e.g. a ritual, gifting or care section.">
-            <label className="flex items-center gap-2 text-[13px] mb-4">
+            <label className="flex items-center gap-2 text-[14px] mb-4">
               <Toggle checked={form.use_default_sections} onChange={(on) => set('use_default_sections', on)} label="Also show the store's default sections" />
               Also show the store's default sections
-              <span className="text-[11px] text-[#888888]">— edit them in Site content → Product page</span>
+              <span className="text-[12px] text-[#626262]">— edit them in Site content → Product page</span>
             </label>
             <FieldInput
               field={{ key: 'page_sections', label: 'This product’s own sections', type: 'list', itemLabel: 'Section', fields: [
@@ -700,7 +700,7 @@ export default function ProductEditorPage() {
           </Panel>
 </>
 ) : (
-          <p className="px-4 py-6 border border-dashed border-[#D5D3CC] text-[13px] text-[#777777] bg-white">Choose a category above to continue. Then pick the scent type and notes, and add the details, sizes and photos.</p>
+          <p className="px-4 py-6 border border-dashed border-[#C4C1B9] text-[14px] text-[#5A5A5A] bg-white">Choose a category above to continue. Then pick the scent type and notes, and add the details, sizes and photos.</p>
 )}
 
 
@@ -712,7 +712,7 @@ export default function ProductEditorPage() {
 
         <aside className="space-y-5">
           <Panel title="Visibility">
-            <div className="space-y-3 text-[13px]">
+            <div className="space-y-3 text-[14px]">
               {([
                 ['is_active', 'Live on the store', 'Off = draft, only admins can see it.'],
                 ['is_featured', 'Featured', 'Sorted first in "Featured".'],
@@ -722,7 +722,7 @@ export default function ProductEditorPage() {
                 <div key={key} className="flex items-start justify-between gap-3">
                   <div>
                     <p>{label}</p>
-                    <p className="text-[11px] text-[#888888]">{help}</p>
+                    <p className="text-[12px] text-[#626262]">{help}</p>
                   </div>
                   <Toggle checked={form[key]} onChange={(on) => set(key, on)} label={label} />
                 </div>
@@ -748,8 +748,8 @@ export default function ProductEditorPage() {
         </aside>
       </div>
 
-      <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#EAEAEA] px-4 sm:px-8 py-3 flex items-center justify-between gap-3">
-        <p className="text-[12px] text-[#555555]">{dirty ? 'Unsaved changes' : isNew ? 'New product' : 'All changes saved'}</p>
+      <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#E2E0DB] px-4 sm:px-8 py-3 flex items-center justify-between gap-3">
+        <p className="text-[13px] text-[#454545]">{dirty ? 'Unsaved changes' : isNew ? 'New product' : 'All changes saved'}</p>
         <div className="flex gap-2">
           <Button
             variant="secondary"
@@ -796,9 +796,9 @@ export default function ProductEditorPage() {
             />
           </FieldShell>
           <fieldset className="space-y-1.5">
-            <legend className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#555555] mb-1">What to copy</legend>
+            <legend className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#454545] mb-1">What to copy</legend>
             {COPY_GROUPS.map((g) => (
-              <label key={g.key} className="flex items-center gap-2 text-[13px]">
+              <label key={g.key} className="flex items-center gap-2 text-[14px]">
                 <input
                   type="checkbox"
                   checked={copyGroups.includes(g.key)}
@@ -808,7 +808,7 @@ export default function ProductEditorPage() {
               </label>
             ))}
           </fieldset>
-          <p className="text-[11px] text-[#888888]">Name, link, prices, sizes, stock and photos are never copied.</p>
+          <p className="text-[12px] text-[#626262]">Name, link, prices, sizes, stock and photos are never copied.</p>
         </div>
       </Modal>
 
@@ -831,7 +831,7 @@ export default function ProductEditorPage() {
             <TextInput id="s-delta" inputMode="numeric" value={stockDelta} onChange={(e) => setStockDelta(e.target.value)} />
           </FieldShell>
           <FieldShell label="Reason" htmlFor="s-reason">
-            <select id="s-reason" value={stockReason} onChange={(e) => setStockReason(e.target.value)} className="w-full border border-[#D5D3CC] px-2 py-2 text-[13px] bg-white">
+            <select id="s-reason" value={stockReason} onChange={(e) => setStockReason(e.target.value)} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
               {STOCK_REASONS.map(([v, l]) => (
                 <option key={v} value={v}>{l}</option>
               ))}

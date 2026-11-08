@@ -48,7 +48,7 @@ export function rankOptions(options: PickOption[], query: string, limit = 50): P
 }
 
 const inputCls =
-  'w-full border border-[#D5D3CC] bg-white px-3 py-2 text-[13px] text-tk-ink placeholder:text-[#999999] focus:outline-none focus:border-tk-ink disabled:bg-[#F4F4F2] disabled:text-[#999999]';
+  'w-full border border-[#C4C1B9] bg-white px-3 py-2 text-[14px] text-tk-ink placeholder:text-[#6B6B6B] focus:outline-none focus:border-tk-ink disabled:bg-[#F4F4F2] disabled:text-[#6B6B6B]';
 
 function useCombo({ options, onCreate, createNoun, limit = 50, exclude }: Common & { exclude?: Set<string> }) {
   const [open, setOpen] = useState(false);
@@ -99,7 +99,7 @@ function OptionList({
 }) {
   const { matches, active, canCreate, typed, creating } = combo;
   return (
-    <ul id={listId} role="listbox" className="absolute z-40 left-0 right-0 mt-1 max-h-72 overflow-y-auto border border-[#D5D3CC] bg-white shadow-sm">
+    <ul id={listId} role="listbox" className="absolute z-40 left-0 right-0 mt-1 max-h-72 overflow-y-auto border border-[#C4C1B9] bg-white shadow-sm">
       {matches.map((o, i) => (
         <li
           key={o.value}
@@ -111,15 +111,15 @@ function OptionList({
             onPick(o);
           }}
           onMouseEnter={() => combo.setActive(i)}
-          className={`px-3 py-2 cursor-pointer text-[13px] flex items-start gap-2 ${i === active ? 'bg-[#F4F3EE]' : ''}`}
+          className={`px-3 py-2 cursor-pointer text-[14px] flex items-start gap-2 ${i === active ? 'bg-[#F4F3EE]' : ''}`}
         >
           <span className="w-4 shrink-0 pt-0.5">{selected(o.value) && <Check size={14} aria-hidden />}</span>
           <span className="min-w-0">
             <span className="block truncate">
               {o.label}
-              {o.tag && <span className="ml-2 text-[10px] uppercase tracking-wider text-[#999999]">{o.tag}</span>}
+              {o.tag && <span className="ml-2 text-[11px] uppercase tracking-wider text-[#6B6B6B]">{o.tag}</span>}
             </span>
-            {o.hint && <span className="block text-[11px] text-[#888888] truncate">{o.hint}</span>}
+            {o.hint && <span className="block text-[12px] text-[#626262] truncate">{o.hint}</span>}
           </span>
         </li>
       ))}
@@ -133,12 +133,12 @@ function OptionList({
             onCreatePick();
           }}
           onMouseEnter={() => combo.setActive(matches.length)}
-          className={`px-3 py-2 cursor-pointer text-[13px] flex items-center gap-2 border-t border-[#F0F0F0] text-tk-accent ${active === matches.length ? 'bg-[#F4F3EE]' : ''}`}
+          className={`px-3 py-2 cursor-pointer text-[14px] flex items-center gap-2 border-t border-[#E9E7E2] text-tk-accent ${active === matches.length ? 'bg-[#F4F3EE]' : ''}`}
         >
           <Plus size={14} aria-hidden /> {creating ? 'Adding…' : `Add “${typed}”${createNoun ? ` as a new ${createNoun}` : ''}`}
         </li>
       )}
-      {!matches.length && !canCreate && <li className="px-3 py-3 text-[12.5px] text-[#888888]">{typed ? 'Nothing matches.' : emptyText ?? 'Nothing to choose yet.'}</li>}
+      {!matches.length && !canCreate && <li className="px-3 py-3 text-[13.5px] text-[#626262]">{typed ? 'Nothing matches.' : emptyText ?? 'Nothing to choose yet.'}</li>}
     </ul>
   );
 }
@@ -215,7 +215,7 @@ export function SearchSelect({
         }}
         onKeyDown={(e) => keyNav(e, combo, choose)}
       />
-      <span className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 text-[#888888]">
+      <span className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 text-[#626262]">
         {allowClear && current && !common.disabled && (
           <button
             type="button"
@@ -231,7 +231,7 @@ export function SearchSelect({
         )}
         <ChevronDown size={14} aria-hidden onMouseDown={(e) => { e.preventDefault(); inputRef.current?.focus(); }} />
       </span>
-      {current?.hint && !combo.open && <p className="mt-1 text-[11px] text-[#888888]">{current.hint}</p>}
+      {current?.hint && !combo.open && <p className="mt-1 text-[12px] text-[#626262]">{current.hint}</p>}
       {combo.open && <OptionList listId={listId} combo={combo} onPick={pick} onCreatePick={createPick} selected={(v) => v === value} createNoun={common.createNoun} emptyText={common.emptyText} />}
     </div>
   );
@@ -268,14 +268,14 @@ export function SearchMultiSelect({
       {values.length > 0 && (
         <ul className="flex flex-wrap gap-1.5 mb-1.5" aria-label="Chosen">
           {values.map((v) => (
-            <li key={v} className="inline-flex items-center gap-1 border border-[#D5D3CC] bg-[#F8F7F5] pl-2 pr-1 py-0.5 text-[12px]">
+            <li key={v} className="inline-flex items-center gap-1 border border-[#C4C1B9] bg-[#F8F7F5] pl-2 pr-1 py-0.5 text-[13px]">
               <span title={byValue.get(v)?.hint}>{byValue.get(v)?.label ?? '…'}</span>
               <button
                 type="button"
                 aria-label={`Remove ${byValue.get(v)?.label ?? ''}`}
                 onClick={() => onChange(values.filter((x) => x !== v))}
                 disabled={common.disabled}
-                className="p-0.5 text-[#888888] hover:text-tk-ink"
+                className="p-0.5 text-[#626262] hover:text-tk-ink"
               >
                 <X size={12} />
               </button>

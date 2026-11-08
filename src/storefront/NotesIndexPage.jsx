@@ -2,6 +2,8 @@ import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router';
 import { useCatalogFilters } from './catalog/hooks';
 import ListingHeader from './ListingHeader.jsx';
+import PageNav from './PageNav.jsx';
+import { usePaged } from '../lib/paging';
 
 /** Every note, grouped by note family; each links to the perfumes that contain it. */
 export default function NotesIndexPage() {
@@ -18,13 +20,25 @@ export default function NotesIndexPage() {
     for (const n of data.notes ?? []) (bySlug.get(n.family) ?? other).notes.push(n);
     return [...bySlug.values(), other].filter((g) => g.notes.length > 0);
   }, [data]);
+  // One page holds 40 notes; family headings repeat on the page where the family continues.
+  const flat = useMemo(() => groups.flatMap((g) => g.notes.map((n) => ({ ...n, group: g.label }))), [groups]);
+  const paged = usePaged(flat, 40);
+  const pageGroups = useMemo(() => {
+    const out = [];
+    for (const n of paged.rows) {
+      const last = out[out.length - 1];
+      if (last && last.label === n.group) last.notes.push(n);
+      else out.push({ label: n.group, notes: [n] });
+    }
+    return out;
+  }, [paged.rows]);
 
   return (
     <div className="w-full min-h-screen bg-white dark:bg-tk-night text-tk-ink dark:text-white pb-28">
       <ListingHeader eyebrow="The Library" title="Fragrance Notes" description="Explore by ingredient. Each note leads to every Saudagar creation that carries it." />
       <div className="px-4 sm:px-8 lg:px-12 py-12 space-y-12">
         {isLoading && <p className="text-[12.5px] text-[#888888]">Loading notes…</p>}
-        {groups.map((g) => (
+        {pageGroups.map((g) => (
           <section key={g.label}>
             <h2 className="text-[11px] uppercase tracking-[0.18em] text-tk-accent dark:text-tk-accent-night mb-4">{g.label}</h2>
             <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-3">
@@ -45,6 +59,15 @@ export default function NotesIndexPage() {
             </ul>
           </section>
         ))}
+        <PageNav
+          page={paged.page}
+          pageCount={paged.pageCount}
+          label="Note pages"
+          onPage={(p) => {
+            paged.setPage(p);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
       </div>
     </div>
   );
