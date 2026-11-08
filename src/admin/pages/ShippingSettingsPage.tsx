@@ -5,6 +5,14 @@ import { toast } from 'sonner';
 import { supabase } from '../../lib/supabase';
 import { toFriendlyError } from '../../lib/errors';
 import { PageHeader, Panel } from '../ui/PageHeader';
+import { Part, PartsLayout, usePart, type PartDef } from '../ui/Parts';
+
+const SHIP_PARTS: PartDef[] = [
+  { id: 'couriers', label: 'Couriers', hint: 'Names, tracking links, cash on delivery' },
+  { id: 'areas', label: 'Where you deliver', hint: 'Blocked pincodes, extra days' },
+  { id: 'parcels', label: 'Parcels', hint: 'Weight and box sizes' },
+  { id: 'delhivery', label: 'Delhivery', hint: 'Automatic booking' },
+];
 import { Button } from '../ui/Button';
 import { FieldShell, TextArea, TextInput, Toggle } from '../ui/Field';
 import { throwIf } from '../catalog/api';
@@ -83,13 +91,16 @@ export default function ShippingSettingsPage() {
     }
   };
 
+  const [part, setPart] = usePart(SHIP_PARTS);
   if (isLoading) return <p className="text-[14px] text-[#4A4A4A]">Loading…</p>;
 
   return (
     <div className="space-y-5 pb-20">
       <PageHeader title="Shipping" description="Couriers, where you deliver, cash-on-delivery limits and parcel defaults. The delivery fee and estimate are under Settings → Delivery." />
 
-      <Panel title="Couriers" description="The tracking link template uses {awb} for the tracking number. A courier that can't collect cash turns off COD while it is the default.">
+      <PartsLayout parts={SHIP_PARTS} current={part} onSelect={setPart}>
+      <Part id="couriers">
+      <Panel title="Couriers" description="Each courier's tracking link: write {awb} where the tracking number goes. A courier that can't collect cash turns off cash on delivery while it is the default.">
         <FieldShell label="Default courier" htmlFor="sh-default">
           <select id="sh-default" value={form.default_courier} onChange={(e) => setForm({ ...form, default_courier: e.target.value })} className="w-full sm:max-w-[280px] border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
             {couriers.map((c) => (
@@ -130,6 +141,8 @@ export default function ShippingSettingsPage() {
         </Button>
       </Panel>
 
+      </Part>
+      <Part id="areas">
       <Panel title="Where you deliver">
         <div className="grid gap-4 sm:grid-cols-2">
           <FieldShell label="Pincodes you don't deliver to" htmlFor="sh-blocked" help="Separate with commas or new lines.">
@@ -160,6 +173,8 @@ export default function ShippingSettingsPage() {
         </div>
       </Panel>
 
+      </Part>
+      <Part id="parcels">
       <Panel title="Parcels" description="Used for courier bookings. Each size's own weight and box are used when set on the product.">
         <div className="grid gap-4 sm:grid-cols-5">
           <FieldShell label="Packaging (g)" htmlFor="sh-pack"><TextInput id="sh-pack" inputMode="numeric" value={form.packaging_g} onChange={(e) => setForm({ ...form, packaging_g: e.target.value })} /></FieldShell>
@@ -170,7 +185,9 @@ export default function ShippingSettingsPage() {
         </div>
       </Panel>
 
-      <Panel title="Delhivery (automatic booking)" description="Off until the Delhivery API token is added as the DELHIVERY_TOKEN secret in Supabase. Test in staging first; the integration is marked unverified until checked against your account's API documents.">
+      </Part>
+      <Part id="delhivery">
+      <Panel title="Delhivery (automatic booking)" description="Switched on when Delhivery is connected (see Connections). Start in test (staging), book one test order, then switch to live.">
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="flex items-center gap-2 text-[14px] sm:col-span-2">
             <Toggle checked={form.dl_enabled} onChange={(on) => setForm({ ...form, dl_enabled: on })} label="Book with Delhivery" /> Book packed orders with Delhivery automatically
@@ -192,6 +209,8 @@ export default function ShippingSettingsPage() {
           </FieldShell>
         </div>
       </Panel>
+      </Part>
+      </PartsLayout>
 
       <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#E2E0DB] px-4 sm:px-8 py-3 flex justify-end">
         <Button onClick={save} busy={saving}>Save shipping settings</Button>

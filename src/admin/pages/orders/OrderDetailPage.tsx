@@ -11,6 +11,9 @@ import { formatIndianPhone } from '../../../lib/phone';
 import { ORDER_STATUS_LABEL, allowedNextStatuses, paymentLabel, type OrderStatus } from '../../../lib/orders';
 import { formatOrderDateTime } from '../../../storefront/orders/useOrders';
 import { PageHeader, Panel } from '../../ui/PageHeader';
+import { Part, PartsLayout, usePart, type PartDef } from '../../ui/Parts';
+
+const ORDER_PARTS: PartDef[] = ['items', 'customer', 'shipping', 'payment', 'history'].map((id) => ({ id, label: id }));
 import { Button } from '../../ui/Button';
 import { FieldShell, TextArea, TextInput } from '../../ui/Field';
 import { ConfirmDialog } from '../../ui/ConfirmDialog';
@@ -35,6 +38,7 @@ export default function OrderDetailPage() {
   const qc = useQueryClient();
   const { data: o, isLoading, error } = useAdminOrder(id);
   const { data: shipSettings } = useShippingSettings();
+  const [part, setPart] = usePart(ORDER_PARTS);
   const delhiveryOn = shipSettings?.['delhivery.enabled'] === true;
   const [moving, setMoving] = useState<OrderStatus | null>(null);
   const [packCourier, setPackCourier] = useState('');
@@ -63,6 +67,14 @@ export default function OrderDetailPage() {
   const refresh = () => Promise.all([qc.invalidateQueries({ queryKey: ['admin', 'order', id] }), qc.invalidateQueries({ queryKey: ['admin', 'orders'] })]);
   const next = allowedNextStatuses(o.status as OrderStatus, o.payment_method, o.payment_status);
   const { items, samples } = splitOrderLines(o.order_items);
+  const itemCount = items.reduce((n, i) => n + i.qty, 0);
+  const parts: PartDef[] = [
+    { id: 'items', label: 'Items and samples', hint: `${itemCount} item${itemCount === 1 ? '' : 's'}${samples.length ? ` + ${samples.length} sample${samples.length === 1 ? '' : 's'}` : ''}` },
+    { id: 'customer', label: 'Customer and address', hint: [o.customer_name, (o.shipping_address as { city?: string } | null)?.city].filter(Boolean).join(' · ') },
+    { id: 'shipping', label: 'Shipping and tracking', hint: o.tracking_number ? `${o.courier_name ?? 'Courier'} · ${o.tracking_number}` : 'Not shipped yet', status: o.tracking_number ? 'done' : null },
+    { id: 'payment', label: 'Payment and refunds', hint: paymentLabel(o) },
+    { id: 'history', label: 'History', hint: `${(o.order_events ?? []).length} event${(o.order_events ?? []).length === 1 ? '' : 's'}` },
+  ];
   const a = o.shipping_address || {};
   const infoDirty =
     tracking.courier_name !== (o.courier_name ?? '') || tracking.tracking_number !== (o.tracking_number ?? '') || tracking.tracking_url !== (o.tracking_url ?? '') || adminNote !== (o.admin_note ?? '');
@@ -192,28 +204,10 @@ export default function OrderDetailPage() {
         {(o as unknown as { label_url: string | null }).label_url && (
           <a href={(o as unknown as { label_url: string }).label_url} target="_blank" rel="noreferrer" className="mt-2 inline-block text-[13px] underline">Courier label (PDF)</a>
         )}
-        {o.payment_method === 'ONLINE' && ['PAID', 'PARTIALLY_REFUNDED'].includes(o.payment_status) && (
-          <div className="mt-4 pt-4 border-t border-[#E2E0DB] flex flex-wrap items-end gap-3">
-            {['CANCELLED', 'RTO'].includes(o.status) && (
-              <p role="status" className="basis-full text-[13.5px] bg-rose-50 border border-rose-200 text-rose-800 px-3 py-2">
-                {o.status === 'CANCELLED' ? 'This order was cancelled after it was paid.' : 'This paid order came back to us.'} {formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))} still has to go back to the customer
-                {o.status === 'CANCELLED' ? '. An automatic refund starts when it is cancelled (see the history below); refund here if it did not start.' : ', unless you are re-sending it.'}
-              </p>
-            )}
-            <FieldShell
-              label="Refund online (₹)"
-              htmlFor="rf-amount"
-              help={`Up to ${formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))} can still be refunded${Number(o.amount_refunded ?? 0) > 0 ? ` (${formatINR(Number(o.amount_refunded))} already refunded)` : ''}. Leave empty for all of it; you can refund part now and more later.`}
-            >
-              <TextInput id="rf-amount" inputMode="decimal" placeholder="Full amount" value={refundAmount} onChange={(e) => setRefundAmount(e.target.value)} className="max-w-[160px]" />
-            </FieldShell>
-            <Button variant="secondary" onClick={() => setRefunding(true)}>Refund to customer</Button>
-          </div>
-        )}
       </Panel>
 
-      <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
-        <div className="space-y-5 min-w-0">
+      <PartsLayout parts={parts} current={part} onSelect={setPart}>
+        <Part id="items">
           <Panel title="Items">
             <div className="divide-y divide-[#E9E7E2]">
               {items.map((i) => (
@@ -264,6 +258,8 @@ export default function OrderDetailPage() {
             )}
           </Panel>
 
+        </Part>
+        <Part id="history">
           <Panel title="History">
             <ul className="space-y-2 text-[13.5px]">
               {(o.order_events ?? []).map((e) => (
@@ -278,9 +274,8 @@ export default function OrderDetailPage() {
               ))}
             </ul>
           </Panel>
-        </div>
-
-        <aside className="space-y-5">
+        </Part>
+        <Part id="customer">
           <Panel title="Customer">
             <p className="text-[14px]">{o.customer_name}</p>
             <p className="text-[13px] text-[#454545]">{o.customer_email}</p>
@@ -306,6 +301,8 @@ export default function OrderDetailPage() {
             )}
           </Panel>
 
+        </Part>
+        <Part id="shipping">
           <Panel title="Shipping & notes">
             <div className="space-y-3">
               <FieldShell label="Courier" htmlFor="t-courier">
@@ -323,8 +320,36 @@ export default function OrderDetailPage() {
               <Button onClick={saveInfo} busy={savingInfo} disabled={!infoDirty}>Save</Button>
             </div>
           </Panel>
-        </aside>
-      </div>
+        </Part>
+        <Part id="payment">
+          <Panel title="Payment and refunds">
+            <p className="text-[14px] text-tk-ink">{paymentLabel(o)}</p>
+            <p className="text-[13px] text-[#4A4A4A] mt-1">
+              Order total {formatINR(Number(o.total))}
+              {Number(o.amount_refunded ?? 0) > 0 ? ` · ${formatINR(Number(o.amount_refunded))} refunded` : ''}
+            </p>
+        {o.payment_method === 'ONLINE' && ['PAID', 'PARTIALLY_REFUNDED'].includes(o.payment_status) && (
+          <div className="mt-4 pt-4 border-t border-[#E2E0DB] flex flex-wrap items-end gap-3">
+            {['CANCELLED', 'RTO'].includes(o.status) && (
+              <p role="status" className="basis-full text-[13.5px] bg-rose-50 border border-rose-200 text-rose-800 px-3 py-2">
+                {o.status === 'CANCELLED' ? 'This order was cancelled after it was paid.' : 'This paid order came back to us.'} {formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))} still has to go back to the customer
+                {o.status === 'CANCELLED' ? '. An automatic refund starts when it is cancelled (see the history below); refund here if it did not start.' : ', unless you are re-sending it.'}
+              </p>
+            )}
+            <FieldShell
+              label="Refund online (₹)"
+              htmlFor="rf-amount"
+              help={`Up to ${formatINR(Number(o.total) - Number(o.amount_refunded ?? 0))} can still be refunded${Number(o.amount_refunded ?? 0) > 0 ? ` (${formatINR(Number(o.amount_refunded))} already refunded)` : ''}. Leave empty for all of it; you can refund part now and more later.`}
+            >
+              <TextInput id="rf-amount" inputMode="decimal" placeholder="Full amount" value={refundAmount} onChange={(e) => setRefundAmount(e.target.value)} className="max-w-[160px]" />
+            </FieldShell>
+            <Button variant="secondary" onClick={() => setRefunding(true)}>Refund to customer</Button>
+          </div>
+        )}
+            {o.payment_method !== 'ONLINE' && <p className="mt-3 text-[13px] text-[#4A4A4A]">Cash on delivery: refunds for returns are recorded on the Returns page.</p>}
+          </Panel>
+        </Part>
+      </PartsLayout>
 
       <ConfirmDialog
         open={shipOpen}

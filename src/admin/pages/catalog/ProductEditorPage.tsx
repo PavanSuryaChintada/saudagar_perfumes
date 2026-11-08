@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
 import { PageHeader, Panel } from '../../ui/PageHeader';
+import { Part, PartsLayout, usePart, type PartDef } from '../../ui/Parts';
 import { Button } from '../../ui/Button';
 import { FieldShell, TextArea, TextInput, Toggle } from '../../ui/Field';
 import { Modal } from '../../ui/Modal';
@@ -231,7 +232,14 @@ export default function ProductEditorPage() {
   const [adjustOpen, setAdjustOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [switchTo, setSwitchTo] = useState<'ml' | 'piece' | null>(null);
-  const [moreOpen, setMoreOpen] = useState(false);
+  // Parts other than the category stay locked until a category is chosen, even when asked for in the address.
+  const [part, setPart] = usePart(
+    ['listing', 'basics', 'sizes', 'stock', 'photos', 'scent', 'notes', 'story', 'sections', 'label', 'visibility', 'google'].map((id) => ({
+      id,
+      label: '',
+      locked: !!form && !form.primary_category_id && id !== 'listing',
+    })),
+  );
   const [stockDelta, setStockDelta] = useState('');
   const [stockReason, setStockReason] = useState('restock');
   const [stockNote, setStockNote] = useState('');
@@ -318,9 +326,20 @@ export default function ProductEditorPage() {
     setErrors(found);
     if (Object.keys(found).length) {
       toast.error('Please fix the highlighted fields.');
-      if (found.launch_year || COMPLIANCE_FIELDS.some(([k]) => found[k])) setMoreOpen(true);
-      // Take the admin to the first problem instead of leaving them to hunt for it.
-      requestAnimationFrame(() => document.querySelector('main .text-rose-600')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      // Take the admin to the part with the first problem, then to the field itself.
+      const order: [string, string[]][] = [
+        ['listing', ['primary_category_id']],
+        ['basics', ['name', 'slug']],
+        ['sizes', ['variants', 'base_price', 'compare_at_price']],
+        ['stock', ['liquid_amount']],
+        ['scent', ['attributes']],
+        ['story', ['launch_year']],
+        ['label', COMPLIANCE_FIELDS.map(([k]) => k)],
+      ];
+      const first = order.find(([, keys]) => keys.some((k) => Object.keys(found).some((e) => e === k || e.startsWith(`${k}.`))));
+      if (first) setPart(first[0]);
+      // Only the part on screen matters: scroll to its first highlighted field.
+      setTimeout(() => document.querySelector('main div:not([hidden]) > section .text-rose-600')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 120);
       return;
     }
     setSaving(true);
@@ -431,6 +450,31 @@ export default function ProductEditorPage() {
   };
   const isSample = form.admin_note.startsWith('SAMPLE');
 
+  // The parts of the editor, in the order a product is set up. Everything but the category waits for a category.
+  const noCategory = !form.primary_category_id;
+  const liveSizes = form.variants.filter((v) => v.kind === 'retail' && !v.is_hidden);
+  const hasErr = (keys: string[]) => keys.some((k) => Object.keys(errors).some((e) => e === k || e.startsWith(`${k}.`)));
+  const lock = (p: PartDef): PartDef => (noCategory && p.id !== 'listing' ? { ...p, locked: true, hint: 'Choose a category first', status: null } : p);
+  const parts: PartDef[] = [
+    { id: 'listing', label: 'Where it’s listed', hint: noCategory ? 'Start here' : undefined, status: hasErr(['primary_category_id']) ? 'error' : noCategory ? null : 'done' },
+    { id: 'basics', label: 'Name and description', status: hasErr(['name', 'slug']) ? 'error' : form.name.trim() ? 'done' : null },
+    { id: 'sizes', label: 'Sizes and prices', hint: `${liveSizes.length} size${liveSizes.length === 1 ? '' : 's'}`, status: hasErr(['variants', 'base_price', 'compare_at_price']) ? 'error' : liveSizes.length ? 'done' : null },
+    {
+      id: 'stock',
+      label: 'Stock',
+      hint: form.stock_unit === 'ml' ? (isNew ? 'Liquid in ml' : `${Number(form.stock_ml ?? 0).toLocaleString('en-IN')} ml left`) : 'Counted in pieces',
+      status: hasErr(['liquid_amount']) ? 'error' : null,
+    },
+    { id: 'photos', label: 'Photos and videos', hint: `${form.media.length} file${form.media.length === 1 ? '' : 's'}`, status: form.media.length ? 'done' : null },
+    { id: 'scent', label: 'Scent type', status: hasErr(['attributes']) ? 'error' : form.attributes.length ? 'done' : null },
+    { id: 'notes', label: 'Notes', hint: `${form.notes.length} note${form.notes.length === 1 ? '' : 's'}`, status: form.notes.length ? 'done' : null },
+    { id: 'story', label: 'The story', hint: 'Optional', status: hasErr(['launch_year']) ? 'error' : null },
+    { id: 'sections', label: 'Extra page sections', hint: 'Optional' },
+    { id: 'label', label: 'Label details', hint: 'Optional', status: hasErr(COMPLIANCE_FIELDS.map(([k]) => k)) ? 'error' : null },
+    { id: 'visibility', label: 'Visibility and notes', hint: form.is_active ? 'Live on the store' : 'Draft' },
+    { id: 'google', label: 'How it shows on Google', hint: form.seo_title || form.seo_description ? 'Your own words' : 'Automatic' },
+  ].map((p) => lock(p as PartDef));
+
   return (
     <div className="pb-24">
       <PageHeader
@@ -457,10 +501,11 @@ export default function ProductEditorPage() {
       />
       {isSample && <p className="mb-4 px-3 py-2 bg-amber-50 border border-amber-200 text-[13px] text-amber-800">This is sample content from the original website. Replace the details before launch.</p>}
 
-      <div className="grid gap-5 xl:grid-cols-[1fr_340px] pb-28">
-        <div className="space-y-5 min-w-0">
+      <div className="pb-28">
+      <PartsLayout parts={parts} current={part} onSelect={setPart}>
+          <Part id="listing">
           <Panel
-            title="1 · Where it's listed"
+            title="Where it's listed"
             action={copyBtn(['organisation'])}
             description="Start here. The main category is where the product lives; add more categories if it also belongs elsewhere (e.g. an oud that is also a gift). Type to search, or type a new name to create it."
           >
@@ -520,10 +565,12 @@ export default function ProductEditorPage() {
               </FieldShell>
             </div>
           </Panel>
+          </Part>
 
 {form.primary_category_id ? (
 <>
-          <Panel title="2 · Name and description" action={copyBtn(['text'])}>
+          <Part id="basics">
+          <Panel title="Name and description" action={copyBtn(['text'])}>
             <div className="grid gap-4 sm:grid-cols-2">
               <FieldShell label="Name" htmlFor="p-name" error={err('name')}>
                 <TextInput
@@ -555,8 +602,10 @@ export default function ProductEditorPage() {
               </FieldShell>
             </div>
           </Panel>
+          </Part>
 
-          <Panel title="3 · Sizes and prices" description="One row per bottle size. An empty size price uses the base price; the SKU fills itself in." action={copyBtn(['sizes'])}>
+          <Part id="sizes">
+          <Panel title="Sizes and prices" description="One row per bottle size. An empty size price uses the base price; the SKU fills itself in." action={copyBtn(['sizes'])}>
             <div className="grid gap-4 sm:grid-cols-2 mb-4">
               <FieldShell label="Base price (₹, incl. GST)" htmlFor="p-price" error={err('base_price')}>
                 <TextInput id="p-price" inputMode="decimal" value={form.base_price} invalid={!!err('base_price')} onChange={(e) => set('base_price', e.target.value)} />
@@ -672,9 +721,11 @@ export default function ProductEditorPage() {
               ))}
             </div>
           </Panel>
+          </Part>
 
+          <Part id="stock">
           <Panel
-            title="4 · Stock"
+            title="Stock"
             description={form.stock_unit === 'ml' ? 'Kept as liquid: every bottle and free sample sold takes its ml from here.' : 'Counted in pieces: each size has its own count.'}
           >
             {isNew ? (
@@ -756,8 +807,10 @@ export default function ProductEditorPage() {
               <Toggle checked={offersSample} onChange={toggleSample} label="Offer as a free sample" />
             </div>
           </Panel>
+          </Part>
 
-          <Panel title="5 · Photos and videos" description="Drag to reorder. The first image is the main photo. Tie a photo to a size to show it when that size is picked.">
+          <Part id="photos">
+          <Panel title="Photos and videos" description="Drag to reorder. The first image is the main photo. Tie a photo to a size to show it when that size is picked.">
             <SortableList
               items={form.media.map((m, i) => ({ id: `${i}:${m.url}`, m, i }))}
               onReorder={(ids) => {
@@ -795,8 +848,10 @@ export default function ProductEditorPage() {
             />
             <MediaGalleryInput onAdd={(added) => set('media', [...form.media, ...added.map((a) => ({ kind: a.kind, url: a.url, alt: '', variant_sku: '' }))])} />
           </Panel>
+          </Part>
 
-          <Panel title="6 · Scent type" description="Tap what fits. Each choice is also a filter on the shop pages." action={copyBtn(['scent'])}>
+          <Part id="scent">
+          <Panel title="Scent type" description="Tap what fits. Each choice is also a filter on the shop pages." action={copyBtn(['scent'])}>
             {errors.attributes && <p className="text-[13px] text-rose-600 mb-2">{errors.attributes}</p>}
             <div className="space-y-5">
               {OPTION_KINDS.filter((k) => k.kind !== 'note_family').map((k) => (
@@ -811,8 +866,10 @@ export default function ProductEditorPage() {
               ))}
             </div>
           </Panel>
+          </Part>
 
-          <Panel title="7 · Notes" description="Search the notes library, or type a new note to add it. Drag to reorder." action={copyBtn(['notes'])}>
+          <Part id="notes">
+          <Panel title="Notes" description="Search the notes library, or type a new note to add it. Drag to reorder." action={copyBtn(['notes'])}>
             <div className="grid gap-4 md:grid-cols-3">
               {TIERS.map((t) => (
                 <div key={t.tier}>
@@ -822,17 +879,9 @@ export default function ProductEditorPage() {
               ))}
             </div>
           </Panel>
+          </Part>
 
-          <details
-            className="border border-[#E2E0DB] bg-white"
-            open={moreOpen}
-            onToggle={(e) => setMoreOpen((e.target as HTMLDetailsElement).open)}
-          >
-            <summary className="cursor-pointer px-4 sm:px-5 py-3.5 flex flex-wrap items-baseline justify-between gap-2">
-              <span className="text-[15px] font-semibold">More details (optional)</span>
-              <span className="text-[13px] text-[#4F4F4F]">Story, extra page sections, label details</span>
-            </summary>
-            <div className="p-3 sm:p-4 space-y-5 border-t border-[#E2E0DB] bg-[#FAFAF8]">
+          <Part id="story">
           <Panel title="The story" action={copyBtn(['story'])}>
             <div className="grid gap-4 sm:grid-cols-2">
               <FieldShell label="Perfumer / nose" htmlFor="p-nose">
@@ -851,7 +900,9 @@ export default function ProductEditorPage() {
               </FieldShell>
             </div>
           </Panel>
+          </Part>
 
+          <Part id="sections">
           <Panel title="Extra sections on the product page" description="Drop-down sections such as a ritual, gifting or care section." action={copyBtn(['sections'])}>
             <label className="flex items-center gap-2 text-[14px] mb-4">
               <Toggle checked={form.use_default_sections} onChange={(on) => set('use_default_sections', on)} label="Also show the store's default sections" />
@@ -867,7 +918,9 @@ export default function ProductEditorPage() {
               onChange={(v) => set('page_sections', v as ProductForm['page_sections'])}
             />
           </Panel>
+          </Part>
 
+          <Part id="label">
           <Panel title="Label details" description="Empty fields use the store's details from Settings → Product details. Fill one only when this product is different." action={copyBtn(['compliance'])}>
             <div className="grid gap-4 sm:grid-cols-2">
               {COMPLIANCE_FIELDS.map(([key, label]) => (
@@ -881,8 +934,7 @@ export default function ProductEditorPage() {
               ))}
             </div>
           </Panel>
-            </div>
-          </details>
+          </Part>
 </>
 ) : (
           <p className="px-4 py-6 border border-dashed border-[#C4C1B9] text-[14px] text-[#4A4A4A] bg-white">Choose a category above to continue. Then pick the scent type and notes, and add the details, sizes and photos.</p>
@@ -893,9 +945,8 @@ export default function ProductEditorPage() {
 
 
 
-        </div>
 
-        <aside className="space-y-5">
+          <Part id="visibility">
           <Panel title="Visibility">
             <div className="space-y-3 text-[14px]">
               {([
@@ -914,8 +965,10 @@ export default function ProductEditorPage() {
               ))}
             </div>
           </Panel>
+          </Part>
 
 
+          <Part id="google">
           <Panel title="How it shows on Google">
             <SearchListing
               path={`/product/${form.slug || 'new-product'}`}
@@ -941,11 +994,14 @@ export default function ProductEditorPage() {
               })}
             />
           </Panel>
+          </Part>
 
+          <Part id="visibility">
           <Panel title="Internal note" description="Only admins see this.">
             <TextArea rows={3} value={form.admin_note} onChange={(e) => set('admin_note', e.target.value)} aria-label="Internal note" />
           </Panel>
-        </aside>
+          </Part>
+      </PartsLayout>
       </div>
 
       <div className="fixed bottom-0 inset-x-0 lg:left-[240px] z-30 bg-white border-t border-[#E2E0DB] px-4 sm:px-8 py-2.5 sm:py-3 flex items-center justify-end sm:justify-between gap-2 sm:gap-3">

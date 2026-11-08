@@ -17,10 +17,13 @@ test('admin creates a product with two sizes and a note, it goes live, archiving
     await page.getByRole('combobox', { name: 'Main category' }).click();
     await page.getByRole('combobox', { name: 'Main category' }).fill('Extrait de Parfum');
     await page.getByRole('option', { name: 'Extrait de Parfum' }).click();
+    // The editor goes part by part: "Next" leads from the category to the name.
+    await page.getByRole('button', { name: /^Next: Name and description/ }).click({ timeout: 3000 });
     await expect(page.getByLabel('Name', { exact: true })).toBeVisible({ timeout: 3000 });
   }).toPass({ timeout: 30_000 });
   await page.getByLabel('Name', { exact: true }).fill(name);
   await expect(page.getByLabel('Link (slug)')).toHaveValue(slug);
+  await page.getByRole('button', { name: /^Next: Sizes and prices/ }).click();
   await page.getByLabel('Base price (₹, incl. GST)').fill('4200');
 
   for (const ml of ['50', '100']) {
@@ -32,15 +35,20 @@ test('admin creates a product with two sizes and a note, it goes live, archiving
     await page.getByLabel('SKU').nth(n).fill(`E2E-${stamp}-${ml}`);
   }
   // Perfume stock is the liquid: 500 ml is ten 50 ml bottles or five 100 ml bottles.
+  await page.getByRole('button', { name: /^Next: Stock/ }).click();
   await page.getByLabel('Liquid in stock').fill('500');
 
+  // Parts can also be opened straight from the side menu.
+  await page.getByRole('button', { name: /Notes\s*0 notes/ }).click();
   await page.getByLabel('Add top note').fill('Wild Bergamot');
   await page.getByRole('button', { name: 'Wild Bergamot', exact: true }).click();
+  await page.getByRole('button', { name: /Visibility and notes/ }).click();
   await page.getByRole('switch', { name: 'Live on the store' }).click();
   await page.getByRole('button', { name: 'Save product' }).click();
   await expect(page.getByText('Product saved. Changes are live.')).toBeVisible();
-  await expect(page).toHaveURL(/\/admin\/products\/[0-9a-f-]{36}$/);
-  await expect(page.getByText('500 ml', { exact: false }).first()).toBeVisible();
+  await expect(page).toHaveURL(/\/admin\/products\/[0-9a-f-]{36}/);
+  await expect(page.getByText('500 ml left').first()).toBeVisible();
+  await page.getByRole('button', { name: /Sizes and prices/ }).click();
   await expect(page.getByText(/Enough for\s*10/).first()).toBeVisible();
 
   await page.goto(`/product/${slug}`);

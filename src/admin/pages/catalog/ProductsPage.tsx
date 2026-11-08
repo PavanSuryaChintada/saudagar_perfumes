@@ -7,7 +7,6 @@ import { Copy, Archive, ArchiveRestore, FileSpreadsheet, Pencil, Plus, Trash2, E
 import { toast } from 'sonner';
 import { toFriendlyError } from '../../../lib/errors';
 import { formatRupees as formatINR } from '../../../lib/money';
-import { formatMl } from '../../inventory/stock';
 import { PageHeader } from '../../ui/PageHeader';
 import { useGuideStatus } from '../../guide/useGuideStatus';
 import { Button } from '../../ui/Button';
@@ -167,9 +166,21 @@ export default function ProductsPage() {
                 <span className={`inline-block px-2 py-0.5 text-[12px] font-medium capitalize ${STATUS_STYLE[st]}`}>{st}</span>
               </span>
               <span className="sm:w-[140px] text-[13.5px] font-medium text-[#1F1F1F] tabular-nums">{price}</span>
-              <span className="sm:w-[120px] text-[13px] tabular-nums">
+              <span className="sm:w-[120px] shrink-0 overflow-hidden text-[13px] tabular-nums">
                 <StockText level={p.total_stock <= 0 ? 'out' : p.stock_unit === 'piece' && p.total_stock <= 5 ? 'low' : 'ok'}>
-                  {p.stock_unit === 'ml' ? `${formatMl(Number(p.stock_ml))}` : `${p.total_stock} pieces`}
+                  {p.stock_unit === 'ml' ? (
+                    // Litres on one line, the exact ml under it, so it never runs into the buttons.
+                    Number(p.stock_ml) >= 1000 ? (
+                      <>
+                        {(Number(p.stock_ml) / 1000).toLocaleString('en-IN', { maximumFractionDigits: 2 })} L
+                        <span className="block text-[11.5px] text-[#5F5F5F]">{Number(p.stock_ml).toLocaleString('en-IN')} ml</span>
+                      </>
+                    ) : (
+                      `${Number(p.stock_ml).toLocaleString('en-IN')} ml`
+                    )
+                  ) : (
+                    `${p.total_stock} pieces`
+                  )}
                 </StockText>
               </span>
               <div className="flex flex-wrap sm:flex-nowrap justify-end gap-0.5 ml-auto sm:ml-0 sm:w-[350px]">
