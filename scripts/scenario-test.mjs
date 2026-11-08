@@ -146,16 +146,20 @@ try {
   const orderId = idOf(o);
   const { data: line } = await A.c.from('order_items').select('id').eq('order_id', orderId).eq('line_type', 'item').single();
   {
-    const early = await admin.rpc('ship_order', { p_order: orderId, p_courier: 'manual', p_tracking: 'E2E123', p_note: null });
+    const early = await admin.rpc('ship_order', { p_order: orderId, p_courier: 'other', p_tracking: 'E2E123', p_note: null });
     check('cannot ship before packing', refused(early), msg(early));
     const skip = await admin.rpc('set_order_status', { p_order: orderId, p_status: 'DELIVERED', p_note: null });
     check('cannot jump from new straight to delivered', refused(skip), msg(skip));
+    // Hand-booked courier: packing a Delhivery order books a real pickup once Delhivery is connected.
+    must(await admin.rpc('set_order_courier', { p_order: orderId, p_courier: 'other' }), 'manual courier');
+    const { data: pinned } = await admin.from('orders').select('courier').eq('id', orderId).single();
+    if (pinned?.courier !== 'other') throw new Error('test order is not on the manual courier; refusing to pack it');
     must(await admin.rpc('set_order_status', { p_order: orderId, p_status: 'PACKED', p_note: null }), 'pack');
     const lateCancel = await A.c.rpc('cancel_order', { p_order: orderId, p_reason: 'changed my mind' });
     check('customer cannot cancel once packed', refused(lateCancel), msg(lateCancel));
-    const noAwb = await admin.rpc('ship_order', { p_order: orderId, p_courier: 'manual', p_tracking: '   ', p_note: null });
+    const noAwb = await admin.rpc('ship_order', { p_order: orderId, p_courier: 'other', p_tracking: '   ', p_note: null });
     check('shipping needs a tracking number', refused(noAwb), msg(noAwb));
-    const shipped = await admin.rpc('ship_order', { p_order: orderId, p_courier: 'manual', p_tracking: 'E2E123', p_note: null });
+    const shipped = await admin.rpc('ship_order', { p_order: orderId, p_courier: 'other', p_tracking: 'E2E123', p_note: null });
     check('admin ships with a tracking number', !shipped.error, msg(shipped));
     const review0 = await A.c.rpc('submit_review', { p_order_item: line.id, p_rating: 5, p_title: 'x', p_body: 'x', p_longevity: null, p_sillage: null, p_display_name: 'A', p_city: null, p_media: [] });
     check('review not allowed before delivery', refused(review0), msg(review0));
