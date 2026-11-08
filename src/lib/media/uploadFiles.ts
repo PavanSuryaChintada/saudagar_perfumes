@@ -1,5 +1,6 @@
 import { buildStoragePath, IMAGE_TYPES, MAX_UPLOAD_BYTES, validateUpload, VIDEO_TYPES, type PreparedFile } from './upload';
 import type { MediaAsset, NewMediaAsset } from './types';
+import { toFriendlyError } from '../errors';
 
 export interface UploadDeps {
   prepare: (file: File) => Promise<PreparedFile>;
@@ -44,7 +45,7 @@ export async function uploadFiles(files: File[], deps: UploadDeps): Promise<Medi
       });
       done.push(asset);
     } catch (err) {
-      deps.onError(file.name, err instanceof Error ? err.message : 'Upload failed.');
+      deps.onError(file.name, toFriendlyError(err));
     }
   }
   return done;

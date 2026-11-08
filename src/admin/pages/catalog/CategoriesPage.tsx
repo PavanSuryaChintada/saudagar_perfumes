@@ -210,8 +210,7 @@ export default function CategoriesPage() {
             await refresh();
             toast.success('Category deleted.');
           } catch (err) {
-            const msg = toFriendlyError(err);
-            toast.error(/foreign key|violates/i.test(msg) ? 'Move or delete its sub-categories first.' : msg);
+            toast.error(toFriendlyError(err));
           }
         }}
       />

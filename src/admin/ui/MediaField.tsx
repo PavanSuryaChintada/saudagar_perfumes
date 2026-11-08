@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ImagePlus, Link2, Library, Trash2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../lib/supabase';
+import { toFriendlyError } from '../../lib/errors';
 import { useUpload } from '../../lib/media/useUpload';
 import type { MediaAsset } from '../../lib/media/types';
 import { Button } from './Button';
@@ -126,7 +127,7 @@ export function MediaField({
       const done = await upload([files[0]]);
       if (done[0]) onChange(done[0].url);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Upload failed.');
+      toast.error(toFriendlyError(err));
     } finally {
       if (input.current) input.current.value = '';
     }
@@ -202,7 +203,7 @@ export function MediaGalleryInput({ onAdd }: { onAdd: (assets: { url: string; ki
       const done = await upload(Array.from(files));
       onAdd(done.map((a) => ({ url: a.url, kind: a.kind === 'video' ? 'video' : 'image' })));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Upload failed.');
+      toast.error(toFriendlyError(err));
     } finally {
       if (input.current) input.current.value = '';
     }
