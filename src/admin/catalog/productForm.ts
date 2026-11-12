@@ -86,6 +86,9 @@ export type ProductForm = { id?: string } & Record<TextKey, string> & Record<Com
   is_active: boolean;
   counts_toward_samples: boolean;
   ships_surface_only: boolean;
+  /** Shown as "Vegan" / "Cruelty free" on the product page. */
+  is_vegan: boolean;
+  is_cruelty_free: boolean;
   category_ids: string[];
   collection_ids: string[];
   /** Hand-picked “You may also appreciate” products, in order. Empty = automatic. */
@@ -134,7 +137,11 @@ export function copyProductDetails(target: ProductForm, source: ProductForm, gro
     next.inspiration = source.inspiration;
     next.how_to_wear = source.how_to_wear;
   }
-  if (has('compliance')) for (const [k] of COMPLIANCE_FIELDS) next[k] = source[k];
+  if (has('compliance')) {
+    for (const [k] of COMPLIANCE_FIELDS) next[k] = source[k];
+    next.is_vegan = source.is_vegan;
+    next.is_cruelty_free = source.is_cruelty_free;
+  }
   if (has('sections')) {
     next.page_sections = source.page_sections.map((x) => ({ ...x }));
     next.use_default_sections = source.use_default_sections;
@@ -183,6 +190,8 @@ export function emptyProductForm(defaults: Partial<Record<ComplianceKey, string>
     is_active: false,
     counts_toward_samples: true,
     ships_surface_only: true,
+    is_vegan: false,
+    is_cruelty_free: false,
     category_ids: [],
     collection_ids: [],
     related_product_ids: [],
@@ -265,6 +274,8 @@ export function toSavePayload(f: ProductForm): Record<string, unknown> {
     is_active: f.is_active,
     counts_toward_samples: f.counts_toward_samples,
     ships_surface_only: f.ships_surface_only,
+    is_vegan: f.is_vegan,
+    is_cruelty_free: f.is_cruelty_free,
     stock_unit: f.stock_unit,
     liquid_ml: !f.id && f.stock_unit === 'ml' && f.liquid_amount.trim() ? liquidMl(f.liquid_amount, f.liquid_unit) : null,
     category_ids: f.category_ids,
@@ -325,6 +336,8 @@ export function fromAdminProduct(b: AdminProductBundle): ProductForm {
     is_active: !!b.product.is_active,
     counts_toward_samples: b.product.counts_toward_samples ?? true,
     ships_surface_only: !!b.product.ships_surface_only,
+    is_vegan: !!b.product.is_vegan,
+    is_cruelty_free: !!b.product.is_cruelty_free,
     category_ids: b.categoryIds,
     collection_ids: b.collectionIds,
     related_product_ids: Array.isArray(p.related_product_ids) ? (p.related_product_ids as string[]) : [],

@@ -76,6 +76,7 @@ export const GUIDE: GuideSection[] = [
     check: 'notes',
     steps: [
       { text: 'Add each note once: Oud, Rose, Saffron… with its family and a photo.', link: { to: '/admin/notes', label: 'Notes' } },
+      { text: 'Missing a note family? In the note’s Note family box, type the new family and choose Add. All families are listed under Note families.', link: { to: '/admin/scent-profile?kind=note_family', label: 'Note families' } },
       { text: 'Products then pick notes from this library into Top, Heart and Base.' },
     ],
     tip: 'Missing a note while adding a product? Type it and choose “Add as a new note”; fill in its photo here later.',
@@ -103,6 +104,7 @@ export const GUIDE: GuideSection[] = [
       { text: 'Where it’s listed: pick the main category (search), then “Also list under” and Collections if needed.' },
       { text: 'Scent type: tap the family, accords and the rest. These become the product’s filters.' },
       { text: 'Notes pyramid: search the library for Top, Heart and Base notes; drag to reorder.' },
+      { text: 'Label details: switch on Vegan and Cruelty free only for products that are; the product page shows just the ones switched on.' },
       { text: 'Name and description. The web address fills itself from the name.' },
       { text: 'Sizes: one row per bottle size with SKU, price and opening stock. Leave a size’s price empty to use the base price.' },
       { text: 'Photos: the first one is the main photo; drag to reorder; tie a photo to a size if it shows that bottle.' },

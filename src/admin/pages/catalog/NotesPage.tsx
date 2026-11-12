@@ -1,8 +1,9 @@
 import { ListHead, RowAction, ShownPill } from '../../ui/ListHead';
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { usePaged, spliceOrder } from '../../../lib/paging';
 import { Pager } from '../../ui/Pager';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Layers, Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '../../../lib/supabase';
 import { toFriendlyError } from '../../../lib/errors';
@@ -13,6 +14,7 @@ import { FieldShell, TextArea, TextInput, Toggle } from '../../ui/Field';
 import { Modal } from '../../ui/Modal';
 import { ConfirmDialog } from '../../ui/ConfirmDialog';
 import { MediaField } from '../../ui/MediaField';
+import { SearchSelect } from '../../ui/SearchSelect';
 import { SortableList } from '../../ui/SortableList';
 import { slugify } from '../../catalog/productForm';
 import { rpc, throwIf, useInvalidateCatalog, useNotes, useOptions, type NoteRow } from '../../catalog/api';
@@ -22,7 +24,8 @@ const empty: Draft = { name: '', slug: '', family_option_id: '', short_descripti
 
 export default function NotesPage() {
   const { data: notes = [], refetch } = useNotes();
-  const { data: options = [] } = useOptions();
+  const { data: options = [], refetch: refetchOptions } = useOptions();
+  const navigate = useNavigate();
   const invalidate = useInvalidateCatalog();
   const families = options.filter((o) => o.kind === 'note_family');
   const familyName = useMemo(() => new Map(families.map((f) => [f.id, f.label])), [families]);
@@ -42,6 +45,23 @@ export default function NotesPage() {
   const refresh = async () => {
     await refetch();
     await invalidate();
+  };
+
+  // Type a family that doesn't exist yet in the note's family picker to add it on the spot.
+  const createFamily = async (label: string) => {
+    const name = label.trim();
+    const existing = families.find((f) => f.label.toLowerCase() === name.toLowerCase());
+    if (existing) return existing.id;
+    let slug = slugify(name) || 'family';
+    const taken = new Set(families.map((f) => f.slug));
+    for (let i = 2; taken.has(slug); i += 1) slug = `${slugify(name) || 'family'}-${i}`;
+    const row = (await throwIf(
+      supabase.from('attribute_options').insert({ kind: 'note_family', label: name, slug, position: families.length }).select('id').single(),
+    )) as { id: string };
+    await refetchOptions();
+    await invalidate();
+    toast.success(`Note family “${name}” added.`);
+    return row.id;
   };
 
   const save = async () => {
@@ -76,9 +96,14 @@ export default function NotesPage() {
         title="Notes"
         description="The ingredient library. Notes build each product's pyramid, power the notes filter and get their own page at /notes/name."
         actions={
-          <Button onClick={() => { setError(''); setDraft({ ...empty }); }}>
-            <Plus size={14} /> Add note
-          </Button>
+          <>
+            <Button variant="secondary" onClick={() => navigate('/admin/scent-profile?kind=note_family')}>
+              <Layers size={14} /> Note families
+            </Button>
+            <Button onClick={() => { setError(''); setDraft({ ...empty }); }}>
+              <Plus size={14} /> Add note
+            </Button>
+          </>
         }
       />
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -147,13 +172,18 @@ export default function NotesPage() {
             <FieldShell label="Link (slug)" htmlFor="n-slug" help="The note page lives at /notes/slug.">
               <TextInput id="n-slug" value={draft.slug} onChange={(e) => setDraft({ ...draft, slug: slugify(e.target.value) })} />
             </FieldShell>
-            <FieldShell label="Note family" htmlFor="n-fam">
-              <select id="n-fam" value={draft.family_option_id} onChange={(e) => setDraft({ ...draft, family_option_id: e.target.value })} className="w-full border border-[#C4C1B9] px-2 py-2 text-[14px] bg-white">
-                <option value="">None</option>
-                {families.map((f) => (
-                  <option key={f.id} value={f.id}>{f.label}</option>
-                ))}
-              </select>
+            <FieldShell label="Note family" htmlFor="n-fam" help="Search the families, or type a new one and choose “Add” to create it.">
+              <SearchSelect
+                id="n-fam"
+                value={draft.family_option_id || null}
+                onChange={(v) => setDraft({ ...draft, family_option_id: v ?? '' })}
+                options={families.map((f) => ({ value: f.id, label: f.label, tag: f.is_active ? undefined : 'hidden' }))}
+                onCreate={createFamily}
+                createNoun="note family"
+                placeholder="e.g. Oud & Agarwood"
+                emptyText="No note families yet. Type one to add it."
+                allowClear
+              />
             </FieldShell>
             <FieldShell label="Short description" htmlFor="n-desc">
               <TextArea id="n-desc" rows={2} value={draft.short_description} onChange={(e) => setDraft({ ...draft, short_description: e.target.value })} />

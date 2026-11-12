@@ -104,6 +104,8 @@ function PDPView({
 
   const [activeImgIdx, setActiveImgIdx] = useState(0);
   const words = useShopWords();
+  // "Vegan · Cruelty Free" shows only for products the admin switched on.
+  const claims = [detail?.is_vegan && words.vegan, detail?.is_cruelty_free && words.cruelty_free].filter(Boolean);
   const [mobileImgIdx, setMobileImgIdx] = useState(0);
   const trackRef = useRef(null);
   const { scrollTo } = useSmoothScroll();
@@ -422,12 +424,19 @@ function PDPView({
 
       {/* 5. Tenet Line + Quantity Stepper Row */}
       <motion.div variants={monographItemVariants} className="flex items-center justify-between gap-4 mb-5">
-        <span className="text-[12.5px] sm:text-[12.5px] text-[#444444] dark:text-[#AAAAAA] font-normal tracking-wide flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night" />
-          <span>Vegan</span>
-          <span className="text-tk-accent/60 dark:text-tk-accent-night/60">•</span>
-          <span>Cruelty Free</span>
-        </span>
+        {claims.length > 0 ? (
+          <span className="text-[12.5px] sm:text-[12.5px] text-[#444444] dark:text-[#AAAAAA] font-normal tracking-wide flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-tk-accent dark:bg-tk-accent-night" />
+            {claims.map((c, i) => (
+              <span key={c} className="contents">
+                {i > 0 && <span className="text-tk-accent/60 dark:text-tk-accent-night/60">•</span>}
+                <span>{c}</span>
+              </span>
+            ))}
+          </span>
+        ) : (
+          <span aria-hidden />
+        )}
 
         {/* Stepper Box */}
         <div className="border border-[#E0D4D6] dark:border-white/25 rounded-[2px] h-10 flex items-center px-0.5 bg-white dark:bg-transparent hover:border-tk-accent/40 dark:hover:border-tk-accent-night/40 transition-colors">
