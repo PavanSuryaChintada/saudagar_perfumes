@@ -922,6 +922,20 @@ export default function ProductEditorPage() {
 
           <Part id="label">
           <Panel title="Label details" description="Empty fields use the store's details from Settings → Product details. Fill one only when this product is different." action={copyBtn(['compliance'])}>
+            <div className="grid gap-3 sm:grid-cols-2 mb-5 pb-5 border-b border-[#E9E7E2] text-[14px]">
+              {([
+                ['is_vegan', 'Vegan', 'Shows “Vegan” on the product page, next to the quantity.'],
+                ['is_cruelty_free', 'Cruelty free', 'Shows “Cruelty free” on the product page, next to the quantity.'],
+              ] as const).map(([key, label, help]) => (
+                <div key={key} className="flex items-start justify-between gap-3">
+                  <div>
+                    <p>{label}</p>
+                    <p className="text-[12px] text-[#4F4F4F]">{help}</p>
+                  </div>
+                  <Toggle checked={form[key]} onChange={(on) => set(key, on)} label={label} />
+                </div>
+              ))}
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {COMPLIANCE_FIELDS.map(([key, label]) => (
                 <FieldShell key={key} label={label} htmlFor={`c-${key}`} error={err(key)}>

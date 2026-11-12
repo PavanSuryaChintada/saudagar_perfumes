@@ -1439,8 +1439,10 @@ export type Database = {
           ingredients: string | null
           inspiration: string | null
           is_active: boolean
+          is_cruelty_free: boolean
           is_featured: boolean
           is_gift_pack: boolean
+          is_vegan: boolean
           launch_year: number | null
           manufacturer_address: string | null
           manufacturer_name: string | null
@@ -1494,8 +1496,10 @@ export type Database = {
           ingredients?: string | null
           inspiration?: string | null
           is_active?: boolean
+          is_cruelty_free?: boolean
           is_featured?: boolean
           is_gift_pack?: boolean
+          is_vegan?: boolean
           launch_year?: number | null
           manufacturer_address?: string | null
           manufacturer_name?: string | null
@@ -1549,8 +1553,10 @@ export type Database = {
           ingredients?: string | null
           inspiration?: string | null
           is_active?: boolean
+          is_cruelty_free?: boolean
           is_featured?: boolean
           is_gift_pack?: boolean
+          is_vegan?: boolean
           launch_year?: number | null
           manufacturer_address?: string | null
           manufacturer_name?: string | null

@@ -61,6 +61,8 @@ export interface ProductDetail extends Omit<ProductCard, 'notes'> {
   inspiration: string | null;
   how_to_wear: string | null;
   ships_surface_only: boolean;
+  is_vegan?: boolean;
+  is_cruelty_free?: boolean;
   seo_title: string | null;
   seo_description: string | null;
   compliance: Record<string, string | number | null>;

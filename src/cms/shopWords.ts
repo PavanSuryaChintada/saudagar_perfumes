@@ -15,6 +15,8 @@ export const SHOP_WORD_FIELDS: { key: string; label: string; fallback: string }[
   { key: 'add_to_bag', label: 'Product page: add to bag button', fallback: 'Add to bag' },
   { key: 'sold_out', label: 'Product page: sold out', fallback: 'Sold out' },
   { key: 'in_stock', label: 'Product page: in stock', fallback: 'In stock' },
+  { key: 'vegan', label: 'Product page: vegan', fallback: 'Vegan' },
+  { key: 'cruelty_free', label: 'Product page: cruelty free', fallback: 'Cruelty Free' },
   { key: 'checkout_terms', label: 'Checkout: line under the order button', fallback: 'By placing the order you agree to our terms and policies.' },
   { key: 'wishlist_eyebrow', label: 'Wishlist: small heading', fallback: 'Your Private Selection' },
   { key: 'wishlist_title', label: 'Wishlist: page title', fallback: 'Saved Fragrances' },

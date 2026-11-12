@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router';
 import { usePaged, spliceOrder } from '../../../lib/paging';
 import { Pager } from '../../ui/Pager';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
@@ -20,7 +21,9 @@ type Draft = { id?: string; kind: string; label: string; slug: string; descripti
 export default function ScentProfilePage() {
   const { data: options = [], refetch } = useOptions();
   const invalidate = useInvalidateCatalog();
-  const [kind, setKind] = useState(OPTION_KINDS[0].kind);
+  // ?kind=note_family (from the Notes page) opens that tab.
+  const [params] = useSearchParams();
+  const [kind, setKind] = useState(() => OPTION_KINDS.find((k) => k.kind === params.get('kind'))?.kind ?? OPTION_KINDS[0].kind);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState<OptionRow | null>(null);
